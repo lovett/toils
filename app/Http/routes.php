@@ -31,7 +31,7 @@ Route::get('auth/register', 'Auth\AuthController@getRegister');
 Route::post('auth/register', 'Auth\AuthController@postRegister');
 
 // Clients
-Route::group(['middleware' => 'auth', 'as' => 'client', 'prefix' => 'client'], function () {
+Route::group(['middleware' => 'auth', 'as' => 'clients::', 'prefix' => 'clients'], function () {
     Route::get('/', [
         'as' => 'index',
         'uses' => 'ClientController@index',

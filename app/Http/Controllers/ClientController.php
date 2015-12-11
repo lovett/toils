@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Client;
 
 class ClientController extends Controller
 {
@@ -25,6 +26,12 @@ class ClientController extends Controller
      */
     public function create()
     {
+        $viewVars = [
+            'page_title' => 'Create Client',
+            'client' => new Client()
+        ];
+
+        return view('clients.form', $viewVars);
     }
 
     /**
