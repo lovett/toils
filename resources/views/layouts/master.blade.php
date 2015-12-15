@@ -6,7 +6,7 @@
     <body>
         <main class="container">
 	    <header class="primary">
-		<h1 class="text-center">{{ $page_title }}</h1>
+		<h1>{{ $page_title }}</h1>
 	    </header>
             @yield('page_main')
         </main>

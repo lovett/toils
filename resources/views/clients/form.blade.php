@@ -4,9 +4,13 @@
 
 {!! Form::model($client, ['route' => 'clients::store', 'class' => 'form-horizontal']) !!}
 
-@include('partials.formgroup-standard', ['name' => 'name', 'label' => 'Name'])
+<p class="text-right">
+    <a href="#">Cancel</a>
+</p>
 
 @include('partials.formgroup-checkbox', ['name' => 'active', 'label' => 'This client is active', 'checked' => true])
+
+@include('partials.formgroup-standard', ['name' => 'name', 'label' => 'Name'])
 
 @include('partials.formgroup-standard', ['name' => 'contact_name', 'label' => 'Contact Name'])
 
@@ -25,7 +29,7 @@
 @include('partials.formgroup-standard', ['name' => 'phone', 'label' => 'Phone'])
 
 <div class="form-group">
-    <div class="col-sm-offset-2 col-sm-10">
+    <div class="col-sm-12 text-center">
 	{!! Form::button('Save', ['type' => 'submit', 'class' => 'btn btn-default']) !!}
     </div>
 </div>
