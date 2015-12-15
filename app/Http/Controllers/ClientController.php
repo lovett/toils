@@ -27,7 +27,7 @@ class ClientController extends Controller
     public function create()
     {
         $viewVars = [
-            'page_title' => 'Create Client',
+            'page_title' => 'Add a client',
             'client' => new Client()
         ];
 

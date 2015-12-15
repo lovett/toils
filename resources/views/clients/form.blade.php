@@ -2,8 +2,6 @@
 
 @section('page_main')
 
-<div class="container">
-
 {!! Form::model($client, ['route' => 'clients::store', 'class' => 'form-horizontal']) !!}
 
 <div class="form-group">
@@ -85,5 +83,4 @@
     </div>
 </div>
 {!! Form::close() !!}
-</div>
 @endsection

@@ -1,1 +1,26 @@
-@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+
+// Bootstrap: Core variables and mixins
+@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/variables";
+@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/mixins";
+
+// Bootstrap: Reset and dependencies
+@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/normalize";
+
+// Bootstrap: Core CSS
+@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/scaffolding";
+@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/type";
+@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/code";
+@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/grid";
+@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/tables";
+@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/forms";
+@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/buttons";
+
+
+HEADER.primary {
+    padding: 2em 0;
+    margin-bottom: 2em;
+
+    h1, .h1 {
+	margin: 0;
+    }
+}
