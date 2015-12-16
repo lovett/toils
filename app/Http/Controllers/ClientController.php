@@ -17,6 +17,15 @@ class ClientController extends Controller
      */
     public function index()
     {
+
+        $clients = Client::all();
+
+        $viewVars = [
+            'page_title' => 'Clients',
+            'clients' => $clients,
+        ];
+
+        return view('clients.list', $viewVars);
     }
 
     /**
@@ -42,6 +51,23 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
+
+        $client = new Client;
+
+        $client->active = $request->active;
+        $client->name = $request->name;
+        $client->contact_name = $request->contact_name;
+        $client->contact_email = $request->contact_email;
+        $client->address1 = $request->address1;
+        $client->address2 = $request->address2;
+        $client->city = $request->city;
+        $client->locality = $request->locality;
+        $client->postal_code = $request->postal_code;
+        $client->phone = $request->phone;
+        $client->user_id = $request->user()->id;
+        $client->save();
+
+        return redirect()->route('clients');
     }
 
     /**

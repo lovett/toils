@@ -22,7 +22,7 @@
 
 @include('partials.formgroup-standard', ['name' => 'city', 'label' => 'City'])
 
-@include('partials.formgroup-standard', ['name' => 'state', 'label' => 'State'])
+@include('partials.formgroup-standard', ['name' => 'locality', 'label' => 'State'])
 
 @include('partials.formgroup-standard', ['name' => 'postal_code', 'label' => 'Zip'])
 
