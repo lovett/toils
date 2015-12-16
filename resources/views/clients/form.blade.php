@@ -2,7 +2,7 @@
 
 @section('page_main')
 
-{!! Form::model($client, ['route' => 'clients::store', 'class' => 'form-horizontal']) !!}
+{!! Form::model($client, ['route' => 'client.store', 'class' => 'form-horizontal']) !!}
 
 <p class="text-right">
     <a href="#">Cancel</a>

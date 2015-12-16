@@ -31,40 +31,4 @@ Route::get('auth/register', 'Auth\AuthController@getRegister');
 Route::post('auth/register', 'Auth\AuthController@postRegister');
 
 // Clients
-Route::group(['middleware' => 'auth', 'as' => 'clients::', 'prefix' => 'clients'], function () {
-    Route::get('/', [
-        'as' => 'index',
-        'uses' => 'ClientController@index',
-    ]);
-
-    Route::get('create', [
-        'as' => 'create',
-        'uses' => 'ClientController@create',
-    ]);
-
-    Route::post('store', [
-        'as' => 'store',
-        'uses' => 'ClientController@store',
-    ]);
-
-    Route::get('show/{id}', [
-        'as' => 'show',
-        'uses' => 'ClientController@show',
-    ]);
-
-    Route::get('edit/{id}', [
-        'as' => 'edit',
-        'uses' => 'ClientController@edit',
-    ]);
-
-    Route::post('update/{id}', [
-        'as' => 'update',
-        'uses' => 'ClientController@update',
-    ]);
-
-    Route::post('destroy/{id}', [
-        'as' => 'destroy',
-        'uses' => 'ClientController@destroy',
-    ]);
-
-});
+Route::resource('client', 'ClientController', ['middleware' => 'auth']);
