@@ -23,6 +23,10 @@ class ClientController extends Controller
         $viewVars = [
             'page_title' => 'Clients',
             'clients' => $clients,
+            'next_action' => [
+                'label' => 'Add a client',
+                'link' => route('client.create')
+            ]
         ];
 
         return view('clients.list', $viewVars);
@@ -37,7 +41,12 @@ class ClientController extends Controller
     {
         $viewVars = [
             'page_title' => 'Add a client',
-            'client' => new Client()
+            'client' => new Client(),
+            'next_action' => [
+                'label' => 'Cancel',
+                'link' => route('client.index')
+            ]
+
         ];
 
         return view('clients.form', $viewVars);

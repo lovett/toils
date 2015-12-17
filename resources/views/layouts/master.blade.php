@@ -7,6 +7,11 @@
         <main class="container">
 	    <header class="primary">
 		<h1>{{ $page_title }}</h1>
+		<nav>
+		    @if (is_array($next_action))
+		    <a href="{{ $next_action['link'] }}">{{ $next_action['label'] }}</a>
+		    @endif
+		</nav>
 	    </header>
             @yield('page_main')
         </main>

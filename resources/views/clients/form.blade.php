@@ -4,10 +4,6 @@
 
 {!! Form::model($client, ['route' => 'client.store', 'class' => 'form-horizontal']) !!}
 
-<p class="text-right">
-    <a href="#">Cancel</a>
-</p>
-
 @include('partials.formgroup-checkbox', ['name' => 'active', 'label' => 'This client is active', 'checked' => true])
 
 @include('partials.formgroup-standard', ['name' => 'name', 'label' => 'Name'])
