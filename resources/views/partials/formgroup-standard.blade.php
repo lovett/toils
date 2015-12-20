@@ -4,6 +4,6 @@
     @endif
 
     <div class="col-sm-10 {{ $label ? '' : 'col-sm-offset-2' }}">
-	{!! Form::text($name, null, ['class' => 'form-control']) !!}
+	{!! Form::text($name, $model->$name, ['class' => 'form-control']) !!}
     </div>
 </div>

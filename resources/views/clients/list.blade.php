@@ -3,7 +3,7 @@
 @section('page_main')
     <ul>
     @foreach ($clients as $client)
-        <li>{{ $client->name }}</li>
+        <li><a href="{{ route('client.edit', ['id' => $client->id]) }}">{{ $client->name }}</a></li>
     @endforeach
     </ul>
 

@@ -2,11 +2,11 @@
 
 @section('page_main')
 
-{!! Form::model($client, ['route' => 'client.store', 'class' => 'form-horizontal']) !!}
+{!! Form::model($model, ['route' => $next_route, 'method' => $method, 'class' => 'form-horizontal']) !!}
 
-@include('partials.formgroup-checkbox', ['name' => 'active', 'label' => 'This client is active', 'checked' => true])
+@include('partials.formgroup-checkbox', ['name' => 'active', 'label' => 'This client is active', 'checked' => $model->active])
 
-@include('partials.formgroup-standard', ['name' => 'name', 'label' => 'Name'])
+@include('partials.formgroup-standard', ['name' => 'name', 'label' => 'Name', 'value' => $model->name])
 
 @include('partials.formgroup-standard', ['name' => 'contact_name', 'label' => 'Contact Name'])
 

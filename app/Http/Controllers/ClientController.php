@@ -51,8 +51,10 @@ class ClientController extends Controller
             'next_action' => [
                 'label' => 'Cancel',
                 'link' => route('client.index')
-            ]
-
+            ],
+            'model' => new Client(),
+            'next_route' => 'client.create',
+            'method' => 'POST',
         ];
 
         return view('clients.form', $viewVars);
@@ -102,8 +104,24 @@ class ClientController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
+        $client = Client::where('id', $id)
+                ->where('user_id', $request->user()->id)
+                ->firstOrFail();
+
+        $viewVars = [
+            'page_title' => 'Edit Client',
+            'next_action' => [
+                'label' => 'Cancel',
+                'link' => route('clients')
+            ],
+            'model' => $client,
+            'next_route' => ['client.update', $client->id],
+            'method' => 'PUT',
+        ];
+
+        return view('clients.form', $viewVars);
     }
 
     /**
@@ -115,6 +133,12 @@ class ClientController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $client = Client::where('id', $id)
+                ->where('user_id', $request->user()->id)
+                ->firstOrFail();
+
+        $client->update($request->all());
+        return redirect()->route('clients');
     }
 
     /**
