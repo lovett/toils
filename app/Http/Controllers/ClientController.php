@@ -10,6 +10,12 @@ use App\Client;
 
 class ClientController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a list of clients
      *
@@ -73,6 +79,7 @@ class ClientController extends Controller
         $client->locality = $request->locality;
         $client->postal_code = $request->postal_code;
         $client->phone = $request->phone;
+
         $client->user_id = $request->user()->id;
         $client->save();
 

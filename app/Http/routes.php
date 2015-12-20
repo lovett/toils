@@ -32,4 +32,4 @@ Route::post('auth/register', 'Auth\AuthController@postRegister');
 
 // Clients
 Route::resource('client', 'ClientController', ['middleware' => 'auth']);
-Route::get('clients', ['as' => 'cllients', 'uses' => 'ClientController@index']);
+Route::get('clients', ['as' => 'clients', 'uses' => 'ClientController@index']);
