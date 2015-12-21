@@ -124,7 +124,13 @@ class ClientController extends Controller
                 ->where('user_id', $request->user()->id)
                 ->firstOrFail();
 
+
+        if (empty($request->active)) {
+            $client->active = 0;
+        }
+
         $client->update($request->all());
+
         return redirect()->route('clients');
     }
 
