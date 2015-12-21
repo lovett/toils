@@ -2,7 +2,7 @@
 
 @section('page_main')
 
-{!! Form::model($model, ['route' => $next_route, 'method' => $method, 'class' => 'form-horizontal']) !!}
+{!! Form::model($model, ['route' => $submission_route, 'method' => $submission_method, 'class' => 'form-horizontal']) !!}
 
 @include('partials.formgroup-checkbox', ['name' => 'active', 'label' => 'This client is active', 'checked' => $model->active])
 
@@ -32,4 +32,17 @@
 
 {!! Form::close() !!}
 
+@endsection
+
+@section('nav_primary')
+{!! link_to_route('clients', 'Cancel') !!}
+@endsection
+
+
+@section('nav_supplemental')
+@if ($model->id)
+{!! Form::model($model, ['route' => ['client.destroy', $model->id], 'method' => 'DELETE']) !!}
+{!! Form::button('Delete', ['type' => 'submit', 'class' => 'btn btn-sm btn-danger']) !!}
+{!! Form::close() !!}
+@endif
 @endsection

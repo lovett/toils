@@ -47,14 +47,9 @@ class ClientController extends Controller
     {
         $viewVars = [
             'page_title' => 'Add a client',
-            'client' => new Client(),
-            'next_action' => [
-                'label' => 'Cancel',
-                'link' => route('client.index')
-            ],
             'model' => new Client(),
-            'next_route' => 'client.create',
-            'method' => 'POST',
+            'submission_route' => 'client.create',
+            'submission_method' => 'POST',
         ];
 
         return view('clients.form', $viewVars);
@@ -112,13 +107,9 @@ class ClientController extends Controller
 
         $viewVars = [
             'page_title' => 'Edit Client',
-            'next_action' => [
-                'label' => 'Cancel',
-                'link' => route('clients')
-            ],
             'model' => $client,
-            'next_route' => ['client.update', $client->id],
-            'method' => 'PUT',
+            'submission_route' => ['client.update', $client->id],
+            'submission_method' => 'PUT'
         ];
 
         return view('clients.form', $viewVars);
@@ -147,7 +138,14 @@ class ClientController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
+        $client = Client::where('id', $id)
+                ->where('user_id', $request->user()->id)
+                ->firstOrFail();
+
+        $client->delete();
+
+        return redirect()->route('clients');
     }
 }
