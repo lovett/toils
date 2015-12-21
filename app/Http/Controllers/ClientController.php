@@ -28,11 +28,7 @@ class ClientController extends Controller
 
         $viewVars = [
             'page_title' => 'Clients',
-            'clients' => $clients,
-            'next_action' => [
-                'label' => 'Add a client',
-                'link' => route('client.create')
-            ]
+            'models' => $clients,
         ];
 
         return view('clients.list', $viewVars);
