@@ -2,6 +2,8 @@
 
 @section('page_main')
 
+@include('partials.error-alert')
+
 {!! Form::model($model, ['route' => $submission_route, 'method' => $submission_method, 'class' => 'form-horizontal']) !!}
 
 @include('partials.formgroup-checkbox', ['name' => 'active', 'label' => 'This client is active', 'checked' => $model->active])

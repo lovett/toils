@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use App\Http\Requests\StoreClientRequest;
 use App\Http\Controllers\Controller;
 use App\Client;
 
@@ -44,7 +45,7 @@ class ClientController extends Controller
         $viewVars = [
             'page_title' => 'Add a client',
             'model' => new Client(),
-            'submission_route' => 'client.create',
+            'submission_route' => 'client.store',
             'submission_method' => 'POST',
         ];
 
@@ -54,15 +55,14 @@ class ClientController extends Controller
     /**
      * Save a new client to the database
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  StoreClientRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreClientRequest $request)
     {
-
         $client = new Client;
 
-        $client->active = $request->active;
+        $client->active = (int)$request->active;
         $client->name = $request->name;
         $client->contact_name = $request->contact_name;
         $client->contact_email = $request->contact_email;
