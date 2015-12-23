@@ -26,7 +26,6 @@ class StoreClientRequest extends Request
     {
         return [
             'name' => 'required|unique:clients|max:255',
-            'contact_name' => 'required|max:255',
         ];
     }
 
