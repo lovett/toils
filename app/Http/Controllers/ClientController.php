@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-use App\Http\Requests\StoreClientRequest;
+use App\Http\Requests\ClientRequest;
 use App\Http\Controllers\Controller;
 use App\Client;
 
@@ -55,10 +55,10 @@ class ClientController extends Controller
     /**
      * Save a new client to the database
      *
-     * @param  StoreClientRequest  $request
+     * @param  ClientRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreClientRequest $request)
+    public function store(ClientRequest $request)
     {
         $client = new Client;
 
@@ -114,11 +114,11 @@ class ClientController extends Controller
     /**
      * Update an existing client
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  ClientRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ClientRequest $request, $id)
     {
         $client = Client::where('id', $id)
                 ->where('user_id', $request->user()->id)
