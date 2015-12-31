@@ -22,14 +22,20 @@ class ClientController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
 
-        $clients = Client::all();
+        $clients = $request->user()->clients();
+
+        if ($request->get('q')) {
+            $q = strtolower($request->get('q'));
+            $q = '%' . $q . '%';
+            $clients->where('name', 'like', $q);
+        }
 
         $viewVars = [
             'page_title' => 'Clients',
-            'models' => $clients,
+            'models' => $clients->get(),
         ];
 
         return view('clients.list', $viewVars);

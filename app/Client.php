@@ -18,4 +18,9 @@ class Client extends Model
         'postal_code',
         'phone',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
 }
