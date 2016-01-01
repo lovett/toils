@@ -25,17 +25,20 @@ class ClientController extends Controller
     public function index(Request $request)
     {
 
+        $q = null;
         $clients = $request->user()->clients();
 
         if ($request->get('q')) {
             $q = strtolower($request->get('q'));
-            $q = '%' . $q . '%';
-            $clients->where('name', 'like', $q);
+            $q = filter_var($q, FILTER_SANITIZE_STRING);
+            $clients->where('name', 'like', '%' . $q . '%');
         }
 
         $viewVars = [
             'page_title' => 'Clients',
-            'models' => $clients->get(),
+            'clients' => $clients->get(),
+            'q' => $q,
+            'search_route' => 'client.index'
         ];
 
         return view('clients.list', $viewVars);

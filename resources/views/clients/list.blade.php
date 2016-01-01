@@ -1,11 +1,13 @@
 @extends('layouts.master')
 
+
 @section('page_main')
-    <ul>
-	@foreach ($models as $model)
-	<li><a href="{{ route('client.edit', ['id' => $model->id]) }}">{{ $model->name }}</a></li>
-	@endforeach
-    </ul>
+    @include('partials.search', ['route' => 'client.index', 'q' => $q])
+    <div class="clients collection">
+        @foreach ($clients as $client)
+            @include('partials.client', ['client' => $client])
+        @endforeach
+    </div>
 @endsection
 
 @section('nav_primary')
