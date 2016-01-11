@@ -33,3 +33,7 @@ Route::post('auth/register', 'Auth\AuthController@postRegister');
 // Clients
 Route::resource('client', 'ClientController', ['middleware' => 'auth']);
 Route::get('clients', ['as' => 'clients', 'uses' => 'ClientController@index']);
+
+// Projects
+Route::resource('project', 'ProjectController', ['middleware' => 'auth']);
+Route::get('projects', ['as' => 'projects', 'uses' => 'ProjectController@index']);

@@ -56,6 +56,7 @@ class ClientController extends Controller
             'model' => new Client(),
             'submission_route' => 'client.store',
             'submission_method' => 'POST',
+            'app_section' => 'client',
         ];
 
         return view('clients.form', $viewVars);

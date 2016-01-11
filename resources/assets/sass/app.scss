@@ -15,13 +15,22 @@
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/buttons";
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/alerts";
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/input-groups";
-$clientAccent: #658C6D;
 
-HEADER.primary {
+$clientAccent: #658C6D;
+$projectAccent: #6687AA;
+
+.client H1 {
+    color: $clientAccent;
+}
+
+.project H1 {
+    color: $projectAccent;
+}
+
+.primary {
     padding: 2em 0;
 
     h1, .h1 {
-	color: $clientAccent;
 	margin: 0;
     }
 
