@@ -8,6 +8,8 @@
 
 @include('partials.formgroup-standard', ['name' => 'name', 'label' => 'Name', 'value' => $model->name])
 
+@include('partials.formgroup-menu', ['name' => 'client_id', 'label' => 'Client', 'items' => $clients, 'selectedItem' => $model->client_id])
+
 @include('partials.formgroup-checkbox', ['name' => 'active', 'label' => 'This project is active', 'checked' => $model->active])
 
 @include('partials.formgroup-checkbox', ['name' => 'billable', 'label' => 'This project is billable', 'checked' => $model->billable])

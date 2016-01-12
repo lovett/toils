@@ -35,7 +35,7 @@ class ProjectController extends Controller
         $viewVars = [
             'page_title' => 'Add a project',
             'model' => new Project(),
-            'clients' => $request->user()->clients()->get(),
+            'clients' => $request->user()->clientsForMenu(),
             'submission_route' => 'project.store',
             'submission_method' => 'POST',
             'app_section' => 'project',
@@ -53,6 +53,10 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
+        print "<pre>";
+        print_r($_POST);
+        print "</pre>";
+        exit;
     }
 
     /**

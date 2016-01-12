@@ -41,4 +41,14 @@ class User extends Model implements AuthenticatableContract,
     {
         return $this->hasMany('App\Client');
     }
+
+    public function clientsForMenu()
+    {
+        $clients = $this->clients()->get()->reduce(function ($acc, $client) {
+            $acc[$client->id] = $client->name;
+            return $acc;
+        }, ['' => '']);
+
+        return $clients;
+    }
 }
