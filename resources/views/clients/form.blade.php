@@ -40,7 +40,6 @@
 {!! link_to_route('clients', 'Cancel') !!}
 @endsection
 
-
 @section('nav_supplemental')
 @if ($model->id)
 {!! Form::model($model, ['route' => ['client.destroy', $model->id], 'method' => 'DELETE']) !!}

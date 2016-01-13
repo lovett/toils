@@ -66,7 +66,7 @@ class ProjectController extends Controller
         $project->client()->associate($client);
         $project->save();
 
-        return redirect()->route('projects');
+        return redirect()->route('client.show', ['client' => $project->client]);
     }
 
     /**

@@ -29,4 +29,9 @@ class Client extends Model
         return $this->hasMany('App\Project');
     }
 
+    public function numericPhone() {
+        $numericPhone = preg_replace('/x.*/i', '', $this->phone);
+        return preg_replace('/[^0-9]/', '', $numericPhone);
+    }
+
 }

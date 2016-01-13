@@ -97,6 +97,14 @@ class ClientController extends Controller
      */
     public function show($id)
     {
+        $client = Client::findOrFail($id);
+
+        $viewVars = [
+            'client' => $client,
+            'page_title' => $client->name,
+        ];
+
+        return view('clients.show', $viewVars);
     }
 
     /**
