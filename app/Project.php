@@ -13,6 +13,15 @@ class Project extends Model
         'tax_deducted',
     ];
 
+    protected $casts = [
+        'active' => 'boolean',
+        'name' => 'string',
+        'billable' => 'boolean',
+        'tax_deducted' => 'boolean',
+        'user_id' => 'integer',
+        'client_id' => 'integer',
+    ];
+
     public function user()
     {
         return $this->belongsTo('App\User');

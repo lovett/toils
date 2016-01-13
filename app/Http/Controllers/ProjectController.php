@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use App\Http\Requests\ProjectRequest;
 use App\Http\Controllers\Controller;
 use App\Project;
+use App\Client;
 
 class ProjectController extends Controller
 {
@@ -51,12 +53,20 @@ class ProjectController extends Controller
      * @param  ProjectRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProjectRequest $request)
     {
-        print "<pre>";
-        print_r($_POST);
-        print "</pre>";
-        exit;
+        $project = new Project;
+        $client = Client::find($request->client_id);
+
+        $project->name = $request->name;
+        $project->active = $request->active;
+        $project->billable = $request->billable;
+        $project->tax_deducted = $request->tax_deducted;
+        $project->user()->associate($request->user());
+        $project->client()->associate($client);
+        $project->save();
+
+        return redirect()->route('projects');
     }
 
     /**
