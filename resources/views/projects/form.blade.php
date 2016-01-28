@@ -28,7 +28,7 @@
 @endsection
 
 @section('nav_primary')
-{!! link_to_route('projects', 'Cancel') !!}
+{!! link_to_route('client.show', 'Cancel', ['client' => $model->client_id]) !!}
 @endsection
 
 

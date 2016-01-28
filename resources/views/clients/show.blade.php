@@ -22,7 +22,7 @@
 	<h2>Projects</h2>
 
 	<nav class="subhead-nav">
-	    <a href="{{ route('project.create') }}" role="button" class="btn btn-primary btn-xs">Add</a>
+	    <a href="{{ route('project.create', ['client' => $client ]) }}" role="button" class="btn btn-primary btn-xs">Add</a>
 	</nav>
 
 	<div class="well">
