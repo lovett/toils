@@ -95,6 +95,19 @@ class ProjectController extends Controller
      */
     public function edit(Request $request, $id)
     {
+        $project = Project::find($id);
+
+        $viewVars = [
+            'page_title' => 'Edit project',
+            'model' => $project,
+            'clients' => $request->user()->clientsForMenu(),
+            'submission_route' => ['project.update', $project->id],
+            'submission_method' => 'PUT',
+            'app_section' => 'project',
+        ];
+
+        return view('projects.form', $viewVars);
+
     }
 
     /**
@@ -106,6 +119,25 @@ class ProjectController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $project = Project::where('id', $id)
+                 ->where('user_id', $request->user()->id)
+                 ->firstOrFail();
+
+        if (empty($request->active)) {
+            $project->active = 0;
+        }
+
+        if (empty($requst->billable)) {
+            $project->billable = 0;
+        }
+
+        if (empty($request->tax_deducted)) {
+            $project->tax_deducted = 0;
+        }
+
+        $project->update($request->all());
+
+        return redirect()->route('client.show', $project->client_id);
     }
 
     /**
