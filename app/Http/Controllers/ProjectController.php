@@ -66,10 +66,10 @@ class ProjectController extends Controller
         $project = new Project;
         $client = Client::find($request->client_id);
 
-        $project->name = $request->name;
-        $project->active = $request->active;
-        $project->billable = $request->billable;
-        $project->tax_deducted = $request->tax_deducted;
+        $project->name = $request->input('name');
+        $project->active = $request->input('active', 0);
+        $project->billable = $request->input('billable', 0);
+        $project->tax_deducted = $request->input('tax_deducted', 0);
         $project->user()->associate($request->user());
         $project->client()->associate($client);
         $project->save();
@@ -119,28 +119,16 @@ class ProjectController extends Controller
      */
     public function update(ProjectRequest $request, $id)
     {
-        $project = Project::where('id', $id)
-                 ->where('user_id', $request->user()->id)
-                 ->firstOrFail();
-
-        $client = Client::where('id', $request->input('client_id'))
-                ->where('user_id', $request->user()->id)
-                ->firstOrFail();
+        $project = Project::find($id);
+        $client = Client::find($request->input('client_id'));
 
         $project->client()->associate($client);
 
+        $project->active = $request->input('active', 0);
 
-        if (empty($request->active)) {
-            $project->active = 0;
-        }
+        $project->billable = $request->input('billable', 0);
 
-        if (empty($requst->billable)) {
-            $project->billable = 0;
-        }
-
-        if (empty($request->tax_deducted)) {
-            $project->tax_deducted = 0;
-        }
+        $project->tax_deducted = $request->input('tax_deducted', 0);
 
         $project->update($request->all());
 
@@ -156,11 +144,7 @@ class ProjectController extends Controller
      */
     public function destroy(ProjectRequest $request, $id)
     {
-        $project = Project::where('id', $id)
-                 ->where('user_id', $request->user()->id)
-                 ->firstOrFail();
-
-        $project->delete();
+        $project = Project::where('id', $id)->delete();
 
         return redirect()->route('client.show', $project->client_id);
     }
