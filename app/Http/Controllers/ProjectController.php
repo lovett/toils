@@ -117,11 +117,18 @@ class ProjectController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ProjectRequest $request, $id)
     {
         $project = Project::where('id', $id)
                  ->where('user_id', $request->user()->id)
                  ->firstOrFail();
+
+        $client = Client::where('id', $request->input('client_id'))
+                ->where('user_id', $request->user()->id)
+                ->firstOrFail();
+
+        $project->client()->associate($client);
+
 
         if (empty($request->active)) {
             $project->active = 0;
@@ -143,10 +150,18 @@ class ProjectController extends Controller
     /**
      * Delete a project
      *
+     * @param  ProjectRequest  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request, $id)
+    public function destroy(ProjectRequest $request, $id)
     {
+        $project = Project::where('id', $id)
+                 ->where('user_id', $request->user()->id)
+                 ->firstOrFail();
+
+        $project->delete();
+
+        return redirect()->route('client.show', $project->client_id);
     }
 }
