@@ -19,7 +19,8 @@
 	</div>
     </div>
     <div class="col-sm-3">
-	<h2>Projects</h2>
+
+	<h2>Active Projects</h2>
 
 	<nav class="subhead-nav">
 	    <a href="{{ route('project.create', ['client' => $client ]) }}" role="button" class="btn btn-primary btn-xs">Add</a>
@@ -27,13 +28,32 @@
 
 	<div class="well">
 	    <ul class="list-unstyled">
-	    @if ($client->projects->count() == 0)
+	    @if ($client->projects->where('active', true)->count() == 0)
 	    <li>None</li>
 	    @endif
 
-	    @foreach ($client->projects as $project)
-	    <li><a href="{{ route('project.edit', ['project' => $project]) }}">{{ $project->name }}</a></li>
+	    @foreach ($client->projects->where('active', true) as $project)
+		<li>
+		    <a href="{{ route('project.edit', ['project' => $project]) }}">{{ $project->name }}</a>
+		</li>
 	    @endforeach
+	    </ul>
+	</div>
+    </div>
+    <div class="col-sm-3">
+	<h2>Inctive Projects</h2>
+
+	<div class="well">
+	    <ul class="list-unstyled">
+		@if ($client->projects->where('active', false)->count() == 0)
+		    <li>None</li>
+		@endif
+
+		@foreach ($client->projects->where('active', false) as $project)
+		    <li>
+			<a href="{{ route('project.edit', ['project' => $project]) }}">{{ $project->name }}</a>
+		    </li>
+		@endforeach
 	    </ul>
 	</div>
     </div>
