@@ -164,6 +164,7 @@ class ClientController extends Controller
                 ->where('user_id', $request->user()->id)
                 ->firstOrFail();
 
+        $client->projects()->delete();
         $client->delete();
 
         return redirect()->route('clients');
