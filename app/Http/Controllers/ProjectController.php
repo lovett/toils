@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use Illuminate\Http\Response;
 use App\Http\Requests;
 use App\Http\Requests\ProjectRequest;
 use App\Http\Controllers\Controller;
@@ -21,7 +21,7 @@ class ProjectController extends Controller
     /**
      * Display a list of projects
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index(Request $request)
     {
@@ -30,7 +30,7 @@ class ProjectController extends Controller
     /**
      * Show the form for creating a new project
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function create(Request $request)
     {
@@ -59,7 +59,7 @@ class ProjectController extends Controller
      * Save a new project to the database
      *
      * @param  ProjectRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(ProjectRequest $request)
     {
@@ -81,7 +81,7 @@ class ProjectController extends Controller
      * Display a project
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show($id)
     {
@@ -91,7 +91,7 @@ class ProjectController extends Controller
      * Show the form for editing a project
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit(Request $request, $id)
     {
@@ -115,7 +115,7 @@ class ProjectController extends Controller
      *
      * @param  ProjectRequest  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(ProjectRequest $request, $id)
     {
@@ -138,13 +138,17 @@ class ProjectController extends Controller
     /**
      * Delete a project
      *
-     * @param  ProjectRequest  $request
+     * @param  Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
-    public function destroy(ProjectRequest $request, $id)
+    public function destroy(Request $request, $id)
     {
-        $project = Project::where('id', $id)->delete();
+        $project = Project::where('id', $id)
+                 ->where('user_id', $request->user()->id)
+                 ->firstOrFail();
+
+        $project->delete();
 
         return redirect()->route('client.show', $project->client_id);
     }
