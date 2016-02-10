@@ -91,7 +91,7 @@ class CreateBaseSchema extends Migration
         });
 
 
-        Schema::create('time_entries', function (Blueprint $table) {
+        Schema::create('hours', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->date('start')->nullable();
@@ -99,9 +99,12 @@ class CreateBaseSchema extends Migration
             $table->text('summary')->nullable();
             $table->integer('estimated_duration')->nullable()->unsigned();
             $table->integer('project_id')->unsigned();
-            $table->integer('invoice_id')->unsigned()->nullable();
+            $table->integer('invoice_id')->nullable()->unsigned();
             $table->timestamps();
             $table->softDeletes();
+            $table->foreign('project_id')->references('id')->on('projects');
+            $table->foreign('invoice_id')->references('id')->on('invoices');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 
