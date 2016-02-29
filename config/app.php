@@ -147,6 +147,12 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\DatabaseServiceProvider::class,
 
+
+        /*
+         * Third party Service Providers
+         */
+        Barryvdh\Debugbar\ServiceProvider::class,
+
     ],
 
     /*
@@ -197,6 +203,8 @@ return [
         'View'      => Illuminate\Support\Facades\View::class,
         'Form'      => Illuminate\Html\FormFacade::class,
         'HTML'      => Illuminate\Html\HtmlFacade::class,
+
+        'Debugbar'  => Barryvdh\Debugbar\Facade::class,
 
     ],
 
