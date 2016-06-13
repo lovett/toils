@@ -91,7 +91,7 @@ class CreateBaseSchema extends Migration
         });
 
 
-        Schema::create('hours', function (Blueprint $table) {
+        Schema::create('times', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->date('start')->nullable();
@@ -118,7 +118,7 @@ class CreateBaseSchema extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('time_entries');
+        Schema::dropIfExists('time');
         Schema::dropIfExists('invoices');
         Schema::dropIfExists('estimates');
         Schema::dropIfExists('projects');

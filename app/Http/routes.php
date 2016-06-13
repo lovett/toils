@@ -37,3 +37,7 @@ Route::get('clients', ['as' => 'clients', 'uses' => 'ClientController@index']);
 // Projects
 Route::resource('project', 'ProjectController', ['middleware' => 'auth']);
 Route::get('projects', ['as' => 'projects', 'uses' => 'ProjectController@index']);
+
+// Time
+Route::resource('time', 'TimeController', ['middleware' => 'auth']);
+Route::get('time', ['as' => 'time', 'uses' => 'TimeController@index']);
