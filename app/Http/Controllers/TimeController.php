@@ -20,8 +20,21 @@ class TimeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $records = $request->user()->time()->with('project')->orderBy('start', 'desc')->simplePaginate(15);
+
+        $q = $request->get('q');
+
+        $viewVars = [
+            'page_title' => 'Time',
+            'q' => $q,
+            'records' => $records,
+            'search_route' => 'time.index'
+        ];
+
+        return view('time.list', $viewVars);
+
         //
     }
 

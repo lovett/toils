@@ -17,6 +17,7 @@
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/input-groups";
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/wells";
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/utilities";
+@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/pager";
 
 $clientAccent: #658C6D;
 $projectAccent: #6687AA;
@@ -41,7 +42,7 @@ $projectAccent: #6687AA;
     }
 }
 
-.clients.collection {
+.list.collection {
     .item {
         margin-bottom: 1em;
 

@@ -9,14 +9,20 @@
         <main class="container">
             <header class="primary">
                 <h1>{{ $page_title }}</h1>
-                <nav class="row">
-                    <div class="col-sm-6">
+		<div class="row">
+                    <nav class="col-sm-6">
                         @yield('nav_primary')
-                    </div>
-                    <div class="col-sm-6 text-right">
-                        @yield('nav_supplemental')
-                    </div>
-                </nav>
+                    </nav>
+                    <nav class="col-sm-6 text-right">
+			@section('nav_supplemental')
+			    <ul class="list-inline">
+				<li>{!! link_to_route('time.index', 'Time') !!}</li>
+				<li>{!! link_to_route('projects', 'Projects') !!}</li>
+				<li>{!! link_to_route('clients', 'Clients') !!}</li>
+			    </ul>
+			@show
+                    </nav>
+                </div>
             </header>
             @yield('page_main')
         </main>

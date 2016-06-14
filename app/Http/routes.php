@@ -40,4 +40,4 @@ Route::get('projects', ['as' => 'projects', 'uses' => 'ProjectController@index']
 
 // Time
 Route::resource('time', 'TimeController', ['middleware' => 'auth']);
-Route::get('time', ['as' => 'time', 'uses' => 'TimeController@index']);
+//Route::get('time', ['as' => 'time', 'uses' => 'TimeController@index']);

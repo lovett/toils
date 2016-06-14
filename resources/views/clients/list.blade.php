@@ -3,7 +3,7 @@
 
 @section('page_main')
     @include('partials.search', ['route' => 'client.index', 'q' => $q])
-    <div class="clients collection">
+    <div class="list collection">
         @foreach ($clients as $client)
             @include('partials.client', ['client' => $client])
         @endforeach
