@@ -4,9 +4,6 @@
 <div class="row">
     <div class="col-sm-4">
 	<h2>Details</h2>
-	<nav class="subhead-nav">
-	    <a href="{{ route('client.edit', ['client' => $client ]) }}" role="button" class="btn btn-primary btn-xs">Edit</a>
-	</nav>
 
 	<div class="well">
 	    <h4>{{ $client->name }}</h4>
@@ -31,10 +28,6 @@
     <div class="col-sm-8">
 
 	<h2>Projects</h2>
-
-	<nav class="subhead-nav">
-	    <a href="{{ route('project.create', ['client' => $client ]) }}" role="button" class="btn btn-primary btn-xs">Add</a>
-	</nav>
 
 	<div class="row">
 	    <div class="col-sm-6">
@@ -76,8 +69,8 @@
 @endsection
 
 @section('nav_primary')
-        {!! link_to_route('clients', 'All clients') !!}
-@endsection
-
-@section('nav_supplemental')
+    <ul class="list-inline">
+	<li>{!! link_to_route('client.edit', 'Edit', ['id' => $client->id]) !!}</li>
+	<li>{!! link_to_route('project.create', 'New project') !!}</li>
+    </ul>
 @endsection

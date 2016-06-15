@@ -31,4 +31,14 @@ class Project extends Model
     {
         return $this->belongsTo('App\Client');
     }
+
+    public function status()
+    {
+        return ($this->active) ? 'active' : 'inactive';
+    }
+
+    public function taxStatus()
+    {
+        return ($this->tax_deducted) ? 'taxed' : 'untaxed';
+    }
 }

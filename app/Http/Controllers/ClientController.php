@@ -15,6 +15,7 @@ class ClientController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('returnable', ['only' => ['show']]);
     }
 
     /**
@@ -24,7 +25,6 @@ class ClientController extends Controller
      */
     public function index(Request $request)
     {
-
         $q = null;
         $clients = $request->user()->clients();
 
@@ -92,10 +92,11 @@ class ClientController extends Controller
     /**
      * Display a client
      *
+     * @param Request $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
         $client = Client::findOrFail($id);
 

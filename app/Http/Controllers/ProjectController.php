@@ -16,6 +16,8 @@ class ProjectController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('returnable', ['only' => ['index', 'show']]);
+        $this->middleware('backto', ['only' => ['store', 'update', 'destroy']]);
     }
 
     /**
@@ -25,6 +27,19 @@ class ProjectController extends Controller
      */
     public function index(Request $request)
     {
+        $records = $request->user()->projects()->with('client')->simplePaginate(15);
+
+        $q = $request->get('q');
+
+        $viewVars = [
+            'page_title' => 'Projects',
+            'q' => $q,
+            'records' => $records,
+            'search_route' => 'project.index'
+        ];
+
+        return view('projects.list', $viewVars);
+
     }
 
     /**
@@ -73,8 +88,6 @@ class ProjectController extends Controller
         $project->user()->associate($request->user());
         $project->client()->associate($client);
         $project->save();
-
-        return redirect()->route('client.show', ['client' => $project->client]);
     }
 
     /**
@@ -131,8 +144,6 @@ class ProjectController extends Controller
         $project->tax_deducted = $request->input('tax_deducted', 0);
 
         $project->update($request->all());
-
-        return redirect()->route('client.show', $project->client_id);
     }
 
     /**
@@ -149,7 +160,5 @@ class ProjectController extends Controller
                  ->firstOrFail();
 
         $project->delete();
-
-        return redirect()->route('client.show', $project->client_id);
     }
 }

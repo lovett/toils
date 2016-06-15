@@ -42,6 +42,11 @@ class User extends Model implements AuthenticatableContract,
         return $this->hasMany('App\Client');
     }
 
+    public function projects()
+    {
+        return $this->hasMany('App\Project');
+    }
+
     public function time()
     {
         return $this->hasMany('App\Time');
