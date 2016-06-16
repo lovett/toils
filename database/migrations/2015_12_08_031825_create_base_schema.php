@@ -118,7 +118,7 @@ class CreateBaseSchema extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('time');
+        Schema::dropIfExists('times');
         Schema::dropIfExists('invoices');
         Schema::dropIfExists('estimates');
         Schema::dropIfExists('projects');
