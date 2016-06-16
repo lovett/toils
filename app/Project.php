@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use App\User;
 
 class Project extends Model
 {
@@ -14,6 +15,7 @@ class Project extends Model
     ];
 
     protected $casts = [
+        'id' => 'integer',
         'active' => 'boolean',
         'name' => 'string',
         'billable' => 'boolean',
@@ -39,6 +41,17 @@ class Project extends Model
 
     public function taxStatus()
     {
-        return ($this->tax_deducted) ? 'taxed' : 'untaxed';
+        return ($this->tax_deducted) ? 'deducted' : 'not deducted';
     }
+
+    public function billableStatus()
+    {
+        return ($this->billable) ? 'yes' : 'no';
+    }
+
+    public function scopeByUser($query, User $user)
+    {
+        return $query->where('user_id', $user->id);
+    }
+
 }

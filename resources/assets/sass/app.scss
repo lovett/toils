@@ -21,6 +21,7 @@
 
 $clientAccent: #658C6D;
 $projectAccent: #6687AA;
+$timeAccent: #6B2F8E;
 
 .client H1 {
     color: $clientAccent;
@@ -28,6 +29,10 @@ $projectAccent: #6687AA;
 
 .project H1 {
     color: $projectAccent;
+}
+
+.time H1 {
+    color: $timeAccent;
 }
 
 .primary {
@@ -65,4 +70,16 @@ $projectAccent: #6687AA;
 ADDRESS DIV {
     white-space: pre-line;
     margin: 0;
+}
+
+.spaced {
+    margin-bottom: 0;
+
+    DD {
+        margin-bottom: .5em;
+    }
+
+    DD:last-of-type {
+        margin-bottom: 0;
+    }
 }

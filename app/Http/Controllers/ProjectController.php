@@ -18,6 +18,8 @@ class ProjectController extends Controller
         $this->middleware('auth');
         $this->middleware('returnable', ['only' => ['index', 'show']]);
         $this->middleware('backto', ['only' => ['store', 'update', 'destroy']]);
+        view()->share('app_section', 'project');
+
     }
 
     /**
@@ -64,6 +66,7 @@ class ProjectController extends Controller
             'submission_route' => 'project.store',
             'submission_method' => 'POST',
             'app_section' => 'project',
+            'backUrl' => $request->session()->get('returnTo'),
         ];
 
         return view('projects.form', $viewVars);
@@ -93,11 +96,21 @@ class ProjectController extends Controller
     /**
      * Display a project
      *
-     * @param  int  $id
+     * @param Request $request
+     * @param int  $id
      * @return Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
+        $record = Project::with('client')->byUser($request->user())->findOrFail($id);
+
+        $viewVars = [
+            'record' => $record,
+            'page_title' => $record->name,
+        ];
+
+        return view('projects.show', $viewVars);
+
     }
 
     /**
@@ -117,6 +130,7 @@ class ProjectController extends Controller
             'submission_route' => ['project.update', $project->id],
             'submission_method' => 'PUT',
             'app_section' => 'project',
+            'backUrl' => $request->session()->get('returnTo'),
         ];
 
         return view('projects.form', $viewVars);

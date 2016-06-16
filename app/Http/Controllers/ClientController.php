@@ -11,11 +11,12 @@ use App\Client;
 
 class ClientController extends Controller
 {
-
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('returnable', ['only' => ['show']]);
+        $this->middleware('returnable', ['only' => ['index', 'show']]);
+        $this->middleware('backto', ['only' => ['store', 'update', 'destroy']]);
+        view()->share('app_section', 'client');
     }
 
     /**
@@ -49,14 +50,14 @@ class ClientController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
         $viewVars = [
             'page_title' => 'Add a client',
             'model' => new Client(),
             'submission_route' => 'client.store',
             'submission_method' => 'POST',
-            'app_section' => 'client',
+            'backUrl' => $request->session()->get('returnTo'),
         ];
 
         return view('clients.form', $viewVars);
@@ -98,11 +99,11 @@ class ClientController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $client = Client::findOrFail($id);
+        $record = Client::byUser($request->user())->findOrFail($id);
 
         $viewVars = [
-            'client' => $client,
-            'page_title' => $client->name,
+            'record' => $record,
+            'page_title' => $record->name,
         ];
 
         return view('clients.show', $viewVars);
@@ -124,7 +125,8 @@ class ClientController extends Controller
             'page_title' => 'Edit Client',
             'model' => $client,
             'submission_route' => ['client.update', $client->id],
-            'submission_method' => 'PUT'
+            'submission_method' => 'PUT',
+            'backUrl' => $request->session()->get('returnTo'),
         ];
 
         return view('clients.form', $viewVars);

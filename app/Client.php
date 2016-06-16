@@ -34,4 +34,9 @@ class Client extends Model
         return preg_replace('/[^0-9]/', '', $numericPhone);
     }
 
+    public function scopeByUser($query, User $user)
+    {
+        return $query->where('user_id', $user->id);
+    }
+
 }

@@ -37,7 +37,7 @@
 @endsection
 
 @section('nav_primary')
-{!! link_to_route('clients', 'Cancel') !!}
+{!! link_to($backUrl, 'Cancel') !!}
 @endsection
 
 @section('nav_supplemental')

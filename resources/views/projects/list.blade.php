@@ -9,7 +9,6 @@
                 <th>Client</th>
                 <th>Created</th>
                 <th>Status</th>
-                <th>Tax</th>
             </tr>
         </thead>
         <tbody>
@@ -32,9 +31,6 @@
                     </td>
                     <td>
                         {{ $record->status() }}
-                    </td>
-                    <td>
-                        {{ $record->taxStatus() }}
                     </td>
                 </tr>
             @endforeach

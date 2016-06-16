@@ -13,6 +13,9 @@ class TimeController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('returnable', ['only' => ['index', 'show']]);
+        $this->middleware('backto', ['only' => ['store', 'update', 'destroy']]);
+        view()->share('app_section', 'time');
     }
 
     /**
