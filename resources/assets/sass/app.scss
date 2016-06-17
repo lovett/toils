@@ -83,3 +83,18 @@ ADDRESS DIV {
         margin-bottom: 0;
     }
 }
+
+.shortcuts {
+    font-size: .85em;
+    text-transform: uppercase;
+    text-align: right;
+    padding: .25em 0;
+
+    P {
+        margin-bottom: .5em;
+    }
+
+    A {
+        margin-left: 1em;
+    }
+}

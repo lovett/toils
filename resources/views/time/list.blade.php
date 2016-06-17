@@ -15,7 +15,23 @@
         </thead>
         <tbody>
             @foreach ($records as $record)
-            @include('partials.time', ['record' => $record])
+            <tr>
+                <td>
+                    {!! link_to_route('time.edit', $record->start->format('Y-m-d'), ['id' => $record->id]) !!}
+                </td>
+                <td>
+	            {{ $record->start->format('l') }}
+                </td>
+                <td>
+	            {{ $record->start->format('g:i A') }}
+                </td>
+                <td>
+	            {{ $record->end->format('g:i A') }}
+                </td>
+                <td>
+	            {!! link_to_route('project.show', $record->project->name, ['id' => $record->project->id]) !!}
+                </td>
+            </tr>
             @endforeach
         </tbody>
     </table>

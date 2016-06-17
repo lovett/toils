@@ -5,7 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
+use App\Time;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Response;
+use DatePeriod;
+use DateInterval;
+use DateTime;
+use Carbon\Carbon;
 
 class TimeController extends Controller
 {
@@ -16,12 +22,35 @@ class TimeController extends Controller
         $this->middleware('returnable', ['only' => ['index', 'show']]);
         $this->middleware('backto', ['only' => ['store', 'update', 'destroy']]);
         view()->share('app_section', 'time');
+
+        view()->share('ranges', [
+            'month' => new DatePeriod(
+                new DateTime('Jan 1'),
+                new DateInterval('P1M'),
+                new DateTime('Dec 31')
+            ),
+
+            'day' => new DatePeriod(
+                new DateTime('Jan 1'),
+                new DateInterval('P1D'),
+                new DateTime('Feb 1')
+            ),
+
+            'year' => new DatePeriod(
+                new DateTime('-366 day'),
+                new DateInterval('P1Y'),
+                new DateTime('+366 day')
+            ),
+
+            'hour' => range(1, 12),
+            'minute' => range(0, 59, 5),
+        ]);
     }
 
     /**
      * Display a list of time entries
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index(Request $request)
     {
@@ -44,27 +73,40 @@ class TimeController extends Controller
     /**
      * Show the form for creating a new time entry.
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Response
      */
-    public function create()
+    public function create(Request $request)
     {
+        $record = new Time();
+        $record->start = new Carbon('now');
+        $viewVars = [
+            'page_title' => 'Add time',
+            'record' => new Time(),
+            'submission_route' => 'time.store',
+            'submission_method' => 'POST',
+            'projects' => $request->user()->projectsForMenu(),
+            'backUrl' => $request->session()->get('returnTo'),
+        ];
+
+        return view('time.form', $viewVars);
     }
 
     /**
      * Save a new time entry to the database
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
     }
 
     /**
-     * Display the specified resource.
+     * Time entries do not have a show view
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show($id)
     {
@@ -74,10 +116,23 @@ class TimeController extends Controller
      * Show the form for editing a time entry
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
+        $record = $request->user()->time()->findOrFail($id);
+
+
+        $viewVars = [
+            'page_title' => 'Edit Time',
+            'record' => $record,
+            'projects' => $request->user()->projectsForMenu(),
+            'submission_route' => ['time.update', $record->id],
+            'submission_method' => 'PUT',
+            'backUrl' => $request->session()->get('returnTo'),
+        ];
+
+        return view('time.form', $viewVars);
     }
 
     /**
@@ -85,7 +140,7 @@ class TimeController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, $id)
     {
@@ -95,7 +150,7 @@ class TimeController extends Controller
      * Delete a time entry
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($id)
     {

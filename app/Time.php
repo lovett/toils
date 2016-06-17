@@ -36,4 +36,10 @@ class Time extends Model
         return $this->belongsTo('App\Invoice');
     }*/
 
+    public function scopeByUser($query, User $user)
+    {
+        return $query->where('user_id', $user->id);
+    }
+
+
 }

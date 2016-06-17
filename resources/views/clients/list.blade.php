@@ -5,7 +5,11 @@
     @include('partials.search', ['route' => 'client.index', 'q' => $q])
     <div class="list collection">
         @foreach ($clients as $client)
-            @include('partials.client', ['client' => $client])
+        <div class="item">
+            <h2 class="title">
+                <a href="{{ route('client.show', ['client' => $client]) }}">{{ $client->name }}</a>
+            </h2>
+        </div>
         @endforeach
     </div>
 @endsection

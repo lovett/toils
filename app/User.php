@@ -54,11 +54,24 @@ class User extends Model implements AuthenticatableContract,
 
     public function clientsForMenu()
     {
-        $clients = $this->clients()->get()->reduce(function ($acc, $client) {
-            $acc[$client->id] = $client->name;
+        $query = $this->clients()->orderBy('name');
+        return $this->asMenu($query);
+    }
+
+    public function projectsForMenu()
+    {
+        $query = $this->projects()->orderBy('name');
+        return $this->asMenu($query);
+    }
+
+    protected function asMenu($query, $key='id', $value='name')
+    {
+        $items = $query->get()->reduce(function ($acc, $item) use ($key, $value) {
+            $acc[$item->$key] = $item->$value;
             return $acc;
         }, ['' => '']);
 
-        return $clients;
+        return $items;
     }
+
 }
