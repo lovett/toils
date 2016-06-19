@@ -15,7 +15,7 @@ class ClientController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('returnable', ['only' => ['index', 'show']]);
-        $this->middleware('backto', ['only' => ['store', 'update', 'destroy']]);
+        $this->middleware('backto', ['only' => ['store', 'update']]);
         view()->share('app_section', 'client');
     }
 
@@ -158,18 +158,21 @@ class ClientController extends Controller
     /**
      * Delete a client
      *
+     * Time entries use soft deletion.
+     *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request, $id)
     {
-        $client = Client::where('id', $id)
-                ->where('user_id', $request->user()->id)
-                ->firstOrFail();
+        $affectedRows = $request->user()->clients()->where('id', $id)->delete();
 
-        $client->projects()->delete();
-        $client->delete();
+        if ($affectedRows == 0) {
+            $userMessage = ['warning', 'Nothing deletable was found'];
+        } else {
+            $userMessage = ['success', 'Deleted successfully'];
+        }
 
-        return redirect()->route('clients');
+        return redirect()->route('client.index')->with('userMessage', $userMessage);
     }
 }

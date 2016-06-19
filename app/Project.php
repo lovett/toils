@@ -3,10 +3,13 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\User;
 
 class Project extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'active',
         'name',
@@ -22,6 +25,10 @@ class Project extends Model
         'tax_deducted' => 'boolean',
         'user_id' => 'integer',
         'client_id' => 'integer',
+    ];
+
+    protected $dates = [
+        'deleted_at' => 'datetime'
     ];
 
     public function user()

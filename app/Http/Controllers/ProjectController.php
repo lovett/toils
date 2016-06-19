@@ -17,7 +17,7 @@ class ProjectController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('returnable', ['only' => ['index', 'show']]);
-        $this->middleware('backto', ['only' => ['store', 'update', 'destroy']]);
+        $this->middleware('backto', ['only' => ['store', 'update']]);
         view()->share('app_section', 'project');
 
     }
@@ -163,16 +163,22 @@ class ProjectController extends Controller
     /**
      * Delete a project
      *
+     * Projects use soft deletion.
+     *
      * @param  Request  $request
      * @param  int  $id
      * @return Response
      */
     public function destroy(Request $request, $id)
     {
-        $project = Project::where('id', $id)
-                 ->where('user_id', $request->user()->id)
-                 ->firstOrFail();
+        $affectedRows = $request->user()->projects()->where('id', $id)->delete();
 
-        $project->delete();
+        if ($affectedRows == 0) {
+            $userMessage = ['warning', 'Nothing deletable was found'];
+        } else {
+            $userMessage = ['success', 'Deleted successfully'];
+        }
+
+        return redirect()->route('project.index')->with('userMessage', $userMessage);
     }
 }
