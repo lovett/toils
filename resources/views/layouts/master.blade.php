@@ -24,10 +24,19 @@
                     </nav>
                 </div>
             </header>
+
+	    @if (Session::has('userMessage'))
+	    <div class="alert alert-{{ Session::get('userMessage')[0] }} warning alert-dismissible" role="alert">
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		{{ Session::get('userMessage')[1] }}
+	    </div>
+	    @endif
+
             @yield('page_main')
         </main>
         <script src="{{ asset('js/jquery.min.js') }}"></script>
         <script src="{{ asset('js/select2.min.js') }}"></script>
+	<script src="{{ asset('js/bootstrap.min.js') }}"></script>
         <script type="text/javascript">
             $('select').select2({'theme': 'bootstrap'});
         </script>

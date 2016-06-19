@@ -16,6 +16,7 @@ class Returnable
     public function handle($request, Closure $next)
     {
         $response = $next($request);
+
         $request->session()->put('returnTo', $request->url());
         return $response;
     }

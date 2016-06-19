@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use App\Http\Requests;
 use App\Time;
 use App\Http\Controllers\Controller;
@@ -12,6 +11,8 @@ use DatePeriod;
 use DateInterval;
 use DateTime;
 use Carbon\Carbon;
+use Illuminate\Database\ModelNotFoundException;
+use Illuminate\Support\Facades\DB;
 
 class TimeController extends Controller
 {
@@ -149,10 +150,24 @@ class TimeController extends Controller
     /**
      * Delete a time entry
      *
+     * Time entries use soft deletion.
+     *
+     * The backto middleware takes care of redirection.
+     *
+     * @param Request $request
      * @param  int  $id
      * @return Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
+        $affectedRows = $request->user()->time()->where('id', $id)->delete();
+
+        if ($affectedRows == 0) {
+            $userMessage = ['warning', 'Nothing deletable was found'];
+        } else {
+            $userMessage = ['success', 'Deleted successfully'];
+        }
+
+        $request->session()->flash('userMessage', $userMessage);
     }
 }

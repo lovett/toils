@@ -3,9 +3,13 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Time extends Model
 {
+
+    use SoftDeletes;
+
     protected $fillable = [
         'start',
         'end',
@@ -18,6 +22,10 @@ class Time extends Model
         'end' => 'datetime',
         'summary' => 'string',
         'estimated_duration' => 'integer'
+    ];
+
+    protected $dates = [
+        'deleted_at' => 'datetime'
     ];
 
     public function user()
