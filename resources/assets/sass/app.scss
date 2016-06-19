@@ -20,22 +20,6 @@
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/utilities";
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/pager";
 
-$clientAccent: #658C6D;
-$projectAccent: #6687AA;
-$timeAccent: #6B2F8E;
-
-.client H1 {
-    color: $clientAccent;
-}
-
-.project H1 {
-    color: $projectAccent;
-}
-
-.time H1 {
-    color: $timeAccent;
-}
-
 .primary {
     padding: 2em 0;
 
