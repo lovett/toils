@@ -57,12 +57,8 @@
 	    </div>
 	</div>
     </div>
-    <div class="row">
-	<div class="col-sm-12">
-	    Updated {{ $record->updated_at->format('Y-m-d \a\t g:i A') }}.
-	    Created {{ $record->created_at->format('Y-m-d') }}.
-	</div>
-    </div>
+
+    @include('partials.timestamps-footer', ['record' => $record])
 @endsection
 
 @section('nav_primary')
