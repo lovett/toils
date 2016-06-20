@@ -102,11 +102,19 @@ class ProjectController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $record = Project::with('client')->byUser($request->user())->findOrFail($id);
+        $windowMonths = 6;
+
+        $project = Project::with('client')->byUser($request->user())->findOrFail($id);
+
+        $recentMonthlyHours = $project->time()->monthlyHours('desc')->limit($windowMonths)->get();
+        $totalRecentHours = round($recentMonthlyHours->sum('hours'), 2);
 
         $viewVars = [
-            'record' => $record,
-            'page_title' => $record->name,
+            'project' => $project,
+            'page_title' => $project->name,
+            'recentMonthlyHours' => $recentMonthlyHours,
+            'totalRecentHours' => $totalRecentHours,
+            'windowMonths' => $windowMonths,
         ];
 
         return view('projects.show', $viewVars);

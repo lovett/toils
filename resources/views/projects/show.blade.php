@@ -6,27 +6,42 @@
 	    <div class="well">
 		<dl class="spaced">
 		    <dt>Status</dt>
-		    <dd>{{ $record->status() }}</dd>
+		    <dd>{{ $project->status() }}</dd>
 
 		    <dt>Taxes</dt>
-		    <dd>{{ $record->taxStatus() }}</dd>
+		    <dd>{{ $project->taxStatus() }}</dd>
 
 		    <dt>Client</dt>
-		    <dd>{!! link_to_route('client.show', $record->client->name, ['client' => $record->client]) !!}</dd>
+		    <dd>{!! link_to_route('client.show', $project->client->name, ['client' => $project->client]) !!}</dd>
 
 		</dl>
-
 	    </div>
 	</div>
-
+	<div class="col-sm-9">
+	    <div class="panel panel-default">
+		<div class="panel-heading">
+		    <h2 class="panel-title">
+			{{ $totalRecentHours }} {{ str_plural('hour', $totalRecentHours) }}
+			in the past {{ $windowMonths }} {{ str_plural('month', $windowMonths) }}
+		    </h2>
+		</div>
+		<div class="panel-body">
+		    @foreach ($recentMonthlyHours as $subrecord)
+			<p>{{ $subrecord->yearmonth }}
+			    {{ $subrecord->hours }}
+			</p>
+		    @endforeach
+		</div>
+	    </div>
+	</div>
     </div>
 
-    @include('partials.timestamps-footer', ['record' => $record])
+    @include('partials.timestamps-footer', ['record' => $project])
 @endsection
 
 @section('nav_primary')
     <ul class="list-inline">
-	<li>{!! link_to_route('project.edit', 'Edit', ['id' => $record->id]) !!}</li>
+	<li>{!! link_to_route('project.edit', 'Edit', ['id' => $project->id]) !!}</li>
 	<li>{!! link_to_route('project.create', 'New project') !!}</li>
     </ul>
 @endsection

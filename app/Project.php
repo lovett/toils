@@ -41,6 +41,16 @@ class Project extends Model
         return $this->belongsTo('App\Client');
     }
 
+    public function durationMinutes()
+    {
+        return $this->end->diffInMinutes($this->start);
+    }
+
+    public function time()
+    {
+        return $this->hasMany('App\Time');
+    }
+
     public function status()
     {
         return ($this->active) ? 'active' : 'inactive';
