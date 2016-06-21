@@ -14,6 +14,8 @@
 		    <dt>Client</dt>
 		    <dd>{!! link_to_route('client.show', $project->client->name, ['client' => $project->client]) !!}</dd>
 
+		    <dt>Total Time</dt>
+		    <dd>{{ $totalTime }}</dd>
 		</dl>
 	    </div>
 	</div>
@@ -21,14 +23,13 @@
 	    <div class="panel panel-default">
 		<div class="panel-heading">
 		    <h2 class="panel-title">
-			{{ $totalRecentHours }} {{ str_plural('hour', $totalRecentHours) }}
-			in the past {{ $windowMonths }} {{ str_plural('month', $windowMonths) }}
+			{{ $sliceTotal }}
 		    </h2>
 		</div>
 		<div class="panel-body">
-		    @foreach ($recentMonthlyHours as $subrecord)
-			<p>{{ $subrecord->yearmonth }}
-			    {{ $subrecord->hours }}
+		    @foreach ($slice as $date => $totalMinutes)
+			<p>
+			    {{ $date }} - {{ $totalMinutes }}
 			</p>
 		    @endforeach
 		</div>

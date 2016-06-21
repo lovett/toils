@@ -39,17 +39,14 @@ $factory->define(App\Client::class, function (Faker\Generator $faker) {
 $factory->define(App\Time::class, function (Faker\Generator $faker) {
 
     $randomHours = $faker->numberBetween(1, 8);
-    $randomMinutes = $faker->numberBetween(0, 59);
+    $randomMinutes = $faker->numberBetween(0, 180);
     $start = $faker->dateTimeBetween($startDate = '-10 years', $endDate = '-1 day');
-    $end = clone $start;
-    $end->add(new DateInterval("PT{$randomHours}H{$randomMinutes}M"));
-
     return [
         'user_id' => 1,
         'start' => $start,
-        'end' => $end,
+        'minutes' => $randomMinutes,
         'summary' => $faker->paragraph(),
-        'estimated_duration' => $faker->numberBetween(1, 480), // minutes
+        'estimate' => $faker->numberBetween(1, 480), // minutes
         'project_id' => 1,
     ];
 });

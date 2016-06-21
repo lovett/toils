@@ -9,6 +9,7 @@ use App\Http\Requests\ProjectRequest;
 use App\Http\Controllers\Controller;
 use App\Project;
 use App\Client;
+use App\Time;
 
 class ProjectController extends Controller
 {
@@ -102,19 +103,22 @@ class ProjectController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $windowMonths = 6;
+        $monthRange = 6;
 
-        $project = Project::with('client')->byUser($request->user())->findOrFail($id);
+        $project = $request->user()->projects()->with('client')->findOrFail($id);
 
-        $recentMonthlyHours = $project->time()->monthlyHours('desc')->limit($windowMonths)->get();
-        $totalRecentHours = round($recentMonthlyHours->sum('hours'), 2);
+        $timeByMonth = Time::forProjectAndUserByMonth($project, $request->user(), $monthRange);
+        $totalTime = $project->time()->sum('minutes');
+
+        $slice = array_slice($timeByMonth, 0, $monthRange);
+        $sliceTotal = array_sum($slice);
 
         $viewVars = [
             'project' => $project,
             'page_title' => $project->name,
-            'recentMonthlyHours' => $recentMonthlyHours,
-            'totalRecentHours' => $totalRecentHours,
-            'windowMonths' => $windowMonths,
+            'totalTime' => $totalTime,
+            'slice' => $slice,
+            'sliceTotal' => $sliceTotal,
         ];
 
         return view('projects.show', $viewVars);

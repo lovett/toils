@@ -123,7 +123,6 @@ class TimeController extends Controller
     {
         $record = $request->user()->time()->findOrFail($id);
 
-
         $viewVars = [
             'page_title' => 'Edit Time',
             'record' => $record,

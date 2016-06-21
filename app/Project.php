@@ -65,9 +65,4 @@ class Project extends Model
     {
         return ($this->billable) ? 'yes' : 'no';
     }
-
-    public function scopeByUser($query, User $user)
-    {
-        return $query->where('user_id', $user->id);
-    }
 }
