@@ -205,7 +205,7 @@ return [
         'HTML'      => Illuminate\Html\HtmlFacade::class,
 
         'Debugbar'  => Barryvdh\Debugbar\Facade::class,
-
+        'TimeHelper' => App\Helpers\TimeHelper::class,
     ],
 
 ];

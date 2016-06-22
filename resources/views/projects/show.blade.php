@@ -15,7 +15,7 @@
 		    <dd>{!! link_to_route('client.show', $project->client->name, ['client' => $project->client]) !!}</dd>
 
 		    <dt>Total Time</dt>
-		    <dd>{{ $totalTime }}</dd>
+		    <dd>{{ TimeHelper::hoursAndMinutes($totalTime) }}</dd>
 		</dl>
 	    </div>
 	</div>
@@ -23,13 +23,13 @@
 	    <div class="panel panel-default">
 		<div class="panel-heading">
 		    <h2 class="panel-title">
-			{{ $sliceTotal }}
+			{{ TimeHelper::hoursAndMinutes($sliceTotal) }} in the past {{ str_plural('month', $sliceRange) }}
 		    </h2>
 		</div>
 		<div class="panel-body">
 		    @foreach ($slice as $date => $totalMinutes)
 			<p>
-			    {{ $date }} - {{ $totalMinutes }}
+			    {{ $date }} - {{ TimeHelper::minutesToHours($totalMinutes) }}
 			</p>
 		    @endforeach
 		</div>

@@ -103,14 +103,14 @@ class ProjectController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $monthRange = 6;
 
         $project = $request->user()->projects()->with('client')->findOrFail($id);
+        $numMonths = 6;
 
-        $timeByMonth = Time::forProjectAndUserByMonth($project, $request->user(), $monthRange);
+        $timeByMonth = Time::forProjectAndUserByMonth($project, $request->user(), $numMonths);
         $totalTime = $project->time()->sum('minutes');
 
-        $slice = array_slice($timeByMonth, 0, $monthRange);
+        $slice = array_slice($timeByMonth, 0, $numMonths);
         $sliceTotal = array_sum($slice);
 
         $viewVars = [
@@ -119,6 +119,7 @@ class ProjectController extends Controller
             'totalTime' => $totalTime,
             'slice' => $slice,
             'sliceTotal' => $sliceTotal,
+            'sliceRange' => $numMonths,
         ];
 
         return view('projects.show', $viewVars);
