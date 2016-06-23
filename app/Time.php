@@ -48,9 +48,14 @@ class Time extends Model
         return $this->belongsTo('App\Invoice');
     }*/
 
-    public function getYearmonthAttribute($value)
+    public function getEndAttribute()
     {
-        return new Carbon($value);
+        if (!$this->start) {
+            return null;
+        }
+
+        $end = clone $this->start;
+        return $end->addMinutes($this->minutes);
     }
 
     public function scopeMonthlyHours($query, $months)

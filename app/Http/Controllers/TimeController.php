@@ -67,8 +67,6 @@ class TimeController extends Controller
         ];
 
         return view('time.list', $viewVars);
-
-        //
     }
 
     /**
