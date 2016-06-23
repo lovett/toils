@@ -15,7 +15,7 @@ class ClientController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('returnable', ['only' => ['index', 'show']]);
-        $this->middleware('backto', ['only' => ['store', 'update']]);
+        $this->middleware('backto', ['only' => ['store']]);
         view()->share('app_section', 'client');
     }
 
@@ -27,7 +27,7 @@ class ClientController extends Controller
     public function index(Request $request)
     {
         $q = null;
-        $clients = $request->user()->clients();
+        $clients = Client::listing($request->user()->clients());
 
         if ($request->get('q')) {
             $q = strtolower($request->get('q'));
@@ -35,9 +35,11 @@ class ClientController extends Controller
             $clients->where('name', 'like', '%' . $q . '%');
         }
 
+        $clients = $clients->simplePaginate(15);
+
         $viewVars = [
             'page_title' => 'Clients',
-            'clients' => $clients->get(),
+            'clients' => $clients,
             'q' => $q,
             'search_route' => 'client.index'
         ];
@@ -52,9 +54,12 @@ class ClientController extends Controller
      */
     public function create(Request $request)
     {
+        $client = new Client();
+        $client->active = true;
+
         $viewVars = [
             'page_title' => 'Add a client',
-            'model' => new Client(),
+            'model' => $client,
             'submission_route' => 'client.store',
             'submission_method' => 'POST',
             'backUrl' => $request->session()->get('returnTo'),
@@ -87,7 +92,7 @@ class ClientController extends Controller
         $client->user_id = $request->user()->id;
         $client->save();
 
-        return redirect()->route('clients');
+        return redirect()->route('client.show', [$client->id])->with('userMessage', 'Success!');
     }
 
     /**
@@ -99,11 +104,11 @@ class ClientController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $record = Client::byUser($request->user())->findOrFail($id);
+        $client = $request->user()->clients()->findOrFail($id);
 
         $viewVars = [
-            'record' => $record,
-            'page_title' => $record->name,
+            'model' => $client,
+            'page_title' => $client->name,
         ];
 
         return view('clients.show', $viewVars);
@@ -117,16 +122,14 @@ class ClientController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        $client = Client::where('id', $id)
-                ->where('user_id', $request->user()->id)
-                ->firstOrFail();
+        $client = $request->user()->clients()->findOrFail($id);
 
         $viewVars = [
-            'page_title' => 'Edit Client',
-            'model' => $client,
-            'submission_route' => ['client.update', $client->id],
-            'submission_method' => 'PUT',
             'backUrl' => $request->session()->get('returnTo'),
+            'model' => $client,
+            'page_title' => 'Edit Client',
+            'submission_method' => 'PUT',
+            'submission_route' => ['client.update', $client->id],
         ];
 
         return view('clients.form', $viewVars);
@@ -141,18 +144,21 @@ class ClientController extends Controller
      */
     public function update(ClientRequest $request, $id)
     {
-        $client = Client::where('id', $id)
-                ->where('user_id', $request->user()->id)
-                ->firstOrFail();
-
+        $client = $requst->user()->clients()->findOrFail($id);
 
         if (empty($request->active)) {
             $client->active = 0;
         }
 
-        $client->update($request->all());
+        $affectedRows = $client->update($request->all());
 
-        return redirect()->route('clients');
+        if ($affectedRows == 0) {
+            $userMessage = ['warning', 'Nothing updateable was found'];
+        } else {
+            $userMessage = ['success', 'Updated successfully'];
+        }
+
+        return redirect()->route('client.show', [$client->id])->with('userMessage', $userMessage);
     }
 
     /**

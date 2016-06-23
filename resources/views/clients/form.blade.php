@@ -2,13 +2,13 @@
 
 @section('page_main')
 
-@include('partials.error-alert')
+    @include('partials.error-alert')
 
 {!! Form::model($model, ['route' => $submission_route, 'method' => $submission_method, 'class' => 'form-horizontal']) !!}
 
 @include('partials.formgroup-checkbox', ['name' => 'active', 'label' => 'This client is active', 'checked' => $model->active])
 
-@include('partials.formgroup-standard', ['name' => 'name', 'label' => 'Name', 'value' => $model->name])
+@include('partials.formgroup-standard', ['name' => 'name', 'label' => 'Name'])
 
 @include('partials.formgroup-standard', ['name' => 'contact_name', 'label' => 'Contact Name'])
 

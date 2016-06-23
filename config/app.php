@@ -206,6 +206,7 @@ return [
 
         'Debugbar'  => Barryvdh\Debugbar\Facade::class,
         'TimeHelper' => App\Helpers\TimeHelper::class,
+        'AddressHelper' => App\Helpers\AddressHelper::class,
     ],
 
 ];

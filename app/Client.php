@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Client extends Model
 {
@@ -23,8 +24,38 @@ class Client extends Model
     ];
 
     protected $dates = [
-        'deleted_at' => 'datetime'
+        'deleted_at' => 'datetime',
     ];
+
+    public static function listing(HasMany $relation)
+    {
+        $relation = $relation->selectRaw('
+            clients.*,
+            count(distinct projects.id) as projectCount,
+            sum(times.minutes) as totalTime,
+            max(times.start) as latestTime
+        ');
+
+        $relation = $relation->leftJoin('projects', function ($join) {
+            $join->on('clients.id', '=', 'projects.client_id')
+                ->where('projects.active', '=', 1)
+                ->whereNull('projects.deleted_at');
+        });
+
+        $relation = $relation->leftJoin('times', function ($join) {
+            $join->on('times.project_id', '=', 'projects.id');
+        });
+
+
+        $relation = $relation->orderBy('clients.updated_at', 'DESC');
+        $relation = $relation->groupBy('clients.id');
+        return $relation;
+    }
+
+    public function times()
+    {
+        return $this->hasManyThrough('App\Time', 'App\Project');
+    }
 
     public function user()
     {
@@ -36,10 +67,11 @@ class Client extends Model
         return $this->hasMany('App\Project');
     }
 
-    public function numericPhone() {
-        $numericPhone = preg_replace('/x.*/i', '', $this->phone);
-        return preg_replace('/[^0-9]/', '', $numericPhone);
+    public function status()
+    {
+        return ($this->active) ? 'active' : 'inactive';
     }
+
 
     public function scopeByUser($query, User $user)
     {

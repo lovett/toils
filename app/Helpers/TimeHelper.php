@@ -2,6 +2,8 @@
 
 namespace App\Helpers;
 
+use Carbon\Carbon;
+
 class TimeHelper {
     public static function hoursAndMinutes($minutes) {
         $hours = intval($minutes / 60);
@@ -24,5 +26,18 @@ class TimeHelper {
 
     public static function minutesToHours($minutes, $precision=2) {
         return round($minutes / 60, $precision);
+    }
+
+    public static function dateFromRaw($value)
+    {
+        if (empty($value)) return '';
+        $value = Carbon::parse($value);
+        return self::date($value);
+    }
+
+    public static function date($value)
+    {
+        if (empty($value)) return '';
+        return $value->format('M n Y');
     }
 }

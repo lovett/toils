@@ -4,7 +4,7 @@
     @endif
 
     <div class="col-sm-10 {{ $label ? '' : 'col-sm-offset-2' }}">
-	{!! Form::text($name, isset($record->$name)? $record->$name->format('Y-m-d') : '', ['class' => 'form-control']) !!}
+	{!! Form::text($name, isset($model->$name)? $model->$name->format('Y-m-d') : '', ['class' => 'form-control']) !!}
 
         <div class="shortcuts">
             <p>
