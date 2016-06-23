@@ -152,6 +152,7 @@ return [
          * Third party Service Providers
          */
         Barryvdh\Debugbar\ServiceProvider::class,
+        Propaganistas\LaravelPhone\LaravelPhoneServiceProvider::class,
 
     ],
 

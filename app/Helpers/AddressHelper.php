@@ -28,8 +28,8 @@ class AddressHelper {
         if (empty($value)) return '';
 
         $plainValue = preg_replace('/[^0-9x\#*]/', null, $value);
-        $formattedValue = $value;
-        return sprintf('<a href="tel://%s}">%s</a>', $plainValue, $formattedValue);
+        $formattedValue = phone_format($plainValue, 'US');
+        return sprintf('<a href="tel://%s">%s</a>', $plainValue, $formattedValue);
 
     }
 }
