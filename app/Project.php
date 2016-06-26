@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\User;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Project extends Model
 {
@@ -30,6 +30,13 @@ class Project extends Model
     protected $dates = [
         'deleted_at' => 'datetime'
     ];
+
+    public static function listing(HasMany $relation)
+    {
+        $relation = $relation->with('client');
+        $relation = $relation->orderByRaw('LOWER(projects.name) ASC');
+        return $relation;
+    }
 
     public function user()
     {

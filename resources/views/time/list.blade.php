@@ -14,29 +14,29 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($records as $record)
+            @foreach ($times as $time)
             <tr>
                 <td>
-                    {{ $record->start->format('Y-m-d, l') }}
+                    {{ $time->start->format('Y-m-d, l') }}
                 </td>
                 <td>
-                    {!! link_to_route('time.edit', $record->start->format('g:i A'), ['id' => $record->id]) !!}
+                    {!! link_to_route('time.edit', $time->start->format('g:i A'), ['id' => $time->id]) !!}
                 </td>
                 <td>
-	            {{ $record->end->format('g:i A') }}
+	            {{ $time->end->format('g:i A') }}
                 </td>
                 <td>
-	            {!! link_to_route('project.show', $record->project->name, ['id' => $record->project->id]) !!}
+	            {!! link_to_route('project.show', $time->project->name, ['id' => $time->project->id]) !!}
                 </td>
                 <td class="text-right">
-                    {{ TimeHelper::hoursAndMinutes($record->minutes) }}
+                    {{ TimeHelper::hoursAndMinutes($time->minutes) }}
                 </td>
             </tr>
             @endforeach
         </tbody>
     </table>
     <nav>
-        {!! $records->render() !!}
+        {!! $times->render() !!}
     </nav>
 @endsection
 

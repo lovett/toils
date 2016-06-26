@@ -1,4 +1,4 @@
-{!! Form::open(['route' => $search_route,  'method' => 'get', 'class' => 'search']) !!}
+{!! Form::open(['route' => $searchRoute,  'method' => 'get', 'class' => 'search']) !!}
 
 <div class="form-group">
     <div class="input-group">
@@ -10,6 +10,15 @@
 	    @endif
 	</span>
     </div>
+
+    @if (!empty($fields))
+    <ul class="small list-inline facets">
+	@foreach ($fields as $field)
+    	<li><a href="#{{ $field }}">{{ ucfirst($field) }}</a></li>
+	@endforeach
+    </ul>
+    @endif
+
 </div>
 
 {!!  Form::close() !!}

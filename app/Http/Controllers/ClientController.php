@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use Illuminate\Http\Response;
 use App\Http\Requests;
 use App\Http\Requests\ClientRequest;
 use App\Http\Controllers\Controller;
@@ -22,7 +22,7 @@ class ClientController extends Controller
     /**
      * Display a list of clients
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index(Request $request)
     {
@@ -41,7 +41,8 @@ class ClientController extends Controller
             'page_title' => 'Clients',
             'clients' => $clients,
             'q' => $q,
-            'search_route' => 'client.index'
+            'searchRoute' => 'client.index',
+            'searchFields' => ['name', 'status', 'locality', 'created', 'active'],
         ];
 
         return view('clients.list', $viewVars);
@@ -50,7 +51,8 @@ class ClientController extends Controller
     /**
      * Show the form for creating a new client
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Response
      */
     public function create(Request $request)
     {

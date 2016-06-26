@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('page_main')
-    @include('partials.search', ['route' => $search_route, 'q' => $q])
+    @include('partials.search', ['route' => $searchRoute, 'q' => $q])
     <table class="table">
         <thead>
             <tr>
@@ -12,32 +12,32 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($records as $record)
+            @foreach ($projects as $project)
                 <tr>
                     <td>
-	                <a href="{{ route('project.show', ['record' => $record]) }}">
-	                    {{ $record->name }}
+	                <a href="{{ route('project.show', ['record' => $project]) }}">
+	                    {{ $project->name }}
 	                </a>
                     </td>
                     <td>
-                        @if ($record->client)
-                            {!! link_to_route('client.show', $record->client->name, ['id' => $record->client->id]) !!}
+                        @if ($project->client)
+                            {!! link_to_route('client.show', $project->client->name, ['id' => $project->client->id]) !!}
                         @else
                             ?
                         @endif
                     </td>
                     <td>
-	                {{ $record->created_at->format('Y-m-d') }}
+	                {{ $project->created_at->format('Y-m-d') }}
                     </td>
                     <td>
-                        {{ $record->status() }}
+                        {{ $project->status() }}
                     </td>
                 </tr>
             @endforeach
         </tbody>
     </table>
     <nav>
-        {!! $records->render() !!}
+        {!! $projects->render() !!}
     </nav>
 @endsection
 

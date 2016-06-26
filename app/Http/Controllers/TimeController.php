@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Requests;
-use App\Time;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
+use App\Http\Requests;
+use App\Http\Controllers\Controller;
+use App\Time;
 use DatePeriod;
 use DateInterval;
 use DateTime;
@@ -21,7 +21,7 @@ class TimeController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('returnable', ['only' => ['index', 'show']]);
-        $this->middleware('backto', ['only' => ['store', 'update', 'destroy']]);
+        $this->middleware('backto', ['only' => ['store']]);
         view()->share('app_section', 'time');
 
         view()->share('ranges', [
@@ -55,25 +55,33 @@ class TimeController extends Controller
      */
     public function index(Request $request)
     {
-        $records = $request->user()->time()->with('project')->orderBy('start', 'desc')->simplePaginate(15);
+        $q = null;
+        $time = Time::listing($request->user()->time());
 
-        $q = $request->get('q');
+        if ($request->get('q')) {
+            $q = strtolower($request->get('q'));
+            $q = filter_var($q, FILTER_SANITIZE_STRING);
+            $time->where('summary', 'like', '%' . $q . '%');
+        }
 
-        $viewVars = [
-            'page_title' => 'Time',
+        $time = $time->simplepaginate(15);
+
+        $viewvars = [
+            'page_title' => 'time',
             'q' => $q,
-            'records' => $records,
-            'search_route' => 'time.index'
+            'times' => $time,
+            'searchroute' => 'time.index',
+            'searchfields' => ['summary', 'start', 'minutes', 'end'],
         ];
 
-        return view('time.list', $viewVars);
+        return view('time.list', $viewvars);
     }
 
     /**
-     * Show the form for creating a new time entry.
+     * show the form for creating a new time entry.
      *
-     * @param Request $request
-     * @return Response
+     * @param request $request
+     * @return response
      */
     public function create(Request $request)
     {
@@ -119,13 +127,13 @@ class TimeController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        $record = $request->user()->time()->findOrFail($id);
+        $time = $request->user()->time()->findOrFail($id);
 
         $viewVars = [
             'page_title' => 'Edit Time',
-            'record' => $record,
+            'model' => $time,
             'projects' => $request->user()->projectsForMenu(),
-            'submission_route' => ['time.update', $record->id],
+            'submission_route' => ['time.update', $time->id],
             'submission_method' => 'PUT',
             'backUrl' => $request->session()->get('returnTo'),
         ];

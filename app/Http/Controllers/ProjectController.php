@@ -18,9 +18,8 @@ class ProjectController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('returnable', ['only' => ['index', 'show']]);
-        $this->middleware('backto', ['only' => ['store', 'update']]);
+        $this->middleware('backto', ['only' => ['store']]);
         view()->share('app_section', 'project');
-
     }
 
     /**
@@ -30,24 +29,32 @@ class ProjectController extends Controller
      */
     public function index(Request $request)
     {
-        $records = $request->user()->projects()->with('client')->simplePaginate(15);
+        $q = null;
+        $projects = Project::listing($request->user()->projects());
 
-        $q = $request->get('q');
+        if ($request->get('q')) {
+            $q = strtolower($request->get('q'));
+            $q = filter_var($q, FILTER_SANITIZE_STRING);
+            $projects->where('name', 'like', '%' . $q . '%');
+        }
+
+        $projects = $projects->simplePaginate(15);
 
         $viewVars = [
             'page_title' => 'Projects',
+            'projects' => $projects,
             'q' => $q,
-            'records' => $records,
-            'search_route' => 'project.index'
+            'searchRoute' => 'project.index',
+            'searchFields' => ['name', 'client', 'created', 'active'],
         ];
 
         return view('projects.list', $viewVars);
-
     }
 
     /**
      * Show the form for creating a new project
      *
+     * @param Request $request
      * @return Response
      */
     public function create(Request $request)
