@@ -35,4 +35,21 @@ class ClientRequest extends Request
             'required' => 'This field is required',
         ];
     }
+
+    /**
+     * Manipulate the input before performing validation
+     *
+     * @return Validator;
+     */
+    protected function getValidatorInstance()
+    {
+        // Set default values
+        collect(['active'])->each(function ($field) {
+            $value = $this->input($field, 0);
+            $this->merge([$field => $value]);
+        });
+
+        return parent::getValidatorInstance();
+    }
+
 }

@@ -146,16 +146,9 @@ class ClientController extends Controller
      */
     public function update(ClientRequest $request, $id)
     {
-        $client = $request->user()->clients()->findOrFail($id);
-
-        if (empty($request->active)) {
-            $client->active = 0;
-        }
-
+        $client = Client::find($id);
         $affectedRows = $client->update($request->all());
-
         $userMessage = $this->userMessageForAffectedRows($affectedRows);
-
         return redirect()->route('client.show', [$client->id])->with('userMessage', $userMessage);
     }
 
