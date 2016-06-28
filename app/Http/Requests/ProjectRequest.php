@@ -6,9 +6,11 @@ use App\Http\Requests\Request;
 use App\Project;
 use App\Client;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Contracts\Validation\Validator;
 
 class ProjectRequest extends Request
 {
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -19,16 +21,10 @@ class ProjectRequest extends Request
         $projectId = $this->route('project');
         $clientId = $this->input('client_id', 0);
 
-        $clientExists = Client::where('id', $clientId)
-                      ->where('user_id', Auth::id())->exists();
-
-        if ($clientExists === false) {
-            return false;
-        }
+        $client = $this->user()->clients()->findOrFail($clientId);
 
         if ($projectId) {
-            return Project::where('id', $projectId)
-                ->where('user_id', Auth::id())->exists();
+            $project = $this->user()->projects()->findOrFail($projectId);
         }
 
         return true;
@@ -43,8 +39,11 @@ class ProjectRequest extends Request
     public function rules()
     {
         return [
-            'name' => 'required|max:255',
-            'client_id' => 'required',
+            'name' => 'string|required|max:255',
+            'client_id' => 'numeric|required',
+            'active' => 'boolean',
+            'billable' => 'boolean',
+            'tax_deducted' => 'boolean',
         ];
     }
 
@@ -54,4 +53,22 @@ class ProjectRequest extends Request
             'required' => 'This field is required',
         ];
     }
+
+    /**
+     * Manipulate the input before performing validation
+     *
+     * @return Validator;
+     */
+    protected function getValidatorInstance()
+    {
+        // Set default values
+        collect(['active', 'billable', 'tax_deducted'])->each(function ($field) {
+            $value = $this->input($field, 0);
+            $this->merge([$field => $value]);
+        });
+
+        return parent::getValidatorInstance();
+    }
+
+
 }

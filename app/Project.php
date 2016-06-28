@@ -15,6 +15,7 @@ class Project extends Model
         'name',
         'billable',
         'tax_deducted',
+        'client_id',
     ];
 
     protected $casts = [

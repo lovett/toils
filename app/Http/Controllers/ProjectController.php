@@ -167,17 +167,15 @@ class ProjectController extends Controller
     public function update(ProjectRequest $request, $id)
     {
         $project = Project::find($id);
-        $client = Client::find($request->input('client_id'));
+        $affectedRows = $project->update($request->all());
 
-        $project->client()->associate($client);
+        if ($affectedRows == 0) {
+            $userMessage = ['warning', 'Nothing updateable was found'];
+        } else {
+            $userMessage = ['success', 'Updated successfully'];
+        }
 
-        $project->active = $request->input('active', 0);
-
-        $project->billable = $request->input('billable', 0);
-
-        $project->tax_deducted = $request->input('tax_deducted', 0);
-
-        $project->update($request->all());
+        return redirect()->route('project.show', [$project->id])->with('userMessage', $userMessage);
     }
 
     /**
