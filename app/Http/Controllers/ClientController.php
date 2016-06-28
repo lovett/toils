@@ -146,7 +146,7 @@ class ClientController extends Controller
      */
     public function update(ClientRequest $request, $id)
     {
-        $client = $requst->user()->clients()->findOrFail($id);
+        $client = $request->user()->clients()->findOrFail($id);
 
         if (empty($request->active)) {
             $client->active = 0;
@@ -154,11 +154,7 @@ class ClientController extends Controller
 
         $affectedRows = $client->update($request->all());
 
-        if ($affectedRows == 0) {
-            $userMessage = ['warning', 'Nothing updateable was found'];
-        } else {
-            $userMessage = ['success', 'Updated successfully'];
-        }
+        $userMessage = $this->userMessageForAffectedRows($affectedRows);
 
         return redirect()->route('client.show', [$client->id])->with('userMessage', $userMessage);
     }

@@ -168,12 +168,7 @@ class ProjectController extends Controller
     {
         $project = Project::find($id);
         $affectedRows = $project->update($request->all());
-
-        if ($affectedRows == 0) {
-            $userMessage = ['warning', 'Nothing updateable was found'];
-        } else {
-            $userMessage = ['success', 'Updated successfully'];
-        }
+        $userMessage = $this->userMessageForAffectedRows($affectedRows);
 
         return redirect()->route('project.show', [$project->id])->with('userMessage', $userMessage);
     }
