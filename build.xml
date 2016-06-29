@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="toils" basedir="." default="default" description="Automation tasks for toils">
+
+  <target name="lint" description="Lint application files via phpcs against PSR2">
+    <phpcodesniffer
+        standard="PSR2"
+        file="app"
+        allowedFileExtensions="php"/>
+  </target>
+
+</project>
