@@ -8,8 +8,6 @@
     "jquery": "3.0.0",
     "laravel-elixir": "6.0.0-2",
     "select2": "4.0.3",
-    "select2-bootstrap-theme": "0.1.0-beta.7",
-    "squizlabs/php_codesniffer": "2.6.1",
-    "phing/phing": "2.14.0"
+    "select2-bootstrap-theme": "0.1.0-beta.7"
   }
 }

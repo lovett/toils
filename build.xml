@@ -3,10 +3,9 @@
 <project name="toils" basedir="." default="default" description="Automation tasks for toils">
 
   <target name="lint" description="Lint application files via phpcs against PSR2">
-    <phpcodesniffer
-        standard="PSR2"
-        file="app"
-        allowedFileExtensions="php"/>
+    <phpcodesniffer standard="phpcs.xml" file="app">
+      <config name="colors" value="1" />
+    </phpcodesniffer>
   </target>
 
 </project>

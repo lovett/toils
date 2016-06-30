@@ -69,6 +69,4 @@ class ProjectRequest extends Request
 
         return parent::getValidatorInstance();
     }
-
-
 }

@@ -77,7 +77,7 @@ class Time extends Model
         return $query;
     }
 
-    static public function forProjectAndUserByMonth(Project $project, User $user, $monthCount=null)
+    public static function forProjectAndUserByMonth(Project $project, User $user, $monthCount = null)
     {
 
         if (empty($monthCount)) {

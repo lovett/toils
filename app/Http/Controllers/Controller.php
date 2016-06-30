@@ -19,6 +19,4 @@ abstract class Controller extends BaseController
 
         return ['success', 'Updated successfully'];
     }
-
-
 }

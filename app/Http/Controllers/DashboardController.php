@@ -20,5 +20,4 @@ class DashboardController extends Controller
         print 'Hello from the dashboard route';
         exit;
     }
-
 }

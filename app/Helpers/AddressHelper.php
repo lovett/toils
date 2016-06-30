@@ -2,12 +2,13 @@
 
 namespace App\Helpers;
 
-class AddressHelper {
-    public static function mailingAddress($record) {
-
+class AddressHelper
+{
+    public static function mailingAddress($record)
+    {
         $out = '';
 
-        $appendIfSet = function ($key, $out, $prefix='', $suffix='') use ($record) {
+        $appendIfSet = function ($key, $out, $prefix = '', $suffix = '') use ($record) {
             if (!empty($record->$key)) {
                 $out .= $prefix . $record->$key . $suffix;
             }
@@ -25,7 +26,9 @@ class AddressHelper {
 
     public static function phoneUrl($value)
     {
-        if (empty($value)) return '';
+        if (empty($value)) {
+            return '';
+        }
 
         $plainValue = preg_replace('/[^0-9x\#*]/', null, $value);
         $formattedValue = phone_format($plainValue, 'US');
