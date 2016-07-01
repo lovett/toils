@@ -8,11 +8,19 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
+/**
+ * Eloquent model for the times table
+ */
 class Time extends Model
 {
 
     use SoftDeletes;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
         'start',
         'minutes',
@@ -20,6 +28,11 @@ class Time extends Model
         'estimated_duration',
     ];
 
+    /**
+     * Mapping between attributes and data types
+     *
+     * @var array
+     */
     protected $casts = [
         'start' => 'datetime',
         'minutes' => 'integer',
@@ -27,10 +40,23 @@ class Time extends Model
         'estimated_duration' => 'integer'
     ];
 
+    /**
+     * The attributes that are datetimes
+     *
+     * @var array
+     */
     protected $dates = [
         'deleted_at' => 'datetime'
     ];
 
+
+    /**
+     * Master query for getting a list of records
+     *
+     * @param HasMany $relation The relation to start with.
+     *
+     * @return HasMany
+     */
     public static function listing(HasMany $relation)
     {
         $relation = $relation->with('project');
@@ -38,25 +64,34 @@ class Time extends Model
         return $relation;
     }
 
+    /**
+     * User associated with the time entry
+     *
+     * @return HasOne
+     */
     public function user()
     {
         return $this->belongsTo('App\User');
     }
 
+    /**
+     * Project associated with the time entry
+     *
+     * @return HasOne
+     */
     public function project()
     {
         return $this->belongsTo('App\Project');
     }
 
-    /* Disabled until invoice model has been created
-    public function invoice()
-    {
-        return $this->belongsTo('App\Invoice');
-    }*/
-
+    /**
+     * Custom accessor to calculate end time from start and duration
+     *
+     * @return Carbon;
+     */
     public function getEndAttribute()
     {
-        if (!$this->start) {
+        if (empty($this->start)) {
             return null;
         }
 
@@ -64,24 +99,22 @@ class Time extends Model
         return $end->addMinutes($this->minutes);
     }
 
-    public function scopeMonthlyHours($query, $months)
-    {
-        $query->select(
-            DB::raw('strftime("%Y-%m", start) as yearmonth'),
-            'minutes'
-        );
-        $query->where('start', '>', DB::raw("date('now', 'start of month', '-{$months} month')"));
-
-        $query->groupBy('yearmonth');
-        $query->orderBy('yearmonth', 'desc');
-        return $query;
-    }
-
-    public static function forProjectAndUserByMonth(Project $project, User $user, $monthCount = null)
-    {
-
+    /**
+     * Tally time by month with no gaps
+     *
+     * @param Project $project    Project model instance.
+     * @param User    $user       User model instance.
+     * @param integer $monthCount How many months to go back from present.
+     *
+     * @return array
+     */
+    public static function forProjectAndUserByMonth(
+        Project $project,
+        User $user,
+        $monthCount = 6
+    ) {
         if (empty($monthCount)) {
-            $minStart = Time::where('project_id', $project->getKey())
+            $minStart = self::where('project_id', $project->getKey())
                       ->where('user_id', $user->getKey())
                       ->min('start');
 
@@ -111,16 +144,22 @@ class Time extends Model
             SELECT * FROM tally_range NATURAL LEFT OUTER JOIN tallies
         ";
 
-        $result = DB::select($query, [
-            'range' => abs($monthCount) * -1  . ' months',
-            'projectId' => $project->getKey(),
-            'userId' => $user->getKey(),
-        ]);
+        $result = DB::select(
+            $query,
+            [
+                'range'     => (abs($monthCount) * -1)  . ' months',
+                'projectId' => $project->getKey(),
+                'userId'    => $user->getKey(),
+            ]
+        );
 
-        $result = collect($result)->reduce(function ($accumulator, $item) {
-            $accumulator[$item->dt] = (int)$item->minutes;
-            return $accumulator;
-        }, []);
+        $result = collect($result)->reduce(
+            function ($accumulator, $item) {
+                $accumulator[$item->dt] = (int) $item->minutes;
+                return $accumulator;
+            },
+            []
+        );
 
         return $result;
     }

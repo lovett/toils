@@ -7,14 +7,28 @@
   <!-- include sniff name (-s CLI flag) -->
   <arg value="sp" />
 
+  <!-- use the PSR2 standard in its entirety -->
   <rule ref="PSR2" />
+
+  <!-- use most of the squiz standard -->
   <rule ref="Squiz">
     <exclude name="Squiz.Arrays.ArrayDeclaration.CloseBraceNotAligned" />
+    <exclude name="Squiz.Arrays.ArrayDeclaration.KeyNotAligned" />
     <exclude name="Squiz.Arrays.ArrayDeclaration.ValueNotAligned" />
     <exclude name="Squiz.Commenting.ClosingDeclarationComment.Missing" />
     <exclude name="Squiz.Commenting.FileComment.Missing" />
     <exclude name="Squiz.Files.FileExtension.ClassFound" />
+    <exclude name="Squiz.Operators.ComparisonOperatorUsage.ImplicitTrue" />
+    <exclude name="Squiz.Strings.ConcatenationSpacing.PaddingFound" />
+    <exclude name="Squiz.Strings.DoubleQuoteUsage.ContainsVar" />
     <exclude name="Squiz.WhiteSpace.FunctionClosingBraceSpace.SpacingBeforeClose" />
     <exclude name="Squiz.WhiteSpace.FunctionSpacing.After" />
+    <exclude name="Squiz.WhiteSpace.ObjectOperatorSpacing.Before" />
+  </rule>
+
+  <!-- use most of the zend standard -->
+  <rule ref="Zend">
+    <exclude name="Generic.Functions.OpeningFunctionBraceBsdAllman.BraceOnSameLine" />
+    <exclude name="Zend.NamingConventions.ValidVariableName.PrivateNoUnderscore" />
   </rule>
 </ruleset>

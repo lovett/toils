@@ -70,7 +70,7 @@ class TimeController extends Controller
             'page_title' => 'time',
             'q' => $q,
             'times' => $time,
-            'searchroute' => 'time.index',
+            'searchRoute' => 'time.index',
             'searchfields' => ['summary', 'start', 'minutes', 'end'],
         ];
 
