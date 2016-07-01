@@ -2,7 +2,7 @@
 
 
 @section('page_main')
-    @include('partials.search', ['route' => 'time.index', 'q' => $q])
+    @include('partials.search', ['route' => 'time.index', 'search' => $search])
     <table class="table">
         <thead>
             <tr>

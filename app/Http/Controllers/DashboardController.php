@@ -17,7 +17,6 @@ class DashboardController extends Controller
     public function index()
     {
 
-        print 'Hello from the dashboard route';
-        exit;
+        return response('Hello from the dashboard route');
     }
 }

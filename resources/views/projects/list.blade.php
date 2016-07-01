@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('page_main')
-    @include('partials.search', ['route' => $searchRoute, 'q' => $q])
+    @include('partials.search', ['route' => $searchRoute, 'search' => $search])
     <table class="table">
         <thead>
             <tr>

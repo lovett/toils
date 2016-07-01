@@ -1,6 +1,8 @@
+.DS_Store
 vendor
 node_modules
 .env
 *.sqlite
 public/css
 storage/debugbar
+reports

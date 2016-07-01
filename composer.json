@@ -8,7 +8,8 @@
         "php": ">=5.5.9",
         "laravel/framework": "5.1.*",
         "laravelcollective/html": "^5.0",
-        "propaganistas/laravel-phone": "^2.7"
+        "propaganistas/laravel-phone": "^2.7",
+        "phpmd/phpmd": "^2.4"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

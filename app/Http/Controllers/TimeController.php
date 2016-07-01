@@ -55,20 +55,20 @@ class TimeController extends Controller
      */
     public function index(Request $request)
     {
-        $q = null;
+        $search = null;
         $time = Time::listing($request->user()->time());
 
         if ($request->get('q')) {
-            $q = strtolower($request->get('q'));
-            $q = filter_var($q, FILTER_SANITIZE_STRING);
-            $time->where('summary', 'like', '%' . $q . '%');
+            $search = strtolower($request->get('q'));
+            $search = filter_var($search, FILTER_SANITIZE_STRING);
+            $time->where('summary', 'like', '%' . $search . '%');
         }
 
         $time = $time->simplepaginate(15);
 
         $viewvars = [
-            'page_title' => 'time',
-            'q' => $q,
+            'page_title' => 'Time',
+            'search' => $search,
             'times' => $time,
             'searchRoute' => 'time.index',
             'searchfields' => ['summary', 'start', 'minutes', 'end'],
@@ -167,10 +167,9 @@ class TimeController extends Controller
     {
         $affectedRows = $request->user()->time()->where('id', $id)->delete();
 
+        $userMessage = ['success', 'Deleted successfully'];
         if ($affectedRows == 0) {
             $userMessage = ['warning', 'Nothing deletable was found'];
-        } else {
-            $userMessage = ['success', 'Deleted successfully'];
         }
 
         $request->session()->flash('userMessage', $userMessage);

@@ -29,13 +29,13 @@ class ProjectController extends Controller
      */
     public function index(Request $request)
     {
-        $q = null;
+        $search = null;
         $projects = Project::listing($request->user()->projects());
 
         if ($request->get('q')) {
-            $q = strtolower($request->get('q'));
-            $q = filter_var($q, FILTER_SANITIZE_STRING);
-            $projects->where('name', 'like', '%' . $q . '%');
+            $search = strtolower($request->get('q'));
+            $search = filter_var($search, FILTER_SANITIZE_STRING);
+            $projects->where('name', 'like', '%' . $search . '%');
         }
 
         $projects = $projects->simplePaginate(15);
@@ -43,7 +43,7 @@ class ProjectController extends Controller
         $viewVars = [
             'page_title' => 'Projects',
             'projects' => $projects,
-            'q' => $q,
+            'search' => $search,
             'searchRoute' => 'project.index',
             'searchFields' => ['name', 'client', 'created', 'active'],
         ];
@@ -66,7 +66,6 @@ class ProjectController extends Controller
             $project->client_id = $request->input('client');
         }
 
-        $clientId = $request->input('client');
         $viewVars = [
             'page_title' => 'Add a project',
             'model' => $project,
@@ -186,10 +185,9 @@ class ProjectController extends Controller
     {
         $affectedRows = $request->user()->projects()->where('id', $id)->delete();
 
+        $userMessage = ['success', 'Deleted successfully'];
         if ($affectedRows == 0) {
             $userMessage = ['warning', 'Nothing deletable was found'];
-        } else {
-            $userMessage = ['success', 'Deleted successfully'];
         }
 
         return redirect()->route('project.index')->with('userMessage', $userMessage);

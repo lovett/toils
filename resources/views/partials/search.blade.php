@@ -2,10 +2,10 @@
 
 <div class="form-group">
     <div class="input-group">
-	<input type="search" name="q" class="form-control" placeholder="Search" value="{{ $q }}">
+	<input type="search" name="q" class="form-control" placeholder="Search" value="{{ $search }}">
 	<span class="input-group-btn">
             <button class="btn btn-default" type="submit">Search</button>
-	    @if ($q)
+	    @if ($search)
 		<a href="{{ route($search_route) }}" class="btn" type="button">Reset</a>
 	    @endif
 	</span>

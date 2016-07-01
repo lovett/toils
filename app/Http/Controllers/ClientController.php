@@ -26,13 +26,13 @@ class ClientController extends Controller
      */
     public function index(Request $request)
     {
-        $q = null;
+        $search = null;
         $clients = Client::listing($request->user()->clients());
 
         if ($request->get('q')) {
-            $q = strtolower($request->get('q'));
-            $q = filter_var($q, FILTER_SANITIZE_STRING);
-            $clients->where('name', 'like', '%' . $q . '%');
+            $search = strtolower($request->get('q'));
+            $search = filter_var($search, FILTER_SANITIZE_STRING);
+            $clients->where('name', 'like', '%' . $search . '%');
         }
 
         $clients = $clients->simplePaginate(15);
@@ -40,7 +40,7 @@ class ClientController extends Controller
         $viewVars = [
             'page_title' => 'Clients',
             'clients' => $clients,
-            'q' => $q,
+            'search' => $search,
             'searchRoute' => 'client.index',
             'searchFields' => ['name', 'status', 'locality', 'created', 'active'],
         ];
@@ -164,10 +164,10 @@ class ClientController extends Controller
     {
         $affectedRows = $request->user()->clients()->where('id', $id)->delete();
 
+        $userMessage = ['success', 'Deleted successfully'];
+
         if ($affectedRows == 0) {
             $userMessage = ['warning', 'Nothing deletable was found'];
-        } else {
-            $userMessage = ['success', 'Deleted successfully'];
         }
 
         return redirect()->route('client.index')->with('userMessage', $userMessage);

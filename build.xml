@@ -8,4 +8,13 @@
     </phpcodesniffer>
   </target>
 
+  <target name="mess" description="Lint application files via phpmd">
+    <property name="dir" value="reports"/>
+    <mkdir dir="${dir}" />
+    <phpmd file="app" rulesets="phpmd.xml" cachefile="${dir}/cache">
+      <formatter type="html" outfile="${dir}/phpmd.html" />
+      <formatter type="xml" outfile="${dir}/phpmd.xml" />
+    </phpmd>
+  </target>
+
 </project>

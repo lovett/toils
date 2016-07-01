@@ -19,8 +19,7 @@ class BackTo
 
         if ($request->session()->has('returnTo')) {
             return redirect($request->session()->pull('returnTo'));
-        } else {
-            abort(500);
         }
+        abort(500);
     }
 }
