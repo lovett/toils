@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Closure;
 
 /**
  * Capture the current url to the sesion for future return

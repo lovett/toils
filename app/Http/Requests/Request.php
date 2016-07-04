@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
- * Standard Larave request class
+ * Standard Laravel request class
  */
 abstract class Request extends FormRequest
 {

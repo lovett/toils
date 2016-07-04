@@ -5,12 +5,12 @@
 	<div class="col-sm-4">
 	    <h2>Contact</h2>
 	    <div class="well">
-		@if (empty($model->contact_name))
+		@if (empty($model->contactName))
 		    <p>Not specified</p>
 		@else
-		<h4>{{ $model->contact_name }}</h4>
+		<h4>{{ $model->contactName }}</h4>
 		<address>
-		    <a href="mailto:{{ $model->contact_email }}">{{ $model->contact_email }}</a>
+		    <a href="mailto:{{ $model->contactEmail }}">{{ $model->contactEmail }}</a>
 		    <div>
 			{{ AddressHelper::mailingAddress($model) }}
 			{!! AddressHelper::phoneUrl($model->phone) !!}

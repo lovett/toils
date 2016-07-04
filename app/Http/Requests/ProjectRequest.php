@@ -75,7 +75,7 @@ class ProjectRequest extends Request
             [
                 'active',
                 'billable',
-                'tax_deducted',
+                'taxDeducted',
             ]
         )->each(
             function ($field) {

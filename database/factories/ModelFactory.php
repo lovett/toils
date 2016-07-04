@@ -25,13 +25,13 @@ $factory->define(App\Client::class, function (Faker\Generator $faker) {
         'user_id' => 1,
         'active' => $faker->boolean(50),
         'name' => $faker->company(),
-        'contact_name' => $faker->name(),
-        'contact_email' => $faker->safeEmail(),
+        'contactName' => $faker->name(),
+        'contactEmail' => $faker->safeEmail(),
         'address1' => $faker->streetAddress(),
         'address2' => $faker->secondaryAddress(),
         'city' => $faker->city(),
         'locality' => $faker->stateAbbr(),
-        'postal_code' => $faker->postcode(),
+        'postalCode' => $faker->postcode(),
         'phone' => $faker->phoneNumber(),
     ];
 });

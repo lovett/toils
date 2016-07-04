@@ -24,7 +24,7 @@ class Time extends Model
         'start',
         'minutes',
         'summary',
-        'estimated_duration',
+        'estimatedDuration',
     ];
 
     /**
@@ -36,7 +36,7 @@ class Time extends Model
         'start' => 'datetime',
         'minutes' => 'integer',
         'summary' => 'string',
-        'estimated_duration' => 'integer'
+        'estimatedDuration' => 'integer'
     ];
 
     /**

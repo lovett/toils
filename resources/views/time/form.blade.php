@@ -15,7 +15,7 @@
 
 @include('partials.formgroup-menu', ['name' => 'project_id', 'label' => 'Project', 'items' => $projects, 'selectedItem' => $model->project_id])
 
-@include('partials.formgroup-standard', ['name' => 'estimated_duration', 'label' => 'Estimate'])
+@include('partials.formgroup-standard', ['name' => 'estimatedDuration', 'label' => 'Estimate'])
 
 <div class="form-group">
     <div class="col-sm-12 text-center">

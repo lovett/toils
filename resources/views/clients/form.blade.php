@@ -10,9 +10,9 @@
 
 @include('partials.formgroup-standard', ['name' => 'name', 'label' => 'Name'])
 
-@include('partials.formgroup-standard', ['name' => 'contact_name', 'label' => 'Contact Name'])
+@include('partials.formgroup-standard', ['name' => 'contactName', 'label' => 'Contact Name'])
 
-@include('partials.formgroup-standard', ['name' => 'contact_email', 'label' => 'Contact Email'])
+@include('partials.formgroup-standard', ['name' => 'contactEmail', 'label' => 'Contact Email'])
 
 @include('partials.formgroup-standard', ['name' => 'address1', 'label' => 'Mailing Address'])
 
@@ -22,7 +22,7 @@
 
 @include('partials.formgroup-standard', ['name' => 'locality', 'label' => 'State'])
 
-@include('partials.formgroup-standard', ['name' => 'postal_code', 'label' => 'Zip'])
+@include('partials.formgroup-standard', ['name' => 'postalCode', 'label' => 'Zip'])
 
 @include('partials.formgroup-standard', ['name' => 'phone', 'label' => 'Phone'])
 

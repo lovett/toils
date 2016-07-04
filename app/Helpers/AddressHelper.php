@@ -19,7 +19,7 @@ class AddressHelper
         $out = $appendIfSet('address2', $out, null, "\n");
         $out = $appendIfSet('city', $out, null, empty($record->locality)? null : ', ');
         $out = $appendIfSet('locality', $out, null, ' ');
-        $out = $appendIfSet('postal_code', $out);
+        $out = $appendIfSet('postalCode', $out);
 
         return $out;
     }

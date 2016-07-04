@@ -94,7 +94,7 @@ class ProjectController extends Controller
         $project->name = $request->input('name');
         $project->active = $request->input('active', 0);
         $project->billable = $request->input('billable', 0);
-        $project->tax_deducted = $request->input('tax_deducted', 0);
+        $project->taxDeducted = $request->input('taxDeducted', 0);
         $project->user()->associate($request->user());
         $project->client()->associate($client);
         $project->save();

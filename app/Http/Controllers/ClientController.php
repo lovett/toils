@@ -82,13 +82,13 @@ class ClientController extends Controller
 
         $client->active = (int)$request->active;
         $client->name = $request->name;
-        $client->contact_name = $request->contact_name;
-        $client->contact_email = $request->contact_email;
+        $client->contactName = $request->contactName;
+        $client->contactEmail = $request->contactEmail;
         $client->address1 = $request->address1;
         $client->address2 = $request->address2;
         $client->city = $request->city;
         $client->locality = $request->locality;
-        $client->postal_code = $request->postal_code;
+        $client->postalCode = $request->postalCode;
         $client->phone = $request->phone;
 
         $client->user_id = $request->user()->id;

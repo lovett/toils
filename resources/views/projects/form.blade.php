@@ -14,7 +14,7 @@
 
 @include('partials.formgroup-checkbox', ['name' => 'billable', 'label' => 'This project is billable', 'checked' => $model->billable])
 
-@include('partials.formgroup-checkbox', ['name' => 'tax_deducted', 'label' => 'Tax will be deducted', 'checked' => $model->tax_deducted])
+@include('partials.formgroup-checkbox', ['name' => 'taxDeducted', 'label' => 'Tax will be deducted', 'checked' => $model->taxDeducted])
 
 
 <div class="form-group">
