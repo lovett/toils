@@ -37,7 +37,7 @@ class CreateBaseSchema extends Migration
             $table->integer('client_id')->unsigned();
             $table->boolean('active')->default(true);
             $table->boolean('billable')->default(true);
-            $table->boolean('tax_deducted')->default(false);
+            $table->boolean('taxDeducted')->default(false);
             $table->timestamps();
             $table->softDeletes();
             $table->foreign('user_id')->references('id')->on('users');

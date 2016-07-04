@@ -5,33 +5,62 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
+/**
+ * Eloquent model for the projects table
+ */
 class Project extends Model
 {
     use SoftDeletes;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
     protected $fillable = [
         'active',
         'name',
         'billable',
-        'tax_deducted',
+        'taxDeducted',
         'client_id',
     ];
 
+    /**
+     * Mapping between attributes and data types
+     *
+     * @var array
+     */
     protected $casts = [
         'id' => 'integer',
         'active' => 'boolean',
         'name' => 'string',
         'billable' => 'boolean',
-        'tax_deducted' => 'boolean',
+        'taxDeducted' => 'boolean',
         'user_id' => 'integer',
         'client_id' => 'integer',
     ];
 
+    /**
+     * The attributes that are datetimes
+     *
+     * @var array
+     */
     protected $dates = [
         'deleted_at' => 'datetime'
     ];
 
+
+    /**
+     * Master query for getting a list of records
+     *
+     * @param HasMany $relation The relation to start with.
+     *
+     * @return HasMany
+     */
     public static function listing(HasMany $relation)
     {
         $relation = $relation->with('client');
@@ -39,38 +68,77 @@ class Project extends Model
         return $relation;
     }
 
+    /**
+     * User associated with the project
+     *
+     * @return HasOne
+     */
     public function user()
     {
         return $this->belongsTo('App\User');
     }
 
+    /**
+     * Client associated with the project
+     *
+     * @return HasOne
+     */
     public function client()
     {
         return $this->belongsTo('App\Client');
     }
 
-    public function durationMinutes()
-    {
-        return $this->end->diffInMinutes($this->start);
-    }
 
+    /**
+     * Time entires associated with the project
+     *
+     * @return HasMany
+     */
     public function time()
     {
         return $this->hasMany('App\Time');
     }
 
+    /**
+     * Human-readable value for active boolean fied
+     *
+     * @return string
+     */
     public function status()
     {
-        return ($this->active) ? 'active' : 'inactive';
+        if ($this->active) {
+            return 'active';
+        } else {
+            return 'inactive';
+        }
     }
 
+
+    /**
+     * Human-readable value for taxDeducted boolean field
+     *
+     * @return string
+     */
     public function taxStatus()
     {
-        return ($this->tax_deducted) ? 'deducted' : 'not deducted';
+        if ($this->taxDeducted) {
+            return 'deducted';
+        } else {
+            return 'not deducted';
+        }
     }
 
+    /**
+     * Human-readable value for billable boolean field
+     *
+     * @return string
+     */
     public function billableStatus()
     {
-        return ($this->billable) ? 'yes' : 'no';
+        if ($this->billable) {
+            return 'yes';
+        } else {
+            return 'no';
+        }
     }
 }

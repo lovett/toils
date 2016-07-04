@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<!-- https://www.phing.info/docs/guide/stable/ -->
 <project name="toils" basedir="." default="default" description="Automation tasks for toils">
 
-  <target name="lint" description="Lint application files via phpcs against PSR2">
+  <target name="phpcs" description="Lint application files via phpcs against PSR2">
     <phpcodesniffer standard="phpcs.xml" file="app">
       <config name="colors" value="1" />
     </phpcodesniffer>
   </target>
 
-  <target name="mess" description="Lint application files via phpmd">
+  <target name="phpmd" description="Lint application files via phpmd">
     <property name="dir" value="reports"/>
     <mkdir dir="${dir}" />
     <phpmd file="app" rulesets="phpmd.xml" cachefile="${dir}/cache">

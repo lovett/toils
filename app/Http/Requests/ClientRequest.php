@@ -5,12 +5,17 @@ namespace App\Http\Requests;
 use App\Http\Requests\Request;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * Form request class for Projects
+ */
 class ClientRequest extends Request
 {
+
+
     /**
      * Determine if the user is authorized to make this request.
      *
-     * @return bool
+     * @return boolean
      */
     public function authorize()
     {
@@ -29,25 +34,33 @@ class ClientRequest extends Request
         ];
     }
 
+
+    /**
+     * Map validation rules to errors
+     *
+     * @return array
+     */
     public function messages()
     {
-        return [
-            'required' => 'This field is required',
-        ];
+        return ['required' => 'This field is required'];
     }
 
     /**
      * Manipulate the input before performing validation
      *
-     * @return Validator;
+     * @return Validator
      */
     protected function getValidatorInstance()
     {
-        // Set default values
-        collect(['active'])->each(function ($field) {
-            $value = $this->input($field, 0);
-            $this->merge([$field => $value]);
-        });
+        // Set default values.
+        collect(
+            ['active']
+        )->each(
+            function ($field) {
+                $value = $this->input($field, 0);
+                $this->merge([$field => $value]);
+            }
+        );
 
         return parent::getValidatorInstance();
     }
