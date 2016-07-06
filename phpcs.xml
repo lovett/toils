@@ -25,6 +25,7 @@
     <exclude name="Squiz.WhiteSpace.FunctionSpacing.After" />
     <exclude name="Squiz.WhiteSpace.ObjectOperatorSpacing.Before" />
     <exclude name="Squiz.Commenting.FileComment.MissingPackageTag" />
+    <exclude name="Squiz.Objects.ObjectInstantiation.NotAssigned" />
   </rule>
 
   <!-- use most of the zend standard -->

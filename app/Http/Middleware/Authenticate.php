@@ -4,20 +4,27 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Http\Request;
 
+/**
+ * Standard Laravel Authenticate middleware
+ */
 class Authenticate
 {
+
     /**
      * The Guard implementation.
      *
-     * @var Guard
+     * @var Guard Guard instance.
      */
     protected $auth;
+
 
     /**
      * Create a new filter instance.
      *
-     * @param  Guard  $auth
+     * @param Guard $auth Guard instance.
+     *
      * @return void
      */
     public function __construct(Guard $auth)
@@ -28,11 +35,12 @@ class Authenticate
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param Request $request The incoming request.
+     * @param Closure $next    The handler to receive the request.
+     *
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
         if ($this->auth->guest()) {
             if ($request->ajax()) {

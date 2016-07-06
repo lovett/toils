@@ -4,16 +4,22 @@ namespace App\Http\Middleware;
 
 use Closure;
 
+/**
+ * Redirect to the url previously captured by the returnable middleware
+ */
 class BackTo
 {
+
+
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param Request $request The incoming request.
+     * @param Closure $next    The handler to receive the request.
+     *
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
         $response = $next($request);
 

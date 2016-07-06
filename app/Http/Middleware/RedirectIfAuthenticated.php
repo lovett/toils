@@ -3,10 +3,15 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Http\Request;
 use Illuminate\Contracts\Auth\Guard;
 
+/**
+ * Standard Laravel class for redirecting logged in users
+ */
 class RedirectIfAuthenticated
 {
+
     /**
      * The Guard implementation.
      *
@@ -14,10 +19,12 @@ class RedirectIfAuthenticated
      */
     protected $auth;
 
+
     /**
      * Create a new filter instance.
      *
-     * @param  Guard  $auth
+     * @param Guard $auth A Guard instance.
+     *
      * @return void
      */
     public function __construct(Guard $auth)
@@ -28,11 +35,12 @@ class RedirectIfAuthenticated
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param Request $request The current erquest.
+     * @param Closure $next    The handler to receive the request.
+     *
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
         if ($this->auth->check()) {
             return redirect('/home');
