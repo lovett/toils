@@ -4,9 +4,6 @@
 
   <description>A custom coding standard for the toils application</description>
 
-  <!-- include sniff name (-s CLI flag) -->
-  <arg value="sp" />
-
   <!-- use the PSR2 standard in its entirety -->
   <rule ref="PSR2" />
 
