@@ -3,9 +3,7 @@
 <project name="toils" basedir="." default="default" description="Automation tasks for toils">
 
   <target name="phpcs" description="Lint application files via phpcs against PSR2">
-    <phpcodesniffer standard="phpcs.xml" file="app">
-      <config name="colors" value="1" />
-    </phpcodesniffer>
+    <phpcodesniffer standard="phpcs.xml" file="app" format="summary"/>
   </target>
 
   <target name="phpmd" description="Lint application files via phpmd">
