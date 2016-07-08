@@ -5,8 +5,12 @@ namespace App\Console;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
+/**
+ * Standard Laravel Kernel class
+ */
 class Kernel extends ConsoleKernel
 {
+
     /**
      * The Artisan commands provided by your application.
      *
@@ -16,10 +20,12 @@ class Kernel extends ConsoleKernel
         \App\Console\Commands\Inspire::class,
     ];
 
+
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+     * @param Schedule $schedule The schedule instance.
+     *
      * @return void
      */
     protected function schedule(Schedule $schedule)
