@@ -25,10 +25,10 @@ class ProjectRequest extends Request
         $projectId = $this->route('project');
         $clientId  = $this->input('client_id', 0);
 
-        $client = $this->user()->clients()->findOrFail($clientId);
+        $this->user()->clients()->findOrFail($clientId);
 
         if ($projectId) {
-            $project = $this->user()->projects()->findOrFail($projectId);
+            $this->user()->projects()->findOrFail($projectId);
         }
 
         return true;

@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Support\Facades\Redirect;
 
 /**
  * Standard Laravel class for redirecting logged in users
@@ -35,7 +36,7 @@ class RedirectIfAuthenticated
     /**
      * Handle an incoming request.
      *
-     * @param Request $request The current erquest.
+     * @param Request $request The current request.
      * @param Closure $next    The handler to receive the request.
      *
      * @return mixed
@@ -43,7 +44,7 @@ class RedirectIfAuthenticated
     public function handle(Request $request, Closure $next)
     {
         if ($this->auth->check()) {
-            return redirect('/home');
+            return Redirect::route('home');
         }
 
         return $next($request);

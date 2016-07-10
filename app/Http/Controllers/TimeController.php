@@ -123,23 +123,23 @@ class TimeController extends Controller
     /**
      * Save a new time entry to the database
      *
-     * @param Request $request The incoming request.
+     * @not-yet-implemented-param Request $request The incoming request.
      *
      * @return void
      */
-    public function store(Request $request)
+    public function store()
     {
     }
 
     /**
      * Time entries do not have a show view
      *
-     * @param Request $request The incoming request.
-     * @param integer $id      A primary key.
+     * @not-yet-implemented-param Request $request The incoming request.
+     * @not-yet-implemented-param integer $id      A primary key.
      *
      * @return void
      */
-    public function show(Request $request, $id)
+    public function show()
     {
     }
 
@@ -173,12 +173,12 @@ class TimeController extends Controller
     /**
      * Update an existing time entry
      *
-     * @param Request $request The incoming request.
-     * @param integer $id      A primary key.
+     * @not-yet-implemented-param Request $request The incoming request.
+     * @not-yet-implemented-param integer $id      A primary key.
      *
      * @return void
      */
-    public function update(Request $request, $id)
+    public function update()
     {
     }
 

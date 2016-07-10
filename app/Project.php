@@ -108,9 +108,9 @@ class Project extends Model
     {
         if ($this->active) {
             return 'active';
-        } else {
-            return 'inactive';
         }
+
+        return 'inactive';
     }
 
 
@@ -123,9 +123,9 @@ class Project extends Model
     {
         if ($this->taxDeducted) {
             return 'deducted';
-        } else {
-            return 'not deducted';
         }
+
+        return 'not deducted';
     }
 
     /**
@@ -137,8 +137,8 @@ class Project extends Model
     {
         if ($this->billable) {
             return 'yes';
-        } else {
-            return 'no';
         }
+
+        return 'no';
     }
 }

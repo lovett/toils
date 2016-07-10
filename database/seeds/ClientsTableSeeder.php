@@ -2,8 +2,13 @@
 
 use Illuminate\Database\Seeder;
 
+/**
+ * Seed the  table with factory models
+ */
 class ClientsTableSeeder extends Seeder
 {
+
+
     /**
      * Run the database seeds.
      *

@@ -22,7 +22,7 @@ class BackTo
      */
     public function handle(Request $request, Closure $next)
     {
-        $response = $next($request);
+        $next($request);
 
         if ($request->session()->has('returnTo')) {
             return redirect($request->session()->pull('returnTo'));

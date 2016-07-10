@@ -11,9 +11,16 @@ use App\Project;
 use App\Client;
 use App\Time;
 
+/**
+ * Resource controller for projects
+ */
 class ProjectController extends Controller
 {
 
+
+    /**
+     * Set middleware and shared view values
+     */
     public function __construct()
     {
         $this->middleware('auth');
@@ -25,11 +32,14 @@ class ProjectController extends Controller
     /**
      * Display a list of projects
      *
+     * @param Request $request The incoming request.
+     *
      * @return Response
      */
     public function index(Request $request)
     {
         $search = null;
+
         $projects = Project::listing($request->user()->projects());
 
         if ($request->get('q')) {
@@ -45,7 +55,12 @@ class ProjectController extends Controller
             'projects' => $projects,
             'search' => $search,
             'searchRoute' => 'project.index',
-            'searchFields' => ['name', 'client', 'created', 'active'],
+            'searchFields' => [
+                'name',
+                'client',
+                'created',
+                'active',
+            ],
         ];
 
         return view('projects.list', $viewVars);
@@ -54,16 +69,23 @@ class ProjectController extends Controller
     /**
      * Show the form for creating a new project
      *
-     * @param Request $request
+     * @param Request $request The incoming request.
+     *
      * @return Response
      */
     public function create(Request $request)
     {
         $project = new Project();
-        $project->active = true;
+
+        $project->active   = true;
         $project->billable = true;
+
         if ($request->has('client')) {
-            $project->client_id = $request->input('client');
+            $clientId = $request->input('client', 0);
+
+            $client = $request->user()->clients->findOrFail($clientId);
+
+            $project->client()->associate($client);
         }
 
         $viewVars = [
@@ -83,18 +105,23 @@ class ProjectController extends Controller
     /**
      * Save a new project to the database
      *
-     * @param  ProjectRequest  $request
-     * @return Response
+     * @param ProjectRequest $request The incoming request.
+     *
+     * @return void
      */
     public function store(ProjectRequest $request)
     {
         $project = new Project;
-        $client = Client::find($request->client_id);
 
-        $project->name = $request->input('name');
-        $project->active = $request->input('active', 0);
-        $project->billable = $request->input('billable', 0);
+        $clientId = $request->input('client_id', 0);
+
+        $client = $request->user()->clients()->findOrFail($clientId);
+
+        $project->name        = $request->input('name');
+        $project->active      = $request->input('active', 0);
+        $project->billable    = $request->input('billable', 0);
         $project->taxDeducted = $request->input('taxDeducted', 0);
+
         $project->user()->associate($request->user());
         $project->client()->associate($client);
         $project->save();
@@ -103,20 +130,29 @@ class ProjectController extends Controller
     /**
      * Display a project
      *
-     * @param Request $request
-     * @param int  $id
+     * @param Request $request The incoming request.
+     * @param integer $id      A project primary key.
+     *
      * @return Response
      */
     public function show(Request $request, $id)
     {
+        $project = $request->user()->projects()
+                 ->with('client')
+                 ->findOrFail($id);
 
-        $project = $request->user()->projects()->with('client')->findOrFail($id);
         $numMonths = 6;
 
-        $timeByMonth = Time::forProjectAndUserByMonth($project, $request->user(), $numMonths);
+        $timeByMonth = Time::forProjectAndUserByMonth(
+            $project,
+            $request->user(),
+            $numMonths
+        );
+
         $totalTime = $project->time()->sum('minutes');
 
         $slice = array_slice($timeByMonth, 0, $numMonths);
+
         $sliceTotal = array_sum($slice);
 
         $viewVars = [
@@ -135,7 +171,9 @@ class ProjectController extends Controller
     /**
      * Show the form for editing a project
      *
-     * @param  int  $id
+     * @param Request $request The incoming request.
+     * @param integer $id      A project primary key.
+     *
      * @return Response
      */
     public function edit(Request $request, $id)
@@ -146,7 +184,10 @@ class ProjectController extends Controller
             'page_title' => 'Edit project',
             'model' => $project,
             'clients' => $request->user()->clientsForMenu(),
-            'submission_route' => ['project.update', $project->id],
+            'submission_route' => [
+                'project.update',
+                $project->id,
+            ],
             'submission_method' => 'PUT',
             'app_section' => 'project',
             'backUrl' => $request->session()->get('returnTo'),
@@ -159,17 +200,23 @@ class ProjectController extends Controller
     /**
      * Update an existing project
      *
-     * @param  ProjectRequest  $request
-     * @param  int  $id
+     * @param ProjectRequest $request The incoming request.
+     * @param integer        $id      A project primary key.
+     *
      * @return Response
      */
     public function update(ProjectRequest $request, $id)
     {
         $project = Project::find($id);
+
         $affectedRows = $project->update($request->all());
+
         $userMessage = $this->userMessageForAffectedRows($affectedRows);
 
-        return redirect()->route('project.show', [$project->id])->with('userMessage', $userMessage);
+        return redirect()->route('project.show', [$project->id])->with(
+            'userMessage',
+            $userMessage
+        );
     }
 
     /**
@@ -177,19 +224,30 @@ class ProjectController extends Controller
      *
      * Projects use soft deletion.
      *
-     * @param  Request  $request
-     * @param  int  $id
+     * @param Request $request The incoming request.
+     * @param integer $id      A project primary key.
+     *
      * @return Response
      */
     public function destroy(Request $request, $id)
     {
-        $affectedRows = $request->user()->projects()->where('id', $id)->delete();
+        $affectedRows = $request->user()->projects()
+                      ->where('id', $id)
+                      ->delete();
 
-        $userMessage = ['success', 'Deleted successfully'];
-        if ($affectedRows == 0) {
-            $userMessage = ['warning', 'Nothing deletable was found'];
+        $userMessage = [
+            'success',
+            'Deleted successfully',
+        ];
+
+        if ($affectedRows === 0) {
+            $userMessage = [
+                'warning',
+                'Nothing deletable was found',
+            ];
         }
 
-        return redirect()->route('project.index')->with('userMessage', $userMessage);
+        return redirect()->route('project.index')
+            ->with('userMessage', $userMessage);
     }
 }
