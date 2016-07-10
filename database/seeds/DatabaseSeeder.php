@@ -3,8 +3,13 @@
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Populate the database with real data
+ */
 class DatabaseSeeder extends Seeder
 {
+
+
     /**
      * Run the database seeds.
      *
@@ -13,11 +18,6 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         Model::unguard();
-
-        //$this->call(UserTableSeeder::class);
-        $this->call(ClientsTableSeeder::class);
-        $this->call(TimeTableSeeder::class);
-
         Model::reguard();
     }
 }
