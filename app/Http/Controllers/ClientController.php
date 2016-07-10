@@ -9,8 +9,16 @@ use App\Http\Requests\ClientRequest;
 use App\Http\Controllers\Controller;
 use App\Client;
 
+/**
+ * Resource controller for clients
+ */
 class ClientController extends Controller
 {
+
+
+    /**
+     * Set middleware and shared view values
+     */
     public function __construct()
     {
         $this->middleware('auth');
@@ -22,11 +30,14 @@ class ClientController extends Controller
     /**
      * Display a list of clients
      *
+     * @param Request $request The incoming request.
+     *
      * @return Response
      */
     public function index(Request $request)
     {
         $search = null;
+
         $clients = Client::listing($request->user()->clients());
 
         if ($request->get('q')) {
@@ -42,7 +53,13 @@ class ClientController extends Controller
             'clients' => $clients,
             'search' => $search,
             'searchRoute' => 'client.index',
-            'searchFields' => ['name', 'status', 'locality', 'created', 'active'],
+            'searchFields' => [
+                'name',
+                'status',
+                'locality',
+                'created',
+                'active',
+            ],
         ];
 
         return view('clients.list', $viewVars);
@@ -51,12 +68,14 @@ class ClientController extends Controller
     /**
      * Show the form for creating a new client
      *
-     * @param Request $request
+     * @param Request $request The incoming request.
+     *
      * @return Response
      */
     public function create(Request $request)
     {
         $client = new Client();
+
         $client->active = true;
 
         $viewVars = [
@@ -73,36 +92,43 @@ class ClientController extends Controller
     /**
      * Save a new client to the database
      *
-     * @param  ClientRequest  $request
-     * @return \Illuminate\Http\Response
+     * @param ClientRequest $request The incoming request.
+     *
+     * @return Response
      */
     public function store(ClientRequest $request)
     {
         $client = new Client;
 
-        $client->active = (int)$request->active;
-        $client->name = $request->name;
-        $client->contactName = $request->contactName;
+        $client->active       = (int) $request->active;
+        $client->name         = $request->name;
+        $client->contactName  = $request->contactName;
         $client->contactEmail = $request->contactEmail;
-        $client->address1 = $request->address1;
-        $client->address2 = $request->address2;
-        $client->city = $request->city;
-        $client->locality = $request->locality;
-        $client->postalCode = $request->postalCode;
-        $client->phone = $request->phone;
+        $client->address1     = $request->address1;
+        $client->address2     = $request->address2;
+        $client->city         = $request->city;
+        $client->locality     = $request->locality;
+        $client->postalCode   = $request->postalCode;
+        $client->phone        = $request->phone;
 
-        $client->user_id = $request->user()->id;
+        $client->user()->associate($request->user());
         $client->save();
 
-        return redirect()->route('client.show', [$client->id])->with('userMessage', 'Success!');
+        $userMessage = $this->successMessage('client');
+
+        return redirect()->route(
+            'client.show',
+            [$client->id]
+        )->with('userMessage', $userMessage);
     }
 
     /**
      * Display a client
      *
-     * @param Request $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Request $request The incoming request.
+     * @param integer $id      A client primary key.
+     *
+     * @return Response
      */
     public function show(Request $request, $id)
     {
@@ -119,8 +145,10 @@ class ClientController extends Controller
     /**
      * Show the form for editing a client
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Request $request The incoming request.
+     * @param integer $id      A client primary key.
+     *
+     * @return Response
      */
     public function edit(Request $request, $id)
     {
@@ -131,7 +159,10 @@ class ClientController extends Controller
             'model' => $client,
             'page_title' => 'Edit Client',
             'submission_method' => 'PUT',
-            'submission_route' => ['client.update', $client->id],
+            'submission_route' => [
+                'client.update',
+                $client->id,
+            ],
         ];
 
         return view('clients.form', $viewVars);
@@ -140,16 +171,23 @@ class ClientController extends Controller
     /**
      * Update an existing client
      *
-     * @param  ClientRequest  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param ClientRequest $request The incoming request.
+     * @param integer       $id      A client primary key.
+     *
+     * @return Response
      */
     public function update(ClientRequest $request, $id)
     {
         $client = Client::find($id);
+
         $affectedRows = $client->update($request->all());
+
         $userMessage = $this->userMessageForAffectedRows($affectedRows);
-        return redirect()->route('client.show', [$client->id])->with('userMessage', $userMessage);
+
+        return redirect()->route(
+            'client.show',
+            [$client->id]
+        )->with('userMessage', $userMessage);
     }
 
     /**
@@ -157,19 +195,30 @@ class ClientController extends Controller
      *
      * Time entries use soft deletion.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Request $request The incoming request.
+     * @param integer $id      A client primary key.
+     *
+     * @return Response
      */
     public function destroy(Request $request, $id)
     {
         $affectedRows = $request->user()->clients()->where('id', $id)->delete();
 
-        $userMessage = ['success', 'Deleted successfully'];
+        $userMessage = [
+            'success',
+            'Deleted successfully',
+        ];
 
-        if ($affectedRows == 0) {
-            $userMessage = ['warning', 'Nothing deletable was found'];
+        if ($affectedRows === 0) {
+            $userMessage = [
+                'warning',
+                'Nothing deletable was found',
+            ];
         }
 
-        return redirect()->route('client.index')->with('userMessage', $userMessage);
+        return redirect()->route('client.index')->with(
+            'userMessage',
+            $userMessage
+        );
     }
 }

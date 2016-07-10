@@ -2,6 +2,8 @@
 
 namespace App\Helpers;
 
+use Exception;
+
 /**
  * Helper functions for displaying addresses
  */
@@ -61,7 +63,11 @@ class AddressHelper
 
         $plainValue = preg_replace('/[^0-9x\#*]/', null, $value);
 
-        $formattedValue = phone_format($plainValue, 'US');
+        try {
+            $formattedValue = phone_format($plainValue, 'US');
+        } catch (Exception $e) {
+            $formattedValue = $plainValue;
+        }
 
         return sprintf(
             '<a href="tel://%s">%s</a>',

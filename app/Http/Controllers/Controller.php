@@ -38,4 +38,19 @@ abstract class Controller extends BaseController
             'Updated successfully',
         ];
     }
+
+    /**
+     * Standard value for indicating creation success via flash
+     *
+     * @param string $recordType A human-readable label for the created record.
+     *
+     * @return array
+     */
+    protected function successMessage($recordType)
+    {
+        return [
+            'success',
+            ucfirst($recordType) . ' created successfully!',
+        ];
+    }
 }

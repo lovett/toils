@@ -29,5 +29,9 @@
   <rule ref="Zend">
     <exclude name="Generic.Functions.OpeningFunctionBraceBsdAllman.BraceOnSameLine" />
     <exclude name="Zend.NamingConventions.ValidVariableName.PrivateNoUnderscore" />
+    <exclude name="Zend.NamingConventions.ValidVariableName.ContainsNumbers" />
+
+    <!-- same rule exists in squiz standard -->
+    <exclude name="Zend.NamingConventions.ValidVariableName.NotCamelCaps" />
   </rule>
 </ruleset>

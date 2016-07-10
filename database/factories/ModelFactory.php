@@ -45,8 +45,8 @@ $factory->define(App\Time::class, function (Faker\Generator $faker) {
         'user_id' => 1,
         'start' => $start,
         'minutes' => $randomMinutes,
+        'estimatedDuration' => $faker->numberBetween(1, 480), // minutes
         'summary' => $faker->paragraph(),
-        'estimate' => $faker->numberBetween(1, 480), // minutes
         'project_id' => 1,
     ];
 });

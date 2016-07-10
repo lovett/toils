@@ -81,4 +81,20 @@ class TimeHelper
         $value = Carbon::parse($value);
         return self::date($value);
     }
+
+    /**
+     * Default application formatter for dates
+     *
+     * @param Carbon|null $value The value to format.
+     *
+     * @return string
+     */
+    public static function date(Carbon $value)
+    {
+        if (empty($value)) {
+            return '';
+        }
+
+        return $value->format('M n Y');
+    }
 }

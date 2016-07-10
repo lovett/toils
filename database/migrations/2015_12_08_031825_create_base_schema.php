@@ -61,7 +61,6 @@ class CreateBaseSchema extends Migration
             $table->integer('submissionSize')->nullable()->unsigned();
             $table->string('signatureType', 50)->nullable();
             $table->integer('signatureSize')->nullable()->unsigned();
-            $table->text('summary')->nullable();
             $table->timestamps();
             $table->softDeletes();
             $table->foreign('user_id')->references('id')->on('users');
@@ -93,7 +92,7 @@ class CreateBaseSchema extends Migration
         Schema::create('times', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
-            $table->integer('estimate_id')->unsigned();
+            $table->integer('estimatedDuration')->unsigned();
             $table->integer('project_id')->unsigned();
             $table->integer('invoice_id')->nullable()->unsigned();
             $table->date('start')->nullable();
@@ -102,7 +101,6 @@ class CreateBaseSchema extends Migration
             $table->timestamps();
             $table->softDeletes();
             $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('estimate_id')->references('id')->on('estimates');
             $table->foreign('project_id')->references('id')->on('projects');
             $table->foreign('invoice_id')->references('id')->on('invoices');
         });
