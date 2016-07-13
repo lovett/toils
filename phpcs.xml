@@ -45,4 +45,9 @@
   <rule ref="Squiz.Classes.ClassFileName.NoMatch">
     <exclude-pattern>*/database/migrations/*</exclude-pattern>
   </rule>
+
+  <!-- Framework class isn't hinted, preventing app class from overriding -->
+  <rule ref="Squiz.Commenting.FunctionComment.TypeHintMissing">
+    <exclude-pattern>app/Exceptions/Handler.php</exclude-pattern>
+  </rule>
 </ruleset>

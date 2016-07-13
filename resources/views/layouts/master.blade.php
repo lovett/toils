@@ -19,6 +19,7 @@
 				<li>{!! link_to_route('time.index', 'Time') !!}</li>
 				<li>{!! link_to_route('projects', 'Projects') !!}</li>
 				<li>{!! link_to_route('clients', 'Clients') !!}</li>
+                                <li>{!! link_to_route('logout', 'Log out') !!}</li>
 			    </ul>
 			@show
                     </nav>
