@@ -1,8 +1,14 @@
 <?php
 
+use App\User;
+use App\Client;
+use App\Time;
+use App\Project;
+use Faker\Generator as FakerGenerator;
+
 $factory->define(
-    App\User::class,
-    function (Faker\Generator $faker) {
+    User::class,
+    function (FakerGenerator $faker) {
         return [
             'name' => $faker->name,
             'email' => $faker->email,
@@ -13,8 +19,8 @@ $factory->define(
 );
 
 $factory->define(
-    App\Client::class,
-    function (Faker\Generator $faker) {
+    Client::class,
+    function (FakerGenerator $faker) {
         return [
             'user_id' => 1,
             'active' => $faker->boolean(50),
@@ -32,8 +38,26 @@ $factory->define(
 );
 
 $factory->define(
-    App\Time::class,
-    function (Faker\Generator $faker) {
+    Project::class,
+    function (FakerGenerator $faker) {
+        return [
+            'user_id' => 1,
+            'client_id' => 1,
+            'name' => sprintf(
+                '%s %s',
+                'Project',
+                $faker->colorName()
+            ),
+            'active' => $faker->boolean(),
+            'billable' => $faker->boolean(),
+            'taxDeducted' => $faker->boolean(),
+        ];
+    }
+);
+
+$factory->define(
+    Time::class,
+    function (FakerGenerator $faker) {
         $randomHours = $faker->numberBetween(1, 8);
 
         $randomMinutes = $faker->numberBetween(0, 180);

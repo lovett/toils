@@ -2,12 +2,15 @@
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
+use App\Client;
+use App\Project;
+use App\Time;
 use App\User;
 
 /**
- * Populate the database with factory-generated test data
+ * Populate the database with fake data
  */
-class FactorySeeder extends Seeder
+class FakeSeeder extends Seeder
 {
 
 
@@ -30,10 +33,10 @@ class FactorySeeder extends Seeder
             ]
         );
 
-        $this->call(UsersTableSeeder::class);
-        $this->call(ClientsTableSeeder::class);
-        $this->call(TimeTableSeeder::class);
-
+        factory(Client::class, 100)->create();
+        factory(Project::class, 100)->create();
+        factory(Time::class, 100)->create();
+        factory(User::class, 10)->create();
         Model::reguard();
     }
 }
