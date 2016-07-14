@@ -15,12 +15,23 @@ class DashboardController extends Controller
 
 
     /**
-     * Display a listing of the resource.
+     * Set middleware and shared view values
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+        view()->share('app_section', 'dashboard');
+        view()->share('page_title', 'Dashboard');
+    }
+
+
+    /**
+     * Display the dashboard
      *
      * @return Response
      */
     public function index()
     {
-        return response('Hello from the dashboard route');
+        return view('dashboard.show');
     }
 }

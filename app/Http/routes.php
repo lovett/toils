@@ -7,7 +7,7 @@
 Route::get(
     '/',
     function () {
-        return view('welcome');
+        return redirect()->route('dashboard');
     }
 );
 
@@ -15,7 +15,7 @@ Route::get(
 Route::get(
     'dashboard',
     [
-        'middleware' => 'auth',
+        'as' => 'dashboard',
         'uses' => 'DashboardController@index'
     ]
 );
@@ -50,7 +50,7 @@ Route::get(
     'auth/register',
     [
         'as' => 'register',
-        'uses' =>'Auth\AuthController@getRegister'
+        'uses' => 'Auth\AuthController@getRegister'
     ]
 );
 

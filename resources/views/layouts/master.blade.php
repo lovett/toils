@@ -16,6 +16,7 @@
                     <nav class="col-sm-6 text-right">
 			@section('nav_supplemental')
 			    <ul class="list-inline">
+				<li>{!! link_to_route('dashboard', 'Dashboard') !!}</li>
 				<li>{!! link_to_route('time.index', 'Time') !!}</li>
 				<li>{!! link_to_route('projects', 'Projects') !!}</li>
 				<li>{!! link_to_route('clients', 'Clients') !!}</li>

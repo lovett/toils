@@ -110,7 +110,7 @@ class TimeController extends Controller
 
         $viewVars = [
             'page_title' => 'Add time',
-            'record' => new Time(),
+            'model' => new Time(),
             'submission_route' => 'time.store',
             'submission_method' => 'POST',
             'projects' => $request->user()->projectsForMenu(),
