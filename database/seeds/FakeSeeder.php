@@ -33,10 +33,10 @@ class FakeSeeder extends Seeder
             ]
         );
 
-        factory(Client::class, 100)->create();
-        factory(Project::class, 100)->create();
-        factory(Time::class, 100)->create();
         factory(User::class, 10)->create();
+        factory(Client::class, 20)->create();
+        factory(Project::class, 100)->create();
+        factory(Time::class, 1000)->create();
         Model::reguard();
     }
 }

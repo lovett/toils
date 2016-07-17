@@ -21,8 +21,13 @@ $factory->define(
 $factory->define(
     Client::class,
     function (FakerGenerator $faker) {
+        $randomUser = User::select('id')
+                    ->orderByRaw('RANDOM()')
+                    ->limit(1)
+                    ->first();
+
         return [
-            'user_id' => 1,
+            'user_id' => $randomUser->id,
             'active' => $faker->boolean(50),
             'name' => $faker->company(),
             'contactName' => $faker->name(),
@@ -40,13 +45,19 @@ $factory->define(
 $factory->define(
     Project::class,
     function (FakerGenerator $faker) {
+        $randomClient = Client::select('id')
+                      ->orderByRaw('RANDOM()')
+                      ->limit(1)
+                      ->first();
+
         return [
             'user_id' => 1,
-            'client_id' => 1,
+            'client_id' => $randomClient->id,
             'name' => sprintf(
-                '%s %s',
+                '%s %s %d',
                 'Project',
-                $faker->colorName()
+                $faker->colorName(),
+                $faker->randomDigit()
             ),
             'active' => $faker->boolean(),
             'billable' => $faker->boolean(),
@@ -62,15 +73,25 @@ $factory->define(
 
         $randomMinutes = $faker->numberBetween(0, 180);
 
+        $randomProject = Project::select('id')
+                       ->orderByRaw('RANDOM()')
+                       ->limit(1)
+                       ->first();
+
+        $randomUser = User::select('id')
+                    ->orderByRaw('RANDOM()')
+                    ->limit(1)
+                    ->first();
+
         $start = $faker->dateTimeBetween('-10 years', '-1 day');
 
         return [
-            'user_id' => 1,
+            'user_id' => $randomUser->id,
             'start' => $start,
             'minutes' => $randomMinutes,
             'estimatedDuration' => $faker->numberBetween(1, 480),
             'summary' => $faker->paragraph(),
-            'project_id' => 1,
+            'project_id' => $randomProject->id,
         ];
     }
 );
