@@ -34,9 +34,9 @@ class AddressHelper
             return $out;
         };
 
-        $punctuationAfterLocality = '';
-        if (empty($record->locality) !== false) {
-            $punctuationAfterLocality = ', ';
+        $punctuationAfterLocality = ', ';
+        if (empty($record->locality)) {
+            $punctuationAfterLocality = '';
         }
 
         $out = $appendIfSet('address1', $out, null, "\n");
