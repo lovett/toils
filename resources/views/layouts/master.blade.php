@@ -42,5 +42,7 @@
         <script type="text/javascript">
             $('select').select2({'theme': 'bootstrap'});
         </script>
+
+	@yield('page_scripts')
     </body>
 </html>

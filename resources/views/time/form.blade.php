@@ -40,3 +40,8 @@
 @endif
 
 @endsection
+
+@section('page_scripts')
+<script src="{{ asset('js/vue.min.js') }}"></script>
+<script src="{{ asset('js/time.js') }}"></script>
+@endsection
