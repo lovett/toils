@@ -52,7 +52,12 @@ class TimeController extends Controller
                     new DateTime('+366 day')
                 ),
 
-                'hour' => range(1, 12),
+                'hour' => new DatePeriod(
+                    new DateTime('Jan 1 1:00'),
+                    new DateInterval('PT1H'),
+                    new DateTime('Jan 1 13:00')
+                ),
+
                 'minute' => range(0, 59, 5),
             ]
         );

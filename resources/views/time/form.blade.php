@@ -43,5 +43,5 @@
 
 @section('page_scripts')
 <script src="{{ asset('js/vue.min.js') }}"></script>
-<script src="{{ asset('js/time.js') }}"></script>
+<script src="{{ asset('js/pickable.js') }}"></script>
 @endsection

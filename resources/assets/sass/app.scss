@@ -82,7 +82,14 @@ ADDRESS DIV {
 
     A {
         margin-left: 1em;
+        padding: .1em .25em;
     }
+
+    .active {
+        background-color: #666;
+        color: white;
+    }
+
 }
 
 .timestamps {
