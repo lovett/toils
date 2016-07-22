@@ -11,12 +11,16 @@
             <div class="shortcuts">
                 <p>
                     @foreach ($ranges['hour'] as $value)
-                        <a @click.prevent="pick('hh', '{{ $value->format('g') }}', 'active', $event)" href="#">{{ $value->format('g') }}</a>
+                        <a @click.prevent="pick('hh', '{{ $value->format('g') }}', 'active', $event)" href="#">
+                            {{ $value->format('g') }}
+                        </a>
                     @endforeach
                 </p>
                 <p>
                     @foreach ($ranges['minute'] as $value)
-                        <a @click.prevent="pick('mm', '{{ $value }}', 'active', $event)" href="#">{{ $value }}</a>
+                        <a @click.prevent="pick('mm', '{{ $value->format('i') }}', 'active', $event)" href="#">
+                            {{ $value->format('i') }}
+                        </a>
                     @endforeach
                 </p>
                 <p>

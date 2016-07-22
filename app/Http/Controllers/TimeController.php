@@ -58,7 +58,11 @@ class TimeController extends Controller
                     new DateTime('Jan 1 13:00')
                 ),
 
-                'minute' => range(0, 59, 5),
+                'minute' => new DatePeriod(
+                    new DateTime('Jan 1 00:00'),
+                    new DateInterval('PT5M'),
+                    new DateTime('Jan 1 01:00')
+                ),
             ]
         );
     }
