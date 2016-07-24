@@ -84,6 +84,20 @@ class Time extends Model
     }
 
     /**
+     * Custom accessor to set default value for start date
+     *
+     * @return Carbon;
+     */
+    public function getStartAttribute($value)
+    {
+        if (empty($value)) {
+            $value = 'now';
+        }
+
+        return new Carbon($value);
+    }
+
+    /**
      * Custom accessor to calculate end time from start and duration
      *
      * @return Carbon;
@@ -91,6 +105,10 @@ class Time extends Model
     public function getEndAttribute()
     {
         if (empty($this->start)) {
+            return null;
+        }
+
+        if (empty($this->minutes)) {
             return null;
         }
 
