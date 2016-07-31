@@ -26,7 +26,7 @@ class ProjectController extends Controller
         $this->middleware('auth');
         $this->middleware('returnable', ['only' => ['index', 'show']]);
         $this->middleware('backto', ['only' => ['store']]);
-        view()->share('app_section', 'project');
+        view()->share('appSection', 'projects');
     }
 
     /**

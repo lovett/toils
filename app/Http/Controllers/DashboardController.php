@@ -20,7 +20,7 @@ class DashboardController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        view()->share('app_section', 'dashboard');
+        view()->share('appSection', 'dashboard');
         view()->share('page_title', 'Dashboard');
     }
 

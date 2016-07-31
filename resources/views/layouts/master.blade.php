@@ -5,7 +5,7 @@
         <link rel="stylesheet" type="text/css" href="{{ asset('css/select2-bootstrap.min.css') }}" />
         <link rel="stylesheet" type="text/css" href="{{ asset('css/app.css') }}" />
     </head>
-    <body class="{{ $app_section or '' }}">
+    <body class="{{ $appSection or '' }}">
         <main class="container">
             <header class="primary">
                 <h1>{{ $page_title }}</h1>
@@ -16,11 +16,11 @@
                     <nav class="col-sm-6 text-right">
 			@section('nav_supplemental')
 			    <ul class="list-inline">
-				<li>{!! link_to_route('dashboard', 'Dashboard') !!}</li>
-				<li>{!! link_to_route('time.index', 'Time') !!}</li>
-				<li>{!! link_to_route('projects', 'Projects') !!}</li>
-				<li>{!! link_to_route('clients', 'Clients') !!}</li>
-                                <li>{!! link_to_route('logout', 'Log out') !!}</li>
+				<li>{!! LinkHelper::navLink($appSection, 'dashboard', 'Dashboard')  !!}</li>
+				<li>{!! LinkHelper::navLink($appSection, 'time.index', 'Time') !!}</li>
+				<li>{!! LinkHelper::navLink($appSection, 'projects', 'Projects') !!}</li>
+				<li>{!! LinkHelper::navLink($appSection, 'clients', 'Clients') !!}</li>
+                                <li>{!! LinkHelper::navLink($appSection, 'logout', 'Log out') !!}</li>
 			    </ul>
 			@show
                     </nav>

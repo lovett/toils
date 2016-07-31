@@ -29,7 +29,7 @@ class TimeController extends Controller
         $this->middleware('auth');
         $this->middleware('returnable', ['only' => ['index', 'show']]);
         $this->middleware('backto', ['only' => ['store']]);
-        view()->share('app_section', 'time');
+        view()->share('appSection', 'time');
 
         view()->share(
             'ranges',

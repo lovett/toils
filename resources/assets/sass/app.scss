@@ -104,3 +104,12 @@ ADDRESS DIV {
 .facets {
     padding-top: .5em;
 }
+
+NAV .active {
+    font-weight: bold;
+    color: black;
+}
+
+NAV .active:hover {
+    text-decoration: none;
+}
