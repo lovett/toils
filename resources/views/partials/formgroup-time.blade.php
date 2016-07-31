@@ -11,21 +11,33 @@
             <div class="shortcuts">
                 <p>
                     @foreach ($ranges['hour'] as $value)
-                        <a @click.prevent="pick('hh', '{{ $value->format('g') }}', 'active', $event)" href="#">
-                            {{ $value->format('g') }}
-                        </a>
+                        <a
+                            @click.prevent="pick('hh', '{{ $value->format('g') }}', 'active', $event)"
+                            href="#"
+                            class="{{ isset($model->$name) && $value->format('g') === $model->$name->format('g') ? 'active' : '' }}"
+                        >{{ $value->format('g') }}</a>
                     @endforeach
                 </p>
                 <p>
                     @foreach ($ranges['minute'] as $value)
-                        <a @click.prevent="pick('mm', '{{ $value->format('i') }}', 'active', $event)" href="#">
-                            {{ $value->format('i') }}
-                        </a>
+                        <a
+                            @click.prevent="pick('mm', '{{ $value->format('i') }}', 'active', $event)"
+                            href="#"
+                            class="{{ isset($model->$name) && $value->format('i') === $model->$name->format('i') ? 'active' : '' }}"
+                        >{{ $value->format('i') }}</a>
                     @endforeach
                 </p>
                 <p>
-                    <a @click.prevent="pick('AA', 'AM', 'active', $event)" href="#">AM</a>
-                    <a @click.prevent="pick('AA', 'PM', 'active', $event)" href="#">PM</a>
+                    <a
+                        @click.prevent="pick('AA', 'AM', 'active', $event)"
+                        href="#"
+                        class="{{ isset($model->$name) && $value->format('A') === 'AM' ? 'active' : '' }}"
+                    >AM</a>
+                    <a
+                        @click.prevent="pick('AA', 'PM', 'active', $event)"
+                        href="#"
+                        class="{{ isset($model->$name) && $value->format('A') === 'PM' ? 'active' : '' }}"
+                    >PM</a>
                 </p>
             </div>
         </pickable>

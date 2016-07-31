@@ -47,9 +47,9 @@ class TimeController extends Controller
                 ),
 
                 'year' => new DatePeriod(
-                    new DateTime('-366 day'),
+                    new DateTime('-5 years'),
                     new DateInterval('P1Y'),
-                    new DateTime('+366 day')
+                    new DateTime('first day of next year')
                 ),
 
                 'hour' => new DatePeriod(

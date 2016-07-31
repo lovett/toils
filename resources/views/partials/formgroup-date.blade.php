@@ -10,17 +10,29 @@
             <div class="shortcuts">
                 <p>
                     @foreach ($ranges['month'] as $value)
-                        <a @click.prevent="pick('mm', '{{ $value->format('m') }}', 'active', $event)" href="#">{{ $value->format('M') }}</a>
+                        <a
+                            @click.prevent="pick('mm', '{{ $value->format('m') }}', 'active', $event)"
+                            href="#"
+                            class="{{ $value->format('M') === $model->$name->format('M') ? 'active' : '' }}"
+                        >{{ $value->format('M') }}</a>
                     @endforeach
                 </p>
                 <p>
                     @foreach ($ranges['day'] as $value)
-                        <a @click.prevent="pick('dd', '{{ $value->format('d') }}', 'active', $event)" href="#">{{ $value->format('j') }}</a>
+                        <a
+                            @click.prevent="pick('dd', '{{ $value->format('d') }}', 'active', $event)"
+                            href="#"
+                            class="{{ $value->format('j') === $model->$name->format('j') ? 'active' : '' }}"
+                        >{{ $value->format('j') }}</a>
                     @endforeach
                 </p>
                 <p>
                     @foreach ($ranges['year'] as $value)
-                        <a @click.prevent="pick('yyyy', '{{ $value->format('Y') }}', 'active', $event)" href="#">{{ $value->format('Y') }}</a>
+                        <a
+                            @click.prevent="pick('yyyy', '{{ $value->format('Y') }}', 'active', $event)"
+                            href="#"
+                            class="{{ $value->format('Y') === $model->$name->format('Y') ? 'active' : '' }}"
+                        >{{ $value->format('Y') }}</a>
                     @endforeach
                 </p>
             </div>
