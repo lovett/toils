@@ -25,6 +25,7 @@ class Time extends Model
         'minutes',
         'summary',
         'estimatedDuration',
+        'project_id',
     ];
 
     /**

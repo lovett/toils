@@ -43,6 +43,6 @@
 @section('nav_primary')
     <ul class="list-inline">
 	<li>{!! link_to_route('project.edit', 'Edit', ['id' => $project->id]) !!}</li>
-	<li>{!! link_to_route('project.create', 'New project') !!}</li>
+	<li>{!! link_to_route('time.create', 'Add time', ['project' => $project->id]) !!}</li>
     </ul>
 @endsection

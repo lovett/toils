@@ -6,16 +6,17 @@
 
 {!! Form::model($model, ['route' => $submission_route, 'method' => $submission_method, 'class' => 'form-horizontal']) !!}
 
-@include('partials.formgroup-textarea', ['name' => 'summary', 'label' => 'Summary'])
+@include('partials.formgroup-menu', ['name' => 'project_id', 'label' => 'Project', 'items' => $projects, 'selectedItem' => $model->project_id])
+
+@include('partials.formgroup-standard', ['name' => 'estimatedDuration', 'label' => 'Estimate'])
 
 @include('partials.formgroup-date', ['name' => 'start', 'label' => 'Date', 'ranges' => $ranges])
 
 @include('partials.formgroup-time', ['name' => 'start', 'label' => 'Start', 'ranges' => $ranges])
 @include('partials.formgroup-time', ['name' => 'end', 'label' => 'End', 'ranges' => $ranges])
 
-@include('partials.formgroup-menu', ['name' => 'project_id', 'label' => 'Project', 'items' => $projects, 'selectedItem' => $model->project_id])
+@include('partials.formgroup-textarea', ['name' => 'summary', 'label' => 'Summary'])
 
-@include('partials.formgroup-standard', ['name' => 'estimatedDuration', 'label' => 'Estimate'])
 
 <div class="form-group">
     <div class="col-sm-12 text-center">

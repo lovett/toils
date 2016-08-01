@@ -117,12 +117,25 @@ class TimeController extends Controller
 
         $record->start = new Carbon('now');
 
+        $projects = $request->user()->projectsForMenu();
+
+        $projectId = $request->input('project', null);
+        if (array_key_exists($projectId, $projects) === false) {
+            $projectId = null;
+        }
+
+        $model = new Time(
+            [
+                'project_id' => $projectId
+            ]
+        );
+
         $viewVars = [
             'page_title' => 'Add time',
-            'model' => new Time(),
+            'model' => $model,
             'submission_route' => 'time.store',
             'submission_method' => 'POST',
-            'projects' => $request->user()->projectsForMenu(),
+            'projects' => $projects,
             'backUrl' => $request->session()->get('returnTo'),
         ];
 
