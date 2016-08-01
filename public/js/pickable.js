@@ -9,11 +9,16 @@ Vue.component('pickable', {
         return {
             format: '',
             initial: '',
-            pickResult: ''
+            pickResult: '',
+            isToggled: false
         };
     },
 
     methods: {
+        toggle: function (event) {
+            this.isToggled = !this.isToggled;
+        },
+
         pick: function (segment, val, className, event) {
             var index, head, tail, siblings;
 

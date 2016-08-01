@@ -8,8 +8,15 @@
 
 	    {!! Form::text($name, isset($model->$name)? $model->$name->format('g:i A') : '', ['class' => 'form-control', 'v-model' => 'pickResult']) !!}
 
-            <div class="shortcuts">
+            <p>
+                <a href="#" @click.prevent="toggle($event)">
+                    <span v-bind:class="{hidden: !isToggled}">hide</span> shortcuts
+                </a>
+            </p>
+
+            <div class="shortcuts" v-bind:class="{toggled: isToggled}">
                 <p>
+                    <span class="label">Hour:</span>
                     @foreach ($ranges['hour'] as $value)
                         <a
                             @click.prevent="pick('hh', '{{ $value->format('g') }}', 'active', $event)"
@@ -19,6 +26,7 @@
                     @endforeach
                 </p>
                 <p>
+                    <span class="label">Minute:</span>
                     @foreach ($ranges['minute'] as $value)
                         <a
                             @click.prevent="pick('mm', '{{ $value->format('i') }}', 'active', $event)"

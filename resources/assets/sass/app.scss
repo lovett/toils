@@ -73,15 +73,15 @@ ADDRESS DIV {
 .shortcuts {
     font-size: .85em;
     text-transform: uppercase;
-    text-align: right;
     padding: .25em 0;
+    display: none;
 
     P {
         margin-bottom: .5em;
     }
 
     A {
-        margin-left: 1em;
+        margin-right: .75em;
         padding: .1em .25em;
     }
 
@@ -90,6 +90,14 @@ ADDRESS DIV {
         color: white;
     }
 
+    .label {
+        text-transform: none;
+    }
+
+}
+
+.shortcuts.toggled {
+    display: block;
 }
 
 .timestamps {

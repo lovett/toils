@@ -7,8 +7,15 @@
         <pickable inline-template format="yyyy-mm-dd" initial="{{ date('Y-m-d') }}">
             {!! Form::text($name, isset($model->$name)? $model->$name->format('Y-m-d') : '', ['class' => 'form-control', 'v-model' => 'pickResult']) !!}
 
-            <div class="shortcuts">
+            <p>
+                <a href="#" @click.prevent="toggle($event)">
+                    <span v-bind:class="{hidden: !isToggled}">hide</span> shortcuts
+                </a>
+            </p>
+
+            <div class="shortcuts" v-bind:class="{toggled: isToggled}">
                 <p>
+                    <span class="label">Month:</span>
                     @foreach ($ranges['month'] as $value)
                         <a
                             @click.prevent="pick('mm', '{{ $value->format('m') }}', 'active', $event)"
@@ -18,6 +25,7 @@
                     @endforeach
                 </p>
                 <p>
+                    <span class="label">Day:</span>
                     @foreach ($ranges['day'] as $value)
                         <a
                             @click.prevent="pick('dd', '{{ $value->format('d') }}', 'active', $event)"
@@ -27,6 +35,7 @@
                     @endforeach
                 </p>
                 <p>
+                    <span class="label">Year:</span>
                     @foreach ($ranges['year'] as $value)
                         <a
                             @click.prevent="pick('yyyy', '{{ $value->format('Y') }}', 'active', $event)"
