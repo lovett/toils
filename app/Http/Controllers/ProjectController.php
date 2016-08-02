@@ -75,23 +75,25 @@ class ProjectController extends Controller
      */
     public function create(Request $request)
     {
-        $project = new Project();
+        $clients = $request->user()->clientsForMenu();
 
-        $project->active   = true;
-        $project->billable = true;
-
-        if ($request->has('client')) {
-            $clientId = $request->input('client', 0);
-
-            $client = $request->user()->clients->findOrFail($clientId);
-
-            $project->client()->associate($client);
+        $clientId = $request->input('client', null);
+        if (array_key_exists($clientId, $clients) === false) {
+            $clientId = null;
         }
+
+        $model = new Project(
+            [
+                'active' => true,
+                'billable' => true,
+                'client_id' => $clientId,
+            ]
+        );
 
         $viewVars = [
             'page_title' => 'Add a project',
-            'model' => $project,
-            'clients' => $request->user()->clientsForMenu(),
+            'model' => $model,
+            'clients' => $clients,
             'submission_route' => 'project.store',
             'submission_method' => 'POST',
             'app_section' => 'project',

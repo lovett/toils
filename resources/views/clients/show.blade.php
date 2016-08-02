@@ -66,6 +66,6 @@
 @section('nav_primary')
     <ul class="list-inline">
 	<li>{!! link_to_route('client.edit', 'Edit', ['id' => $model->id]) !!}</li>
-	<li>{!! link_to_route('project.create', 'New project') !!}</li>
+	<li>{!! link_to_route('project.create', 'New project', ['client' => $model->id]) !!}</li>
     </ul>
 @endsection

@@ -113,10 +113,6 @@ class TimeController extends Controller
      */
     public function create(Request $request)
     {
-        $record = new Time();
-
-        $record->start = new Carbon('now');
-
         $projects = $request->user()->projectsForMenu();
 
         $projectId = $request->input('project', null);
@@ -126,6 +122,7 @@ class TimeController extends Controller
 
         $model = new Time(
             [
+                'start' => new Carbon('now'),
                 'project_id' => $projectId
             ]
         );
