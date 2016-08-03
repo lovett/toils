@@ -127,9 +127,18 @@ class TimeController extends Controller
             ]
         );
 
+        $previousModel = $request->user()->time();
+        if ($projectId !== null) {
+            $previousModel->where('project_id', $projectId);
+        }
+
+        $previousModel->orderBy('start', 'DESC');
+        $previousModel->limit(1);
+
         $viewVars = [
             'page_title' => 'Add time',
             'model' => $model,
+            'previousModel' => $previousModel->first(),
             'submission_route' => 'time.store',
             'submission_method' => 'POST',
             'projects' => $projects,

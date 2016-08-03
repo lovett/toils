@@ -6,6 +6,18 @@
 
 {!! Form::model($model, ['route' => $submission_route, 'method' => $submission_method, 'class' => 'form-horizontal']) !!}
 
+@if (isset($previousModel))
+<div class="well well-sm text-center">
+    <a
+        onclick="prefill(event)"
+        href="#"
+        data-project_id="{{ $previousModel->project_id }}"
+	data-estimate="{{ $previousModel->estimatedDuration }}"
+	data-summary="{{ $previousModel->summary}}"
+    >Prefill from previous entry</a>
+</div>
+@endif
+
 @include('partials.formgroup-menu', ['name' => 'project_id', 'label' => 'Project', 'items' => $projects, 'selectedItem' => $model->project_id])
 
 @include('partials.formgroup-standard', ['name' => 'estimatedDuration', 'label' => 'Estimate'])
@@ -45,4 +57,5 @@
 @section('page_scripts')
 <script src="{{ asset('js/vue.min.js') }}"></script>
 <script src="{{ asset('js/pickable.js') }}"></script>
+<script src="{{ asset('js/prefill.js') }}"></script>
 @endsection
