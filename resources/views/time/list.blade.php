@@ -23,7 +23,13 @@
                     {!! link_to_route('time.edit', $time->start->format('g:i A'), ['id' => $time->id]) !!}
                 </td>
                 <td>
-	            {{ $time->end->format('g:i A') }}
+		    @if ($time->end)
+			{{ $time->end->format('g:i A') }}
+		    @endif
+
+		    @if (empty($time->end))
+			&nbsp;
+		    @endif
                 </td>
                 <td>
 	            {!! link_to_route('project.show', $time->project->name, ['id' => $time->project->id]) !!}

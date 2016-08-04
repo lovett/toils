@@ -87,6 +87,8 @@ class Time extends Model
     /**
      * Custom accessor to set default value for start date
      *
+     * @param string $value The value stored in the database.
+     *
      * @return Carbon;
      */
     public function getStartAttribute($value)
@@ -99,17 +101,29 @@ class Time extends Model
     }
 
     /**
+     * Custom accessor to convert null to zero
+     *
+     * @param integer|null $value The value stored in the database.
+     *
+     * @return integer;
+     */
+    public function getMinutesAttribute($value)
+    {
+        if (is_numeric($value) === false) {
+            $value = 0;
+        }
+
+        return $value;
+    }
+
+    /**
      * Custom accessor to calculate end time from start and duration
      *
      * @return Carbon;
      */
     public function getEndAttribute()
     {
-        if (empty($this->start)) {
-            return null;
-        }
-
-        if (empty($this->minutes)) {
+        if ($this->minutes === 0) {
             return null;
         }
 
