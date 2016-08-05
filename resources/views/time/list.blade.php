@@ -1,16 +1,13 @@
 @extends('layouts.master')
 
-
 @section('page_main')
     @include('partials.search', ['route' => 'time.index', 'search' => $search])
     <table class="table">
         <thead>
             <tr>
-                <th>Date</th>
-                <th>Start</th>
-                <th>End</th>
-                <th>Project</th>
-                <th class="text-right">Duration</th>
+                <th width="200">Date</th>
+                <th width="250">Project</th>
+		<th>Summary</th>
 		<th class="text-right">Accuracy</th>
             </tr>
         </thead>
@@ -19,35 +16,26 @@
             <tr>
                 <td>
                     {{ $time->start->format('Y-m-d, l') }}
-                </td>
-                <td>
-                    {!! link_to_route('time.edit', $time->start->format('g:i A'), ['id' => $time->id]) !!}
-                </td>
-                <td>
-		    @if ($time->end)
-			{{ $time->end->format('g:i A') }}
-		    @endif
+		    <div class="small">
+			{!! link_to_route('time.edit', $time->start->format('g:i A'), ['id' => $time->id]) !!}
 
-		    @if (empty($time->end))
-			&nbsp;
-		    @endif
+			@if ($time->end)
+			    to {{ $time->end->format('g:i A') }}
+			@endif
+		    </div>
                 </td>
-                <td>
+		<td>
 	            {!! link_to_route('project.show', $time->project->name, ['id' => $time->project->id]) !!}
                 </td>
-                <td class="text-right">
-                    {{ TimeHelper::hoursAndMinutes($time->minutes) }}
-		    @if ($time->estimatedDuration)
-			<div class="small">Estimate: {{ TimeHelper::hoursAndMinutes($time->estimatedDuration) }}</div>
-		    @else
-			&nbsp;
-		    @endif
+
+		<td>
+		    {{ str_limit($time->summary, 75) }}
 		</td>
+
+                </td>
 		<td class="text-right">
 		    @if ($time->accuracy)
 			{{ $time->accuracy }}%
-		    @else
-			&nbsp;
 		    @endif
                 </td>
             </tr>
