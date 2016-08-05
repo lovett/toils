@@ -5,8 +5,7 @@
 
     <div class="col-sm-10 {{ $label ? '' : 'col-sm-offset-2' }}">
         <pickable inline-template format="hh:mm AA" initial="{{ date('h:i A') }}">
-
-	    {!! Form::text($name, isset($model->$name)? $model->$name->format('g:i A') : '', ['class' => 'form-control', 'v-model' => 'pickResult']) !!}
+	    {!! Form::text($name . $suffix, isset($model->$name)? $model->$name->format('g:i A') : '', ['class' => 'form-control', 'v-model' => 'pickResult']) !!}
 
             <p>
                 <a href="#" @click.prevent="toggle($event)">

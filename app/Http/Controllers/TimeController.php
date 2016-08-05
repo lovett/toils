@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Requests;
+use App\Http\Requests\TimeRequest;
 use App\Http\Controllers\Controller;
 use App\Time;
 use DatePeriod;
@@ -151,24 +152,30 @@ class TimeController extends Controller
     /**
      * Save a new time entry to the database
      *
-     * @not-yet-implemented-param Request $request The incoming request.
+     * @param Request $request The incoming request.
      *
-     * @return void
+     * @return Response
      */
-    public function store()
+    public function store(TimeRequest $request)
     {
-    }
+        $time = new Time();
 
-    /**
-     * Time entries do not have a show view
-     *
-     * @not-yet-implemented-param Request $request The incoming request.
-     * @not-yet-implemented-param integer $id      A primary key.
-     *
-     * @return void
-     */
-    public function show()
-    {
+        $time->project_id        = (int) $request->project_id;
+        $time->estimatedDuration = (int) $request->estimatedDuration;
+        $time->start             = $request->start;
+        $time->minutes           = $request->minutes;
+        $time->summary           = $request->summary;
+
+        $time->user()->associate($request->user());
+        $time->save();
+
+        $userMessage = $this->successMessage('time entry');
+
+        return redirect()->route(
+            'time.index',
+            [$time->id]
+        )->with('userMessage', $userMessage);
+
     }
 
     /**
@@ -201,13 +208,22 @@ class TimeController extends Controller
     /**
      * Update an existing time entry
      *
-     * @not-yet-implemented-param Request $request The incoming request.
-     * @not-yet-implemented-param integer $id      A primary key.
+     * @param TimeRequest $request The incoming request.
+     * @param integer     $id      A time entry primary key.
      *
-     * @return void
+     * @return Response
      */
-    public function update()
+    public function update(TimeRequest $request, $id)
     {
+        $time = $request->user()->time()->findOrFail($id);
+
+        $affectedRows = $time->update($request->all());
+
+        $userMessage = $this->userMessageForAffectedRows($affectedRows);
+
+        return redirect()->route(
+            'time.index'
+        )->with('userMessage', $userMessage);
     }
 
     /**

@@ -22,10 +22,10 @@
 
 @include('partials.formgroup-standard', ['name' => 'estimatedDuration', 'label' => 'Estimate'])
 
-@include('partials.formgroup-date', ['name' => 'start', 'label' => 'Date', 'ranges' => $ranges])
+@include('partials.formgroup-date', ['name' => 'start', 'suffix' => 'Date', 'label' => 'Date', 'ranges' => $ranges])
 
-@include('partials.formgroup-time', ['name' => 'start', 'label' => 'Start', 'ranges' => $ranges])
-@include('partials.formgroup-time', ['name' => 'end', 'label' => 'End', 'ranges' => $ranges])
+@include('partials.formgroup-time', ['name' => 'start', 'suffix' => 'Time', 'label' => 'Start', 'ranges' => $ranges])
+@include('partials.formgroup-time', ['name' => 'end', 'suffix' => 'Time', 'label' => 'End', 'ranges' => $ranges])
 
 @include('partials.formgroup-textarea', ['name' => 'summary', 'label' => 'Summary'])
 
