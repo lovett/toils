@@ -132,6 +132,28 @@ class Time extends Model
     }
 
     /**
+     * Custom accessor to calculate estimate accuracy as a percentage
+     *
+     * @return integer|null A number between 0 and 100.
+     */
+    public function getAccuracyAttribute()
+    {
+        $values = [
+            $this->estimatedDuration,
+            $this->minutes,
+        ];
+
+        if (in_array(0, $values)) {
+            return null;
+        }
+
+        $max = max($values);
+        $min = min($values);
+
+        return (round(($min / $max), 2) * 100);
+    }
+
+    /**
      * Tally time by month with no gaps
      *
      * @param Project $project    Project model instance.

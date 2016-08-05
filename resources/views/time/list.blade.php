@@ -11,6 +11,7 @@
                 <th>End</th>
                 <th>Project</th>
                 <th class="text-right">Duration</th>
+		<th class="text-right">Accuracy</th>
             </tr>
         </thead>
         <tbody>
@@ -36,6 +37,18 @@
                 </td>
                 <td class="text-right">
                     {{ TimeHelper::hoursAndMinutes($time->minutes) }}
+		    @if ($time->estimatedDuration)
+			<div class="small">Estimate: {{ TimeHelper::hoursAndMinutes($time->estimatedDuration) }}</div>
+		    @else
+			&nbsp;
+		    @endif
+		</td>
+		<td class="text-right">
+		    @if ($time->accuracy)
+			{{ $time->accuracy }}%
+		    @else
+			&nbsp;
+		    @endif
                 </td>
             </tr>
             @endforeach
