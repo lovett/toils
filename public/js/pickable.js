@@ -15,7 +15,7 @@ Vue.component('pickable', {
     },
 
     methods: {
-        toggle: function (event) {
+        toggle: function () {
             this.isToggled = !this.isToggled;
         },
 
@@ -23,6 +23,11 @@ Vue.component('pickable', {
             var index, head, tail, siblings;
 
             if (this.format.indexOf(segment) === -1) {
+                return;
+            }
+
+            if (segment === this.format) {
+                this.pickResult = val;
                 return;
             }
 

@@ -32,9 +32,19 @@ class TimeController extends Controller
         $this->middleware('backto', ['only' => ['store']]);
         view()->share('appSection', 'time');
 
+        view()->share('dateFormat', 'Y-m-d');
+
         view()->share(
             'ranges',
             [
+                'today' => new DateTime(),
+
+                'yesterday' => new DateTime('-1 day'),
+
+                '2-days-ago' => new DateTime('-2 day'),
+
+                '3-days-ago' => new DateTime('-3 day'),
+
                 'month' => new DatePeriod(
                     new DateTime('Jan 1'),
                     new DateInterval('P1M'),
