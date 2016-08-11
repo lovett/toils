@@ -58,7 +58,7 @@ class User extends Model implements
      */
     public function clients()
     {
-        return $this->hasMany('App\Client');
+        return $this->belongsToMany('App\Client');
     }
 
     /**
@@ -68,7 +68,7 @@ class User extends Model implements
      */
     public function projects()
     {
-        return $this->hasMany('App\Project');
+        return $this->belongsToMany('App\Project');
     }
 
     /**

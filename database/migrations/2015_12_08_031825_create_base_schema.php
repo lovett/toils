@@ -21,7 +21,6 @@ class CreateBaseSchema extends Migration
             'clients',
             function (Blueprint $table) {
                 $table->increments('id');
-                $table->integer('user_id')->unsigned();
                 $table->string('name', 100)->unique();
                 $table->boolean('active')->index()->default(true);
                 $table->string('contactName', 50)->nullable();
@@ -34,6 +33,16 @@ class CreateBaseSchema extends Migration
                 $table->string('phone', 20)->nullable();
                 $table->timestamps();
                 $table->softDeletes();
+            }
+        );
+
+        Schema::create(
+            'client_user',
+            function (Blueprint $table) {
+                $table->integer('client_id')->unsigned();
+                $table->integer('user_id')->unsigned();
+                $table->primary(['client_id', 'user_id']);
+                $table->foreign('client_id')->references('id')->on('clients');
                 $table->foreign('user_id')->references('id')->on('users');
             }
         );
@@ -42,7 +51,6 @@ class CreateBaseSchema extends Migration
             'projects',
             function (Blueprint $table) {
                 $table->increments('id');
-                $table->integer('user_id')->unsigned();
                 $table->integer('client_id')->unsigned();
                 $table->string('name', 100);
                 $table->boolean('active')->default(true);
@@ -50,8 +58,18 @@ class CreateBaseSchema extends Migration
                 $table->boolean('taxDeducted')->default(false);
                 $table->timestamps();
                 $table->softDeletes();
-                $table->foreign('user_id')->references('id')->on('users');
                 $table->foreign('client_id')->references('id')->on('clients');
+            }
+        );
+
+        Schema::create(
+            'project_user',
+            function (Blueprint $table) {
+                $table->integer('project_id')->unsigned();
+                $table->integer('user_id')->unsigned();
+                $table->primary(['project_id', 'user_id']);
+                $table->foreign('project_id')->references('id')->on('projects');
+                $table->foreign('user_id')->references('id')->on('users');
             }
         );
 
@@ -59,7 +77,6 @@ class CreateBaseSchema extends Migration
             'estimates',
             function (Blueprint $table) {
                 $table->increments('id');
-                $table->integer('user_id')->unsigned();
                 $table->string('name', 100);
                 $table->date('submitted')->nullable();
                 $table->date('closed')->nullable();
@@ -76,9 +93,19 @@ class CreateBaseSchema extends Migration
                 $table->integer('signatureSize')->nullable()->unsigned();
                 $table->timestamps();
                 $table->softDeletes();
-                $table->foreign('user_id')->references('id')->on('users');
                 $table->foreign('client_id')->references('id')->on('clients');
                 $table->foreign('project_id')->references('id')->on('projects');
+            }
+        );
+
+        Schema::create(
+            'estimate_user',
+            function (Blueprint $table) {
+                $table->integer('estimate_id')->unsigned();
+                $table->integer('user_id')->unsigned();
+                $table->primary(['estimate_id', 'user_id']);
+                $table->foreign('estimate_id')->references('id')->on('estimates');
+                $table->foreign('user_id')->references('id')->on('users');
             }
         );
 
@@ -87,7 +114,6 @@ class CreateBaseSchema extends Migration
             function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('number')->nullable()->unsigned();
-                $table->integer('user_id')->unsigned();
                 $table->integer('amount')->nullable();
                 $table->date('sent')->nullable();
                 $table->date('due')->nullable();
@@ -101,10 +127,21 @@ class CreateBaseSchema extends Migration
                 $table->integer('receiptSize')->nullable()->unsigned();
                 $table->timestamps();
                 $table->softDeletes();
-                $table->foreign('user_id')->references('id')->on('users');
                 $table->foreign('project_id')->references('id')->on('projects');
             }
         );
+
+        Schema::create(
+            'invoice_user',
+            function (Blueprint $table) {
+                $table->integer('invoice_id')->unsigned();
+                $table->integer('user_id')->unsigned();
+                $table->primary(['invoice_id', 'user_id']);
+                $table->foreign('invoice_id')->references('id')->on('invoices');
+                $table->foreign('user_id')->references('id')->on('users');
+            }
+        );
+
 
         Schema::create(
             'times',

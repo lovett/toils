@@ -11,7 +11,7 @@ $factory->define(
     function (FakerGenerator $faker) {
         return [
             'name' => $faker->name,
-            'email' => $faker->email,
+            'email' => $faker->safeEmail,
             'password' => bcrypt(str_random(10)),
             'remember_token' => str_random(10),
         ];
@@ -21,13 +21,7 @@ $factory->define(
 $factory->define(
     Client::class,
     function (FakerGenerator $faker) {
-        $randomUser = User::select('id')
-                    ->orderByRaw('RANDOM()')
-                    ->limit(1)
-                    ->first();
-
         return [
-            'user_id' => $randomUser->id,
             'active' => $faker->boolean(50),
             'name' => $faker->company(),
             'contactName' => $faker->name(),
@@ -51,7 +45,6 @@ $factory->define(
                       ->first();
 
         return [
-            'user_id' => 1,
             'client_id' => $randomClient->id,
             'name' => sprintf(
                 '%s %s %d',
