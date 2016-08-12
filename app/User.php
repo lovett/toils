@@ -54,7 +54,7 @@ class User extends Model implements
     /**
      * Clients associated with the user
      *
-     * @return HasMany
+     * @return BelongsToMany
      */
     public function clients()
     {
@@ -64,11 +64,25 @@ class User extends Model implements
     /**
      * Projects associated with the user
      *
-     * @return HasMany
+     * Returns a Builder instance rather than a relation because of
+     * the manual left join to client_user. A hasManyThrough relation
+     * would not work because of the many-to-many relationship between
+     * users and clients.
+     *
+     * @return Builder
      */
     public function projects()
     {
-        return $this->belongsToMany('App\Project');
+        $query = Project::leftJoin(
+            'client_user',
+            'client_user.client_id',
+            '=',
+            'projects.client_id'
+        );
+
+        $query->where('client_user.user_id', $this->getKey());
+
+        return $query;
     }
 
     /**

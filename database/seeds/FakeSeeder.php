@@ -24,7 +24,7 @@ class FakeSeeder extends Seeder
         Model::unguard();
 
         // A default user with predicatable credentials for use during
-        // development
+        // development.
         User::updateOrCreate(
             [
                 'name' => 'test'
@@ -36,7 +36,7 @@ class FakeSeeder extends Seeder
         );
 
         // Additional users with random credentials for use in table
-        // relations but not much else
+        // relations but not much else.
         factory(User::class, 10)->create();
 
         factory(Client::class, 20)->create()->each(
@@ -46,12 +46,7 @@ class FakeSeeder extends Seeder
             }
         );
 
-        factory(Project::class, 50)->create()->each(
-            function ($project) {
-                $userId = $this->randomUserId();
-                $project->users()->attach([1, $userId]);
-            }
-        );
+        factory(Project::class, 50)->create();
 
         factory(Time::class, 1000)->create();
         Model::reguard();

@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -45,11 +46,11 @@ class Client extends Model
     /**
      * Master query for getting a list of records
      *
-     * @param HasMany $relation The relation to start with.
+     * @param Relation $relation The relation to start with.
      *
-     * @return HasMany
+     * @return Relation
      */
-    public static function listing(HasMany $relation)
+    public static function listing(BelongsToMany $relation)
     {
         $relation = $relation->selectRaw(
             'clients.*,
@@ -90,7 +91,7 @@ class Client extends Model
     }
 
     /**
-     * User associated with the client
+     * Users associated with the client
      *
      * @return BelongsToMany
      */

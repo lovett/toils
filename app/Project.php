@@ -2,12 +2,15 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\User;
 
 /**
  * Eloquent model for the projects table
@@ -57,15 +60,13 @@ class Project extends Model
     /**
      * Master query for getting a list of records
      *
-     * @param HasMany $relation The relation to start with.
+     * @param Builder $query The query to start with.
      *
-     * @return HasMany
+     * @return Builder
      */
-    public static function listing(HasMany $relation)
+    public static function listing(Builder $query)
     {
-        $relation = $relation->with('client');
-        $relation = $relation->orderByRaw('LOWER(projects.name) ASC');
-        return $relation;
+        return $query->with('client')->orderByRaw('LOWER(projects.name) ASC');
     }
 
     /**
