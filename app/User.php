@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Auth\Passwords\CanResetPassword;
@@ -113,24 +114,37 @@ class User extends Model implements
      */
     public function projectsForMenu()
     {
-        $query = $this->projects()->orderBy('name');
-        return $this->asMenu($query);
+        $query = $this->projects()->with('client')->orderBy('name');
+        return $this->asMenu($query, 'id', ['name', 'client.name'], ' :: ');
     }
 
     /**
      * Return a list of key-value pairs suitable for display in an HTML menu
      *
-     * @param Relation $query Determines the list being returned.
-     * @param string   $key   The field name in query to use as the key.
-     * @param string   $value The field name in query to use as the value.
+     * @param Builder         $query     Determines the list being returned.
+     * @param string          $key       The field name in query to use as the key.
+     * @param string|string[] $value     The field name in query to use as the value.
+     * @param separator       $separator The separator in a value comprised of multiple fields.
      *
      * @return array
      */
-    protected function asMenu(Relation $query, $key = 'id', $value = 'name')
+    protected function asMenu(Builder $query, $key = 'id', $value = 'name', $separator = ' ')
     {
         $items = $query->get()->reduce(
-            function ($acc, $item) use ($key, $value) {
-                $acc[$item->$key] = $item->$value;
+            function ($acc, $item) use ($key, $value, $separator) {
+                if (is_string($value)) {
+                    // Value refers to a single field on $item
+                    $acc[$item->$key] = $item->$value;
+                    return $acc;
+                }
+
+                // Value refers to multiple fields
+                $itemArray = $item->toArray();
+                $multiVal = array_map(function ($field) use ($itemArray) {
+                    return array_get($itemArray, $field);
+                }, $value);
+
+                $acc[$item->$key] = implode($separator, $multiVal);
                 return $acc;
             },
             ['' => '']
