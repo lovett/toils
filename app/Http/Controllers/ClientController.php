@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Requests;
@@ -15,6 +16,18 @@ use App\Client;
 class ClientController extends Controller
 {
 
+    /**
+     * Acceptable values for searching.
+     *
+     * @var array
+     */
+    protected $searchFields = [
+        'name' => 'clients.name',
+        'status' => 'clients.active',
+        'locality' => 'clients.locality',
+        'created' => 'clients.created_at',
+        'active' => 'clients.active',
+    ];
 
     /**
      * Set middleware and shared view values
@@ -41,9 +54,10 @@ class ClientController extends Controller
         $clients = Client::listing($request->user()->clients());
 
         if ($request->get('q')) {
-            $search = strtolower($request->get('q'));
-            $search = filter_var($search, FILTER_SANITIZE_STRING);
-            $clients->where('name', 'like', '%' . $search . '%');
+            $query = strtolower($request->get('q'));
+            $query = filter_var($query, FILTER_SANITIZE_STRING);
+
+            $clients = $this->parseSearchQuery($clients, $query);
         }
 
         $clients = $clients->simplePaginate(15);
@@ -53,13 +67,7 @@ class ClientController extends Controller
             'clients' => $clients,
             'search' => $search,
             'searchRoute' => 'client.index',
-            'searchFields' => [
-                'name',
-                'status',
-                'locality',
-                'created',
-                'active',
-            ],
+            'searchFields' => array_keys($this->searchFields),
         ];
 
         return view('clients.list', $viewVars);

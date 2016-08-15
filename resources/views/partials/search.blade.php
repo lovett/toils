@@ -6,7 +6,7 @@
 	<span class="input-group-btn">
             <button class="btn btn-default" type="submit">Search</button>
 	    @if ($search)
-		<a href="{{ route($search_route) }}" class="btn" type="button">Reset</a>
+		<a href="{{ route($searchRoute) }}" class="btn" type="button">Reset</a>
 	    @endif
 	</span>
     </div>
