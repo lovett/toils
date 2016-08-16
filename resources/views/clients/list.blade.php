@@ -29,7 +29,7 @@
                         {{ TimeHelper::dateFromRaw($client->created_at) }}
                     </td>
                     <td>
-                        {{ TimeHelper::dateFromRaw($client->latestTime) }}
+                        {{ TimeHelper::dateFromRaw($client->latestTime, 'never')}}
                     </td>
                     <td>
                         {{ $client->status() }}

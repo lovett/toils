@@ -38,6 +38,13 @@ class Client extends Model
     ];
 
     /**
+     * Datatype mappings.
+     *
+     * @var array
+     */
+    protected $casts = ['totalTime' => 'integer'];
+
+    /**
      * The attributes that are datetimes
      *
      * @var array
@@ -57,7 +64,7 @@ class Client extends Model
         $builder = $builder->selectRaw(
             'clients.*,
             count(distinct projects.id) as projectCount,
-            sum(times.minutes) as totalTime,
+            coalesce(sum(times.minutes), 0) as totalTime,
             max(times.start) as latestTime'
         );
 

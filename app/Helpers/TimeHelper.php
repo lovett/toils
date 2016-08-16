@@ -20,6 +20,10 @@ class TimeHelper
      */
     public static function hoursAndMinutes($minutes)
     {
+        if ($minutes === 0) {
+            return '0 minutes';
+        }
+
         $hours = intval($minutes / 60);
 
         $minutes = ($minutes % 60);
@@ -68,14 +72,15 @@ class TimeHelper
      * For situations where you have a date from a custom query
      * that wasn't automatically converted by Eloquent.
      *
-     * @param string $value The raw datetime string.
+     * @param string $value   The raw datetime string.
+     * @param string $default The value to return in case of nulls.
      *
      * @return Carbon;
      */
-    public static function dateFromRaw($value)
+    public static function dateFromRaw($value, $default = '')
     {
         if (empty($value)) {
-            return '';
+            return $default;
         }
 
         $value = Carbon::parse($value);
