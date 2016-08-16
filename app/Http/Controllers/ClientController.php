@@ -29,6 +29,7 @@ class ClientController extends Controller
         'active' => 'clients.active',
     ];
 
+
     /**
      * Set middleware and shared view values
      */
@@ -49,15 +50,16 @@ class ClientController extends Controller
      */
     public function index(Request $request)
     {
-        $search = null;
+        $search = $request->get('q');
 
-        $clients = Client::listing($request->user()->clients());
+        $baseQuery = $request->user()->clients()->getQuery();
 
-        if ($request->get('q')) {
-            $query = strtolower($request->get('q'));
-            $query = filter_var($query, FILTER_SANITIZE_STRING);
+        $clients = Client::listing($baseQuery);
 
-            $clients = $this->parseSearchQuery($clients, $query);
+        if ($search !== null) {
+            $searchFields = $this->parseSearchQuery($search);
+
+            $clients = Client::search($clients, $searchFields);
         }
 
         $clients = $clients->simplePaginate(15);

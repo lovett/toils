@@ -3,19 +3,21 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Traits\Search;
 
 /**
  * Eloquent model for the clients table
  */
 class Client extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, Search;
 
     /**
      * The attributes that are mass assignable.
@@ -46,20 +48,20 @@ class Client extends Model
     /**
      * Master query for getting a list of records
      *
-     * @param Relation $relation The relation to start with.
+     * @param Builder $builder  The query to start with.
      *
      * @return Relation
      */
-    public static function listing(BelongsToMany $relation)
+    public static function listing(Builder $builder)
     {
-        $relation = $relation->selectRaw(
+        $builder = $builder->selectRaw(
             'clients.*,
             count(distinct projects.id) as projectCount,
             sum(times.minutes) as totalTime,
             max(times.start) as latestTime'
         );
 
-        $relation = $relation->leftJoin(
+        $builder = $builder->leftJoin(
             'projects',
             function ($join) {
                 $join->on('clients.id', '=', 'projects.client_id')
@@ -68,16 +70,18 @@ class Client extends Model
             }
         );
 
-        $relation = $relation->leftJoin(
+        $builder = $builder->leftJoin(
             'times',
             function ($join) {
                 $join->on('times.project_id', '=', 'projects.id');
             }
         );
 
-        $relation = $relation->orderBy('clients.updated_at', 'DESC');
-        $relation = $relation->groupBy('clients.id');
-        return $relation;
+        $builder = $builder->orderBy('clients.updated_at', 'DESC');
+
+        $builder = $builder->groupBy('clients.id');
+
+        return $builder;
     }
 
     /**
