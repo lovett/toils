@@ -49,3 +49,8 @@
 @section('nav_primary')
     {!! link_to_route('client.create', 'Add a client') !!}
 @endsection
+
+@section('page_scripts')
+<script src="{{ asset('js/vue.min.js') }}"></script>
+<script src="{{ asset('js/searchby.js') }}"></script>
+@endsection

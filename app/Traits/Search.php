@@ -31,7 +31,7 @@ trait Search
                     function ($query) use ($field, $values) {
                         array_walk(
                             $values,
-                            function ($value) use ($query) {
+                            function ($value) use ($field, $query) {
                                 $query->orWhere($field, 'LIKE', $value);
                             }
                         );
