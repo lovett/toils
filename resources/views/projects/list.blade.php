@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('page_main')
-    @include('partials.search', ['route' => $searchRoute, 'search' => $search])
+    @include('partials.search', ['route' => 'project.index', 'search' => $search, 'fields' => $searchFields])
     <table class="table">
         <thead>
             <tr>
@@ -43,4 +43,9 @@
 
 @section('nav_primary')
     {!! link_to_route('project.create', 'Add a project') !!}
+@endsection
+
+@section('page_scripts')
+<script src="{{ asset('js/vue.min.js') }}"></script>
+<script src="{{ asset('js/searchby.js') }}"></script>
 @endsection

@@ -38,14 +38,19 @@ class ProjectController extends Controller
      */
     public function index(Request $request)
     {
-        $search = null;
+        $search = $request->get('q');
 
-        $projects = Project::listing($request->user()->projects());
+        $baseQuery = $request->user()->projects();
 
-        if ($request->get('q')) {
-            $search = strtolower($request->get('q'));
-            $search = filter_var($search, FILTER_SANITIZE_STRING);
-            $projects->where('name', 'like', '%' . $search . '%');
+        $projects = Project::listing($baseQuery);
+
+        if ($search !== null) {
+            $searchFields = $this->parseSearchQuery(
+                $search,
+                Project::$searchables
+            );
+
+            $projects = Project::search($projects, $searchFields);
         }
 
         $projects = $projects->simplePaginate(15);
@@ -54,13 +59,7 @@ class ProjectController extends Controller
             'page_title' => 'Projects',
             'projects' => $projects,
             'search' => $search,
-            'searchRoute' => 'project.index',
-            'searchFields' => [
-                'name',
-                'client',
-                'created',
-                'active',
-            ],
+            'searchFields' => array_keys(Project::$searchables),
         ];
 
         return view('projects.list', $viewVars);

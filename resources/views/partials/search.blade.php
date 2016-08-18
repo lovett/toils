@@ -1,4 +1,4 @@
-{!! Form::open(['route' => $searchRoute,  'method' => 'get', 'class' => 'search']) !!}
+{!! Form::open(['route' => $route,  'method' => 'get', 'class' => 'search']) !!}
 
 <div class="form-group">
     <searchby inline-template terms="{{ $search }}">
@@ -7,7 +7,7 @@
 	    <span class="input-group-btn">
 		<button class="btn btn-default" type="submit">Search</button>
 		@if ($search)
-		    <a href="{{ route($searchRoute) }}" class="btn" type="button">Reset</a>
+		    <a href="{{ route($route) }}" class="btn" type="button">Reset</a>
 		@endif
 	    </span>
 	</div>

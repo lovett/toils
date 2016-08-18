@@ -11,13 +11,24 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\User;
+use App\Traits\Search;
 
 /**
  * Eloquent model for the projects table
  */
 class Project extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, Search;
+
+    /**
+     * Fields that can be used for searching.
+     *
+     * Keys are field aliases suitable for use in UI.
+     * Values are qualified field names suitable for use in SQL queries.
+     *
+     * @var array
+     */
+    public static $searchables = ['name' => 'projects.name'];
 
     /**
      * The attributes that are mass assignable.

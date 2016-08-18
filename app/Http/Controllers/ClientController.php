@@ -58,7 +58,6 @@ class ClientController extends Controller
             'page_title' => 'Clients',
             'clients' => $clients,
             'search' => $search,
-            'searchRoute' => 'client.index',
             'searchFields' => array_keys(Client::$searchables),
         ];
 
