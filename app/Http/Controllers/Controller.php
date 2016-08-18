@@ -58,18 +58,19 @@ abstract class Controller extends BaseController
     /**
      * Apply search terms to a query
      *
-     * @param string|null   $query    The search terms as provided by the request.
+     * @param string|null $query       The search terms provided by the request.
+     * @param array       $searchables A searchables array from a model.
      *
      * @return array
      */
-    protected function parseSearchQuery($query)
+    protected function parseSearchQuery($query, array $searchables = [])
     {
         $query = strtolower($query);
         $query = filter_var($query, FILTER_SANITIZE_STRING);
 
         if (strpos($query, ':') === false) {
             // No fields were specified, so treat the first one as a default.
-            $defaultField = current(array_keys($this->searchFields));
+            $defaultField = current(array_keys($searchables));
 
             $query = sprintf('%s:%s', $defaultField, $query);
         }
@@ -85,7 +86,7 @@ abstract class Controller extends BaseController
         // Flatten.
         $fields = array_reduce(
             $fields,
-            function ($accumulator, $pair) {
+            function ($accumulator, $pair) use ($searchables) {
                 list($field, $value) = $pair;
 
                 if (is_numeric($value)) {
@@ -93,11 +94,11 @@ abstract class Controller extends BaseController
                 }
 
                 // Skip unsupported fields.
-                if (array_key_exists($field, $this->searchFields) === false) {
+                if (array_key_exists($field, $searchables) === false) {
                     return $accumulator;
                 }
 
-                $queryField = $this->searchFields[$field];
+                $queryField = $searchables[$field];
                 if (array_key_exists($queryField, $accumulator) === false) {
                     $accumulator[$queryField] = [];
                 }

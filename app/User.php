@@ -103,7 +103,7 @@ class User extends Model implements
      */
     public function clientsForMenu()
     {
-        $query = $this->clients()->orderBy('name');
+        $query = $this->clients()->orderBy('name')->getQuery();
         return $this->asMenu($query);
     }
 

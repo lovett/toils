@@ -20,6 +20,22 @@ class Client extends Model
     use SoftDeletes, Search;
 
     /**
+     * Fields that can be used for searching.
+     *
+     * Keys are field aliases suitable for use in UI.
+     * Values are qualified field names suitable for use in SQL queries.
+     *
+     * @var array
+     */
+    public static $searchables = [
+        'name' => 'clients.name',
+        'status' => 'clients.active',
+        'locality' => 'clients.locality',
+        'created' => 'clients.created_at',
+        'active' => 'clients.active',
+    ];
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array

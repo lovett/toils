@@ -16,19 +16,6 @@ use App\Client;
 class ClientController extends Controller
 {
 
-    /**
-     * Acceptable values for searching.
-     *
-     * @var array
-     */
-    protected $searchFields = [
-        'name' => 'clients.name',
-        'status' => 'clients.active',
-        'locality' => 'clients.locality',
-        'created' => 'clients.created_at',
-        'active' => 'clients.active',
-    ];
-
 
     /**
      * Set middleware and shared view values
@@ -57,7 +44,10 @@ class ClientController extends Controller
         $clients = Client::listing($baseQuery);
 
         if ($search !== null) {
-            $searchFields = $this->parseSearchQuery($search);
+            $searchFields = $this->parseSearchQuery(
+                $search,
+                Client::$searchables
+            );
 
             $clients = Client::search($clients, $searchFields);
         }
@@ -69,7 +59,7 @@ class ClientController extends Controller
             'clients' => $clients,
             'search' => $search,
             'searchRoute' => 'client.index',
-            'searchFields' => array_keys($this->searchFields),
+            'searchFields' => array_keys(Client::$searchables),
         ];
 
         return view('clients.list', $viewVars);
