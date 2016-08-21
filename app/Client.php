@@ -71,7 +71,7 @@ class Client extends Model
     /**
      * Master query for getting a list of records
      *
-     * @param Builder $builder  The query to start with.
+     * @param Builder $builder The query to start with.
      *
      * @return Relation
      */

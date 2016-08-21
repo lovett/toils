@@ -1,11 +1,13 @@
 <?php namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Traits\Search;
 
 /**
  * Eloquent model for the times table
@@ -13,7 +15,22 @@ use Carbon\Carbon;
 class Time extends Model
 {
 
-    use SoftDeletes;
+    use SoftDeletes, Search;
+
+    /**
+     * Fields that can be used for searching.
+     *
+     * Keys are field aliases suitable for use in UI.
+     * Values are qualified field names suitable for use in SQL queries.
+     *
+     * @var array
+     */
+    public static $searchables = [
+        'summary' => 'times.summary',
+        'start' => 'times.start',
+        'minutes' => 'times.mintues',
+        'end' => 'times.end',
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -53,15 +70,15 @@ class Time extends Model
     /**
      * Master query for getting a list of records
      *
-     * @param HasMany $relation The relation to start with.
+     * @param Builder $builder The query to start with.
      *
-     * @return HasMany
+     * @return Relation
      */
-    public static function listing(HasMany $relation)
+    public static function listing(Builder $builder)
     {
-        $relation = $relation->with('project');
-        $relation = $relation->orderBy('start', 'desc');
-        return $relation;
+        $builder = $builder->with('project');
+        $builder = $builder->orderBy('start', 'desc');
+        return $builder;
     }
 
     /**

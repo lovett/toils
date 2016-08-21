@@ -87,14 +87,19 @@ class TimeController extends Controller
      */
     public function index(Request $request)
     {
-        $search = null;
+        $search = $request->get('q');
 
-        $time = Time::listing($request->user()->time());
+        $baseQuery = $request->user()->time()->getQuery();
 
-        if ($request->get('q')) {
-            $search = strtolower($request->get('q'));
-            $search = filter_var($search, FILTER_SANITIZE_STRING);
-            $time->where('summary', 'like', '%' . $search . '%');
+        $time = Time::listing($baseQuery);
+
+        if ($search !== null) {
+            $searchFields = $this->parseSearchQuery(
+                $search,
+                Time::$searchables
+            );
+
+            $time = Time::search($time, $searchFields);
         }
 
         $time = $time->simplepaginate(15);
@@ -104,12 +109,7 @@ class TimeController extends Controller
             'search' => $search,
             'times' => $time,
             'searchRoute' => 'time.index',
-            'searchfields' => [
-                'summary',
-                'start',
-                'minutes',
-                'end',
-            ],
+            'searchFields' => array_keys(Time::$searchables),
         ];
 
         return view('time.list', $viewvars);
