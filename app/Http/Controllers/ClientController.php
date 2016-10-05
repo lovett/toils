@@ -9,6 +9,7 @@ use App\Http\Requests;
 use App\Http\Requests\ClientRequest;
 use App\Http\Controllers\Controller;
 use App\Client;
+use App\Project;
 
 /**
  * Resource controller for clients
@@ -180,6 +181,12 @@ class ClientController extends Controller
         $client = Client::find($id);
 
         $affectedRows = $client->update($request->all());
+
+        if ($client->active === 0) {
+            // An inactive client should not have active projects.
+            $projects = $client->projects();
+            $projects->update(['active' => false]);
+        }
 
         $userMessage = $this->userMessageForAffectedRows($affectedRows);
 
