@@ -34,6 +34,12 @@
                 </div>
             @endif
 
+            @if (isset($model) && $model->active == false)
+                <div class="alert alert-warning alert-dismissable text-center" role="alert">
+                    This record was marked inactive.
+                </div>
+            @endif
+
             @yield('page_main')
         </main>
         <script src="{{ asset('js/jquery.min.js') }}"></script>

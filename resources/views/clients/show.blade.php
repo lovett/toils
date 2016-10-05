@@ -34,7 +34,11 @@
 
                 @foreach ($model->projects->where('active', true) as $project)
                 <li>
+                    @if ($model->active)
                     <a href="{{ route('project.show', ['project' => $project]) }}">{{ $project->name }}</a>
+                    @else
+                    {{ $project->name }}
+                    @endif
                 </li>
                 @endforeach
             </ul>
@@ -50,7 +54,11 @@
 
                 @foreach ($model->projects->where('active', false) as $project)
                 <li>
+                    @if ($model->active)
                     <a href="{{ route('project.show', ['project' => $project]) }}">{{ $project->name }}</a>
+                    @else
+                    {{ $project->name }}
+                    @endif
                 </li>
                 @endforeach
             </ul>
@@ -65,7 +73,12 @@
 
 @section('nav_primary')
     <ul class="list-inline">
-    <li>{!! link_to_route('client.edit', 'Edit', ['id' => $model->id]) !!}</li>
-    <li>{!! link_to_route('project.create', 'New project', ['client' => $model->id]) !!}</li>
+        <li>{!! link_to_route('client.edit', 'Edit', ['id' => $model->id]) !!}</li>
+
+        @if ($model->active)
+            <li>{!! link_to_route('project.create', 'New project', ['client' => $model->id]) !!}</li>
+        @else
+            <li>New project</li>
+        @endif
     </ul>
 @endsection
