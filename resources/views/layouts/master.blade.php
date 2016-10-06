@@ -34,7 +34,7 @@
                 </div>
             @endif
 
-            @if (isset($model) && $model->active == false)
+            @if (isset($model->active) && $model->active == false)
                 <div class="alert alert-warning alert-dismissable text-center" role="alert">
                     This record was marked inactive.
                 </div>
