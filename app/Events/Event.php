@@ -3,7 +3,7 @@
 namespace App\Events;
 
 /**
- * Standard Laravel Event abstract class
+ * Standard Laravel Event abstract class.
  */
 abstract class Event
 {

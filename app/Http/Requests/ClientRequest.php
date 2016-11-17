@@ -2,20 +2,17 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Requests\Request;
 use Illuminate\Support\Facades\Auth;
 
 /**
- * Form request class for Projects
+ * Form request class for Projects.
  */
 class ClientRequest extends Request
 {
-
-
     /**
      * Determine if the user is authorized to make this request.
      *
-     * @return boolean
+     * @return bool
      */
     public function authorize()
     {
@@ -30,13 +27,12 @@ class ClientRequest extends Request
     public function rules()
     {
         return [
-            'name' => 'required|max:255|unique:clients,' . $this->id,
+            'name' => 'required|max:255|unique:clients,'.$this->id,
         ];
     }
 
-
     /**
-     * Map validation rules to errors
+     * Map validation rules to errors.
      *
      * @return array
      */
@@ -46,7 +42,7 @@ class ClientRequest extends Request
     }
 
     /**
-     * Manipulate the input before performing validation
+     * Manipulate the input before performing validation.
      *
      * @return Validator
      */

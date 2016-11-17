@@ -2,20 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
 
 /**
- * Controller for the user homepage
+ * Controller for the user homepage.
  */
 class DashboardController extends Controller
 {
-
-
     /**
-     * Set middleware and shared view values
+     * Set middleware and shared view values.
      */
     public function __construct()
     {
@@ -24,9 +19,8 @@ class DashboardController extends Controller
         view()->share('page_title', 'Dashboard');
     }
 
-
     /**
-     * Display the dashboard
+     * Display the dashboard.
      *
      * @return Response
      */

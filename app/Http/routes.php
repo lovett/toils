@@ -1,6 +1,6 @@
 <?php
 /**
- * Application routes
+ * Application routes.
  */
 
 // Homepage.
@@ -16,7 +16,7 @@ Route::get(
     'dashboard',
     [
         'as' => 'dashboard',
-        'uses' => 'DashboardController@index'
+        'uses' => 'DashboardController@index',
     ]
 );
 
@@ -25,7 +25,7 @@ Route::get(
     'auth/login',
     [
         'as' => 'login',
-        'uses' => 'Auth\AuthController@getLogin'
+        'uses' => 'Auth\AuthController@getLogin',
     ]
 );
 
@@ -33,7 +33,7 @@ Route::post(
     'auth/login',
     [
         'as' => 'postLogin',
-        'uses' => 'Auth\AuthController@postLogin'
+        'uses' => 'Auth\AuthController@postLogin',
     ]
 );
 
@@ -41,7 +41,7 @@ Route::get(
     'auth/logout',
     [
         'as' => 'logout',
-        'uses' => 'Auth\AuthController@getLogout'
+        'uses' => 'Auth\AuthController@getLogout',
     ]
 );
 
@@ -50,7 +50,7 @@ Route::get(
     'auth/register',
     [
         'as' => 'register',
-        'uses' => 'Auth\AuthController@getRegister'
+        'uses' => 'Auth\AuthController@getRegister',
     ]
 );
 
@@ -58,7 +58,7 @@ Route::post(
     'auth/register',
     [
         'as' => 'postRegister',
-        'uses' => 'Auth\AuthController@postRegister'
+        'uses' => 'Auth\AuthController@postRegister',
     ]
 );
 
@@ -72,7 +72,7 @@ Route::get(
     'projects',
     [
         'as' => 'projects',
-        'uses' => 'ProjectController@index'
+        'uses' => 'ProjectController@index',
     ]
 );
 

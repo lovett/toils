@@ -5,16 +5,14 @@ namespace App\Helpers;
 use Exception;
 
 /**
- * Helper functions for displaying addresses
+ * Helper functions for displaying addresses.
  */
 class AddressHelper
 {
-
-
     /**
-     * Display a mailing address, taking care to account for missing fields
+     * Display a mailing address, taking care to account for missing fields.
      *
-     * @param string $record An object containing address fields.
+     * @param string $record An object containing address fields
      *
      * @return string
      */
@@ -29,8 +27,9 @@ class AddressHelper
             $suffix = ''
         ) use ($record) {
             if (empty($record->$key) === false) {
-                $out .= $prefix . $record->$key . $suffix;
+                $out .= $prefix.$record->$key.$suffix;
             }
+
             return $out;
         };
 
@@ -49,9 +48,9 @@ class AddressHelper
     }
 
     /**
-     * Display a phone number as a hyperlink with the tel protocol
+     * Display a phone number as a hyperlink with the tel protocol.
      *
-     * @param string $value The number to display.
+     * @param string $value The number to display
      *
      * @return string
      */
@@ -74,6 +73,5 @@ class AddressHelper
             $plainValue,
             $formattedValue
         );
-
     }
 }

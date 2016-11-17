@@ -7,25 +7,21 @@ use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
 
 /**
- * Standard Laravel Authenticate middleware
+ * Standard Laravel Authenticate middleware.
  */
 class Authenticate
 {
-
     /**
      * The Guard implementation.
      *
-     * @var Guard Guard instance.
+     * @var Guard Guard instance
      */
     protected $auth;
-
 
     /**
      * Create a new filter instance.
      *
-     * @param Guard $auth Guard instance.
-     *
-     * @return void
+     * @param Guard $auth Guard instance
      */
     public function __construct(Guard $auth)
     {
@@ -35,8 +31,8 @@ class Authenticate
     /**
      * Handle an incoming request.
      *
-     * @param Request $request The incoming request.
-     * @param Closure $next    The handler to receive the request.
+     * @param Request $request The incoming request
+     * @param Closure $next    The handler to receive the request
      *
      * @return mixed
      */
@@ -46,6 +42,7 @@ class Authenticate
             if ($request->ajax()) {
                 return response('Unauthorized.', 401);
             }
+
             return redirect()->guest('auth/login');
         }
 

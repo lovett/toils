@@ -4,22 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Http\Requests;
 use App\Http\Requests\ProjectRequest;
-use App\Http\Controllers\Controller;
 use App\Project;
 use App\Client;
 use App\Time;
 
 /**
- * Resource controller for projects
+ * Resource controller for projects.
  */
 class ProjectController extends Controller
 {
-
-
     /**
-     * Set middleware and shared view values
+     * Set middleware and shared view values.
      */
     public function __construct()
     {
@@ -30,9 +26,9 @@ class ProjectController extends Controller
     }
 
     /**
-     * Display a list of projects
+     * Display a list of projects.
      *
-     * @param Request $request The incoming request.
+     * @param Request $request The incoming request
      *
      * @return Response
      */
@@ -66,9 +62,9 @@ class ProjectController extends Controller
     }
 
     /**
-     * Show the form for creating a new project
+     * Show the form for creating a new project.
      *
-     * @param Request $request The incoming request.
+     * @param Request $request The incoming request
      *
      * @return Response
      */
@@ -100,27 +96,24 @@ class ProjectController extends Controller
         ];
 
         return view('projects.form', $viewVars);
-
     }
 
     /**
-     * Save a new project to the database
+     * Save a new project to the database.
      *
-     * @param ProjectRequest $request The incoming request.
-     *
-     * @return void
+     * @param ProjectRequest $request The incoming request
      */
     public function store(ProjectRequest $request)
     {
-        $project = new Project;
+        $project = new Project();
 
         $clientId = $request->input('client_id', 0);
 
         $client = $request->user()->clients()->findOrFail($clientId);
 
-        $project->name        = $request->input('name');
-        $project->active      = $request->input('active', 0);
-        $project->billable    = $request->input('billable', 0);
+        $project->name = $request->input('name');
+        $project->active = $request->input('active', 0);
+        $project->billable = $request->input('billable', 0);
         $project->taxDeducted = $request->input('taxDeducted', 0);
 
         $project->user()->associate($request->user());
@@ -129,10 +122,10 @@ class ProjectController extends Controller
     }
 
     /**
-     * Display a project
+     * Display a project.
      *
-     * @param Request $request The incoming request.
-     * @param integer $id      A project primary key.
+     * @param Request $request The incoming request
+     * @param int     $id      A project primary key
      *
      * @return Response
      */
@@ -166,14 +159,13 @@ class ProjectController extends Controller
         ];
 
         return view('projects.show', $viewVars);
-
     }
 
     /**
-     * Show the form for editing a project
+     * Show the form for editing a project.
      *
-     * @param Request $request The incoming request.
-     * @param integer $id      A project primary key.
+     * @param Request $request The incoming request
+     * @param int     $id      A project primary key
      *
      * @return Response
      */
@@ -195,14 +187,13 @@ class ProjectController extends Controller
         ];
 
         return view('projects.form', $viewVars);
-
     }
 
     /**
-     * Update an existing project
+     * Update an existing project.
      *
-     * @param ProjectRequest $request The incoming request.
-     * @param integer        $id      A project primary key.
+     * @param ProjectRequest $request The incoming request
+     * @param int            $id      A project primary key
      *
      * @return Response
      */
@@ -221,12 +212,12 @@ class ProjectController extends Controller
     }
 
     /**
-     * Delete a project
+     * Delete a project.
      *
      * Projects use soft deletion.
      *
-     * @param Request $request The incoming request.
-     * @param integer $id      A project primary key.
+     * @param Request $request The incoming request
+     * @param int     $id      A project primary key
      *
      * @return Response
      */

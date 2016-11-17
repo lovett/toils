@@ -6,17 +6,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 
 /**
- * Standard Laravel password reset controller
+ * Standard Laravel password reset controller.
  */
 class PasswordController extends Controller
 {
     use ResetsPasswords;
 
-
     /**
      * Create a new password controller instance.
-     *
-     * @return void
      */
     public function __construct()
     {

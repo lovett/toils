@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 /**
- * Custom parent controller class
+ * Custom parent controller class.
  *
  * For functionality common to all controllers.
  */
@@ -17,11 +16,10 @@ abstract class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-
     /**
-     * Standard value for indicating update success via flash
+     * Standard value for indicating update success via flash.
      *
-     * @param integer $count The number of updated records.
+     * @param int $count The number of updated records
      *
      * @return array
      */
@@ -41,9 +39,9 @@ abstract class Controller extends BaseController
     }
 
     /**
-     * Standard value for indicating creation success via flash
+     * Standard value for indicating creation success via flash.
      *
-     * @param string $recordType A human-readable label for the created record.
+     * @param string $recordType A human-readable label for the created record
      *
      * @return array
      */
@@ -51,15 +49,15 @@ abstract class Controller extends BaseController
     {
         return [
             'success',
-            ucfirst($recordType) . ' created successfully!',
+            ucfirst($recordType).' created successfully!',
         ];
     }
 
     /**
-     * Apply search terms to a query
+     * Apply search terms to a query.
      *
-     * @param string|null $query       The search terms provided by the request.
-     * @param array       $searchables A searchables array from a model.
+     * @param string|null $query       The search terms provided by the request
+     * @param array       $searchables A searchables array from a model
      *
      * @return array
      */
@@ -114,12 +112,12 @@ abstract class Controller extends BaseController
                 }
 
                 $accumulator[$queryField][] = $value;
+
                 return $accumulator;
             },
             []
         );
 
         return $fields;
-
     }
 }

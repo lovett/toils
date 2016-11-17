@@ -5,16 +5,12 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 
 /**
- * Standard Laravel database service provider class
+ * Standard Laravel database service provider class.
  */
 class DatabaseServiceProvider extends ServiceProvider
 {
-
-
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
     public function boot()
     {
@@ -35,11 +31,8 @@ class DatabaseServiceProvider extends ServiceProvider
         touch($defaultConnection['database']);
     }
 
-
     /**
      * Register any application services.
-     *
-     * @return void
      */
     public function register()
     {

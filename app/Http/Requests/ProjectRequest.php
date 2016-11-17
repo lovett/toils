@@ -2,28 +2,23 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Requests\Request;
 use App\Project;
-use App\Client;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Contracts\Validation\Validator;
 
 /**
- * Form request class for Projects
+ * Form request class for Projects.
  */
 class ProjectRequest extends Request
 {
-
-
     /**
      * Determine if the user is authorized to make this request.
      *
-     * @return boolean
+     * @return bool
      */
     public function authorize()
     {
         $projectId = $this->route('project');
-        $clientId  = $this->input('client_id', 0);
+        $clientId = $this->input('client_id', 0);
 
         $this->user()->clients()->findOrFail($clientId);
 
@@ -32,7 +27,6 @@ class ProjectRequest extends Request
         }
 
         return true;
-
     }
 
     /**
@@ -51,9 +45,8 @@ class ProjectRequest extends Request
         ];
     }
 
-
     /**
-     * Map validation rules to errors
+     * Map validation rules to errors.
      *
      * @return array
      */
@@ -62,9 +55,8 @@ class ProjectRequest extends Request
         return ['required' => 'This field is required'];
     }
 
-
     /**
-     * Manipulate the input before performing validation
+     * Manipulate the input before performing validation.
      *
      * @return Validator;
      */

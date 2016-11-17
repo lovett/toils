@@ -2,24 +2,18 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Requests\Request;
-use App\Project;
-use App\Client;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Contracts\Validation\Validator;
 use Carbon\Carbon;
 
 /**
- * Form request class for Time
+ * Form request class for Time.
  */
 class TimeRequest extends Request
 {
-
-
     /**
      * Determine if the user is authorized to make this request.
      *
-     * @return boolean
+     * @return bool
      */
     public function authorize()
     {
@@ -28,7 +22,6 @@ class TimeRequest extends Request
         $this->user()->projects()->findOrFail($projectId);
 
         return true;
-
     }
 
     /**
@@ -47,9 +40,8 @@ class TimeRequest extends Request
         ];
     }
 
-
     /**
-     * Map validation rules to errors
+     * Map validation rules to errors.
      *
      * @return array
      */
@@ -58,9 +50,8 @@ class TimeRequest extends Request
         return ['required' => 'This field is required'];
     }
 
-
     /**
-     * Manipulate the input before performing validation
+     * Manipulate the input before performing validation.
      *
      * @return Validator;
      */
@@ -79,8 +70,8 @@ class TimeRequest extends Request
                 if ($field === 'start') {
                     $value = sprintf(
                         '%s %s',
-                        $this->input($field . 'Date', ''),
-                        $this->input($field . 'Time', '')
+                        $this->input($field.'Date', ''),
+                        $this->input($field.'Time', '')
                     );
 
                     $value = new Carbon($value);
@@ -97,7 +88,7 @@ class TimeRequest extends Request
                 if ($field === 'minutes') {
                     $value = 0;
                     $start = $this->input('startTime', 0);
-                    $end   = $this->input('endTime', 0);
+                    $end = $this->input('endTime', 0);
 
                     if ($start && $end) {
                         $value = (strtotime($end) - strtotime($start)) / 60;

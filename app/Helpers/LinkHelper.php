@@ -3,20 +3,18 @@
 namespace App\Helpers;
 
 /**
- * Helper functions for displaying links
+ * Helper functions for displaying links.
  */
 class LinkHelper
 {
-
-
     /**
-     * Render a route link with active class
+     * Render a route link with active class.
      *
-     * @param string $section The current section declared by the controller.
-     * @param string $route   The route to link to.
-     * @param string $label   The text of the link.
-     * @param array  $params  Querystring parameters to include with the link.
-     * @param array  $attribs Additional attributes for the link tag.
+     * @param string $section The current section declared by the controller
+     * @param string $route   The route to link to
+     * @param string $label   The text of the link
+     * @param array  $params  Querystring parameters to include with the link
+     * @param array  $attribs Additional attributes for the link tag
      *
      * @return string
      */
@@ -39,7 +37,7 @@ class LinkHelper
             $attribs['class'] = '';
         }
 
-        $attribs['class'] .= ' ' . $class;
+        $attribs['class'] .= ' '.$class;
 
         return link_to_route($route, $label, $params, $attribs);
     }

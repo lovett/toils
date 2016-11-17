@@ -6,17 +6,15 @@ use Closure;
 use Illuminate\Http\Request;
 
 /**
- * Redirect to the url previously captured by the returnable middleware
+ * Redirect to the url previously captured by the returnable middleware.
  */
 class BackTo
 {
-
-
     /**
      * Handle an incoming request.
      *
-     * @param Request $request The incoming request.
-     * @param Closure $next    The handler to receive the request.
+     * @param Request $request The incoming request
+     * @param Closure $next    The handler to receive the request
      *
      * @return mixed
      */

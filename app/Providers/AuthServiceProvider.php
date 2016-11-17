@@ -7,11 +7,10 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider
     as ServiceProvider;
 
 /**
- * Standard Laravel auth service provider class
+ * Standard Laravel auth service provider class.
  */
 class AuthServiceProvider extends ServiceProvider
 {
-
     /**
      * The policy mappings for the application.
      *
@@ -19,13 +18,10 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = ['App\Model' => 'App\Policies\ModelPolicy'];
 
-
     /**
      * Register any application authentication / authorization services.
      *
-     * @param GateContract $gate GateContract instance.
-     *
-     * @return void
+     * @param GateContract $gate GateContract instance
      */
     public function boot(GateContract $gate)
     {

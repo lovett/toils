@@ -5,16 +5,12 @@ namespace App;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
-use App\User;
 use App\Traits\Search;
 
 /**
- * Eloquent model for the projects table
+ * Eloquent model for the projects table.
  */
 class Project extends Model
 {
@@ -44,7 +40,7 @@ class Project extends Model
     ];
 
     /**
-     * Mapping between attributes and data types
+     * Mapping between attributes and data types.
      *
      * @var array
      */
@@ -59,19 +55,18 @@ class Project extends Model
     ];
 
     /**
-     * The attributes that are datetimes
+     * The attributes that are datetimes.
      *
      * @var array
      */
     protected $dates = [
-        'deleted_at' => 'datetime'
+        'deleted_at' => 'datetime',
     ];
 
-
     /**
-     * Master query for getting a list of records
+     * Master query for getting a list of records.
      *
-     * @param Builder $query The query to start with.
+     * @param Builder $query The query to start with
      *
      * @return Builder
      */
@@ -81,7 +76,7 @@ class Project extends Model
     }
 
     /**
-     * User associated with the project
+     * User associated with the project.
      *
      * @return BelongsToMany
      */
@@ -91,7 +86,7 @@ class Project extends Model
     }
 
     /**
-     * Client associated with the project
+     * Client associated with the project.
      *
      * @return HasOne
      */
@@ -100,9 +95,8 @@ class Project extends Model
         return $this->belongsTo('App\Client');
     }
 
-
     /**
-     * Time entires associated with the project
+     * Time entires associated with the project.
      *
      * @return HasMany
      */
@@ -112,7 +106,7 @@ class Project extends Model
     }
 
     /**
-     * Human-readable value for active boolean fied
+     * Human-readable value for active boolean fied.
      *
      * @return string
      */
@@ -125,9 +119,8 @@ class Project extends Model
         return 'inactive';
     }
 
-
     /**
-     * Human-readable value for taxDeducted boolean field
+     * Human-readable value for taxDeducted boolean field.
      *
      * @return string
      */
@@ -141,7 +134,7 @@ class Project extends Model
     }
 
     /**
-     * Human-readable value for billable boolean field
+     * Human-readable value for billable boolean field.
      *
      * @return string
      */

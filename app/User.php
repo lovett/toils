@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\Relations\Relation\HasMany;
 
 /**
- * Eloquent model for the users table
+ * Eloquent model for the users table.
  */
 class User extends Model implements
     AuthenticatableContract,
@@ -51,9 +51,8 @@ class User extends Model implements
         'remember_token',
     ];
 
-
     /**
-     * Clients associated with the user
+     * Clients associated with the user.
      *
      * @return BelongsToMany
      */
@@ -63,7 +62,7 @@ class User extends Model implements
     }
 
     /**
-     * Projects associated with the user
+     * Projects associated with the user.
      *
      * Returns a Builder instance rather than a relation because of
      * the manual left join to client_user. A hasManyThrough relation
@@ -87,7 +86,7 @@ class User extends Model implements
     }
 
     /**
-     * Time entries associated with the user
+     * Time entries associated with the user.
      *
      * @return HasMany
      */
@@ -97,34 +96,36 @@ class User extends Model implements
     }
 
     /**
-     * Return a menu-friendly list of the user's clients
+     * Return a menu-friendly list of the user's clients.
      *
      * @return array
      */
     public function clientsForMenu()
     {
         $query = $this->clients()->orderBy('name')->getQuery();
+
         return $this->asMenu($query);
     }
 
     /**
-     * Return a menu-friendly list of the user's projects
+     * Return a menu-friendly list of the user's projects.
      *
      * @return array
      */
     public function projectsForMenu()
     {
         $query = $this->projects()->with('client')->orderBy('name');
+
         return $this->asMenu($query, 'id', ['name', 'client.name'], ' :: ');
     }
 
     /**
-     * Return a list of key-value pairs suitable for display in an HTML menu
+     * Return a list of key-value pairs suitable for display in an HTML menu.
      *
-     * @param Builder         $query     Determines the list being returned.
-     * @param string          $key       The field name in query to use as the key.
-     * @param string|string[] $value     The field name in query to use as the value.
-     * @param separator       $separator The separator in a value comprised of multiple fields.
+     * @param Builder         $query     Determines the list being returned
+     * @param string          $key       The field name in query to use as the key
+     * @param string|string[] $value     The field name in query to use as the value
+     * @param separator       $separator The separator in a value comprised of multiple fields
      *
      * @return array
      */
@@ -135,6 +136,7 @@ class User extends Model implements
                 if (is_string($value)) {
                     // Value refers to a single field on $item
                     $acc[$item->$key] = $item->$value;
+
                     return $acc;
                 }
 
@@ -145,6 +147,7 @@ class User extends Model implements
                 }, $value);
 
                 $acc[$item->$key] = implode($separator, $multiVal);
+
                 return $acc;
             },
             ['' => '']

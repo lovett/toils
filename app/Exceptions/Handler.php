@@ -11,11 +11,10 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 /**
- * Standard Laravel exception handler class
+ * Standard Laravel exception handler class.
  */
 class Handler extends ExceptionHandler
 {
-
     /**
      * A list of the exception types that should not be reported.
      *
@@ -26,13 +25,12 @@ class Handler extends ExceptionHandler
         ModelNotFoundException::class,
     ];
 
-
     /**
      * Report or log an exception.
      *
      * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
      *
-     * @param Exception $e The exception instance.
+     * @param Exception $e The exception instance
      *
      * @return Response
      */
@@ -44,8 +42,8 @@ class Handler extends ExceptionHandler
     /**
      * Render an exception into an HTTP response.
      *
-     * @param Request   $request The incoming request.
-     * @param Exception $e       The exception.
+     * @param Request   $request The incoming request
+     * @param Exception $e       The exception
      *
      * @return Response
      */

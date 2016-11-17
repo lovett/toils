@@ -9,7 +9,8 @@
         "laravel/framework": "5.1.*",
         "laravelcollective/html": "^5.0",
         "propaganistas/laravel-phone": "^2.7",
-        "phpmd/phpmd": "^2.4"
+        "phpmd/phpmd": "^2.4",
+        "friendsofphp/php-cs-fixer": "^1.12"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

@@ -8,11 +8,10 @@ use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Support\Facades\Redirect;
 
 /**
- * Standard Laravel class for redirecting logged in users
+ * Standard Laravel class for redirecting logged in users.
  */
 class RedirectIfAuthenticated
 {
-
     /**
      * The Guard implementation.
      *
@@ -20,13 +19,10 @@ class RedirectIfAuthenticated
      */
     protected $auth;
 
-
     /**
      * Create a new filter instance.
      *
-     * @param Guard $auth A Guard instance.
-     *
-     * @return void
+     * @param Guard $auth A Guard instance
      */
     public function __construct(Guard $auth)
     {
@@ -36,8 +32,8 @@ class RedirectIfAuthenticated
     /**
      * Handle an incoming request.
      *
-     * @param Request $request The current request.
-     * @param Closure $next    The handler to receive the request.
+     * @param Request $request The current request
+     * @param Closure $next    The handler to receive the request
      *
      * @return mixed
      */

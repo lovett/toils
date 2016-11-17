@@ -4,26 +4,20 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Http\Requests;
 use App\Http\Requests\TimeRequest;
-use App\Http\Controllers\Controller;
 use App\Time;
 use DatePeriod;
 use DateInterval;
 use DateTime;
 use Carbon\Carbon;
-use Illuminate\Database\ModelNotFoundException;
-use Illuminate\Support\Facades\DB;
 
 /**
- * Controller for managing time entries
+ * Controller for managing time entries.
  */
 class TimeController extends Controller
 {
-
-
     /**
-     * Define middleware and standard date ranges
+     * Define middleware and standard date ranges.
      */
     public function __construct()
     {
@@ -79,9 +73,9 @@ class TimeController extends Controller
     }
 
     /**
-     * Display a list of time entries
+     * Display a list of time entries.
      *
-     * @param Request $request The incoming request.
+     * @param Request $request The incoming request
      *
      * @return Response
      */
@@ -118,7 +112,7 @@ class TimeController extends Controller
     /**
      * Show the form for creating a new time entry.
      *
-     * @param Request $request The incoming request.
+     * @param Request $request The incoming request
      *
      * @return response
      */
@@ -134,7 +128,7 @@ class TimeController extends Controller
         $model = new Time(
             [
                 'start' => new Carbon('now'),
-                'project_id' => $projectId
+                'project_id' => $projectId,
             ]
         );
 
@@ -160,9 +154,9 @@ class TimeController extends Controller
     }
 
     /**
-     * Save a new time entry to the database
+     * Save a new time entry to the database.
      *
-     * @param Request $request The incoming request.
+     * @param Request $request The incoming request
      *
      * @return Response
      */
@@ -170,11 +164,11 @@ class TimeController extends Controller
     {
         $time = new Time();
 
-        $time->project_id        = (int) $request->project_id;
+        $time->project_id = (int) $request->project_id;
         $time->estimatedDuration = (int) $request->estimatedDuration;
-        $time->start             = $request->start;
-        $time->minutes           = $request->minutes;
-        $time->summary           = $request->summary;
+        $time->start = $request->start;
+        $time->minutes = $request->minutes;
+        $time->summary = $request->summary;
 
         $time->user()->associate($request->user());
         $time->save();
@@ -185,14 +179,13 @@ class TimeController extends Controller
             'time.index',
             [$time->id]
         )->with('userMessage', $userMessage);
-
     }
 
     /**
-     * Show the form for editing a time entry
+     * Show the form for editing a time entry.
      *
-     * @param Request $request The incoming request.
-     * @param integer $id      A primary key.
+     * @param Request $request The incoming request
+     * @param int     $id      A primary key
      *
      * @return Response
      */
@@ -216,10 +209,10 @@ class TimeController extends Controller
     }
 
     /**
-     * Update an existing time entry
+     * Update an existing time entry.
      *
-     * @param TimeRequest $request The incoming request.
-     * @param integer     $id      A time entry primary key.
+     * @param TimeRequest $request The incoming request
+     * @param int         $id      A time entry primary key
      *
      * @return Response
      */
@@ -237,16 +230,14 @@ class TimeController extends Controller
     }
 
     /**
-     * Delete a time entry
+     * Delete a time entry.
      *
      * Time entries use soft deletion.
      *
      * The backto middleware takes care of redirection.
      *
-     * @param Request $request The incoming request.
-     * @param integer $id      A primary key.
-     *
-     * @return void
+     * @param Request $request The incoming request
+     * @param int     $id      A primary key
      */
     public function destroy(Request $request, $id)
     {

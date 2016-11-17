@@ -7,11 +7,10 @@ use Illuminate\Foundation\Support\Providers\EventServiceProvider
     as ServiceProvider;
 
 /**
- * Standard Laravel event service provider class
+ * Standard Laravel event service provider class.
  */
 class EventServiceProvider extends ServiceProvider
 {
-
     /**
      * The event listener mappings for the application.
      *
@@ -21,13 +20,10 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\SomeEvent' => ['App\Listeners\EventListener'],
     ];
 
-
     /**
      * Register any other events for your application.
      *
-     * @param DispatcherContract $events DispatcherContract instance.
-     *
-     * @return void
+     * @param DispatcherContract $events DispatcherContract instance
      */
     public function boot(DispatcherContract $events)
     {

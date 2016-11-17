@@ -5,16 +5,14 @@ namespace App\Helpers;
 use Carbon\Carbon;
 
 /**
- * Helper functions for displaying time values
+ * Helper functions for displaying time values.
  */
 class TimeHelper
 {
-
-
     /**
-     * Display an integer as an "x hours, y minutes" English phrase
+     * Display an integer as an "x hours, y minutes" English phrase.
      *
-     * @param integer $minutes The value to be converted for display.
+     * @param int $minutes The value to be converted for display
      *
      * @return string
      */
@@ -54,12 +52,12 @@ class TimeHelper
     }
 
     /**
-     * Convert minutes to hours with rounding
+     * Convert minutes to hours with rounding.
      *
-     * @param integer $minutes   The number to be divided.
-     * @param integer $precision How many decimal places.
+     * @param int $minutes   The number to be divided
+     * @param int $precision How many decimal places
      *
-     * @return integer
+     * @return int
      */
     public static function minutesToHours($minutes, $precision = 2)
     {
@@ -67,13 +65,13 @@ class TimeHelper
     }
 
     /**
-     * Convert a datetime string to a Carbon instance
+     * Convert a datetime string to a Carbon instance.
      *
      * For situations where you have a date from a custom query
      * that wasn't automatically converted by Eloquent.
      *
-     * @param string $value   The raw datetime string.
-     * @param string $default The value to return in case of nulls.
+     * @param string $value   The raw datetime string
+     * @param string $default The value to return in case of nulls
      *
      * @return Carbon;
      */
@@ -84,13 +82,14 @@ class TimeHelper
         }
 
         $value = Carbon::parse($value);
+
         return self::date($value);
     }
 
     /**
-     * Default application formatter for dates
+     * Default application formatter for dates.
      *
-     * @param Carbon|null $value The value to format.
+     * @param Carbon|null $value The value to format
      *
      * @return string
      */

@@ -20,4 +20,9 @@
     </phpmd>
   </target>
 
+  <target name="php-cs-fixer" description="Lint with autocorrect via php-cs-fixer">
+    <property name="dir" value="app"/>
+    <exec command="./vendor/bin/php-cs-fixer -v fix app" />
+  </target>
+
 </project>

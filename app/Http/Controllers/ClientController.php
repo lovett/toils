@@ -2,24 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Http\Requests;
 use App\Http\Requests\ClientRequest;
-use App\Http\Controllers\Controller;
 use App\Client;
-use App\Project;
 
 /**
- * Resource controller for clients
+ * Resource controller for clients.
  */
 class ClientController extends Controller
 {
-
-
     /**
-     * Set middleware and shared view values
+     * Set middleware and shared view values.
      */
     public function __construct()
     {
@@ -30,9 +24,9 @@ class ClientController extends Controller
     }
 
     /**
-     * Display a list of clients
+     * Display a list of clients.
      *
-     * @param Request $request The incoming request.
+     * @param Request $request The incoming request
      *
      * @return Response
      */
@@ -66,9 +60,9 @@ class ClientController extends Controller
     }
 
     /**
-     * Show the form for creating a new client
+     * Show the form for creating a new client.
      *
-     * @param Request $request The incoming request.
+     * @param Request $request The incoming request
      *
      * @return Response
      */
@@ -90,26 +84,26 @@ class ClientController extends Controller
     }
 
     /**
-     * Save a new client to the database
+     * Save a new client to the database.
      *
-     * @param ClientRequest $request The incoming request.
+     * @param ClientRequest $request The incoming request
      *
      * @return Response
      */
     public function store(ClientRequest $request)
     {
-        $client = new Client;
+        $client = new Client();
 
-        $client->active       = (int) $request->active;
-        $client->name         = $request->name;
-        $client->contactName  = $request->contactName;
+        $client->active = (int) $request->active;
+        $client->name = $request->name;
+        $client->contactName = $request->contactName;
         $client->contactEmail = $request->contactEmail;
-        $client->address1     = $request->address1;
-        $client->address2     = $request->address2;
-        $client->city         = $request->city;
-        $client->locality     = $request->locality;
-        $client->postalCode   = $request->postalCode;
-        $client->phone        = $request->phone;
+        $client->address1 = $request->address1;
+        $client->address2 = $request->address2;
+        $client->city = $request->city;
+        $client->locality = $request->locality;
+        $client->postalCode = $request->postalCode;
+        $client->phone = $request->phone;
 
         $client->user()->associate($request->user());
         $client->save();
@@ -123,10 +117,10 @@ class ClientController extends Controller
     }
 
     /**
-     * Display a client
+     * Display a client.
      *
-     * @param Request $request The incoming request.
-     * @param integer $id      A client primary key.
+     * @param Request $request The incoming request
+     * @param int     $id      A client primary key
      *
      * @return Response
      */
@@ -143,10 +137,10 @@ class ClientController extends Controller
     }
 
     /**
-     * Show the form for editing a client
+     * Show the form for editing a client.
      *
-     * @param Request $request The incoming request.
-     * @param integer $id      A client primary key.
+     * @param Request $request The incoming request
+     * @param int     $id      A client primary key
      *
      * @return Response
      */
@@ -169,10 +163,10 @@ class ClientController extends Controller
     }
 
     /**
-     * Update an existing client
+     * Update an existing client.
      *
-     * @param ClientRequest $request The incoming request.
-     * @param integer       $id      A client primary key.
+     * @param ClientRequest $request The incoming request
+     * @param int           $id      A client primary key
      *
      * @return Response
      */
@@ -197,12 +191,12 @@ class ClientController extends Controller
     }
 
     /**
-     * Delete a client
+     * Delete a client.
      *
      * Time entries use soft deletion.
      *
-     * @param Request $request The incoming request.
-     * @param integer $id      A client primary key.
+     * @param Request $request The incoming request
+     * @param int     $id      A client primary key
      *
      * @return Response
      */

@@ -9,7 +9,7 @@ use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 
 /**
- * Standard Laravel auth controller
+ * Standard Laravel auth controller.
  */
 class AuthController extends Controller
 {
@@ -22,11 +22,8 @@ class AuthController extends Controller
      */
     protected $redirectPath = '/dashboard';
 
-
     /**
      * Create a new authentication controller instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -36,7 +33,7 @@ class AuthController extends Controller
     /**
      * Get a validator for an incoming registration request.
      *
-     * @param array $data The values to be validated.
+     * @param array $data The values to be validated
      *
      * @return Validator
      */
@@ -55,7 +52,7 @@ class AuthController extends Controller
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param array $data Values used to populate the user model.
+     * @param array $data Values used to populate the user model
      *
      * @return User
      */

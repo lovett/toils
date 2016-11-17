@@ -6,17 +6,15 @@ use Closure;
 use Illuminate\Http\Request;
 
 /**
- * Capture the current url to the sesion for future return
+ * Capture the current url to the sesion for future return.
  */
 class Returnable
 {
-
-
     /**
      * Handle an incoming request.
      *
-     * @param Request $request The curent request.
-     * @param Closure $next    The handler to receive the request.
+     * @param Request $request The curent request
+     * @param Closure $next    The handler to receive the request
      *
      * @return mixed
      */
@@ -25,6 +23,7 @@ class Returnable
         $response = $next($request);
 
         $request->session()->put('returnTo', $request->url());
+
         return $response;
     }
 }

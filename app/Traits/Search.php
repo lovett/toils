@@ -6,13 +6,11 @@ use Illuminate\Database\Eloquent\Builder;
 
 trait Search
 {
-
-
     /**
-     * Apply a list of filters to an SQL query
+     * Apply a list of filters to an SQL query.
      *
-     * @param Builder $query  The query to apply the search to.
-     * @param array   $fields The fields and terms to apply to the query.
+     * @param Builder $query  The query to apply the search to
+     * @param array   $fields The fields and terms to apply to the query
      *
      * @return self
      */

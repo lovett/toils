@@ -8,12 +8,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Traits\Search;
 
 /**
- * Eloquent model for the clients table
+ * Eloquent model for the clients table.
  */
 class Client extends Model
 {
@@ -61,17 +60,16 @@ class Client extends Model
     protected $casts = ['totalTime' => 'integer'];
 
     /**
-     * The attributes that are datetimes
+     * The attributes that are datetimes.
      *
      * @var array
      */
     protected $dates = ['deleted_at' => 'datetime'];
 
-
     /**
-     * Master query for getting a list of records
+     * Master query for getting a list of records.
      *
-     * @param Builder $builder The query to start with.
+     * @param Builder $builder The query to start with
      *
      * @return Relation
      */
@@ -108,7 +106,7 @@ class Client extends Model
     }
 
     /**
-     * Time entries associated with the client
+     * Time entries associated with the client.
      *
      * @return HasManyThrough
      */
@@ -118,7 +116,7 @@ class Client extends Model
     }
 
     /**
-     * Users associated with the client
+     * Users associated with the client.
      *
      * @return BelongsToMany
      */
@@ -128,7 +126,7 @@ class Client extends Model
     }
 
     /**
-     * Projects associated with the client
+     * Projects associated with the client.
      *
      * @return HasMany
      */
@@ -138,7 +136,7 @@ class Client extends Model
     }
 
     /**
-     * Human readable string for the value of the active flag
+     * Human readable string for the value of the active flag.
      *
      * @return string
      */
@@ -147,6 +145,7 @@ class Client extends Model
         if ($this->active) {
             return 'active';
         }
+
         return 'inactive';
     }
 }

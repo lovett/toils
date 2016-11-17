@@ -7,11 +7,10 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider
     as ServiceProvider;
 
 /**
- * Standard Laravel route service provider class
+ * Standard Laravel route service provider class.
  */
 class RouteServiceProvider extends ServiceProvider
 {
-
     /**
      * This namespace is applied to the controller routes in your routes file.
      *
@@ -21,26 +20,20 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected $namespace = 'App\Http\Controllers';
 
-
     /**
      * Define your route model bindings, pattern filters, etc.
      *
-     * @param Router $router Router instance.
-     *
-     * @return void
+     * @param Router $router Router instance
      */
     public function boot(Router $router)
     {
         parent::boot($router);
     }
 
-
     /**
      * Define the routes for the application.
      *
-     * @param Router $router Router instance.
-     *
-     * @return void
+     * @param Router $router Router instance
      */
     public function map(Router $router)
     {

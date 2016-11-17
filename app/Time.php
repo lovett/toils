@@ -1,20 +1,20 @@
-<?php namespace App;
+<?php
+
+namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Traits\Search;
 
 /**
- * Eloquent model for the times table
+ * Eloquent model for the times table.
  */
 class Time extends Model
 {
-
     use SoftDeletes, Search;
 
     /**
@@ -46,7 +46,7 @@ class Time extends Model
     ];
 
     /**
-     * Mapping between attributes and data types
+     * Mapping between attributes and data types.
      *
      * @var array
      */
@@ -54,23 +54,22 @@ class Time extends Model
         'start' => 'datetime',
         'minutes' => 'integer',
         'summary' => 'string',
-        'estimatedDuration' => 'integer'
+        'estimatedDuration' => 'integer',
     ];
 
     /**
-     * The attributes that are datetimes
+     * The attributes that are datetimes.
      *
      * @var array
      */
     protected $dates = [
-        'deleted_at' => 'datetime'
+        'deleted_at' => 'datetime',
     ];
 
-
     /**
-     * Master query for getting a list of records
+     * Master query for getting a list of records.
      *
-     * @param Builder $builder The query to start with.
+     * @param Builder $builder The query to start with
      *
      * @return Relation
      */
@@ -78,11 +77,12 @@ class Time extends Model
     {
         $builder = $builder->with('project');
         $builder = $builder->orderBy('start', 'desc');
+
         return $builder;
     }
 
     /**
-     * User associated with the time entry
+     * User associated with the time entry.
      *
      * @return HasOne
      */
@@ -92,7 +92,7 @@ class Time extends Model
     }
 
     /**
-     * Project associated with the time entry
+     * Project associated with the time entry.
      *
      * @return HasOne
      */
@@ -102,9 +102,9 @@ class Time extends Model
     }
 
     /**
-     * Custom accessor to set default value for start date
+     * Custom accessor to set default value for start date.
      *
-     * @param string $value The value stored in the database.
+     * @param string $value The value stored in the database
      *
      * @return Carbon;
      */
@@ -118,9 +118,9 @@ class Time extends Model
     }
 
     /**
-     * Custom accessor to convert null to zero
+     * Custom accessor to convert null to zero.
      *
-     * @param integer|null $value The value stored in the database.
+     * @param int|null $value The value stored in the database
      *
      * @return integer;
      */
@@ -134,7 +134,7 @@ class Time extends Model
     }
 
     /**
-     * Custom accessor to calculate end time from start and duration
+     * Custom accessor to calculate end time from start and duration.
      *
      * @return Carbon;
      */
@@ -145,13 +145,14 @@ class Time extends Model
         }
 
         $end = clone $this->start;
+
         return $end->addMinutes($this->minutes);
     }
 
     /**
-     * Custom accessor to calculate estimate accuracy as a percentage
+     * Custom accessor to calculate estimate accuracy as a percentage.
      *
-     * @return integer|null A number between 0 and 100.
+     * @return int|null A number between 0 and 100
      */
     public function getAccuracyAttribute()
     {
@@ -167,15 +168,15 @@ class Time extends Model
         $max = max($values);
         $min = min($values);
 
-        return (round(($min / $max), 2) * 100);
+        return round(($min / $max), 2) * 100;
     }
 
     /**
-     * Tally time by month with no gaps
+     * Tally time by month with no gaps.
      *
-     * @param Project $project    Project model instance.
-     * @param User    $user       User model instance.
-     * @param integer $monthCount How many months to go back from present.
+     * @param Project $project    Project model instance
+     * @param User    $user       User model instance
+     * @param int     $monthCount How many months to go back from present
      *
      * @return array
      */
@@ -218,15 +219,16 @@ class Time extends Model
         $result = DB::select(
             $query,
             [
-                'range'     => (abs($monthCount) * -1)  . ' months',
+                'range' => (abs($monthCount) * -1).' months',
                 'projectId' => $project->getKey(),
-                'userId'    => $user->getKey(),
+                'userId' => $user->getKey(),
             ]
         );
 
         $result = collect($result)->reduce(
             function ($accumulator, $item) {
                 $accumulator[$item->dt] = (int) $item->minutes;
+
                 return $accumulator;
             },
             []
