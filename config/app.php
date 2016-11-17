@@ -146,7 +146,6 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\DatabaseServiceProvider::class,
 
-
         /*
          * Third party Service Providers
          */

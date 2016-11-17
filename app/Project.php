@@ -59,9 +59,7 @@ class Project extends Model
      *
      * @var array
      */
-    protected $dates = [
-        'deleted_at' => 'datetime',
-    ];
+    protected $dates = ['deleted_at' => 'datetime'];
 
     /**
      * Master query for getting a list of records.

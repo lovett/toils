@@ -4,12 +4,10 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 /**
- * Standard Laravel class for password reset management
+ * Standard Laravel class for password reset management.
  */
 class CreatePasswordResetsTable extends Migration
 {
-
-
     /**
      * Run the migrations.
      *

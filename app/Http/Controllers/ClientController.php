@@ -94,16 +94,16 @@ class ClientController extends Controller
     {
         $client = new Client();
 
-        $client->active = (int) $request->active;
-        $client->name = $request->name;
-        $client->contactName = $request->contactName;
+        $client->active       = (int) $request->active;
+        $client->name         = $request->name;
+        $client->contactName  = $request->contactName;
         $client->contactEmail = $request->contactEmail;
-        $client->address1 = $request->address1;
-        $client->address2 = $request->address2;
-        $client->city = $request->city;
-        $client->locality = $request->locality;
-        $client->postalCode = $request->postalCode;
-        $client->phone = $request->phone;
+        $client->address1     = $request->address1;
+        $client->address2     = $request->address2;
+        $client->city         = $request->city;
+        $client->locality     = $request->locality;
+        $client->postalCode   = $request->postalCode;
+        $client->phone        = $request->phone;
 
         $client->user()->associate($request->user());
         $client->save();

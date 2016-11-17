@@ -62,9 +62,7 @@ class Time extends Model
      *
      * @var array
      */
-    protected $dates = [
-        'deleted_at' => 'datetime',
-    ];
+    protected $dates = ['deleted_at' => 'datetime'];
 
     /**
      * Master query for getting a list of records.
@@ -136,7 +134,7 @@ class Time extends Model
     /**
      * Custom accessor to calculate end time from start and duration.
      *
-     * @return Carbon;
+     * @return Carbon|null;
      */
     public function getEndAttribute()
     {

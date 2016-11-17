@@ -18,7 +18,7 @@ class ProjectRequest extends Request
     public function authorize()
     {
         $projectId = $this->route('project');
-        $clientId = $this->input('client_id', 0);
+        $clientId  = $this->input('client_id', 0);
 
         $this->user()->clients()->findOrFail($clientId);
 

@@ -14,20 +14,31 @@
     <exclude name="Squiz.Arrays.ArrayDeclaration.ValueNotAligned" />
     <exclude name="Squiz.Commenting.ClosingDeclarationComment.Missing" />
     <exclude name="Squiz.Commenting.FileComment.Missing" />
+    <exclude name="Squiz.Commenting.FunctionComment.ParamCommentFullStop" />
+    <exclude name="Squiz.Commenting.FunctionComment.MissingReturn" />
+    <exclude name="Squiz.Commenting.FunctionComment.IncorrectParamVarName" />
+    <exclude name="Squiz.Commenting.FileComment.MissingPackageTag" />
+    <exclude name="Squiz.Commenting.FunctionComment.InvalidReturn" />
     <exclude name="Squiz.Files.FileExtension.ClassFound" />
     <exclude name="Squiz.Operators.ComparisonOperatorUsage.ImplicitTrue" />
     <exclude name="Squiz.Strings.ConcatenationSpacing.PaddingFound" />
     <exclude name="Squiz.Strings.DoubleQuoteUsage.ContainsVar" />
     <exclude name="Squiz.WhiteSpace.FunctionClosingBraceSpace.SpacingBeforeClose" />
     <exclude name="Squiz.WhiteSpace.FunctionSpacing.After" />
+    <exclude name="Squiz.WhiteSpace.FunctionSpacing.Before" />
     <exclude name="Squiz.WhiteSpace.ObjectOperatorSpacing.Before" />
-    <exclude name="Squiz.Commenting.FileComment.MissingPackageTag" />
+    <exclude name="Squiz.WhiteSpace.MemberVarSpacing.Incorrect" />
     <exclude name="Squiz.Objects.ObjectInstantiation.NotAssigned" />
+    <exclude name="Squiz.Formatting.OperatorBracket.MissingBrackets" />
   </rule>
 
   <!-- use most of the zend standard -->
   <rule ref="Zend">
+    <exclude name="PEAR.Functions.FunctionCallSignature.CloseBracketLine" />
+    <exclude name="PEAR.Functions.FunctionCallSignature.ContentAfterOpenBracket" />
+    <exclude name="PEAR.Functions.FunctionCallSignature.MultipleArguments" />
     <exclude name="Generic.Functions.OpeningFunctionBraceBsdAllman.BraceOnSameLine" />
+    <exclude name="Generic.Files.LineLength.TooLong" />
     <exclude name="Zend.NamingConventions.ValidVariableName.PrivateNoUnderscore" />
     <exclude name="Zend.NamingConventions.ValidVariableName.ContainsNumbers" />
 

@@ -4,14 +4,12 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 /**
- * The initial database schema
+ * The initial database schema.
  */
 class CreateBaseSchema extends Migration
 {
-
-
     /**
-     * Create the base application schema
+     * Create the base application schema.
      *
      * @return void
      */
@@ -131,7 +129,6 @@ class CreateBaseSchema extends Migration
             }
         );
 
-
         Schema::create(
             'times',
             function (Blueprint $table) {
@@ -153,7 +150,7 @@ class CreateBaseSchema extends Migration
     }
 
     /**
-     * Drop all application tables
+     * Drop all application tables.
      *
      * Tables are dropped in the reverse order they were created to
      * avoid foreign key constraint violations.

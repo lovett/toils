@@ -3,7 +3,7 @@
 <project name="toils" basedir="." default="default" description="Automation tasks for toils">
 
   <target name="phpcs" description="Lint application files via phpcs against PSR2">
-    <phpcodesniffer standard="phpcs.xml" format="summary">
+    <phpcodesniffer standard="phpcs.xml" format="checkstyle">
       <fileset dir=".">
         <include name="app/**/*.php" />
         <include name="database/**/*.php" />
@@ -22,7 +22,7 @@
 
   <target name="php-cs-fixer" description="Lint with autocorrect via php-cs-fixer">
     <property name="dir" value="app"/>
-    <exec command="./vendor/bin/php-cs-fixer -v fix app" />
+    <exec passthru="true" command="./vendor/bin/php-cs-fixer -v --config-file=.php_cs fix app" />
   </target>
 
 </project>

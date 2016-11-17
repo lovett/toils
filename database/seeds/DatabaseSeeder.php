@@ -4,12 +4,10 @@ use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Populate the database with real data
+ * Populate the database with real data.
  */
 class DatabaseSeeder extends Seeder
 {
-
-
     /**
      * Run the database seeds.
      *

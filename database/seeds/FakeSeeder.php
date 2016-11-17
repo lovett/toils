@@ -8,12 +8,10 @@ use App\Time;
 use App\User;
 
 /**
- * Populate the database with fake data
+ * Populate the database with fake data.
  */
 class FakeSeeder extends Seeder
 {
-
-
     /**
      * Run the database seeds.
      *
@@ -26,9 +24,7 @@ class FakeSeeder extends Seeder
         // A default user with predicatable credentials for use during
         // development.
         User::updateOrCreate(
-            [
-                'name' => 'test'
-            ],
+            ['name' => 'test'],
             [
                 'email' => 'test@example.com',
                 'password' => bcrypt('test'),
@@ -53,7 +49,7 @@ class FakeSeeder extends Seeder
     }
 
     /**
-     * Return a random user
+     * Return a random user.
      *
      * @return User
      */

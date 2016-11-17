@@ -4,12 +4,10 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 /**
- * Standard Laravel migration for the users table
+ * Standard Laravel migration for the users table.
  */
 class CreateUsersTable extends Migration
 {
-
-
     /**
      * Run the migrations.
      *

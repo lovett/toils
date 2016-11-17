@@ -88,7 +88,7 @@ class TimeRequest extends Request
                 if ($field === 'minutes') {
                     $value = 0;
                     $start = $this->input('startTime', 0);
-                    $end = $this->input('endTime', 0);
+                    $end   = $this->input('endTime', 0);
 
                     if ($start && $end) {
                         $value = (strtotime($end) - strtotime($start)) / 60;

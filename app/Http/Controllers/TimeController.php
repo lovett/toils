@@ -156,7 +156,7 @@ class TimeController extends Controller
     /**
      * Save a new time entry to the database.
      *
-     * @param Request $request The incoming request
+     * @param TimeRequest $request The incoming request
      *
      * @return Response
      */
@@ -164,11 +164,11 @@ class TimeController extends Controller
     {
         $time = new Time();
 
-        $time->project_id = (int) $request->project_id;
+        $time->project_id        = (int) $request->project_id;
         $time->estimatedDuration = (int) $request->estimatedDuration;
-        $time->start = $request->start;
-        $time->minutes = $request->minutes;
-        $time->summary = $request->summary;
+        $time->start             = $request->start;
+        $time->minutes           = $request->minutes;
+        $time->summary           = $request->summary;
 
         $time->user()->associate($request->user());
         $time->save();

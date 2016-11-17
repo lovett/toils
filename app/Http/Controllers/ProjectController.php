@@ -111,9 +111,9 @@ class ProjectController extends Controller
 
         $client = $request->user()->clients()->findOrFail($clientId);
 
-        $project->name = $request->input('name');
-        $project->active = $request->input('active', 0);
-        $project->billable = $request->input('billable', 0);
+        $project->name        = $request->input('name');
+        $project->active      = $request->input('active', 0);
+        $project->billable    = $request->input('billable', 0);
         $project->taxDeducted = $request->input('taxDeducted', 0);
 
         $project->user()->associate($request->user());
