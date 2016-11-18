@@ -7,7 +7,7 @@ use Symfony\CS\Finder\DefaultFinder;
 $fixers = [
     'blankline_after_open_tag',
     'braces',
-    'concat_without_spaces',
+    'concat_with_spaces',
     'double_arrow_multiline_whitespaces',
     'duplicate_semicolon',
     'elseif',
@@ -70,7 +70,6 @@ $fixers = [
 ];
 
 return Config::create()
-    ->finder(DefaultFinder::create()->in(__DIR__))
     ->fixers($fixers)
     ->level(FixerInterface::NONE_LEVEL)
     ->setUsingCache(true);
