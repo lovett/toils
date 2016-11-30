@@ -6,31 +6,31 @@
         <thead>
             <tr>
                 <th>Name</th>
+                <th>Status</th>
                 <th>Client</th>
                 <th>Created</th>
-                <th>Status</th>
             </tr>
         </thead>
         <tbody>
             @foreach ($projects as $project)
                 <tr>
                     <td>
-	                <a href="{{ route('project.show', ['record' => $project]) }}">
-	                    {{ $project->name }}
-	                </a>
+                        <a href="{{ route('project.show', ['record' => $project]) }}">
+                            {{ $project->name }}
+                        </a>
+                    </td>
+                    <td>
+                        {{ $project->status() }}
                     </td>
                     <td>
                         @if ($project->client)
                             {!! link_to_route('client.show', $project->client->name, ['id' => $project->client->id]) !!}
                         @else
-                            ?
+                            none
                         @endif
                     </td>
                     <td>
-	                {{ $project->created_at->format('Y-m-d') }}
-                    </td>
-                    <td>
-                        {{ $project->status() }}
+                        {{ TimeHelper::dateFromRaw($project->created_at) }}
                     </td>
                 </tr>
             @endforeach
@@ -46,6 +46,6 @@
 @endsection
 
 @section('page_scripts')
-<script src="{{ asset('js/vue.min.js') }}"></script>
-<script src="{{ asset('js/searchby.js') }}"></script>
+    <script src="{{ asset('js/vue.min.js') }}"></script>
+    <script src="{{ asset('js/searchby.js') }}"></script>
 @endsection

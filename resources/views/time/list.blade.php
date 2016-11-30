@@ -5,46 +5,47 @@
     <table class="table">
         <thead>
             <tr>
-		<th>ID</th>
-                <th width="200">Date</th>
-		<th>Summary</th>
-                <th width="250">Project</th>
-		<th class="text-right">Accuracy</th>
+                <th width="20%">Date</th>
+                <th width="20%">Time</th>
+                <th width="20%">Project</th>
+                <th>Summary</th>
+                <th class="text-right">Accuracy</th>
             </tr>
         </thead>
         <tbody>
             @foreach ($times as $time)
-            <tr>
-                <td>
-		    {!! link_to_route('time.edit', $time->id, ['id' => $time->id]) !!}
-		</td>
-		<td>
-                    {{ $time->start->format('Y-m-d, l') }}
-		    <div class="small">
-			{{ $time->start->format('g:i A') }}
+                <tr>
+                    <td>
+                        <a href="{{ route('time.edit', $time->id, ['id' => $time->id]) }}">
+                            {{ TimeHelper::dateFromRaw($time->start) }}
+                            <div class="small">
+                                {{ $time->start->format('g:i A') }}
 
-			@if ($time->end)
-			    to {{ $time->end->format('g:i A') }}
-			@endif
-		    </div>
-                </td>
+                                @if ($time->end)
+                                    to {{ $time->end->format('g:i A') }}
+                                @endif
+                            </div>
+                        </a>
+                    </td>
+                    <td>
+                        {{ TimeHelper::hoursAndMinutes($time->minutes) }}
+                    </td>
 
-		<td>
-		    {{ str_limit($time->summary, 75) }}
-		</td>
+                    <td>
+                        {!! link_to_route('project.show', $time->project->name, ['id' => $time->project->id]) !!}
+                    </td>
 
-		<td>
-	            {!! link_to_route('project.show', $time->project->name, ['id' => $time->project->id]) !!}
-                </td>
+                    <td>
+                        {{ str_limit($time->summary, 75) }}
+                    </td>
 
-
-                </td>
-		<td class="text-right">
-		    @if ($time->accuracy)
-			{{ $time->accuracy }}%
-		    @endif
-                </td>
-            </tr>
+                    </td>
+                    <td class="text-right">
+                        @if ($time->accuracy)
+                            {{ $time->accuracy }}%
+                        @endif
+                    </td>
+                </tr>
             @endforeach
         </tbody>
     </table>
@@ -58,6 +59,6 @@
 @endsection
 
 @section('page_scripts')
-<script src="{{ asset('js/vue.min.js') }}"></script>
-<script src="{{ asset('js/searchby.js') }}"></script>
+    <script src="{{ asset('js/vue.min.js') }}"></script>
+    <script src="{{ asset('js/searchby.js') }}"></script>
 @endsection

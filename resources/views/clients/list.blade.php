@@ -7,35 +7,35 @@
         <thead>
             <tr>
                 <th>Client</th>
-                <th>Projects</th>
-                <th>Created</th>
-                <th>Last Active</th>
                 <th>Status</th>
+                <th>Projects</th>
+                <th>Last Active</th>
                 <th>Time</th>
+                <th>Created</th>
             </tr>
         </thead>
         <tbody>
             @foreach ($clients as $client)
                 <tr>
                     <td>
-	                <a href="{{ route('client.show', ['record' => $client]) }}">
-	                    {{ $client->name }}
-	                </a>
-                    </td>
-                    <td>
-                        {{ $client->projectCount }}
-                    </td>
-                    <td>
-                        {{ TimeHelper::dateFromRaw($client->created_at) }}
-                    </td>
-                    <td>
-                        {{ TimeHelper::dateFromRaw($client->latestTime, 'never')}}
+                        <a href="{{ route('client.show', ['record' => $client]) }}">
+                            {{ $client->name }}
+                        </a>
                     </td>
                     <td>
                         {{ $client->status() }}
                     </td>
                     <td>
+                        {{ $client->projectCount }}
+                    </td>
+                    <td>
+                        {{ TimeHelper::dateFromRaw($client->latestTime, 'never')}}
+                    </td>
+                    <td>
                         {{ TimeHelper::hoursAndMinutes($client->totalTime) }}
+                    </td>
+                    <td>
+                        {{ TimeHelper::dateFromRaw($client->created_at) }}
                     </td>
                 </tr>
             @endforeach
@@ -51,6 +51,6 @@
 @endsection
 
 @section('page_scripts')
-<script src="{{ asset('js/vue.min.js') }}"></script>
-<script src="{{ asset('js/searchby.js') }}"></script>
+    <script src="{{ asset('js/vue.min.js') }}"></script>
+    <script src="{{ asset('js/searchby.js') }}"></script>
 @endsection
