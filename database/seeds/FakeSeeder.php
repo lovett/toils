@@ -6,6 +6,7 @@ use App\Client;
 use App\Project;
 use App\Time;
 use App\User;
+use App\Invoice;
 
 /**
  * Populate the database with fake data.
@@ -44,7 +45,15 @@ class FakeSeeder extends Seeder
 
         factory(Project::class, 50)->create();
 
-        factory(Time::class, 1000)->create();
+        factory(Time::class, 500)->create();
+
+        factory(Invoice::class, 20)->create()->each(
+            function ($invoice) {
+                $userId = $this->randomUserId();
+                $invoice->users()->attach([1, $userId]);
+            }
+        );
+
         Model::reguard();
     }
 
@@ -59,6 +68,6 @@ class FakeSeeder extends Seeder
             ->where('id', '>', 1)
             ->orderByRaw('RANDOM()')
             ->limit(1)
-            ->first();
+            ->first()->id;
     }
 }

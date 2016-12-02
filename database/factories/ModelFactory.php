@@ -4,7 +4,9 @@ use App\User;
 use App\Client;
 use App\Time;
 use App\Project;
+use App\Invoice;
 use Faker\Generator as FakerGenerator;
+use Carbon\Carbon;
 
 $factory->define(
     User::class,
@@ -23,7 +25,7 @@ $factory->define(
     function (FakerGenerator $faker) {
         return [
             'active' => $faker->boolean(50),
-            'name' => $faker->company(),
+            'name' => sprintf('%s %s', $faker->company(), $faker->randomNumber),
             'contactName' => $faker->name(),
             'contactEmail' => $faker->safeEmail(),
             'address1' => $faker->streetAddress(),
@@ -85,6 +87,43 @@ $factory->define(
             'estimatedDuration' => $faker->numberBetween(1, 480),
             'summary' => $faker->paragraph(),
             'project_id' => $randomProject->id,
+        ];
+    }
+);
+
+$factory->define(
+    Invoice::class,
+    function (FakerGenerator $faker) {
+        $randomProject = Project::orderByRaw('RANDOM()')
+                       ->limit(1)
+                       ->first();
+
+        $randomTime = $randomProject->time()
+                    ->select('start')
+                    ->orderByRaw('RANDOM()')
+                    ->limit(1)
+                    ->first()
+                    ->start
+                    ->startOfDay();
+
+        $mimeTypes = ['application/pdf', 'image/jpeg', null];
+
+        return [
+            'number' => $faker->numberBetween(1000, 9000),
+            'amount' => $faker->randomFloat(2, 50, 1000),
+            'sent' => $randomTime->copy()->addDays(30),
+            'due' => $randomTime->copy()->addDays(61),
+            'paid' => array_rand([
+                null,
+                $randomTime->copy()->addDays($faker->numberBetween(62, 90)),
+            ]),
+            'name' => sprintf('%s Invoice', $faker->colorName()),
+            'project_id' => $randomProject->id,
+            'start' => $randomTime,
+            'end' => $randomTime->copy()->addDays(30),
+            'summary' => $faker->paragraph(),
+            'receiptType' => array_rand($mimeTypes),
+            'receiptSize' => $faker->numberBetween(500, 100 * 1024),
         ];
     }
 );
