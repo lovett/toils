@@ -1,3 +1,4 @@
+
 <?php
 /**
  * Application routes.
@@ -78,3 +79,13 @@ Route::get(
 
 // Time.
 Route::resource('time', 'TimeController', ['middleware' => 'auth']);
+
+// Invoices.
+Route::resource('invoice', 'InvoiceController', ['middlware' => 'auth']);
+Route::get(
+    'invocies',
+    [
+        'as' => 'invoices',
+        'uses' => 'InvoiceController@index',
+    ]
+);

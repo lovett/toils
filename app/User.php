@@ -62,6 +62,17 @@ class User extends Model implements
     }
 
     /**
+     * Invoices associated with the user.
+     *
+     * @return BelongsToMany
+     */
+    public function invoices()
+    {
+        return $this->belongsToMany('App\Invoice');
+    }
+
+
+    /**
      * Projects associated with the user.
      *
      * Returns a Builder instance rather than a relation because of
