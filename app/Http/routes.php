@@ -65,27 +65,12 @@ Route::post(
 
 // Clients.
 Route::resource('client', 'ClientController', ['middleware' => 'auth']);
-Route::get('clients', ['as' => 'clients', 'uses' => 'ClientController@index']);
 
 // Projects.
 Route::resource('project', 'ProjectController');
-Route::get(
-    'projects',
-    [
-        'as' => 'projects',
-        'uses' => 'ProjectController@index',
-    ]
-);
 
 // Time.
 Route::resource('time', 'TimeController', ['middleware' => 'auth']);
 
 // Invoices.
 Route::resource('invoice', 'InvoiceController', ['middlware' => 'auth']);
-Route::get(
-    'invocies',
-    [
-        'as' => 'invoices',
-        'uses' => 'InvoiceController@index',
-    ]
-);
