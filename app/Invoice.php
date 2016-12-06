@@ -80,34 +80,23 @@ class Invoice extends Model
     public static function listing(Builder $builder)
     {
         $builder = $builder->selectRaw(
-            'invoices.*,
-            count(distinct projects.id) as projectCount,
-            coalesce(sum(times.minutes), 0) as totalTime,
-            max(times.start) as latestTime'
+            'invoices.*'
         );
 
-        $builder = $builder->leftJoin(
-            'projects',
-            function ($join) {
-                $join->on('invoices.project_id', '=', 'projects.id')
-                    ->where('projects.active', '=', 1)
-                    ->whereNull('projects.deleted_at');
-            }
-        );
+        $builder = $builder->orderBy('invoices.sent', 'DESC');
 
-        $builder = $builder->orderBy('invoices.updated_at', 'DESC');
-
+        $builder->with('project.client');
         return $builder;
     }
 
     /**
      * Time entries entries associated with the invoice.
      *
-     * @return HasManyThrough
+     * @return HasMany
      */
     public function times()
     {
-        return $this->hasManyThrough('App\Time', 'App\Project');
+        return $this->hasMany('App\Time');
     }
 
     /**
@@ -121,13 +110,24 @@ class Invoice extends Model
     }
 
     /**
-     * Projects associated with the invoice.
+     * Project associated with the invoice.
      *
-     * @return HasMany
+     * @return HasOne
      */
-    public function projects()
+    public function project()
     {
-        return $this->hasOne('App\Project');
+        return $this->belongsTo('App\Project');
     }
+
+    /**
+     * Client associated with the invoice.
+     *
+     * @return HasOne
+     */
+    public function client()
+    {
+        return $this->project()->with('client');
+    }
+
 
 }

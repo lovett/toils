@@ -57,7 +57,7 @@ class InvoiceController extends Controller
             'searchFields' => array_keys(Invoice::$searchables),
         ];
 
-        return view('invocies.list', $viewVars);
+        return view('invoices.list', $viewVars);
     }
 
     /**

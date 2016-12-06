@@ -202,13 +202,13 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View'      => Illuminate\Support\Facades\View::class,
 
-        'Debugbar'  => Barryvdh\Debugbar\Facade::class,
-        'TimeHelper' => App\Helpers\TimeHelper::class,
-        'AddressHelper' => App\Helpers\AddressHelper::class,
-        'LinkHelper' => App\Helpers\LinkHelper::class,
-        'Form'      => Collective\Html\FormFacade::class,
-        'HTML'      => Collective\Html\HtmlFacade::class,
-
+        'Debugbar'       => Barryvdh\Debugbar\Facade::class,
+        'TimeHelper'     => App\Helpers\TimeHelper::class,
+        'AddressHelper'  => App\Helpers\AddressHelper::class,
+        'LinkHelper'     => App\Helpers\LinkHelper::class,
+        'CurrencyHelper' => App\Helpers\CurrencyHelper::class,
+        'Form'           => Collective\Html\FormFacade::class,
+        'HTML'           => Collective\Html\HtmlFacade::class,
     ],
 
 ];
