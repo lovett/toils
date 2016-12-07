@@ -64,16 +64,37 @@ class User extends Model implements
     /**
      * Invoices associated with the user.
      *
-     * @return BelongsToMany
+     * @return Builder
      */
     public function invoices()
     {
-        return $this->belongsToMany('App\Invoice');
+        $query = Invoice::leftJoin(
+            'projects',
+            'invoices.project_id',
+            '=',
+            'projects.id'
+        );
+
+        $query->join(
+            'clients',
+            'projects.client_id',
+            '=',
+            'clients.id'
+        );
+
+        $query->join(
+            'client_user',
+            'client_user.client_id',
+            '=',
+            'clients.id'
+        );
+
+        $query->where('client_user.user_id', $this->getKey());
+        return $query;
     }
 
-
     /**
-     * Projects associated with the user.
+     * Projects indirectly associated with the user through a client.
      *
      * Returns a Builder instance rather than a relation because of
      * the manual left join to client_user. A hasManyThrough relation

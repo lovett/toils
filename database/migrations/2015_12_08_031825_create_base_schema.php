@@ -119,17 +119,6 @@ class CreateBaseSchema extends Migration
         );
 
         Schema::create(
-            'invoice_user',
-            function (Blueprint $table) {
-                $table->integer('invoice_id')->unsigned();
-                $table->integer('user_id')->unsigned();
-                $table->primary(['invoice_id', 'user_id']);
-                $table->foreign('invoice_id')->references('id')->on('invoices');
-                $table->foreign('user_id')->references('id')->on('users');
-            }
-        );
-
-        Schema::create(
             'times',
             function (Blueprint $table) {
                 $table->increments('id');

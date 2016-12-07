@@ -100,16 +100,6 @@ class Invoice extends Model
     }
 
     /**
-     * Users associated with the invoice.
-     *
-     * @return BelongsToMany
-     */
-    public function users()
-    {
-        return $this->belongsToMany('App\User');
-    }
-
-    /**
      * Project associated with the invoice.
      *
      * @return HasOne
