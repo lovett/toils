@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Requests\ClientRequest;
 use App\Client;
+use Illuminate\Support\Collection;
 
 /**
  * Resource controller for clients.
@@ -126,11 +127,14 @@ class ClientController extends Controller
      */
     public function show(Request $request, $id)
     {
-        $client = $request->user()->clients()->findOrFail($id);
+        $client = $request->user()->clients()->with('projects')->findOrFail($id);
+
+        $invoices = $client->invoices()->orderBy('sent')->take(10)->get();
 
         $viewVars = [
             'model' => $client,
             'page_title' => $client->name,
+            'invoices' => $invoices,
         ];
 
         return view('clients.show', $viewVars);

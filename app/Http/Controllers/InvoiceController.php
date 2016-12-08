@@ -35,7 +35,7 @@ class InvoiceController extends Controller
     {
         $search = $request->get('q');
 
-        $baseQuery = $request->user()->invoices()->getQuery();
+        $baseQuery = $request->user()->invoices();
 
         $invoices = Invoice::listing($baseQuery);
 
