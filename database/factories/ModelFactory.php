@@ -25,7 +25,7 @@ $factory->define(
     function (FakerGenerator $faker) {
         return [
             'active' => $faker->boolean(50),
-            'name' => sprintf('%s %s', $faker->company(), $faker->randomNumber),
+            'name' => $faker->company(),
             'contactName' => $faker->name(),
             'contactEmail' => $faker->safeEmail(),
             'address1' => $faker->streetAddress(),
@@ -41,22 +41,15 @@ $factory->define(
 $factory->define(
     Project::class,
     function (FakerGenerator $faker) {
-        $randomClient = Client::select('id')
-                      ->orderByRaw('RANDOM()')
-                      ->limit(1)
-                      ->first();
-
         return [
-            'client_id' => $randomClient->id,
             'name' => sprintf(
-                '%s %s %d',
-                'Project',
+                '%s %s',
                 $faker->colorName(),
                 $faker->randomDigit()
             ),
-            'active' => $faker->boolean(),
-            'billable' => $faker->boolean(),
-            'taxDeducted' => $faker->boolean(),
+            'active' => $faker->boolean(75),
+            'billable' => $faker->boolean(90),
+            'taxDeducted' => $faker->boolean(20),
         ];
     }
 );
@@ -64,29 +57,13 @@ $factory->define(
 $factory->define(
     Time::class,
     function (FakerGenerator $faker) {
-        $randomHours = $faker->numberBetween(1, 8);
-
-        $randomMinutes = $faker->numberBetween(0, 180);
-
-        $randomProject = Project::select('id')
-                       ->orderByRaw('RANDOM()')
-                       ->limit(1)
-                       ->first();
-
-        $randomUser = User::select('id')
-                    ->orderByRaw('RANDOM()')
-                    ->limit(1)
-                    ->first();
-
         $start = $faker->dateTimeBetween('-10 years', '-1 day');
 
         return [
-            'user_id' => $randomUser->id,
             'start' => $start,
-            'minutes' => $randomMinutes,
+            'minutes' => $faker->numberBetween(0, 180),
             'estimatedDuration' => $faker->numberBetween(1, 480),
             'summary' => $faker->paragraph(),
-            'project_id' => $randomProject->id,
         ];
     }
 );

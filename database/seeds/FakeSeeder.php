@@ -7,6 +7,8 @@ use App\Project;
 use App\Time;
 use App\User;
 use App\Invoice;
+use Faker\Factory as FakerFactory;
+
 
 /**
  * Populate the database with fake data.
@@ -20,10 +22,13 @@ class FakeSeeder extends Seeder
      */
     public function run()
     {
+        $faker = FakerFactory::create();
+        $maxUserId = 10;
+
         Model::unguard();
 
-        // A default user with predicatable credentials for use during
-        // development.
+        // User 1 has predicatable credentials so that it can be used
+        // during development.
         User::updateOrCreate(
             ['name' => 'test'],
             [
@@ -32,25 +37,40 @@ class FakeSeeder extends Seeder
             ]
         );
 
-        // Additional users with random credentials for use in table
-        // relations but not much else.
-        factory(User::class, 10)->create();
+        // Additional users with random credentials
+        factory(User::class, $maxUserId)->create();
 
+        // Clients
         factory(Client::class, 20)->create()->each(
-            function ($client) {
+            function ($client) use ($faker) {
                 $userId = $this->randomUserId();
                 $client->users()->attach([1, $userId]);
             }
         );
 
-        factory(Project::class, 50)->create();
+        // Projects
+        Client::all()->each(
+            function ($client) use ($faker) {
+                $projects = factory(Project::class, $faker->numberBetween(1, 2))->make();
+                $client->projects()->saveMany($projects->all());
+            }
+        );
 
-        factory(Time::class, 500)->create();
+        // Time
+        Project::all()->each(
+            function ($project) use ($faker, $maxUserId) {
+                $time = factory(Time::class, 20)->make([
+                    'user_id' => $faker->numberBetween(1, $maxUserId),
+                ]);
+                $project->time()->saveMany($time->all());
+            }
+        );
 
-        factory(Invoice::class, 20)->create()->each(
-            function ($invoice) {
-                $userId = $this->randomUserId();
-                $invoice->users()->attach([1, $userId]);
+        // Invoices
+        Project::all()->each(
+            function ($project) use ($faker, $maxUserId) {
+                $invoices = factory(Invoice::class, 5)->make();
+                $project->invoices()->saveMany($invoices->all());
             }
         );
 
