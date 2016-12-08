@@ -94,13 +94,23 @@ class Project extends Model
     }
 
     /**
-     * Time entires associated with the project.
+     * Time entries associated with the project.
      *
      * @return HasMany
      */
     public function time()
     {
         return $this->hasMany('App\Time');
+    }
+
+    /**
+     * Invoices associated with the project.
+     *
+     * @return HasMany
+     */
+    public function invoices()
+    {
+        return $this->hasMany('App\Invoice');
     }
 
     /**

@@ -136,6 +136,34 @@ class Client extends Model
     }
 
     /**
+     * Invoices associated with the client.
+     *
+     * @return Builder
+     */
+    public function invoices()
+    {
+        $query = Invoice::leftJoin(
+            'projects',
+            'invoices.project_id',
+            '=',
+            'projects.id'
+        );
+
+        $query->select('invoices.*');
+
+        $query->join(
+            'clients',
+            'projects.client_id',
+            '=',
+            'clients.id'
+        );
+
+        $query->where('clients.id', $this->getKey());
+        return $query;
+    }
+
+
+    /**
      * Human readable string for the value of the active flag.
      *
      * @return string
