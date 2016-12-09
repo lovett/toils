@@ -8,6 +8,7 @@ use App\Time;
 use App\User;
 use App\Invoice;
 use Faker\Factory as FakerFactory;
+use Illuminate\Support\Collection;
 
 
 /**
@@ -27,8 +28,7 @@ class FakeSeeder extends Seeder
 
         Model::unguard();
 
-        // User 1 has predicatable credentials so that it can be used
-        // during development.
+        // A user with predicatable credentials that can be used during development.
         User::updateOrCreate(
             ['name' => 'test'],
             [
@@ -37,21 +37,30 @@ class FakeSeeder extends Seeder
             ]
         );
 
-        // Additional users with random credentials
+        // Users.
         factory(User::class, $maxUserId)->create();
 
-        // Clients
-        factory(Client::class, 20)->create()->each(
-            function ($client) use ($faker) {
-                $userId = $this->randomUserId();
-                $client->users()->attach([1, $userId]);
+        // Clients.
+        $accumulator = new Collection();
+        User::all()->each(
+            function ($user) use (&$accumulator) {
+                $clientsPerUser = 5;
+                $clients = factory(Client::class, $clientsPerUser)->make();
+                $user->clients()->saveMany($clients->all());
+
+                if ($accumulator->isEmpty() === false) {
+                    $user->clients()->saveMany($accumulator->random($clientsPerUser));
+                }
+                $accumulator = $accumulator->merge($clients);
             }
         );
 
         // Projects
+        $accumulator = new Collection();
         Client::all()->each(
-            function ($client) use ($faker) {
-                $projects = factory(Project::class, $faker->numberBetween(1, 2))->make();
+            function ($client) use (&$accumulator) {
+                $projectsPerClient = 4;
+                $projects = factory(Project::class, $projectsPerClient)->make();
                 $client->projects()->saveMany($projects->all());
             }
         );
@@ -77,17 +86,4 @@ class FakeSeeder extends Seeder
         Model::reguard();
     }
 
-    /**
-     * Return a random user.
-     *
-     * @return User
-     */
-    public function randomUserId()
-    {
-        return User::select('id')
-            ->where('id', '>', 1)
-            ->orderByRaw('RANDOM()')
-            ->limit(1)
-            ->first()->id;
-    }
 }
