@@ -21,7 +21,7 @@ class ClientController extends Controller
         $this->middleware('auth');
         $this->middleware('returnable', ['only' => ['index', 'show']]);
         $this->middleware('backto', ['only' => ['store']]);
-        view()->share('appSection', 'clients');
+        view()->share('appSection', 'client');
     }
 
     /**
