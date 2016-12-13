@@ -23,7 +23,8 @@
 	    <div class="panel panel-default">
 		<div class="panel-heading">
 		    <h2 class="panel-title">
-			{{ TimeHelper::hoursAndMinutes($sliceTotal) }} in the past {{ str_plural('month', $sliceRange) }}
+			    {{ TimeHelper::hoursAndMinutes($sliceTotal) }}
+                in the past {{ $sliceRange }} {{ str_plural('month', $sliceRange) }}
 		    </h2>
 		</div>
 		<div class="panel-body">
