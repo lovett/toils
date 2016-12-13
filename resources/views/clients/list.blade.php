@@ -9,8 +9,9 @@
                 <th>Client</th>
                 <th>Status</th>
                 <th>Projects</th>
+                <th>Total Time</th>
                 <th>Last Active</th>
-                <th>Time</th>
+                <th>Started</th>
                 <th>Created</th>
             </tr>
         </thead>
@@ -29,10 +30,13 @@
                         {{ $client->projectCount }}
                     </td>
                     <td>
+                        {{ TimeHelper::hoursAndMinutes($client->totalTime) }}
+                    </td>
+                    <td>
                         {{ TimeHelper::dateFromRaw($client->latestTime, 'never')}}
                     </td>
                     <td>
-                        {{ TimeHelper::hoursAndMinutes($client->totalTime) }}
+                        {{ TimeHelper::dateFromRaw($client->earliestTime, 'never')}}
                     </td>
                     <td>
                         {{ TimeHelper::dateFromRaw($client->created_at) }}

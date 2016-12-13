@@ -79,7 +79,8 @@ class Client extends Model
             'clients.*,
             count(distinct projects.id) as projectCount,
             coalesce(sum(times.minutes), 0) as totalTime,
-            max(times.start) as latestTime'
+            max(times.start) as latestTime,
+            min(times.start) as earliestTime'
         );
 
         $builder = $builder->leftJoin(
