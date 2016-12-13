@@ -57,7 +57,7 @@ $factory->define(
 $factory->define(
     Time::class,
     function (FakerGenerator $faker) {
-        $start = $faker->dateTimeBetween('-1 year', '-1 day');
+        $start = $faker->dateTimeBetween('-5 years', '-1 day');
 
         return [
             'start' => $start,

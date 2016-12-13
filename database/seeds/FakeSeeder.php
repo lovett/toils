@@ -37,47 +37,48 @@ class FakeSeeder extends Seeder
             ]
         );
 
-        // Users.
+        // Additional users.
         factory(User::class, $maxUserId)->create();
 
-        // Clients.
-        $accumulator = new Collection();
+        // Clients, projects, and time.
+        $clientAccumulator = new Collection();
         User::all()->each(
-            function ($user) use (&$accumulator) {
+            function ($user) use ($faker, &$clientAccumulator) {
+                // First-round client assignment
                 $clientsPerUser = 5;
                 $clients = factory(Client::class, $clientsPerUser)->make();
                 $user->clients()->saveMany($clients->all());
 
-                if ($accumulator->isEmpty() === false) {
-                    $user->clients()->saveMany($accumulator->random($clientsPerUser));
+                // Projects for the newly created clients
+                $clients->each(
+                    function ($client) use ($faker, $user) {
+                        $projectsPerClient = 4;
+                        $projects = factory(Project::class, $projectsPerClient)->make();
+                        $client->projects()->saveMany($projects->all());
+
+                        // Time entries for the newly created projects
+                        $projects->each(
+                            function ($project) use ($faker, $user) {
+                                $time = factory(Time::class, 20)->make([
+                                    'user_id' => $user->getKey(),
+                                ]);
+                                $project->time()->saveMany($time->all());
+                            }
+                        );
+                    }
+                );
+
+                // Second-round client assignment: add user to other users' clients.
+                if ($clientAccumulator->isEmpty() === false) {
+                    $user->clients()->saveMany($clientAccumulator->random($clientsPerUser));
                 }
-                $accumulator = $accumulator->merge($clients);
-            }
-        );
-
-        // Projects
-        $accumulator = new Collection();
-        Client::all()->each(
-            function ($client) use (&$accumulator) {
-                $projectsPerClient = 4;
-                $projects = factory(Project::class, $projectsPerClient)->make();
-                $client->projects()->saveMany($projects->all());
-            }
-        );
-
-        // Time
-        Project::all()->each(
-            function ($project) use ($faker, $maxUserId) {
-                $time = factory(Time::class, 20)->make([
-                    'user_id' => $faker->numberBetween(1, $maxUserId),
-                ]);
-                $project->time()->saveMany($time->all());
+                $clientAccumulator = $clientAccumulator->merge($clients);
             }
         );
 
         // Invoices
         Project::all()->each(
-            function ($project) use ($faker, $maxUserId) {
+            function ($project) use ($faker) {
                 $invoices = factory(Invoice::class, 5)->make();
                 $project->invoices()->saveMany($invoices->all());
             }
