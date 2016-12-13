@@ -44,7 +44,7 @@ class TimeHelper
             $out[] = sprintf($format, $hours, $hoursLabel);
         }
 
-        if ($minutes > 0) {
+        if (empty($out) || $minutes > 0) {
             $out[] = sprintf($format, $minutes, $minutesLabel);
         }
 
