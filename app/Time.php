@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Traits\Search;
+use App\Invoice;
 
 /**
  * Eloquent model for the times table.
@@ -97,6 +98,17 @@ class Time extends Model
     public function project()
     {
         return $this->belongsTo('App\Project');
+    }
+
+
+    /**
+     * Invoice associated with the time entry.
+     *
+     * @return HasOne
+     */
+    public function invoice()
+    {
+        return $this->belongsTo('App\Invoice');
     }
 
     /**
@@ -233,5 +245,20 @@ class Time extends Model
         );
 
         return $result;
+    }
+
+    public function attachInvoice()
+    {
+        DB::beginTransaction();
+
+        $this->invoice()->dissociate();
+
+        $invoice = Invoice::where('start', '>=', $this->start);
+        $invoice->where('end', '<=', $this->start);
+        $invoice->where('project_id', $this->project_id);
+
+        $this->invoice()->associate($invoice->first());
+
+        DB::commit();
     }
 }

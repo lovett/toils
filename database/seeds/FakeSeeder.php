@@ -24,7 +24,7 @@ class FakeSeeder extends Seeder
     public function run()
     {
         $faker = FakerFactory::create();
-        $maxUserId = 10;
+        $maxUserId = 3;
 
         Model::unguard();
 

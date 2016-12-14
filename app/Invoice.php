@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Traits\Search;
+use App\Time;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Eloquent model for the invoices table.
@@ -119,5 +121,18 @@ class Invoice extends Model
         return $this->project()->with('client');
     }
 
+    public function attachTime()
+    {
+        DB::beginTransaction();
 
+        $this->times()->update(['invoice_id' => null]);
+
+        $times = Time::whereBetween('start', [$this->start, $this->end]);
+        $times->where('project_id', $this->project_id);
+        $times->whereNull('invoice_id');
+
+        $times->update(['invoice_id' => $this->getKey()]);
+
+        DB::commit();
+    }
 }
