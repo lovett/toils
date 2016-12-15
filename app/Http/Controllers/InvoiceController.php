@@ -151,6 +151,7 @@ class InvoiceController extends Controller
 
         $viewVars = [
             'backUrl' => $request->session()->get('returnTo'),
+            'projects' => $request->user()->projectsForMenu(),
             'model' => $invoice,
             'page_title' => 'Edit Invoice',
             'submission_method' => 'PUT',

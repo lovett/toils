@@ -57,7 +57,10 @@ class Invoice extends Model
      *
      * @var array
      */
-    protected $casts = [];
+    protected $casts = [
+        'start' => 'datetime',
+        'end' => 'datetime',
+    ];
 
     /**
      * The attributes that are datetimes.
@@ -81,10 +84,6 @@ class Invoice extends Model
      */
     public static function listing(Builder $builder)
     {
-        $builder = $builder->selectRaw(
-            'invoices.*'
-        );
-
         $builder = $builder->orderBy('invoices.sent', 'DESC');
 
         $builder->with('project.client');

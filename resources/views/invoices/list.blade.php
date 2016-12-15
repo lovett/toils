@@ -16,13 +16,13 @@
             @foreach ($invoices as $invoice)
                 <tr>
                     <td>
-                        <a href="{{ route('invoice.show', ['record' => $invoice]) }}">
+                        <a href="{{ route('invoice.edit', $invoice) }}">
                             {{ $invoice->name }}
+                            <div class="small">
+                                {{ TimeHelper::dateFromRaw($invoice->start) }} to
+                                {{ TimeHelper::dateFromRaw($invoice->end) }}
+                            </div>
                         </a>
-                        <div class="small">
-                            {{ TimeHelper::dateFromRaw($invoice->start) }} to
-                            {{ TimeHelper::dateFromRaw($invoice->end) }}
-                        </div>
                     </td>
                     <td>
                         <a href="{{ route('client.show', ['record' => $invoice->project->client]) }}">

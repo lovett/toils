@@ -5,7 +5,7 @@
 
     <div class="col-sm-10 {{ $label ? '' : 'col-sm-offset-2' }}">
         <pickable inline-template format="yyyy-mm-dd" initial="{{ date('Y-m-d') }}">
-            {!! Form::text($name . $suffix, isset($model->$name)? $model->$name->format('Y-m-d') : '', ['class' => 'form-control', 'v-model' => 'pickResult']) !!}
+            {!! Form::text($name . $suffix, isset($model->$name)? $model->$name->format(TimeHelper::$dateFormat) : '', ['class' => 'form-control', 'v-model' => 'pickResult']) !!}
 
             <p>
                 <a href="#" @click.prevent="toggle($event)">
@@ -16,10 +16,10 @@
             <div class="shortcuts" v-bind:class="{toggled: isToggled}">
 		<p>
 		    <span class="label">Relative:</span>
-                    <a @click.prevent="pick('yyyy-mm-dd', '{{ $ranges['today']->format($dateFormat) }}', 'active', $event)" href="#" >today</a>
-		    <a @click.prevent="pick('yyyy-mm-dd', '{{ $ranges['yesterday']->format($dateFormat) }}', 'active', $event)" href="#" >yesterday</a>
-		    <a @click.prevent="pick('yyyy-mm-dd', '{{ $ranges['2-days-ago']->format($dateFormat) }}', 'active', $event)" href="#" >2 days ago</a>
-		    <a @click.prevent="pick('yyyy-mm-dd', '{{ $ranges['3-days-ago']->format($dateFormat) }}', 'active', $event)" href="#" >3 days ago</a>
+                    <a @click.prevent="pick('yyyy-mm-dd', '{{ $ranges['today']->format(TimeHelper::$dateFormat) }}', 'active', $event)" href="#" >today</a>
+		    <a @click.prevent="pick('yyyy-mm-dd', '{{ $ranges['yesterday']->format(TimeHelper::$dateFormat) }}', 'active', $event)" href="#" >yesterday</a>
+		    <a @click.prevent="pick('yyyy-mm-dd', '{{ $ranges['2-days-ago']->format(TimeHelper::$dateFormat) }}', 'active', $event)" href="#" >2 days ago</a>
+		    <a @click.prevent="pick('yyyy-mm-dd', '{{ $ranges['3-days-ago']->format(TimeHelper::$dateFormat) }}', 'active', $event)" href="#" >3 days ago</a>
 		</p>
                 <p>
                     <span class="label">Month:</span>

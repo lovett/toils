@@ -20,12 +20,11 @@
 
 @include('partials.formgroup-menu', ['name' => 'project_id', 'label' => 'Project', 'items' => $projects, 'selectedItem' => $model->project_id])
 
-@include('partials.formgroup-standard', ['name' => 'estimatedDuration', 'label' => 'Estimate'])
+@include('partials.formgroup-standard', ['name' => 'name', 'label' => 'Name'])
 
-@include('partials.formgroup-date', ['name' => 'start', 'suffix' => 'Date', 'label' => 'Date', 'ranges' => TimeHelper::ranges()])
+@include('partials.formgroup-date', ['name' => 'start', 'suffix' => 'Date', 'label' => 'Start', 'ranges' => TimeHelper::ranges()])
 
-@include('partials.formgroup-time', ['name' => 'start', 'suffix' => 'Time', 'label' => 'Start', 'ranges' => TimeHelper::ranges()])
-@include('partials.formgroup-time', ['name' => 'end', 'suffix' => 'Time', 'label' => 'End', 'ranges' => TimeHelper::ranges()])
+@include('partials.formgroup-date', ['name' => 'end', 'suffix' => 'Date', 'label' => 'End', 'ranges' => TimeHelper::ranges()])
 
 @include('partials.formgroup-textarea', ['name' => 'summary', 'label' => 'Summary'])
 

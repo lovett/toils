@@ -16,7 +16,7 @@
             @foreach ($times as $time)
                 <tr>
                     <td>
-                        <a href="{{ route('time.edit', $time->id, ['id' => $time->id]) }}">
+                        <a href="{{ route('time.edit', $time) }}">
                             {{ TimeHelper::dateFromRaw($time->start) }}
                             <div class="small">
                                 {{ $time->start->format('g:i A') }}
