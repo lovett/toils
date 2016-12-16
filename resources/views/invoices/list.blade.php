@@ -6,9 +6,11 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Invoice</th>
+                <th>Number</th>
+                <th>Name</th>
                 <th>Client</th>
                 <th>Project</th>
+                <th>Date</th>
                 <th class="text-right">Amount</th>
             </tr>
         </thead>
@@ -16,12 +18,11 @@
             @foreach ($invoices as $invoice)
                 <tr>
                     <td>
+                        {{ $invoice->number }}
+                    </td>
+                    <td>
                         <a href="{{ route('invoice.edit', $invoice) }}">
                             {{ $invoice->name }}
-                            <div class="small">
-                                {{ TimeHelper::dateFromRaw($invoice->start) }} to
-                                {{ TimeHelper::dateFromRaw($invoice->end) }}
-                            </div>
                         </a>
                     </td>
                     <td>
@@ -33,6 +34,9 @@
                         <a href="{{ route('project.show', ['record' => $invoice->project]) }}">
                             {{ $invoice->project->name }}
                         </a>
+                    </td>
+                    <td>
+                        {{ TimeHelper::dateFromRaw($invoice->start) }} - {{ TimeHelper::dateFromRaw($invoice->end) }}
                     </td>
                     <td class="text-right">
                         {{ CurrencyHelper::withSymbol($invoice->amount) }}
