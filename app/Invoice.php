@@ -96,9 +96,49 @@ class Invoice extends Model
      */
     public static function listing(Builder $builder)
     {
-        $builder = $builder->orderBy('invoices.sent', 'DESC');
+        $builder->select([
+            'invoices.*',
+            'clients.name as clientName',
+            'clients.id as clientId',
+            'projects.name as projectName',
+            'projects.id as projectId',
+        ]);
+        $builder->leftJoin(
+            'projects',
+            'invoices.project_id',
+            '=',
+            'projects.id'
+        );
+        $builder->whereNull('projects.deleted_at');
 
-        $builder->with('project.client');
+        $builder->join(
+            'clients',
+            'projects.client_id',
+            '=',
+            'clients.id'
+        );
+        $builder->whereNull('clients.deleted_at');
+
+        $builder->join(
+            'client_user',
+            'client_user.client_id',
+            '=',
+            'clients.id'
+        );
+
+        $builder = $builder->orderBy('invoices.sent', 'DESC');
+        $builder->selectRaw('SUM(times.minutes) as totalMinutes');
+
+        $builder->leftJoin(
+            'times',
+            'invoices.id',
+            '=',
+            'times.invoice_id'
+        );
+        $builder->whereNull('times.deleted_at');
+
+        $builder = $builder->groupBy('invoices.id');
+
         return $builder;
     }
 

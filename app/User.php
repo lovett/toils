@@ -68,29 +68,7 @@ class User extends Model implements
      */
     public function invoices()
     {
-        $query = Invoice::select('invoices.*');
-        $query->leftJoin(
-            'projects',
-            'invoices.project_id',
-            '=',
-            'projects.id'
-        );
-
-        $query->join(
-            'clients',
-            'projects.client_id',
-            '=',
-            'clients.id'
-        );
-
-        $query->join(
-            'client_user',
-            'client_user.client_id',
-            '=',
-            'clients.id'
-        );
-
-        $query->where('client_user.user_id', $this->getKey());
+        $query = Invoice::where('client_user.user_id', $this->getKey());
         return $query;
     }
 

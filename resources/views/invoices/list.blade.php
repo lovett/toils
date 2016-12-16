@@ -3,14 +3,14 @@
 
 @section('page_main')
     @include('partials.search', ['route' => 'invoice.index', 'search' => $search, 'fields' => $searchFields])
-    <table class="table">
+    <table class="table table-striped">
         <thead>
             <tr>
                 <th>Number</th>
                 <th>Name</th>
                 <th>Client</th>
                 <th>Project</th>
-                <th>Date</th>
+                <th>Time</th>
                 <th class="text-right">Amount</th>
             </tr>
         </thead>
@@ -26,17 +26,20 @@
                         </a>
                     </td>
                     <td>
-                        <a href="{{ route('client.show', ['record' => $invoice->project->client]) }}">
-                            {{ $invoice->project->client->name }}
+                        <a href="{{ route('client.show', ['record' => $invoice->clientId]) }}">
+                            {{ $invoice->clientName }}
                         </a>
                     </td>
                     <td>
-                        <a href="{{ route('project.show', ['record' => $invoice->project]) }}">
-                            {{ $invoice->project->name }}
+                        <a href="{{ route('project.show', ['record' => $invoice->projectId]) }}">
+                            {{ $invoice->projectName }}
                         </a>
                     </td>
                     <td>
                         {{ TimeHelper::dateFromRaw($invoice->start) }} - {{ TimeHelper::dateFromRaw($invoice->end) }}
+                        <p class="small">
+                            {{ TimeHelper::hoursAndMinutes($invoice->totalMinutes) }}
+                        </p>
                     </td>
                     <td class="text-right">
                         {{ CurrencyHelper::withSymbol($invoice->amount) }}

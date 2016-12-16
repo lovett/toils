@@ -31,4 +31,15 @@ class CurrencyHelper
     {
         return $symbol . money_format('%.0n', $value);
     }
+
+    public static function hourlyRate($amount=0, $minutes=0, $symbol='$')
+    {
+        if ($minutes < 1) {
+            return '';
+        }
+
+        $rate = $amount / $minutes * 60;
+
+        return static::withSymbol($rate, $symbol);
+    }
 }
