@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Traits\Search;
 use App\Time;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 /**
  * Eloquent model for the invoices table.
@@ -19,6 +20,14 @@ use Illuminate\Support\Facades\DB;
 class Invoice extends Model
 {
     use SoftDeletes, Search;
+
+    /**
+     * The model's attributes.
+     *
+     * @var array
+     */
+    protected $attributes = [];
+
 
     /**
      * Fields that can be used for searching.
@@ -58,6 +67,9 @@ class Invoice extends Model
      * @var array
      */
     protected $casts = [
+        'sent' => 'datetime',
+        'due' => 'datetime',
+        'paid' => 'datetime',
         'start' => 'datetime',
         'end' => 'datetime',
     ];
@@ -88,6 +100,20 @@ class Invoice extends Model
 
         $builder->with('project.client');
         return $builder;
+    }
+
+    public function __construct()
+    {
+        $now = new Carbon();
+
+        $this->attributes = [
+            'sent' => $now,
+            'start' => $now,
+            'end' => $now,
+            'due' => $now->copy()->addDays(30),
+            'amount' => 0,
+        ];
+        parent::__construct();
     }
 
     /**

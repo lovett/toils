@@ -71,10 +71,11 @@ class InvoiceController extends Controller
     {
         $invoice = new Invoice();
 
-        $invoice->active = true;
+        //dd($invoice);
 
         $viewVars = [
             'page_title' => 'Add an invoice',
+            'projects' => $request->user()->projectsForMenu(),
             'model' => $invoice,
             'submission_route' => 'invoice.store',
             'submission_method' => 'POST',
