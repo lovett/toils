@@ -68,7 +68,8 @@ class User extends Model implements
      */
     public function invoices()
     {
-        $query = Invoice::leftJoin(
+        $query = Invoice::select('invoices.*');
+        $query->leftJoin(
             'projects',
             'invoices.project_id',
             '=',
