@@ -121,3 +121,15 @@ NAV .active {
 NAV .active:hover {
     text-decoration: none;
 }
+
+.invoice .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: #e8f7ee;
+};
+
+.project .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: #f7f4e8;
+};
+
+.client .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: #e8f4f7;
+};

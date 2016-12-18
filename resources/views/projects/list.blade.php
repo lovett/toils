@@ -2,7 +2,7 @@
 
 @section('page_main')
     @include('partials.search', ['route' => 'project.index', 'search' => $search, 'fields' => $searchFields])
-    <table class="table">
+    <table class="table table-striped">
         <thead>
             <tr>
                 <th>Name</th>
