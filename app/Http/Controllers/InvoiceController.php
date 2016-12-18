@@ -71,8 +71,6 @@ class InvoiceController extends Controller
     {
         $invoice = new Invoice();
 
-        //dd($invoice);
-
         $viewVars = [
             'page_title' => 'Add an invoice',
             'projects' => $request->user()->projectsForMenu(),

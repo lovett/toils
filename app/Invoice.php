@@ -148,7 +148,7 @@ class Invoice extends Model
 
         $this->attributes = [
             'sent' => $now,
-            'start' => $now,
+            'start' => $now->copy()->subDays(30),
             'end' => $now,
             'due' => $now->copy()->addDays(30),
             'amount' => 0,
