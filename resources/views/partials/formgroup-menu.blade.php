@@ -4,7 +4,7 @@
     @endif
 
     <div class="col-sm-10 {{ $label ? '' : 'col-sm-offset-2' }}">
-	{!! Form::select($name, $items, $selectedItem, ['class' => 'form-control']) !!}
+    {!! Form::select($name, $items, $selectedItem, ['class' => 'form-control']) !!}
 
         @if ($errors->has($name))
             <div class="help-block">{{ $errors->first($name)}}</div>

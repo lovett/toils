@@ -14,13 +14,13 @@
             </p>
 
             <div class="shortcuts" v-bind:class="{toggled: isToggled}">
-		<p>
-		    <span class="label">Relative:</span>
+                <p>
+                    <span class="label">Relative:</span>
                     <a @click.prevent="pick('yyyy-mm-dd', '{{ $ranges['today']->format(TimeHelper::$dateFormat) }}', 'active', $event)" href="#" >today</a>
-		    <a @click.prevent="pick('yyyy-mm-dd', '{{ $ranges['yesterday']->format(TimeHelper::$dateFormat) }}', 'active', $event)" href="#" >yesterday</a>
-		    <a @click.prevent="pick('yyyy-mm-dd', '{{ $ranges['2-days-ago']->format(TimeHelper::$dateFormat) }}', 'active', $event)" href="#" >2 days ago</a>
-		    <a @click.prevent="pick('yyyy-mm-dd', '{{ $ranges['3-days-ago']->format(TimeHelper::$dateFormat) }}', 'active', $event)" href="#" >3 days ago</a>
-		</p>
+                    <a @click.prevent="pick('yyyy-mm-dd', '{{ $ranges['yesterday']->format(TimeHelper::$dateFormat) }}', 'active', $event)" href="#" >yesterday</a>
+                    <a @click.prevent="pick('yyyy-mm-dd', '{{ $ranges['2-days-ago']->format(TimeHelper::$dateFormat) }}', 'active', $event)" href="#" >2 days ago</a>
+                    <a @click.prevent="pick('yyyy-mm-dd', '{{ $ranges['3-days-ago']->format(TimeHelper::$dateFormat) }}', 'active', $event)" href="#" >3 days ago</a>
+                </p>
                 <p>
                     <span class="label">Month:</span>
                     @foreach ($ranges['month'] as $value)
