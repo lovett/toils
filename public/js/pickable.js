@@ -1,22 +1,30 @@
 /* global Vue */
 Vue.component('pickable', {
-    props: [
-        'format',
-        'initial'
-    ],
+    props: {
+        format: {
+            type: String,
+            default: 'yyyy-mm-dd'
+        },
+        initialValue: {
+            type: String,
+            default: ''
+        },
+        opened: {
+            type: Boolean,
+            default: false
+        }
+    },
 
     data: function () {
         return {
-            format: '',
-            initial: '',
-            pickResult: '',
-            isToggled: false
-        };
+            isOpen: false,
+            pickResult: this.initialValue
+        }
     },
 
     methods: {
         toggle: function () {
-            this.isToggled = !this.isToggled;
+            this.isOpen = !this.isOpen;
         },
 
         pick: function (segment, val, className, event) {
@@ -31,7 +39,7 @@ Vue.component('pickable', {
                 return;
             }
 
-            if (Math.abs(this.pickResult.length - this.initial.length) === 1) {
+            if (Math.abs(this.pickResult.length - this.initialValue.length) === 1) {
                 this.pickResult = '0' + this.pickResult;
             }
 
@@ -39,8 +47,8 @@ Vue.component('pickable', {
                 val = '0' + val;
             }
 
-            if (this.pickResult.length !== this.initial.length) {
-                this.pickResult = this.initial;
+            if (this.pickResult.length !== this.initialValue.length) {
+                this.pickResult = this.initialValue;
             }
 
             index = this.format.indexOf(segment);
@@ -64,5 +72,5 @@ Vue.component('pickable', {
 });
 
 new Vue({
-    el: 'BODY'
+    el: 'MAIN'
 });
