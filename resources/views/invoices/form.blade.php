@@ -76,7 +76,7 @@
 @endsection
 
 @section('page_scripts')
-<script src="{{ asset('js/vue.min.js') }}"></script>
-<script src="{{ asset('js/pickable.js') }}"></script>
-<script src="{{ asset('js/prefill.js') }}"></script>
+    @include('partials.vue')
+    <script src="{{ asset('js/pickable.js') }}"></script>
+    <script src="{{ asset('js/prefill.js') }}"></script>
 @endsection

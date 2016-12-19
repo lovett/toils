@@ -46,6 +46,6 @@
 @endsection
 
 @section('page_scripts')
-    <script src="{{ asset('js/vue.min.js') }}"></script>
+    @include('partials.vue')
     <script src="{{ asset('js/searchby.js') }}"></script>
 @endsection
