@@ -78,5 +78,8 @@
 @section('page_scripts')
     @include('partials.vue')
     <script src="{{ asset('js/pickable.js') }}"></script>
+    <script src="{{ asset('js/autofill.js') }}"></script>
+
+    @include('partials.vue-init');
     @include('partials.select2')
 @endsection

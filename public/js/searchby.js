@@ -12,7 +12,3 @@ Vue.component('searchby', {
         }
     }
 });
-
-new Vue({
-    el: 'BODY'
-});

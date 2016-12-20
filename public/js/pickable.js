@@ -70,7 +70,3 @@ Vue.component('pickable', {
         }
     }
 });
-
-new Vue({
-    el: 'MAIN'
-});
