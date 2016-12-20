@@ -78,5 +78,5 @@
 @section('page_scripts')
     @include('partials.vue')
     <script src="{{ asset('js/pickable.js') }}"></script>
-    <script src="{{ asset('js/prefill.js') }}"></script>
+    @include('partials.select2')
 @endsection

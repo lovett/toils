@@ -39,3 +39,7 @@
 {!! Form::close() !!}
 @endif
 @endsection
+
+@section('page_scripts')
+    @include('partials.select2')
+@endsection
