@@ -32,7 +32,7 @@ class Invoice extends Model
     /**
      * Fields that can be used for searching.
      *
-     * Keys are field aliases suitable for use in UI.
+     * Keys are field aliases suitable for presentation to user.
      * Values are qualified field names suitable for use in SQL queries.
      *
      * @var array
@@ -40,6 +40,13 @@ class Invoice extends Model
     public static $searchables = [
         'name' => 'invoices.name',
         'summary' => 'invoices.summary',
+    ];
+
+    /**
+     * Fields that can be used for filtering.
+     */
+    public static $filterables = [
+        'projectId',
     ];
 
     /**
@@ -88,58 +95,76 @@ class Invoice extends Model
     ];
 
     /**
-     * Master query for getting a list of records.
+     * Query scope to restrict a listing to a specific project.
+     *
+     * @param Builder $query An existing query.
+     * @param int $projectId The primary key of a project.
+     *
+     * @return Builder;
+     */
+    public function scopeProject($query, $projectId=0)
+    {
+        return $query->where('projects.id', '=', $projectId);
+    }
+
+    /**
+     * Query scope for
      *
      * @param Builder $builder The query to start with
      *
      * @return Relation
      */
-    public static function listing(Builder $builder)
+    public function scopeListing($query)
     {
-        $builder->select([
+        $query->select([
             'invoices.*',
             'clients.name as clientName',
             'clients.id as clientId',
             'projects.name as projectName',
             'projects.id as projectId',
         ]);
-        $builder->leftJoin(
+
+        $query->leftJoin(
             'projects',
             'invoices.project_id',
             '=',
             'projects.id'
         );
-        $builder->whereNull('projects.deleted_at');
 
-        $builder->join(
+        $query->whereNull('projects.deleted_at');
+
+        $query->join(
             'clients',
             'projects.client_id',
             '=',
             'clients.id'
         );
-        $builder->whereNull('clients.deleted_at');
 
-        $builder->join(
+        $query->whereNull('clients.deleted_at');
+
+        $query->join(
             'client_user',
             'client_user.client_id',
             '=',
             'clients.id'
         );
 
-        $builder = $builder->orderBy('invoices.sent', 'DESC');
-        $builder->selectRaw('SUM(times.minutes) as totalMinutes');
+        $query->orderBy('invoices.sent', 'DESC');
 
-        $builder->leftJoin(
+        $query->selectRaw('SUM(times.minutes) as totalMinutes');
+
+        $query->leftJoin(
             'times',
             'invoices.id',
             '=',
             'times.invoice_id'
         );
-        $builder->whereNull('times.deleted_at');
 
-        $builder = $builder->groupBy('invoices.id');
+        $query->whereNull('times.deleted_at');
 
-        return $builder;
+        $query->groupBy('invoices.id');
+
+        return $query;
     }
 
     public function __construct()

@@ -25,7 +25,7 @@ class InvoiceController extends Controller
     }
 
     /**
-     * Display a list of invocies.
+     * Display a list of invoices.
      *
      * @param Request $request The incoming request
      *
@@ -33,19 +33,22 @@ class InvoiceController extends Controller
      */
     public function index(Request $request)
     {
+        $invoices = $request->user()->invoices()->listing();
+
+        $projectId = (int) $request->input('projectId', 0);
+        if ($projectId > 0) {
+            $invoices = $invoices->project($projectId);
+        }
+
         $search = $request->get('q');
 
-        $baseQuery = $request->user()->invoices();
+        $searchTerms = $this->parseSearchQuery(
+            $search,
+            Invoice::$searchables
+        );
 
-        $invoices = Invoice::listing($baseQuery);
-
-        if ($search !== null) {
-            $searchFields = $this->parseSearchQuery(
-                $search,
-                Invoice::$searchables
-            );
-
-            $invoices = Invoice::search($invoices, $searchFields);
+        if (!empty($searchTerms)) {
+            $invoices = Invoice::search($invoices, $searchTerms);
         }
 
         $invoices = $invoices->simplePaginate(15);
@@ -56,6 +59,8 @@ class InvoiceController extends Controller
             'search' => $search,
             'searchFields' => array_keys(Invoice::$searchables),
         ];
+
+
 
         return view('invoices.list', $viewVars);
     }

@@ -61,8 +61,12 @@ abstract class Controller extends BaseController
      *
      * @return array
      */
-    protected function parseSearchQuery($query, array $searchables = [])
+    protected function parseSearchQuery($query = null, array $searchables = [])
     {
+        if (empty($query)) {
+            return [];
+        }
+
         $query = strtolower($query);
         $query = filter_var($query, FILTER_SANITIZE_STRING);
 
