@@ -4,7 +4,7 @@
 
 @include('partials.error-alert')
 
-{!! Form::model($model, ['route' => $submission_route, 'method' => $submission_method, 'class' => 'form-horizontal']) !!}
+{!! Form::model($model, ['route' => $submission_route, 'method' => $submission_method, 'class' => 'invoice-form form-horizontal']) !!}
 
 @if (isset($previousModel))
 <div class="well well-sm text-center">
@@ -78,8 +78,8 @@
 @section('page_scripts')
     @include('partials.vue')
     <script src="{{ asset('js/pickable.js') }}"></script>
-    <script src="{{ asset('js/autofill.js') }}"></script>
 
     @include('partials.vue-init');
+    <script src="{{ asset('js/autofill-invoice.js') }}"></script>
     @include('partials.select2')
 @endsection
