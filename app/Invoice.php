@@ -107,6 +107,11 @@ class Invoice extends Model
         return $query->where('projects.id', '=', $projectId);
     }
 
+    public function scopeNewest($query)
+    {
+        $query->orderBy('sent', 'DESC');
+    }
+
     /**
      * Query scope for
      *
@@ -114,16 +119,8 @@ class Invoice extends Model
      *
      * @return Relation
      */
-    public function scopeListing($query)
+    public function scopeListing($query, $userId=0)
     {
-        $query->select([
-            'invoices.*',
-            'clients.name as clientName',
-            'clients.id as clientId',
-            'projects.name as projectName',
-            'projects.id as projectId',
-        ]);
-
         $query->leftJoin(
             'projects',
             'invoices.project_id',
@@ -142,14 +139,22 @@ class Invoice extends Model
 
         $query->whereNull('clients.deleted_at');
 
-        $query->join(
-            'client_user',
-            'client_user.client_id',
-            '=',
-            'clients.id'
-        );
+        if ($userId > 0) {
+            $query->join(
+                'client_user',
+                'client_user.client_id',
+                '=',
+                'clients.id'
+            );
+        }
 
-        $query->orderBy('invoices.sent', 'DESC');
+        $query->select([
+            'invoices.*',
+            'clients.name as clientName',
+            'clients.id as clientId',
+            'projects.name as projectName',
+            'projects.id as projectId',
+        ]);
 
         $query->selectRaw('SUM(times.minutes) as totalMinutes');
 

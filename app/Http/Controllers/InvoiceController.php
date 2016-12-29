@@ -33,12 +33,7 @@ class InvoiceController extends Controller
      */
     public function index(Request $request)
     {
-        $invoices = $request->user()->invoices()->listing();
-
-        $projectId = (int) $request->input('projectId', 0);
-        if ($projectId > 0) {
-            $invoices = $invoices->project($projectId);
-        }
+        $invoices = $request->user()->invoices();
 
         $search = $request->get('q');
 
@@ -60,9 +55,14 @@ class InvoiceController extends Controller
             'searchFields' => array_keys(Invoice::$searchables),
         ];
 
-
-
         return view('invoices.list', $viewVars);
+    }
+
+    public function newest (Request $request, $projectId = 0)
+    {
+        $projectId = (int) $projectId;
+        $invoices = $request->user()->invoices()->project($projectId)->newest();
+        return response()->json($invoices->first());
     }
 
     /**

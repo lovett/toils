@@ -68,8 +68,7 @@ class User extends Model implements
      */
     public function invoices()
     {
-        $query = Invoice::where('client_user.user_id', $this->getKey());
-        return $query;
+        return Invoice::listing($this->getKey());
     }
 
     /**
