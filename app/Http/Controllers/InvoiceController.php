@@ -80,7 +80,7 @@ class InvoiceController extends Controller
             'page_title' => 'Add an invoice',
             'projects' => $request->user()->projectsForMenu(),
             'model' => $invoice,
-            'submission_route' => 'invoice.store',
+            'submission_route' => 'invoices.store',
             'submission_method' => 'POST',
             'backUrl' => $request->session()->get('returnTo'),
         ];
@@ -116,7 +116,7 @@ class InvoiceController extends Controller
         $userMessage = $this->successMessage('invoice');
 
         return redirect()->route(
-            'invoice.show',
+            'invoices.show',
             [$invoice->id]
         )->with('userMessage', $userMessage);
     }
@@ -191,7 +191,7 @@ class InvoiceController extends Controller
         $userMessage = $this->userMessageForAffectedRows($affectedRows);
 
         return redirect()->route(
-            'invoice.show',
+            'invoices.show',
             [$invoice->id]
         )->with('userMessage', $userMessage);
     }

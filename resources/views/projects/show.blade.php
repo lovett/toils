@@ -12,7 +12,7 @@
 		    <dd>{{ $project->taxStatus() }}</dd>
 
 		    <dt>Client</dt>
-		    <dd>{!! link_to_route('client.show', $project->client->name, ['client' => $project->client]) !!}</dd>
+		    <dd>{!! link_to_route('clients.show', $project->client->name, ['client' => $project->client]) !!}</dd>
 
 		    <dt>Total Time</dt>
 		    <dd>{{ TimeHelper::hoursAndMinutes($totalTime) }}</dd>
@@ -43,7 +43,7 @@
 
 @section('nav_primary')
     <ul class="list-inline">
-	<li>{!! link_to_route('project.edit', 'Edit', ['id' => $project->id]) !!}</li>
+	<li>{!! link_to_route('projects.edit', 'Edit', ['id' => $project->id]) !!}</li>
 	<li>{!! link_to_route('time.create', 'Add time', ['project' => $project->id]) !!}</li>
     </ul>
 @endsection

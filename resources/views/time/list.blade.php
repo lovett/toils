@@ -32,7 +32,7 @@
                     </td>
 
                     <td>
-                        {!! link_to_route('project.show', $time->project->name, ['id' => $time->project->id]) !!}
+                        {!! link_to_route('projects.show', $time->project->name, ['id' => $time->project->id]) !!}
                     </td>
 
                     <td>

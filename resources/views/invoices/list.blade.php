@@ -2,7 +2,7 @@
 
 
 @section('page_main')
-    @include('partials.search', ['route' => 'invoice.index', 'search' => $search, 'fields' => $searchFields])
+    @include('partials.search', ['route' => 'invoices.index', 'search' => $search, 'fields' => $searchFields])
     <table class="table table-striped">
         <thead>
             <tr>
@@ -21,17 +21,17 @@
                         {{ $invoice->number }}
                     </td>
                     <td>
-                        <a href="{{ route('invoice.edit', $invoice) }}">
+                        <a href="{{ route('invoices.edit', $invoice) }}">
                             {{ $invoice->name }}
                         </a>
                     </td>
                     <td>
-                        <a href="{{ route('client.show', ['record' => $invoice->clientId]) }}">
+                        <a href="{{ route('clients.show', ['record' => $invoice->clientId]) }}">
                             {{ $invoice->clientName }}
                         </a>
                     </td>
                     <td>
-                        <a href="{{ route('project.show', ['record' => $invoice->projectId]) }}">
+                        <a href="{{ route('projects.show', ['record' => $invoice->projectId]) }}">
                             {{ $invoice->projectName }}
                         </a>
                     </td>
@@ -54,7 +54,7 @@
 @endsection
 
 @section('nav_primary')
-    {!! link_to_route('invoice.create', 'Add an invoice') !!}
+    {!! link_to_route('invoices.create', 'Add an invoice') !!}
 @endsection
 
 @section('page_scripts')

@@ -89,7 +89,7 @@ class ProjectController extends Controller
             'page_title' => 'Add a project',
             'model' => $model,
             'clients' => $clients,
-            'submission_route' => 'project.store',
+            'submission_route' => 'projects.store',
             'submission_method' => 'POST',
             'app_section' => 'project',
             'backUrl' => $request->session()->get('returnTo'),
@@ -205,7 +205,7 @@ class ProjectController extends Controller
 
         $userMessage = $this->userMessageForAffectedRows($affectedRows);
 
-        return redirect()->route('project.show', [$project->id])->with(
+        return redirect()->route('projects.show', [$project->id])->with(
             'userMessage',
             $userMessage
         );

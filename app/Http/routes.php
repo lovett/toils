@@ -64,18 +64,18 @@ Route::post(
 );
 
 // Clients.
-Route::resource('client', 'ClientController', ['middleware' => 'auth']);
+Route::resource('clients', 'ClientController', ['middleware' => 'auth']);
 
 // Projects.
-Route::resource('project', 'ProjectController');
+Route::resource('projects', 'ProjectController');
 
 // Time.
 Route::resource('time', 'TimeController', ['middleware' => 'auth']);
 
 // Invoices.
-Route::resource('invoice', 'InvoiceController', ['middlware' => 'auth']);
+Route::resource('invoices', 'InvoiceController', ['middlware' => 'auth']);
 Route::get(
-    'invoice/newest/{projectId}',
+    'invoices/newest/{projectId}',
     [
         'as' => 'newestInvoice',
         'uses' => 'InvoiceController@newest'

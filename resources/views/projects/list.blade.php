@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('page_main')
-    @include('partials.search', ['route' => 'project.index', 'search' => $search, 'fields' => $searchFields])
+    @include('partials.search', ['route' => 'projects.index', 'search' => $search, 'fields' => $searchFields])
     <table class="table table-striped">
         <thead>
             <tr>
@@ -15,7 +15,7 @@
             @foreach ($projects as $project)
                 <tr>
                     <td>
-                        <a href="{{ route('project.show', ['record' => $project]) }}">
+                        <a href="{{ route('projects.show', ['record' => $project]) }}">
                             {{ $project->name }}
                         </a>
                     </td>
@@ -24,7 +24,7 @@
                     </td>
                     <td>
                         @if ($project->client)
-                            {!! link_to_route('client.show', $project->client->name, ['id' => $project->client->id]) !!}
+                            {!! link_to_route('clients.show', $project->client->name, ['id' => $project->client->id]) !!}
                         @else
                             none
                         @endif
@@ -42,7 +42,7 @@
 @endsection
 
 @section('nav_primary')
-    {!! link_to_route('project.create', 'Add a project') !!}
+    {!! link_to_route('projects.create', 'Add a project') !!}
 @endsection
 
 @section('page_scripts')

@@ -76,7 +76,7 @@ class ClientController extends Controller
         $viewVars = [
             'page_title' => 'Add a client',
             'model' => $client,
-            'submission_route' => 'client.store',
+            'submission_route' => 'clients.store',
             'submission_method' => 'POST',
             'backUrl' => $request->session()->get('returnTo'),
         ];
@@ -112,7 +112,7 @@ class ClientController extends Controller
         $userMessage = $this->successMessage('client');
 
         return redirect()->route(
-            'client.show',
+            'clients.show',
             [$client->id]
         )->with('userMessage', $userMessage);
     }
@@ -189,7 +189,7 @@ class ClientController extends Controller
         $userMessage = $this->userMessageForAffectedRows($affectedRows);
 
         return redirect()->route(
-            'client.show',
+            'clients.show',
             [$client->id]
         )->with('userMessage', $userMessage);
     }
@@ -220,7 +220,7 @@ class ClientController extends Controller
             ];
         }
 
-        return redirect()->route('client.index')->with(
+        return redirect()->route('clients.index')->with(
             'userMessage',
             $userMessage
         );

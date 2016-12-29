@@ -2,7 +2,7 @@
 
 
 @section('page_main')
-    @include('partials.search', ['route' => 'client.index', 'search' => $search, 'fields' => $searchFields])
+    @include('partials.search', ['route' => 'clients.index', 'search' => $search, 'fields' => $searchFields])
     <table class="table table-striped">
         <thead>
             <tr>
@@ -19,7 +19,7 @@
             @foreach ($clients as $client)
                 <tr>
                     <td>
-                        <a href="{{ route('client.show', ['record' => $client]) }}">
+                        <a href="{{ route('clients.show', ['record' => $client]) }}">
                             {{ $client->name }}
                         </a>
                     </td>
@@ -51,7 +51,7 @@
 @endsection
 
 @section('nav_primary')
-    {!! link_to_route('client.create', 'Add a client') !!}
+    {!! link_to_route('clients.create', 'Add a client') !!}
 @endsection
 
 @section('page_scripts')

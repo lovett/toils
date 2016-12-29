@@ -35,7 +35,7 @@
                             @foreach ($model->projects->where('active', true) as $project)
                                 <li>
                                     @if ($model->active)
-                                        <a href="{{ route('project.show', ['project' => $project]) }}">{{ $project->name }}</a>
+                                        <a href="{{ route('projects.show', ['project' => $project]) }}">{{ $project->name }}</a>
                                     @else
                                         {{ $project->name }}
                                     @endif
@@ -55,7 +55,7 @@
                             @foreach ($model->projects->where('active', false) as $project)
                                 <li>
                                     @if ($model->active)
-                                        <a href="{{ route('project.show', ['project' => $project]) }}">{{ $project->name }}</a>
+                                        <a href="{{ route('projects.show', ['project' => $project]) }}">{{ $project->name }}</a>
                                     @else
                                         {{ $project->name }}
                                     @endif
@@ -82,7 +82,7 @@
                     <tr>
                         <td>{{ TimeHelper::dateFromRaw($invoice->sent) }}</td>
                         <td>
-                            <a href="{{ route('invoice.show', ['record' => $invoice->id]) }}">
+                            <a href="{{ route('invoices.show', ['record' => $invoice->id]) }}">
                                 {{ $invoice->name }}
                             </a>
                         </td>
@@ -99,10 +99,10 @@
 
 @section('nav_primary')
     <ul class="list-inline">
-        <li>{!! link_to_route('client.edit', 'Edit', ['id' => $model->id]) !!}</li>
+        <li>{!! link_to_route('clients.edit', 'Edit', ['id' => $model->id]) !!}</li>
 
         @if ($model->active)
-            <li>{!! link_to_route('project.create', 'New project', ['client' => $model->id]) !!}</li>
+            <li>{!! link_to_route('projects.create', 'New project', ['client' => $model->id]) !!}</li>
         @else
             <li>New project</li>
         @endif

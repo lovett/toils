@@ -18,9 +18,9 @@
                             <ul class="list-inline">
                                 <li>{!! LinkHelper::navLink($appSection, 'dashboard', 'Dashboard')  !!}</li>
                                 <li>{!! LinkHelper::navLink($appSection, 'time.index', 'Time') !!}</li>
-                                <li>{!! LinkHelper::navLink($appSection, 'invoice.index', 'Invoices') !!}</li>
-                                <li>{!! LinkHelper::navLink($appSection, 'project.index', 'Projects') !!}</li>
-                                <li>{!! LinkHelper::navLink($appSection, 'client.index', 'Clients') !!}</li>
+                                <li>{!! LinkHelper::navLink($appSection, 'invoices.index', 'Invoices') !!}</li>
+                                <li>{!! LinkHelper::navLink($appSection, 'projects.index', 'Projects') !!}</li>
+                                <li>{!! LinkHelper::navLink($appSection, 'clients.index', 'Clients') !!}</li>
                                 <li>{!! LinkHelper::navLink($appSection, 'logout', 'Log out') !!}</li>
                             </ul>
                         @show
