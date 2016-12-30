@@ -12,6 +12,9 @@ Vue.component('pickable', {
         opened: {
             type: Boolean,
             default: false
+        },
+        target: {
+            type: String
         }
     },
 
@@ -67,6 +70,7 @@ Vue.component('pickable', {
             });
 
             event.target.classList.add(className);
+            $(this.target).val(this.pickResult);
         }
     }
 });

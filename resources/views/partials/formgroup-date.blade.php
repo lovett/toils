@@ -4,11 +4,14 @@
     @endif
 
     <div class="col-sm-10 {{ $label ? '' : 'col-sm-offset-2' }}">
-        <pickable inline-template initial-value="{{ isset($model->$name)? $model->$name->format(TimeHelper::$dateFormat) : '' }}">
+        {!! Form::text($name, TimeHelper::dateField($model->$name), ['class' => 'form-control']) !!}
 
+        @if (isset($autofill))
+            <autofill-hint target="INPUT[name={{ $name }}]" v-bind:value="{{ $name }}"></autofill-hint>
+        @endif
+
+        <pickable inline-template initial-value="{{ isset($model->$name)? $model->$name->format(TimeHelper::$dateFormat) : '' }}" target="INPUT[name={{ $name }}]">
             <div>
-                {!! Form::text($name . $suffix, null, ['class' => 'form-control', 'v-model' => 'pickResult']) !!}
-
                 <p>
                     <a href="#" @click.prevent="toggle($event)">
                         <span v-bind:class="{hidden: !isOpen}">hide</span> shortcuts

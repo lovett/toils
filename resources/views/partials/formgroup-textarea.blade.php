@@ -8,5 +8,9 @@
         @if ($errors->has($name))
             <div class="help-block">{{ $errors->first($name)}}</div>
         @endif
+
+        @if (isset($autofill))
+            <autofill-hint target="TEXTAREA[name={{ $name }}]" v-bind:value="{{ $name }}"></autofill-hint>
+        @endif
     </div>
 </div>

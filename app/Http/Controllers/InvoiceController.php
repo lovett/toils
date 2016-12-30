@@ -61,8 +61,9 @@ class InvoiceController extends Controller
     public function newest (Request $request, $projectId = 0)
     {
         $projectId = (int) $projectId;
-        $invoices = $request->user()->invoices()->project($projectId)->newest();
-        return response()->json($invoices->first());
+        $invoice = $request->user()->invoices()->project($projectId)->newest()->first();
+
+        return response()->json($invoice);
     }
 
     /**

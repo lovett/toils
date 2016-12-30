@@ -74,11 +74,7 @@ class Invoice extends Model
      * @var array
      */
     protected $casts = [
-        'sent' => 'datetime',
-        'due' => 'datetime',
-        'paid' => 'datetime',
-        'start' => 'datetime',
-        'end' => 'datetime',
+        'amount' => 'float',
     ];
 
     /**

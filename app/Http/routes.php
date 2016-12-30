@@ -75,9 +75,9 @@ Route::resource('time', 'TimeController', ['middleware' => 'auth']);
 // Invoices.
 Route::resource('invoices', 'InvoiceController', ['middlware' => 'auth']);
 Route::get(
-    'invoices/newest/{projectId}',
+    'invoices/newest/project/{projectId?}',
     [
-        'as' => 'newestInvoice',
+        'as' => 'invoices.newest.project',
         'uses' => 'InvoiceController@newest'
     ]
 );

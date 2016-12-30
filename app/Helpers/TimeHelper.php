@@ -108,6 +108,15 @@ class TimeHelper
         return $value->format('M n Y');
     }
 
+    public static function dateField(Carbon $value)
+    {
+        if (empty($value)) {
+            return '';
+        }
+
+        return $value->format('Y-m-d');
+    }
+
     public static function ranges() {
         return [
             'today' => new DateTime(),
