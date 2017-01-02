@@ -4,7 +4,7 @@
 
     @include('partials.error-alert')
 
-    <autofill inline-template url="{{ route('invoices.newest.project') }}" fields="start, end, name, summary, amount, sent, due">
+    <autofill inline-template url="{{ route('invoices.suggestByProject') }}" fields="start, end, name, summary, amount, sent, due">
 
         {!! Form::model($model, ['route' => $submission_route, 'method' => $submission_method, 'class' => 'invoice-form form-horizontal']) !!}
 

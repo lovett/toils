@@ -58,10 +58,18 @@ class InvoiceController extends Controller
         return view('invoices.list', $viewVars);
     }
 
-    public function newest (Request $request, $projectId = 0)
+    /**
+     * Provide autocompletion candidates based on the past invoice for a project.
+     *
+     * @param Request $request  The incoming request
+     * @param int     $id       The id of the project to base the candidates on.
+     *
+     * @return Response A json response.
+     */
+    public function suggestByProject(Request $request, $id = 0)
     {
-        $projectId = (int) $projectId;
-        $invoice = $request->user()->invoices()->project($projectId)->newest()->first();
+        $id = (int) $id;
+        $invoice = $request->user()->invoices()->project($id)->newest()->first();
 
         return response()->json($invoice);
     }
