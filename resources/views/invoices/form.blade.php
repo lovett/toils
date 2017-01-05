@@ -25,7 +25,7 @@
                     <div class="input-group-addon">$</div>
                     {!! Form::text('amount', $model->amount, ['class' => 'form-control']) !!}
                 </div>
-                <autofill-hint target="INPUT[name=amount]" v-bind:value="amount"></autofill-hint>
+                <autofill-hint target="INPUT[name=amount]" v-bind:value="suggestedAmount" v-bind:previous="previousAmount"></autofill-hint>
             </div>
 
             {!! Form::label('receipt', 'Receipt', ['class' => 'col-sm-1 control-label']) !!}

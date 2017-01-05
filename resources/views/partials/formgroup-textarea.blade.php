@@ -10,7 +10,7 @@
         @endif
 
         @if (isset($autofill))
-            <autofill-hint target="TEXTAREA[name={{ $name }}]" v-bind:value="{{ $name }}"></autofill-hint>
+            <autofill-hint target="TEXTAREA[name={{ $name }}]" v-bind:value="suggested{{ ucfirst($name) }}" v-bind:previous="previous{{ ucfirst($name) }}"></autofill-hint>
         @endif
     </div>
 </div>

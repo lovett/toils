@@ -13,7 +13,7 @@ use App\Traits\Search;
 use App\Time;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
-use stdClass;
+use App\Helpers\TimeHelper;
 
 /**
  * Eloquent model for the invoices table.
@@ -69,16 +69,6 @@ class Invoice extends Model
         'receiptType'
     ];
 
-    protected $suggestable = [
-        'amount',
-        'sent',
-        'due',
-        'name',
-        'start',
-        'end',
-        'summary',
-    ];
-
     /**
      * Datatype mappings.
      *
@@ -91,14 +81,17 @@ class Invoice extends Model
     /**
      * The attributes that are datetimes.
      *
-     * @var array
+     * @var arrayn
      */
     protected $dates = [
-        'sent' => 'date',
-        'due' => 'date',
-        'paid' => 'date',
-        'start' => 'date',
-        'end' => 'date',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+        'sent',
+        'due',
+        'paid',
+        'start',
+        'end',
     ];
 
     /**
@@ -245,15 +238,28 @@ class Invoice extends Model
      * property, both to limit what fields are exposed and to allow
      * their values to be customized.
      *
-     * @return object A flat object containing suggestion values.
+     * @return object An object with suggested and previously-used values.
      */
     public function toSuggestion()
     {
-        $suggestion = collect($this->suggestable)->reduce(function ($accumulator, $field) {
-            $accumulator->$field = $this->$field;
-            return $accumulator;
-        }, new stdClass());
+        $suggestion = [
+            'previous' => [
+                'amount' => $this->amount,
+                'name' => $this->name,
+                'summary' => $this->summary,
+                'start' => TimeHelper::date($this->start),
+                'end' => TimeHelper::date($this->end),
+            ],
+            'suggested' => [
+                'amount' => $this->amount,
+                'name' => $this->name,
+                'summary' => $this->summary,
+                'end' => TimeHelper::dateField(Carbon::now()),
+                // Suggested start is the next day after the previous end.
+                'start' => TimeHelper::dateField($this->end->addDay()),
+            ],
+        ];
 
-        return $suggestion;
+        return (object) $suggestion;
     }
 }

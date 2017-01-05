@@ -15,7 +15,9 @@ Vue.component('autofill', {
 
     data: function () {
         return this.fields.split(/, ?/).reduce(function (acc, name) {
-            acc[name] = null;
+            var capitalizedName = name[0].toUpperCase() + name.substring(1);
+            acc['suggested' + capitalizedName] = null;
+            acc['previous' + capitalizedName] = null;
             return acc;
         }, {});
     },
@@ -35,14 +37,18 @@ Vue.component('autofill', {
         },
 
         fetchNewest: function (url) {
-            var resource = this.$resource(url);
+            var resource, self;
+            resource = this.$resource(url);
+            self = this;
             resource.get().then((response) => {
-                Object.keys(response.body).forEach(function (field) {
-                    if (this.hasOwnProperty(field) === false) {
-                        return;
-                    }
-                    this[field] = response.body[field];
-                }, this);
+                ['previous', 'suggested'].forEach(function (group) {
+                    Object.keys(response.body[group]).forEach(function (field) {
+                        var dataField = group + field[0].toUpperCase() + field.substring(1);
+                        if (self.hasOwnProperty(dataField)) {
+                            self[dataField] = response.body[group][field];
+                        }
+                    });
+                });
             }, (response) => {
                 console.warn(response);
             });
