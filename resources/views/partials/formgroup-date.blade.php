@@ -19,43 +19,45 @@
                 </p>
 
                 <div class="shortcuts" v-bind:class="{toggled: isOpen}">
-                    <p>
-                        <span class="label">Relative:</span>
-                        <a @click.prevent="pick('yyyy-mm-dd', '{{ $ranges['today']->format(TimeHelper::$dateFormat) }}', 'active', $event)" href="#" >today</a>
-                        <a @click.prevent="pick('yyyy-mm-dd', '{{ $ranges['yesterday']->format(TimeHelper::$dateFormat) }}', 'active', $event)" href="#" >yesterday</a>
-                        <a @click.prevent="pick('yyyy-mm-dd', '{{ $ranges['2-days-ago']->format(TimeHelper::$dateFormat) }}', 'active', $event)" href="#" >2 days ago</a>
-                        <a @click.prevent="pick('yyyy-mm-dd', '{{ $ranges['3-days-ago']->format(TimeHelper::$dateFormat) }}', 'active', $event)" href="#" >3 days ago</a>
-                    </p>
-                    <p>
-                        <span class="label">Month:</span>
-                        @foreach ($ranges['month'] as $value)
-                            <a
-                                @click.prevent="pick('mm', '{{ $value->format('m') }}', 'active', $event)"
-                                href="#"
-                                class="{{ $value->format('M') === $model->$name->format('M') ? 'active' : '' }}"
-                            >{{ $value->format('M') }}</a>
-                        @endforeach
-                    </p>
-                    <p>
-                        <span class="label">Day:</span>
-                        @foreach ($ranges['day'] as $value)
-                            <a
-                                @click.prevent="pick('dd', '{{ $value->format('d') }}', 'active', $event)"
-                                href="#"
-                                class="{{ $value->format('j') === $model->$name->format('j') ? 'active' : '' }}"
-                            >{{ $value->format('j') }}</a>
-                        @endforeach
-                    </p>
-                    <p>
-                        <span class="label">Year:</span>
-                        @foreach ($ranges['year'] as $value)
-                            <a
-                                @click.prevent="pick('yyyy', '{{ $value->format('Y') }}', 'active', $event)"
-                                href="#"
-                                class="{{ $value->format('Y') === $model->$name->format('Y') ? 'active' : '' }}"
-                            >{{ $value->format('Y') }}</a>
-                        @endforeach
-                    </p>
+                    <div class="well">
+                        <p>
+                            <span class="label">Relative:</span>
+                            <a @click.prevent="pick('yyyy-mm-dd', '{{ $ranges['today']->format(TimeHelper::$dateFormat) }}', 'active', $event)" href="#" >today</a>
+                            <a @click.prevent="pick('yyyy-mm-dd', '{{ $ranges['yesterday']->format(TimeHelper::$dateFormat) }}', 'active', $event)" href="#" >yesterday</a>
+                            <a @click.prevent="pick('yyyy-mm-dd', '{{ $ranges['2-days-ago']->format(TimeHelper::$dateFormat) }}', 'active', $event)" href="#" >2 days ago</a>
+                            <a @click.prevent="pick('yyyy-mm-dd', '{{ $ranges['3-days-ago']->format(TimeHelper::$dateFormat) }}', 'active', $event)" href="#" >3 days ago</a>
+                        </p>
+                        <p>
+                            <span class="label">Month:</span>
+                            @foreach ($ranges['month'] as $value)
+                                <a
+                                    @click.prevent="pick('mm', '{{ $value->format('m') }}', 'active', $event)"
+                                    href="#"
+                                    class="{{ $value->format('M') === $model->$name->format('M') ? 'active' : '' }}"
+                                >{{ $value->format('M') }}</a>
+                            @endforeach
+                        </p>
+                        <p>
+                            <span class="label">Day:</span>
+                            @foreach ($ranges['day'] as $value)
+                                <a
+                                    @click.prevent="pick('dd', '{{ $value->format('d') }}', 'active', $event)"
+                                    href="#"
+                                    class="{{ $value->format('j') === $model->$name->format('j') ? 'active' : '' }}"
+                                >{{ $value->format('j') }}</a>
+                            @endforeach
+                        </p>
+                        <p>
+                            <span class="label">Year:</span>
+                            @foreach ($ranges['year'] as $value)
+                                <a
+                                    @click.prevent="pick('yyyy', '{{ $value->format('Y') }}', 'active', $event)"
+                                    href="#"
+                                    class="{{ $value->format('Y') === $model->$name->format('Y') ? 'active' : '' }}"
+                                >{{ $value->format('Y') }}</a>
+                            @endforeach
+                        </p>
+                    </div>
                 </div>
             </div>
         </pickable>
