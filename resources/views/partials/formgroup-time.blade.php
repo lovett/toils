@@ -8,8 +8,8 @@
             {!! Form::text($name . $suffix, isset($model->$name)? $model->$name->format('g:i A') : '', ['class' => 'form-control', 'v-model' => 'pickResult']) !!}
 
             <p>
-                <a href="#" @click.prevent="toggle($event)">
-                    <span v-bind:class="{hidden: !isToggled}">hide</span> shortcuts
+                <a href="#" @click.prevent="toggle($event)" v-bind:class="{hidden: !isToggled}">
+                    shortcuts
                 </a>
             </p>
 
@@ -18,29 +18,25 @@
                     <p>
                         <span class="label">Hour:</span>
                         @foreach ($ranges['hour'] as $value)
-                            <a @click.prevent="pick('hh', '{{ $value->format('g') }}', 'active', $event)"
+                            <a @click.prevent="pick('hh', '{{ $value->format('g') }}')"
                                href="#"
-                               class="{{ isset($model->$name) && $value->format('g') === $model->$name->format('g') ? 'active' : '' }}"
                             >{{ $value->format('g') }}</a>
                         @endforeach
                     </p>
                     <p>
                         <span class="label">Minute:</span>
                         @foreach ($ranges['minute'] as $value)
-                            <a @click.prevent="pick('mm', '{{ $value->format('i') }}', 'active', $event)"
+                            <a @click.prevent="pick('mm', '{{ $value->format('i') }}')"
                                href="#"
-                               class="{{ isset($model->$name) && $value->format('i') === $model->$name->format('i') ? 'active' : '' }}"
                             >{{ $value->format('i') }}</a>
                         @endforeach
                     </p>
                     <p>
-                        <a @click.prevent="pick('AA', 'AM', 'active', $event)"
+                        <a @click.prevent="pick('AA', 'AM')"
                            href="#"
-                           class="{{ isset($model->$name) && $value->format('A') === 'AM' ? 'active' : '' }}"
                         >AM</a>
-                        <a @click.prevent="pick('AA', 'PM', 'active', $event)"
+                        <a @click.prevent="pick('AA', 'PM')"
                            href="#"
-                           class="{{ isset($model->$name) && $value->format('A') === 'PM' ? 'active' : '' }}"
                         >PM</a>
                     </p>
                 </div>

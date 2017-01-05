@@ -21,7 +21,14 @@ Vue.component('pickable', {
     data: function () {
         return {
             isOpen: false,
-            pickResult: this.initialValue
+            value: this.initialValue,
+            className: null
+        }
+    },
+
+    watch: {
+        value: function () {
+            $(this.target).val(this.value);
         }
     },
 
@@ -30,7 +37,18 @@ Vue.component('pickable', {
             this.isOpen = !this.isOpen;
         },
 
-        pick: function (segment, val, className, event) {
+        sync: function (segment) {
+            var segmentParts, valueParts, self;
+            segmentParts = segment.split('-');
+            valueParts = this.value.split('-');
+            self = this;
+
+            [].forEach.call(segmentParts, function (part, index) {
+                self.pick(part, valueParts[index]);
+            });
+        },
+
+        pick: function (segment, val, event) {
             var index, head, tail, siblings;
 
             if (this.format.indexOf(segment) === -1) {
@@ -38,39 +56,31 @@ Vue.component('pickable', {
             }
 
             if (segment === this.format) {
-                this.pickResult = val;
+                this.value = val;
+                this.sync(segment);
                 return;
             }
 
-            if (Math.abs(this.pickResult.length - this.initialValue.length) === 1) {
-                this.pickResult = '0' + this.pickResult;
+            if (Math.abs(this.value.length - this.initialValue.length) === 1) {
+                this.value = '0' + this.value;
             }
 
             if (Math.abs(val.length - segment.length) === 1) {
                 val = '0' + val;
             }
 
-            if (this.pickResult.length !== this.initialValue.length) {
-                this.pickResult = this.initialValue;
+            if (this.value.length !== this.initialValue.length) {
+                this.value = this.initialValue;
             }
 
             index = this.format.indexOf(segment);
-            head = this.pickResult.substr(0, index);
-            tail = this.pickResult.substr(index + val.length);
-            this.pickResult = head + val + tail;
+            head = this.value.substr(0, index);
+            tail = this.value.substr(index + val.length);
+            this.value = head + val + tail;
 
-            if (this.pickResult.indexOf('0') === 0) {
-                this.pickResult = this.pickResult.substr(1);
+            if (this.value.indexOf('0') === 0) {
+                this.value = this.value.substr(1);
             }
-
-            siblings = event.target.parentNode.children;
-
-            [].forEach.call(siblings, function (sibling) {
-                sibling.classList.remove(className);
-            });
-
-            event.target.classList.add(className);
-            $(this.target).val(this.pickResult);
         }
     }
 });

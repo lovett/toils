@@ -13,8 +13,8 @@
         <pickable inline-template initial-value="{{ isset($model->$name)? $model->$name->format(TimeHelper::$dateFormat) : '' }}" target="INPUT[name={{ $name }}]">
             <div>
                 <p>
-                    <a href="#" @click.prevent="toggle($event)">
-                        <span v-bind:class="{hidden: !isOpen}">hide</span> shortcuts
+                    <a href="#" @click.prevent="toggle($event)" v-bind:class="{hidden: isOpen}">
+                        shortcuts
                     </a>
                 </p>
 
@@ -22,18 +22,17 @@
                     <div class="well">
                         <p>
                             <span class="label">Relative:</span>
-                            <a @click.prevent="pick('yyyy-mm-dd', '{{ $ranges['today']->format(TimeHelper::$dateFormat) }}', 'active', $event)" href="#" >today</a>
-                            <a @click.prevent="pick('yyyy-mm-dd', '{{ $ranges['yesterday']->format(TimeHelper::$dateFormat) }}', 'active', $event)" href="#" >yesterday</a>
-                            <a @click.prevent="pick('yyyy-mm-dd', '{{ $ranges['2-days-ago']->format(TimeHelper::$dateFormat) }}', 'active', $event)" href="#" >2 days ago</a>
-                            <a @click.prevent="pick('yyyy-mm-dd', '{{ $ranges['3-days-ago']->format(TimeHelper::$dateFormat) }}', 'active', $event)" href="#" >3 days ago</a>
+                            <a @click.prevent="pick('yyyy-mm-dd', '{{ $ranges['today']->format(TimeHelper::$dateFormat) }}')" href="#">today</a>
+                            <a @click.prevent="pick('yyyy-mm-dd', '{{ $ranges['yesterday']->format(TimeHelper::$dateFormat) }}')" href="#">yesterday</a>
+                            <a @click.prevent="pick('yyyy-mm-dd', '{{ $ranges['2-days-ago']->format(TimeHelper::$dateFormat) }}')" href="#">2 days ago</a>
+                            <a @click.prevent="pick('yyyy-mm-dd', '{{ $ranges['3-days-ago']->format(TimeHelper::$dateFormat) }}')" href="#">3 days ago</a>
                         </p>
                         <p>
                             <span class="label">Month:</span>
                             @foreach ($ranges['month'] as $value)
                                 <a
-                                    @click.prevent="pick('mm', '{{ $value->format('m') }}', 'active', $event)"
+                                    @click.prevent="pick('mm', '{{ $value->format('m') }}')"
                                     href="#"
-                                    class="{{ $value->format('M') === $model->$name->format('M') ? 'active' : '' }}"
                                 >{{ $value->format('M') }}</a>
                             @endforeach
                         </p>
@@ -41,9 +40,8 @@
                             <span class="label">Day:</span>
                             @foreach ($ranges['day'] as $value)
                                 <a
-                                    @click.prevent="pick('dd', '{{ $value->format('d') }}', 'active', $event)"
+                                    @click.prevent="pick('dd', '{{ $value->format('d') }}')"
                                     href="#"
-                                    class="{{ $value->format('j') === $model->$name->format('j') ? 'active' : '' }}"
                                 >{{ $value->format('j') }}</a>
                             @endforeach
                         </p>
@@ -51,11 +49,16 @@
                             <span class="label">Year:</span>
                             @foreach ($ranges['year'] as $value)
                                 <a
-                                    @click.prevent="pick('yyyy', '{{ $value->format('Y') }}', 'active', $event)"
+                                    @click.prevent="pick('yyyy', '{{ $value->format('Y') }}')"
                                     href="#"
-                                    class="{{ $value->format('Y') === $model->$name->format('Y') ? 'active' : '' }}"
                                 >{{ $value->format('Y') }}</a>
                             @endforeach
+                        </p>
+
+                        <p class="text-center">
+                            <a class="small" href="#" @click.prevent="toggle($event)">
+                                ▲
+                            </a>
                         </p>
                     </div>
                 </div>

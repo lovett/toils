@@ -80,20 +80,18 @@ ADDRESS DIV {
         margin-bottom: .5em;
     }
 
-    A {
-        margin-right: .75em;
-        padding: .1em .25em;
+    p:last-of-type {
+        margin-bottom: 0;
     }
 
-    .active {
-        background-color: #666;
-        color: white;
+    A {
+        margin-right: .75em;
     }
 
     .label {
         text-transform: none;
+        display: block;
     }
-
 }
 
 .shortcuts.toggled {
