@@ -13,6 +13,7 @@ use App\Traits\Search;
 use App\Time;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use stdClass;
 
 /**
  * Eloquent model for the invoices table.
@@ -22,7 +23,7 @@ class Invoice extends Model
     use SoftDeletes, Search;
 
     /**
-     * The model's attributes.
+     * Default values for newly-created instances.
      *
      * @var array
      */
@@ -66,6 +67,16 @@ class Invoice extends Model
         'end',
         'summary',
         'receiptType'
+    ];
+
+    protected $suggestable = [
+        'amount',
+        'sent',
+        'due',
+        'name',
+        'start',
+        'end',
+        'summary',
     ];
 
     /**
@@ -225,5 +236,24 @@ class Invoice extends Model
         $times->update(['invoice_id' => $this->getKey()]);
 
         DB::commit();
+    }
+
+    /**
+     * Create a subset representation for providing autocompletion hints.
+     *
+     * Returns an object whose fields reflect the $suggestable
+     * property, both to limit what fields are exposed and to allow
+     * their values to be customized.
+     *
+     * @return object A flat object containing suggestion values.
+     */
+    public function toSuggestion()
+    {
+        $suggestion = collect($this->suggestable)->reduce(function ($accumulator, $field) {
+            $accumulator->$field = $this->$field;
+            return $accumulator;
+        }, new stdClass());
+
+        return $suggestion;
     }
 }

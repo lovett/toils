@@ -71,7 +71,8 @@ class InvoiceController extends Controller
         $id = (int) $id;
         $invoice = $request->user()->invoices()->project($id)->newest()->first();
 
-        return response()->json($invoice);
+        $suggestion = $invoice->toSuggestion();
+        return response()->json($suggestion);
     }
 
     /**
