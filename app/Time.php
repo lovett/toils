@@ -19,6 +19,13 @@ class Time extends Model
     use SoftDeletes, Search;
 
     /**
+     * Default values for newly-created instances.
+     *
+     * @var array
+     */
+    protected $attributes = [];
+
+    /**
      * Fields that can be used for searching.
      *
      * Keys are field aliases suitable for use in UI.
@@ -64,6 +71,18 @@ class Time extends Model
      * @var array
      */
     protected $dates = ['deleted_at' => 'datetime'];
+
+    public function __construct()
+    {
+        $now = new Carbon();
+
+        $this->attributes = [
+            'start' => $now,
+            'minutes' => 0,
+        ];
+        parent::__construct();
+    }
+
 
     /**
      * Master query for getting a list of records.

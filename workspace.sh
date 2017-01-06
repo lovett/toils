@@ -6,6 +6,8 @@ set -u
 PROJECT_ROOT=$(pwd)
 PROJECT_NAME=$(basename "$PROJECT_ROOT")
 
+STARTPAGE="${STARTPAGE:-.}"
+
 # Start the server if not already running
 tmux start-server 2> /dev/null
 
@@ -15,7 +17,7 @@ tmux attach-session -d -t "$PROJECT_NAME" || {
 
     ## 0: Editor
     tmux new-session -d -s "$PROJECT_NAME" bash
-    tmux send-keys -t "$PROJECT_NAME" "e ." C-m
+    tmux send-keys -t "$PROJECT_NAME" "$EDITOR $STARTPAGE" C-m
 
     ## 1: Shell
     tmux new-window -a -t "$PROJECT_NAME" bash

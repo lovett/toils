@@ -77,12 +77,8 @@ class TimeController extends Controller
             $projectId = null;
         }
 
-        $model = new Time(
-            [
-                'start' => new Carbon('now'),
-                'project_id' => $projectId,
-            ]
-        );
+        $model = new Time();
+        $model->project_id = $projectId;
 
         $previousModel = $request->user()->time();
         if ($projectId !== null) {

@@ -4,7 +4,7 @@
     @endif
 
     <div class="col-sm-10 {{ $label ? '' : 'col-sm-offset-2' }}">
-        {!! Form::text($name, TimeHelper::dateField($model->$name), ['class' => 'form-control']) !!}
+        {!! Form::text($name, TimeHelper::dateField($model->$name), ['class' => 'form-control', 'v-model' => 'pickResult']) !!}
 
         @if (isset($autofill))
             <autofill-hint target="INPUT[name={{ $name }}]" v-bind:value="suggested{{ ucfirst($name) }}" v-bind:previous="previous{{ ucfirst($name) }}"></autofill-hint>

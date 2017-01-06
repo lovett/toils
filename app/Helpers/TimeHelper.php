@@ -108,7 +108,7 @@ class TimeHelper
         return $value->format('M n Y');
     }
 
-    public static function dateField(Carbon $value)
+    public static function dateField(Carbon $value = null)
     {
         if (empty($value)) {
             return '';
@@ -116,6 +116,16 @@ class TimeHelper
 
         return $value->format('Y-m-d');
     }
+
+    public static function timeField(Carbon $value = null)
+    {
+        if (empty($valu)) {
+            return '';
+        }
+
+        return $value->format('g:i A');
+    }
+
 
     public static function ranges() {
         return [

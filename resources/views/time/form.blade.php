@@ -22,10 +22,10 @@
 
 @include('partials.formgroup-standard', ['name' => 'estimatedDuration', 'label' => 'Estimate'])
 
-@include('partials.formgroup-date', ['name' => 'start', 'suffix' => 'Date', 'label' => 'Date', 'ranges' => TimeHelper::ranges()])
+@include('partials.formgroup-date', ['name' => 'start', 'label' => 'Date', 'ranges' => TimeHelper::ranges()])
 
-@include('partials.formgroup-time', ['name' => 'start', 'suffix' => 'Time', 'label' => 'Start', 'ranges' => TimeHelper::ranges()])
-@include('partials.formgroup-time', ['name' => 'end', 'suffix' => 'Time', 'label' => 'End', 'ranges' => TimeHelper::ranges()])
+@include('partials.formgroup-time', ['name' => 'start', 'fieldName' => 'startTime', 'label' => 'Start', 'ranges' => TimeHelper::ranges()])
+@include('partials.formgroup-time', ['name' => 'end', 'fieldName' => 'endTime', 'label' => 'End', 'ranges' => TimeHelper::ranges()])
 
 @include('partials.formgroup-textarea', ['name' => 'summary', 'label' => 'Summary'])
 
@@ -58,5 +58,6 @@
     @include('partials.vue')
     <script src="{{ asset('js/pickable.js') }}"></script>
     <script src="{{ asset('js/prefill.js') }}"></script>
+    @include('partials.vue-init');
     @include('partials.select2')
 @endsection
