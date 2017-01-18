@@ -3,7 +3,7 @@
 
 @section('page_main')
     @include('partials.search', ['route' => 'clients.index', 'search' => $search, 'fields' => $searchFields])
-    <table class="table table-striped">
+    <table class="table">
         <thead>
             <tr>
                 <th>Client</th>
