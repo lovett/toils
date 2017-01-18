@@ -4,7 +4,7 @@
 
     @include('partials.error-alert')
 
-    <autofill inline-template url="{{ route('invoices.suggestByProject') }}" fields="start, end, name, summary, amount, sent, due">
+    <autofill inline-template url="{{ route('invoices.suggestByProject') }}" fields="start, end, name, summary, amount">
 
         {!! Form::model($model, ['route' => $submission_route, 'method' => $submission_method, 'class' => 'invoice-form form-horizontal']) !!}
 
@@ -34,7 +34,7 @@
             </div>
         </div>
 
-        @include('partials.formgroup-date', ['name' => 'sent', 'label' => 'Sent', 'ranges' => TimeHelper::ranges(), 'autofill' => true])
+        @include('partials.formgroup-date', ['name' => 'sent', 'label' => 'Sent', 'ranges' => TimeHelper::ranges()])
 
         @include('partials.formgroup-date', ['name' => 'due', 'label' => 'Due', 'ranges' => TimeHelper::ranges(), 'autofill' => true])
 

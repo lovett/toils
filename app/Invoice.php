@@ -242,6 +242,8 @@ class Invoice extends Model
      */
     public function toSuggestion()
     {
+        $now = Carbon::now();
+
         $suggestion = [
             'previous' => [
                 'amount' => $this->amount,
@@ -254,7 +256,7 @@ class Invoice extends Model
                 'amount' => $this->amount,
                 'name' => $this->name,
                 'summary' => $this->summary,
-                'end' => TimeHelper::dateField(Carbon::now()),
+                'end' => TimeHelper::dateField($now),
                 // Suggested start is the next day after the previous end.
                 'start' => TimeHelper::dateField($this->end->addDay()),
             ],

@@ -4,7 +4,7 @@
     @endif
 
     <div class="col-sm-10 {{ $label ? '' : 'col-sm-offset-2' }}">
-        {!! Form::text($fieldName, TimeHelper::timeField($model->$name), ['class' => 'form-control', 'v-model' => 'pickResult']) !!}
+        {!! Form::text($fieldName, TimeHelper::timeField($model->$name), ['class' => 'form-control']) !!}
 
         <pickable inline-template format="hh:mm AA" initial-value="{{ date('h:i A') }}" target="INPUT[name={{ $fieldName }}]">
             <div>
