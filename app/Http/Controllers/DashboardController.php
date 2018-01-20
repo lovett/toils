@@ -2,30 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Response;
+use Illuminate\Http\Request;
 
-/**
- * Controller for the user homepage.
- */
 class DashboardController extends Controller
 {
     /**
-     * Set middleware and shared view values.
+     * Create a new controller instance.
+     *
+     * @return void
      */
     public function __construct()
     {
         $this->middleware('auth');
-        view()->share('appSection', 'dashboard');
-        view()->share('page_title', 'Dashboard');
+        view()->share('pageTitle', 'Dashboard');
     }
 
     /**
-     * Display the dashboard.
+     * Show the application dashboard.
      *
-     * @return Response
+     * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('dashboard.show');
+        return view('home');
     }
 }

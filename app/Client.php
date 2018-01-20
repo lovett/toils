@@ -79,8 +79,7 @@ class Client extends Model
             'clients.*,
             count(distinct projects.id) as projectCount,
             coalesce(sum(times.minutes), 0) as totalTime,
-            max(times.start) as latestTime,
-            min(times.start) as earliestTime'
+            max(times.start) as latestTime'
         );
 
         $builder = $builder->leftJoin(
@@ -143,26 +142,18 @@ class Client extends Model
      */
     public function invoices()
     {
-        $query = Invoice::leftJoin(
-            'projects',
-            'invoices.project_id',
-            '=',
-            'projects.id'
-        );
-
-        $query->select('invoices.*');
-
-        $query->join(
-            'clients',
-            'projects.client_id',
-            '=',
-            'clients.id'
-        );
-
-        $query->where('clients.id', $this->getKey());
-        return $query;
+        return $this->hasManyThrough('App\Invoice', 'App\Project');
     }
 
+    /**
+     * Time entries associated with the client.
+     *
+     * @return Builder
+     */
+    public function time()
+    {
+        return $this->hasManyThrough('App\Time', 'App\Project');
+    }
 
     /**
      * Human readable string for the value of the active flag.

@@ -22,8 +22,8 @@ tmux attach-session -d -t "$PROJECT_NAME" || {
     ## 1: Shell
     tmux new-window -a -t "$PROJECT_NAME" bash
 
-    ## 2: Gulp
-    tmux new-window -a -t "$PROJECT_NAME" "gulp watch"
+    ## 2: Webpack
+    tmux new-window -a -t "$PROJECT_NAME" -n "webpack" "npm run watch"
 
     ## 3: Dev server
     tmux new-window -a -t "$PROJECT_NAME" -n "devserver" "php artisan serve --host 0.0.0.0 --port 8083"

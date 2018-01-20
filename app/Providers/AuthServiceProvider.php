@@ -2,13 +2,9 @@
 
 namespace App\Providers;
 
-use Illuminate\Contracts\Auth\Access\Gate as GateContract;
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider
-    as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
-/**
- * Standard Laravel auth service provider class.
- */
 class AuthServiceProvider extends ServiceProvider
 {
     /**
@@ -16,15 +12,19 @@ class AuthServiceProvider extends ServiceProvider
      *
      * @var array
      */
-    protected $policies = ['App\Model' => 'App\Policies\ModelPolicy'];
+    protected $policies = [
+        'App\Model' => 'App\Policies\ModelPolicy',
+    ];
 
     /**
-     * Register any application authentication / authorization services.
+     * Register any authentication / authorization services.
      *
-     * @param GateContract $gate GateContract instance
+     * @return void
      */
-    public function boot(GateContract $gate)
+    public function boot()
     {
-        parent::registerPolicies($gate);
+        $this->registerPolicies();
+
+        //
     }
 }

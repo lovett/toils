@@ -2,13 +2,15 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 use App\Project;
 use Illuminate\Contracts\Validation\Validator;
 
 /**
  * Form request class for Projects.
  */
-class ProjectRequest extends Request
+class ProjectRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -63,13 +65,11 @@ class ProjectRequest extends Request
     protected function getValidatorInstance()
     {
         // Set default values.
-        collect(
-            [
-                'active',
-                'billable',
-                'taxDeducted',
-            ]
-        )->each(
+        collect([
+            'active',
+            'billable',
+            'taxDeducted',
+        ])->each(
             function ($field) {
                 $value = $this->input($field, 0);
                 $this->merge([$field => $value]);

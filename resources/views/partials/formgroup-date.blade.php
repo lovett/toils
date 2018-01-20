@@ -7,62 +7,18 @@
         {!! Form::text($name, TimeHelper::dateField($model->$name), ['class' => 'form-control']) !!}
 
         @if (isset($autofill))
-            <autofill-hint target="INPUT[name={{ $name }}]" v-bind:value="suggested{{ ucfirst($name) }}" v-bind:previous="previous{{ ucfirst($name) }}"></autofill-hint>
+            <autofill-hint
+                field-selector="INPUT[name={{ $name }}]"
+                v-bind:suggestion="suggested{{ ucfirst($name) }}"
+                v-bind:previous="previous{{ ucfirst($name) }}">
+                &nbsp;
+            </autofill-hint>
         @endif
 
-        <pickable inline-template initial-value="{{ isset($model->$name)? $model->$name->format(TimeHelper::$dateFormat) : '' }}" target="INPUT[name={{ $name }}]">
-            <div>
-                <p>
-                    <a href="#" @click.prevent="toggle($event)" v-bind:class="{hidden: isOpen}">
-                        shortcuts
-                    </a>
-                </p>
-
-                <div class="shortcuts" v-bind:class="{toggled: isOpen}">
-                    <div class="well">
-                        <p>
-                            <span class="label">Relative:</span>
-                            <a @click.prevent="pick('yyyy-mm-dd', '{{ $ranges['today']->format(TimeHelper::$dateFormat) }}')" href="#">today</a>
-                            <a @click.prevent="pick('yyyy-mm-dd', '{{ $ranges['yesterday']->format(TimeHelper::$dateFormat) }}')" href="#">yesterday</a>
-                            <a @click.prevent="pick('yyyy-mm-dd', '{{ $ranges['2-days-ago']->format(TimeHelper::$dateFormat) }}')" href="#">2 days ago</a>
-                            <a @click.prevent="pick('yyyy-mm-dd', '{{ $ranges['3-days-ago']->format(TimeHelper::$dateFormat) }}')" href="#">3 days ago</a>
-                        </p>
-                        <p>
-                            <span class="label">Month:</span>
-                            @foreach ($ranges['month'] as $value)
-                                <a
-                                    @click.prevent="pick('mm', '{{ $value->format('m') }}')"
-                                    href="#"
-                                >{{ $value->format('M') }}</a>
-                            @endforeach
-                        </p>
-                        <p>
-                            <span class="label">Day:</span>
-                            @foreach ($ranges['day'] as $value)
-                                <a
-                                    @click.prevent="pick('dd', '{{ $value->format('d') }}')"
-                                    href="#"
-                                >{{ $value->format('j') }}</a>
-                            @endforeach
-                        </p>
-                        <p>
-                            <span class="label">Year:</span>
-                            @foreach ($ranges['year'] as $value)
-                                <a
-                                    @click.prevent="pick('yyyy', '{{ $value->format('Y') }}')"
-                                    href="#"
-                                >{{ $value->format('Y') }}</a>
-                            @endforeach
-                        </p>
-
-                        <p class="text-center">
-                            <a class="small" href="#" @click.prevent="toggle($event)">
-                                ▲
-                            </a>
-                        </p>
-                    </div>
-                </div>
-            </div>
+        <pickable
+            initial-value="{{ $model->$name->format(TimeHelper::$dateFormat) }}"
+            field-selector="INPUT[name={{ $name }}]">
+            &nbsp;
         </pickable>
 
         @if ($errors->has($name))

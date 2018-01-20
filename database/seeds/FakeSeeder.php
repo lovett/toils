@@ -7,7 +7,6 @@ use App\Project;
 use App\Time;
 use App\User;
 use App\Invoice;
-use Faker\Factory as FakerFactory;
 use Illuminate\Support\Collection;
 
 
@@ -23,12 +22,9 @@ class FakeSeeder extends Seeder
      */
     public function run()
     {
-        $faker = FakerFactory::create();
-        $maxUserId = 3;
-
         Model::unguard();
 
-        // A user with predicatable credentials that can be used during development.
+        // A user with predicatable credentials for use during development.
         User::updateOrCreate(
             ['name' => 'test'],
             [
@@ -38,49 +34,47 @@ class FakeSeeder extends Seeder
         );
 
         // Additional users.
-        factory(User::class, $maxUserId)->create();
+        factory(User::class, 3)->create();
 
         // Clients, projects, and time.
         $clientAccumulator = new Collection();
         User::all()->each(
-            function ($user) use ($faker, &$clientAccumulator) {
+            function ($user) use (&$clientAccumulator) {
                 // First-round client assignment
                 $clientsPerUser = 5;
                 $clients = factory(Client::class, $clientsPerUser)->make();
+
                 $user->clients()->saveMany($clients->all());
 
                 // Projects for the newly created clients
-                $clients->each(
-                    function ($client) use ($faker, $user) {
-                        $projectsPerClient = 4;
-                        $projects = factory(Project::class, $projectsPerClient)->make();
-                        $client->projects()->saveMany($projects->all());
+                $clients->each(function ($client) use ($user) {
+                    $projectsPerClient = 4;
+                    $projects = factory(Project::class, $projectsPerClient)->make();
+                    $client->projects()->saveMany($projects->all());
 
-                        // Time entries for the newly created projects
-                        $projects->each(
-                            function ($project) use ($faker, $user) {
-                                $time = factory(Time::class, 20)->make([
-                                    'user_id' => $user->getKey(),
-                                ]);
-                                $project->time()->saveMany($time->all());
-                            }
-                        );
-                    }
-                );
+                    // Time entries for the newly created projects
+                    $projects->each( function ($project) use ($user) {
+                        $timeEntriesPerProject = 20;
+                        $time = factory(Time::class, $timeEntriesPerProject)->make([
+                            'user_id' => $user->getKey(),
+                        ]);
 
-                // Second-round client assignment: add user to other users' clients.
-                if ($clientAccumulator->isEmpty() === false) {
-                    $user->clients()->saveMany($clientAccumulator->random($clientsPerUser));
-                }
+                        $project->time()->saveMany($time->all());
+                    });
+
+                    // Invoices for the newly created projects
+                    $projects->each( function ($project) use ($user) {
+                        $invoicesPerProject = 3;
+                        $invoices = factory(Invoice::class, $invoicesPerProject)->make();
+                        $project->invoices()->saveMany($invoices->all());
+                    });
+                });
+
+                // // Second-round client assignment: add user to other users' clients.
+                // if ($clientAccumulator->isEmpty() === false) {
+                //     $user->clients()->saveMany($clientAccumulator->random($clientsPerUser));
+                // }
                 $clientAccumulator = $clientAccumulator->merge($clients);
-            }
-        );
-
-        // Invoices
-        Project::all()->each(
-            function ($project) use ($faker) {
-                $invoices = factory(Invoice::class, 5)->make();
-                $project->invoices()->saveMany($invoices->all());
             }
         );
 

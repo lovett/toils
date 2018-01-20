@@ -2,26 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Client;
+use App\Helpers\MessagingHelper;
+use App\Http\Requests\ClientRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Http\Requests\ClientRequest;
-use App\Client;
-use Illuminate\Support\Collection;
 
 /**
- * Resource controller for clients.
+ * Resource controller for clients
  */
 class ClientController extends Controller
 {
+
     /**
-     * Set middleware and shared view values.
+     * Create a new controller instance.
+     *
+     * @return void
      */
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('returnable', ['only' => ['index', 'show']]);
-        $this->middleware('backto', ['only' => ['store']]);
-        view()->share('appSection', 'client');
     }
 
     /**
@@ -33,15 +33,15 @@ class ClientController extends Controller
      */
     public function index(Request $request)
     {
-        $search = $request->get('q');
+        $query = $request->get('q');
 
         $baseQuery = $request->user()->clients()->getQuery();
 
         $clients = Client::listing($baseQuery);
 
-        if ($search !== null) {
+        if ($query !== null) {
             $searchFields = $this->parseSearchQuery(
-                $search,
+                $query,
                 Client::$searchables
             );
 
@@ -51,13 +51,13 @@ class ClientController extends Controller
         $clients = $clients->simplePaginate(15);
 
         $viewVars = [
-            'page_title' => 'Clients',
+            'pageTitle' => 'Client List',
             'clients' => $clients,
-            'search' => $search,
+            'query' => $query,
             'searchFields' => array_keys(Client::$searchables),
         ];
 
-        return view('clients.list', $viewVars);
+        return view('client.list', $viewVars);
     }
 
     /**
@@ -74,14 +74,13 @@ class ClientController extends Controller
         $client->active = true;
 
         $viewVars = [
-            'page_title' => 'Add a client',
+            'pageTitle' => 'New Client',
             'model' => $client,
-            'submission_route' => 'clients.store',
+            'submission_route' => 'client.store',
             'submission_method' => 'POST',
-            'backUrl' => $request->session()->get('returnTo'),
         ];
 
-        return view('clients.form', $viewVars);
+        return view('client.form', $viewVars);
     }
 
     /**
@@ -106,22 +105,22 @@ class ClientController extends Controller
         $client->postalCode   = $request->postalCode;
         $client->phone        = $request->phone;
 
-        $client->user()->associate($request->user());
         $client->save();
+        $client->users()->attach($request->user());
 
-        $userMessage = $this->successMessage('client');
+        MessagingHelper::flashCreated($client->name);
 
         return redirect()->route(
-            'clients.show',
+            'client.show',
             [$client->id]
-        )->with('userMessage', $userMessage);
+        );
     }
 
     /**
-     * Display a client.
+     * Display a client
      *
      * @param Request $request The incoming request
-     * @param int     $id      A client primary key
+     * @param int $id A client primary key
      *
      * @return Response
      */
@@ -129,22 +128,27 @@ class ClientController extends Controller
     {
         $client = $request->user()->clients()->with('projects')->findOrFail($id);
 
-        $invoices = $client->invoices()->orderBy('sent')->take(10)->get();
+        $invoices = $client->invoices()->recent(5)->get();
+
+        $time = $client->time()->recent(10)->get();
 
         $viewVars = [
             'model' => $client,
-            'page_title' => $client->name,
+            'pageTitle' => $client->name,
             'invoices' => $invoices,
+            'time' => $time,
         ];
 
-        return view('clients.show', $viewVars);
+
+
+        return view('client.show', $viewVars)->with('subnav', ['client.index' => 'hi']);
     }
 
     /**
-     * Show the form for editing a client.
+     * Show the form for editing a client
      *
      * @param Request $request The incoming request
-     * @param int     $id      A client primary key
+     * @param int $id A client primary key
      *
      * @return Response
      */
@@ -155,7 +159,7 @@ class ClientController extends Controller
         $viewVars = [
             'backUrl' => $request->session()->get('returnTo'),
             'model' => $client,
-            'page_title' => 'Edit Client',
+            'pageTitle' => "Edit {$client->name}",
             'submission_method' => 'PUT',
             'submission_route' => [
                 'client.update',
@@ -163,20 +167,20 @@ class ClientController extends Controller
             ],
         ];
 
-        return view('clients.form', $viewVars);
+        return view('client.form', $viewVars);
     }
 
     /**
-     * Update an existing client.
+     * Update an existing client
      *
      * @param ClientRequest $request The incoming request
-     * @param int           $id      A client primary key
+     * @param int $id A client primary key
      *
      * @return Response
      */
     public function update(ClientRequest $request, $id)
     {
-        $client = Client::find($id);
+        $client = $request->user()->client($id);
 
         $affectedRows = $client->update($request->all());
 
@@ -186,43 +190,31 @@ class ClientController extends Controller
             $projects->update(['active' => false]);
         }
 
-        $userMessage = $this->userMessageForAffectedRows($affectedRows);
+        MessagingHelper::flashUpdated($client->name);
 
         return redirect()->route(
-            'clients.show',
+            'client.show',
             [$client->id]
-        )->with('userMessage', $userMessage);
+        );
     }
 
     /**
-     * Delete a client.
-     *
-     * Time entries use soft deletion.
+     * Delete a client
      *
      * @param Request $request The incoming request
-     * @param int     $id      A client primary key
+     * @param int $id A client primary key
      *
      * @return Response
      */
     public function destroy(Request $request, $id)
     {
-        $affectedRows = $request->user()->clients()->where('id', $id)->delete();
 
-        $userMessage = [
-            'success',
-            'Deleted successfully',
-        ];
+        $client = $request->user()->client($id);
 
-        if ($affectedRows === 0) {
-            $userMessage = [
-                'warning',
-                'Nothing deletable was found',
-            ];
-        }
+        $affectedRows = $client->delete();
 
-        return redirect()->route('clients.index')->with(
-            'userMessage',
-            $userMessage
-        );
+        MessagingHelper::flashDeleted($client->name);
+
+        return redirect()->route('client.index');
     }
 }

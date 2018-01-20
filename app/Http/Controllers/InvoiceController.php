@@ -2,15 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use App\Http\Requests\ClientRequest;
 use App\Client;
+use App\Http\Requests\InvoiceRequest;
 use App\Invoice;
+use Illuminate\Http\Request;
 
-/**
- * Resource controller for invoices.
- */
 class InvoiceController extends Controller
 {
     /**
@@ -19,9 +15,6 @@ class InvoiceController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('returnable', ['only' => ['index', 'show']]);
-        $this->middleware('backto', ['only' => ['store']]);
-        view()->share('appSection', 'invoice');
     }
 
     /**
@@ -33,29 +26,30 @@ class InvoiceController extends Controller
      */
     public function index(Request $request)
     {
+
+        $query = $request->get('q');
+
         $invoices = $request->user()->invoices();
 
-        $search = $request->get('q');
+        if ($query !== null) {
+            $searchFields = $this->parseSearchQuery(
+                $query,
+                Invoice::$searchables
+            );
 
-        $searchTerms = $this->parseSearchQuery(
-            $search,
-            Invoice::$searchables
-        );
-
-        if (!empty($searchTerms)) {
-            $invoices = Invoice::search($invoices, $searchTerms);
+            $invoices = Invoice::search($invoices, $searchFields);
         }
 
         $invoices = $invoices->simplePaginate(15);
 
         $viewVars = [
-            'page_title' => 'Invoices',
+            'pageTitle' => 'Invoices',
             'invoices' => $invoices,
-            'search' => $search,
+            'query' => $query,
             'searchFields' => array_keys(Invoice::$searchables),
         ];
 
-        return view('invoices.list', $viewVars);
+        return view('invoice.list', $viewVars);
     }
 
     /**
@@ -68,11 +62,9 @@ class InvoiceController extends Controller
      */
     public function suggestByProject(Request $request, $id = 0)
     {
-        $id = (int) $id;
-        $invoice = $request->user()->invoices()->project($id)->newest()->first();
-
-        $suggestion = $invoice->toSuggestion();
-        return response()->json($suggestion);
+        $id = (int)$id;
+        $invoice = $request->user()->project($id)->invoices()->recent(1)->firstOrFail();
+        return response()->json($invoice->suggestion);
     }
 
     /**
@@ -87,15 +79,14 @@ class InvoiceController extends Controller
         $invoice = new Invoice();
 
         $viewVars = [
-            'page_title' => 'Add an invoice',
+            'pageTitle' => 'New Invoice',
             'projects' => $request->user()->projectsForMenu(),
             'model' => $invoice,
-            'submission_route' => 'invoices.store',
+            'submission_route' => 'invoice.store',
             'submission_method' => 'POST',
-            'backUrl' => $request->session()->get('returnTo'),
         ];
 
-        return view('invoices.form', $viewVars);
+        return view('invoice.form', $viewVars);
     }
 
     /**
@@ -120,15 +111,15 @@ class InvoiceController extends Controller
         // $invoice->postalCode   = $request->postalCode;
         // $invoice->phone        = $request->phone;
 
-        $invoice->user()->associate($request->user());
         $invoice->save();
+        $invoice->user()->associate($request->user());
 
-        $userMessage = $this->successMessage('invoice');
+        MessagingHelper::flashCreated($invoice->name);
 
         return redirect()->route(
-            'invoices.show',
+            'invoice.show',
             [$invoice->id]
-        )->with('userMessage', $userMessage);
+        );
     }
 
     /**
@@ -145,10 +136,10 @@ class InvoiceController extends Controller
 
         $viewVars = [
             'model' => $invoice,
-            'page_title' => $invoice->name,
+            'pageTitle' => $invoice->name,
         ];
 
-        return view('invoices.show', $viewVars);
+        return view('invoice.show', $viewVars);
     }
 
     /**
@@ -161,13 +152,12 @@ class InvoiceController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        $invoice = $request->user()->invoices()->findOrFail($id);
+        $invoice = $request->user()->invoice($id);
 
         $viewVars = [
-            'backUrl' => $request->session()->get('returnTo'),
             'projects' => $request->user()->projectsForMenu(),
             'model' => $invoice,
-            'page_title' => 'Edit Invoice',
+            'pageTitle' => "Edit Invoice {$invoice->number}",
             'submission_method' => 'PUT',
             'submission_route' => [
                 'invoice.update',
@@ -175,7 +165,7 @@ class InvoiceController extends Controller
             ],
         ];
 
-        return view('invoices.form', $viewVars);
+        return view('invoice.form', $viewVars);
     }
 
     /**
@@ -201,7 +191,7 @@ class InvoiceController extends Controller
         $userMessage = $this->userMessageForAffectedRows($affectedRows);
 
         return redirect()->route(
-            'invoices.show',
+            'invoice.show',
             [$invoice->id]
         )->with('userMessage', $userMessage);
     }

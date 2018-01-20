@@ -1,11 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Eloquent\Model;
 
-/**
- * Populate the database with real data.
- */
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -15,7 +11,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        Model::unguard();
-        Model::reguard();
+        // $this->call(UsersTableSeeder::class);
     }
 }

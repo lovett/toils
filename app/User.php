@@ -2,26 +2,13 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Auth\Authenticatable;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Auth\Passwords\CanResetPassword;
-use Illuminate\Foundation\Auth\Access\Authorizable;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
-use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Database\Eloquent\Relations\Relation\HasMany;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Traits\AsMenu;
 
-/**
- * Eloquent model for the users table.
- */
-class User extends Model implements
-    AuthenticatableContract,
-    AuthorizableContract,
-    CanResetPasswordContract
+class User extends Authenticatable
 {
-    use Authenticatable, Authorizable, CanResetPassword;
+    use Notifiable, AsMenu;
 
     /**
      * The database table used by the model.
@@ -42,7 +29,7 @@ class User extends Model implements
     ];
 
     /**
-     * The attributes excluded from the model's JSON form.
+     * The attributes that should be hidden for arrays.
      *
      * @var array
      */
@@ -62,13 +49,11 @@ class User extends Model implements
     }
 
     /**
-     * Invoices associated with the user.
+     * Single client associated with user
      *
-     * @return Builder
      */
-    public function invoices()
-    {
-        return Invoice::listing($this->getKey());
+    public function client($id) {
+        return $this->clients()->where('id', $id)->firstOrFail();
     }
 
     /**
@@ -93,6 +78,31 @@ class User extends Model implements
         $query->where('client_user.user_id', $this->getKey());
 
         return $query;
+    }
+
+    /**
+     * Single project associated with the user
+     *
+     */
+    public function project($id) {
+        return $this->projects()->where('id', $id)->firstOrFail();
+    }
+
+    /**
+     * Invoices associated with the user.
+     *
+     * @return Builder
+     */
+    public function invoices()
+    {
+        return Invoice::listingByUser($this->getKey());
+    }
+
+    /**
+     * Single invoice associated with the user
+     */
+    public function invoice($id) {
+        return $this->invoices()->where('invoices.id', $id)->firstOrFail();
     }
 
     /**
@@ -129,40 +139,4 @@ class User extends Model implements
         return $this->asMenu($query, 'id', ['name', 'client.name'], ' :: ');
     }
 
-    /**
-     * Return a list of key-value pairs suitable for display in an HTML menu.
-     *
-     * @param Builder         $query     Determines the list being returned
-     * @param string          $key       The field name in query to use as the key
-     * @param string|string[] $value     The field name in query to use as the value
-     * @param string          $separator The separator in a multi-field value comprised of multiple fields
-     *
-     * @return array
-     */
-    protected function asMenu(Builder $query, $key = 'id', $value = 'name', $separator = ' ')
-    {
-        $items = $query->get()->reduce(
-            function ($acc, $item) use ($key, $value, $separator) {
-                if (is_string($value)) {
-                    // Value refers to a single field on $item.
-                    $acc[$item->$key] = $item->$value;
-
-                    return $acc;
-                }
-
-                // Value refers to multiple fields.
-                $itemArray = $item->toArray();
-                $multiVal  = array_map(function ($field) use ($itemArray) {
-                    return array_get($itemArray, $field);
-                }, $value);
-
-                $acc[$item->$key] = implode($separator, $multiVal);
-
-                return $acc;
-            },
-            ['' => '']
-        );
-
-        return $items;
-    }
 }

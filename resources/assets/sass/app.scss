@@ -1,121 +1,17 @@
-// Bootstrap: Core variables and mixins
-@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/variables";
-@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/mixins";
 
-// Bootstrap: Reset and dependencies
-@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/normalize";
+// Fonts
+@import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
 
-// Bootstrap: Core CSS
-@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/scaffolding";
-@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/type";
-@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/code";
-@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/grid";
-@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/tables";
-@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/forms";
-@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/buttons";
-@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/close";
-@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/alerts";
-@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/input-groups";
-@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/wells";
-@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/utilities";
-@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/pager";
-@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap/panels";
+// Variables
+@import "variables";
 
-.primary {
-    padding: 2em 0;
+// Bootstrap
+@import "~bootstrap-sass/assets/stylesheets/bootstrap";
 
-    h1, .h1 {
-	margin: 0;
-    }
-
-    nav {
-	padding-top: 1em;
-    }
+main .container {
+    margin-bottom: 2em;
 }
 
-.list.collection {
-    .item {
-        margin-bottom: 1em;
-
-        .title {
-            font-size: 1em;
-            margin: 0;
-            font-weight: normal;
-        }
-    }
-}
-
-.search {
-    margin-bottom: 3em;
-}
-
-.subhead-nav {
-    padding-bottom: 1em;
-}
-
-ADDRESS DIV {
-    white-space: pre-line;
-    margin: 0;
-}
-
-.spaced {
-    margin-bottom: 0;
-
-    DD {
-        margin-bottom: .5em;
-    }
-
-    DD:last-of-type {
-        margin-bottom: 0;
-    }
-}
-
-.shortcuts {
-    font-size: .85em;
-    text-transform: uppercase;
-    padding: .25em 0;
-    display: none;
-
-    P {
-        margin-bottom: .5em;
-    }
-
-    p:last-of-type {
-        margin-bottom: 0;
-    }
-
-    A {
-        margin-right: .75em;
-    }
-
-    .label {
-        text-transform: none;
-        display: block;
-    }
-}
-
-.shortcuts.toggled {
-    display: block;
-}
-
-.timestamps {
-    text-transform: uppercase;
-    font-size: .85em;
-
-    .field {
-        margin-right: 1em;
-    }
-}
-
-.facets {
-    padding-top: .5em;
-}
-
-NAV .active {
-    font-weight: bold;
-    color: black;
-}
-
-NAV .active:hover {
-    text-decoration: none;
+main dl dd {
+    margin-bottom: 1em;
 }

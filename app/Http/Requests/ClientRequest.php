@@ -2,12 +2,14 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Contracts\Validation\Validator;
 
 /**
  * Form request class for Projects.
  */
-class ClientRequest extends Request
+class ClientRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -44,7 +46,7 @@ class ClientRequest extends Request
     /**
      * Manipulate the input before performing validation.
      *
-     * @return Validator
+     * @return Validatoro
      */
     protected function getValidatorInstance()
     {

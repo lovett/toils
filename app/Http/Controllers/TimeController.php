@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use App\Http\Requests\TimeRequest;
 use App\Time;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 /**
  * Controller for managing time entries.
@@ -14,14 +14,11 @@ use Carbon\Carbon;
 class TimeController extends Controller
 {
     /**
-     * Define middleware and standard date ranges.
+     * Create a new controller instance
      */
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('returnable', ['only' => ['index', 'show']]);
-        $this->middleware('backto', ['only' => ['store']]);
-        view()->share('appSection', 'time');
     }
 
     /**
@@ -33,15 +30,15 @@ class TimeController extends Controller
      */
     public function index(Request $request)
     {
-        $search = $request->get('q');
+        $query = $request->get('q');
 
         $baseQuery = $request->user()->time()->getQuery();
 
         $time = Time::listing($baseQuery);
 
-        if ($search !== null) {
+        if ($query !== null) {
             $searchFields = $this->parseSearchQuery(
-                $search,
+                $query,
                 Time::$searchables
             );
 
@@ -51,11 +48,10 @@ class TimeController extends Controller
         $time = $time->simplepaginate(15);
 
         $viewvars = [
-            'page_title' => 'Time',
-            'search' => $search,
-            'times' => $time,
-            'searchRoute' => 'time.index',
+            'pageTitle' => 'Time',
+            'query' => $query,
             'searchFields' => array_keys(Time::$searchables),
+            'times' => $time,
         ];
 
         return view('time.list', $viewvars);
@@ -73,12 +69,13 @@ class TimeController extends Controller
         $projects = $request->user()->projectsForMenu();
 
         $projectId = $request->input('project', null);
+
         if (array_key_exists($projectId, $projects) === false) {
             $projectId = null;
         }
 
-        $model = new Time();
-        $model->project_id = $projectId;
+        $time = new Time();
+        $time->project_id = $projectId;
 
         $previousModel = $request->user()->time();
         if ($projectId !== null) {
@@ -89,13 +86,12 @@ class TimeController extends Controller
         $previousModel->limit(1);
 
         $viewVars = [
-            'page_title' => 'Add time',
-            'model' => $model,
+            'pageTitle' => 'New Time Entry',
+            'model' => $time,
             'previousModel' => $previousModel->first(),
             'submission_route' => 'time.store',
             'submission_method' => 'POST',
             'projects' => $projects,
-            'backUrl' => $request->session()->get('returnTo'),
         ];
 
         return view('time.form', $viewVars);
@@ -123,17 +119,18 @@ class TimeController extends Controller
 
         $userMessage = $this->successMessage('time entry');
 
+        MessagingHelper::flashCreated('time entry');
+
         return redirect()->route(
-            'time.index',
-            [$time->id]
-        )->with('userMessage', $userMessage);
+            'time.index'
+        );
     }
 
     /**
      * Show the form for editing a time entry.
      *
      * @param Request $request The incoming request
-     * @param int     $id      A primary key
+     * @param int $id A primary key
      *
      * @return Response
      */
@@ -142,7 +139,7 @@ class TimeController extends Controller
         $time = $request->user()->time()->findOrFail($id);
 
         $viewVars = [
-            'page_title' => 'Edit Time',
+            'pageTitle' => 'Edit Time Entry',
             'model' => $time,
             'projects' => $request->user()->projectsForMenu(),
             'submission_route' => [
@@ -150,7 +147,6 @@ class TimeController extends Controller
                 $time->id,
             ],
             'submission_method' => 'PUT',
-            'backUrl' => $request->session()->get('returnTo'),
         ];
 
         return view('time.form', $viewVars);
@@ -160,7 +156,7 @@ class TimeController extends Controller
      * Update an existing time entry.
      *
      * @param TimeRequest $request The incoming request
-     * @param int         $id      A time entry primary key
+     * @param int $id A time entry primary key
      *
      * @return Response
      */
@@ -170,11 +166,11 @@ class TimeController extends Controller
 
         $affectedRows = $time->update($request->all());
 
-        $userMessage = $this->userMessageForAffectedRows($affectedRows);
+        MessagingHelper::flashUpdated('time entry');
 
         return redirect()->route(
             'time.index'
-        )->with('userMessage', $userMessage);
+        );
     }
 
     /**
@@ -182,27 +178,15 @@ class TimeController extends Controller
      *
      * Time entries use soft deletion.
      *
-     * The backto middleware takes care of redirection.
-     *
      * @param Request $request The incoming request
-     * @param int     $id      A primary key
+     * @param int $id A primary key
      */
     public function destroy(Request $request, $id)
     {
         $affectedRows = $request->user()->time()->where('id', $id)->delete();
 
-        $userMessage = [
-            'success',
-            'Deleted successfully',
-        ];
+        MessagingHelper::flashDeleted('time entry');
 
-        if ($affectedRows === 0) {
-            $userMessage = [
-                'warning',
-                'Nothing deletable was found',
-            ];
-        }
-
-        $request->session()->flash('userMessage', $userMessage);
+        return redirect()->route('time.index');
     }
 }

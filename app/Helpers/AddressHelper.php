@@ -63,7 +63,7 @@ class AddressHelper
         $plainValue = preg_replace('/[^0-9x\#*]/', null, $value);
 
         try {
-            $formattedValue = phone_format($plainValue, 'US');
+            $formattedValue = phone($plainValue, 'US')->formatInternational();
         } catch (Exception $e) {
             $formattedValue = $plainValue;
         }

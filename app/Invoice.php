@@ -14,6 +14,7 @@ use App\Time;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Helpers\TimeHelper;
+use stdClass;
 
 /**
  * Eloquent model for the invoices table.
@@ -62,7 +63,6 @@ class Invoice extends Model
         'due',
         'paid',
         'name',
-        'projet_id',
         'start',
         'end',
         'summary',
@@ -107,9 +107,21 @@ class Invoice extends Model
         return $query->where('projects.id', '=', $projectId);
     }
 
-    public function scopeNewest($query)
+    /**
+     * Query scope to restrict by record age
+     *
+     * @param Builder $query An existing query.
+     * @param int $limit If greater than zero, the max number of records to return.
+     *
+     * @return Builder;
+     */
+    public function scopeRecent($query, $limit=0)
     {
         $query->orderBy('sent', 'DESC');
+        if ($limit > 0) {
+            $query->limit($limit);
+        }
+        return $query;
     }
 
     /**
@@ -119,7 +131,7 @@ class Invoice extends Model
      *
      * @return Relation
      */
-    public function scopeListing($query, $userId=0)
+    public function scopeListingByUser($query, $userId=0)
     {
         $query->leftJoin(
             'projects',
@@ -139,14 +151,12 @@ class Invoice extends Model
 
         $query->whereNull('clients.deleted_at');
 
-        if ($userId > 0) {
-            $query->join(
-                'client_user',
-                'client_user.client_id',
-                '=',
-                'clients.id'
-            );
-        }
+        $query->join(
+            'client_user',
+            'client_user.client_id',
+            '=',
+            'clients.id'
+        );
 
         $query->select([
             'invoices.*',
@@ -172,10 +182,10 @@ class Invoice extends Model
         return $query;
     }
 
-    public function __construct()
+    public function __construct(array $attributes=[])
     {
-        $now = new Carbon();
 
+        $now = new Carbon();
         $this->attributes = [
             'sent' => $now,
             'start' => $now->copy()->subDays(30),
@@ -183,8 +193,10 @@ class Invoice extends Model
             'due' => $now->copy()->addDays(30),
             'amount' => 0,
         ];
-        parent::__construct();
+
+        parent::__construct($attributes);
     }
+
 
     /**
      * Time entries entries associated with the invoice.
@@ -232,36 +244,36 @@ class Invoice extends Model
     }
 
     /**
-     * Create a subset representation for providing autocompletion hints.
+     * Hints for autocomplete
      *
-     * Returns an object whose fields reflect the $suggestable
-     * property, both to limit what fields are exposed and to allow
-     * their values to be customized.
+     * Returns an object whose values can be used to auto-populate
+     * form fields during create or update.
      *
      * @return object An object with suggested and previously-used values.
      */
-    public function toSuggestion()
+    public function getSuggestionAttribute()
     {
         $now = Carbon::now();
 
-        $suggestion = [
-            'previous' => [
-                'amount' => $this->amount,
-                'name' => $this->name,
-                'summary' => $this->summary,
-                'start' => TimeHelper::date($this->start),
-                'end' => TimeHelper::date($this->end),
-            ],
-            'suggested' => [
-                'amount' => $this->amount,
-                'name' => $this->name,
-                'summary' => $this->summary,
-                'end' => TimeHelper::dateField($now),
-                // Suggested start is the next day after the previous end.
-                'start' => TimeHelper::dateField($this->end->addDay()),
-            ],
+        $suggestion = new stdClass();
+
+        $suggestion->previous = [
+            'amount' => $this->amount,
+            'name' => $this->name,
+            'summary' => $this->summary,
+            'start' => TimeHelper::date($this->start),
+            'end' => TimeHelper::date($this->end),
         ];
 
-        return (object) $suggestion;
+        $suggestion->suggested = [
+            'amount' => $this->amount,
+            'name' => $this->name,
+            'summary' => $this->summary,
+            'end' => TimeHelper::dateField($now),
+            // Suggested start is the next day after the previous end.
+            'start' => TimeHelper::dateField($this->end->addDay()),
+        ];
+
+        return $suggestion;
     }
 }

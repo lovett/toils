@@ -23,7 +23,9 @@ class Time extends Model
      *
      * @var array
      */
-    protected $attributes = [];
+    protected $attributes = [
+        'minutes' => 0,
+    ];
 
     /**
      * Fields that can be used for searching.
@@ -70,19 +72,9 @@ class Time extends Model
      *
      * @var array
      */
-    protected $dates = ['deleted_at' => 'datetime'];
-
-    public function __construct()
-    {
-        $now = new Carbon();
-
-        $this->attributes = [
-            'start' => $now,
-            'minutes' => 0,
-        ];
-        parent::__construct();
-    }
-
+    protected $dates = [
+        'deleted_at' => 'datetime'
+    ];
 
     /**
      * Master query for getting a list of records.
@@ -98,6 +90,24 @@ class Time extends Model
 
         return $builder;
     }
+
+    /**
+     * Query scope to restrict by record age
+     *
+     * @param Builder $query An existing query.
+     * @param int $limit If greater than zero, the max number of records to return.
+     *
+     * @return Builder;
+     */
+    public function scopeRecent($query, $limit=0)
+    {
+        $query->orderBy('start', 'desc');
+        if ($limit > 0) {
+            $query->limit($limit);
+        }
+        return $query;
+    }
+
 
     /**
      * User associated with the time entry.

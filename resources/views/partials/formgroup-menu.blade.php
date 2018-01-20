@@ -1,10 +1,19 @@
+@if (empty($vchange))
+    @php($vchange='')
+@endif
+
 <div class="form-group {{ $errors->has($name) ? 'has-error' : '' }}">
-    @if ($label)
-    {!! Form::label($name, $label, ['class' => 'col-sm-2 control-label']) !!}
+    @if (!empty($label))
+        {!! Form::label($name, $label, ['class' => 'col-sm-2 control-label']) !!}
     @endif
 
-    <div class="col-sm-10 {{ $label ? '' : 'col-sm-offset-2' }}">
-    {!! Form::select($name, $items, $selectedItem, ['class' => 'form-control']) !!}
+    @php($colClasses = ['col-sm-10'])
+    @if (empty($label))
+        @php($colClasses[] = 'col-sm-offset-2')
+    @endif
+
+    <div class="{{ implode(' ', $colClasses) }}">
+        {!! Form::select($name, $items, $selectedItem, ['class' => 'form-control', 'v-on:change' => $vchange]) !!}
 
         @if ($errors->has($name))
             <div class="help-block">{{ $errors->first($name)}}</div>

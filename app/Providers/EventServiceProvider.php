@@ -2,15 +2,9 @@
 
 namespace App\Providers;
 
-use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
-use Illuminate\Foundation\Support\Providers\EventServiceProvider
-    as ServiceProvider;
-use App\Invoice;
-use App\Time;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
-/**
- * Standard Laravel event service provider class.
- */
 class EventServiceProvider extends ServiceProvider
 {
     /**
@@ -19,26 +13,20 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'App\Events\SomeEvent' => ['App\Listeners\EventListener'],
+        'App\Events\Event' => [
+            'App\Listeners\EventListener',
+        ],
     ];
 
     /**
-     * Register any other events for your application.
+     * Register any events for your application.
      *
-     * @param DispatcherContract $events DispatcherContract instance
+     * @return void
      */
-    public function boot(DispatcherContract $events)
+    public function boot()
     {
-        parent::boot($events);
+        parent::boot();
 
-        Time::saved(function ($model) {
-            $model->attachInvoice();
-            return true;
-        });
-
-        Invoice::saved(function ($model) {
-            $model->attachTime();
-            return true;
-        });
+        //
     }
 }

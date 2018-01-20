@@ -7,51 +7,9 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
-/**
- * Custom parent controller class.
- *
- * For functionality common to all controllers.
- */
-abstract class Controller extends BaseController
+class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
-
-    /**
-     * Standard value for indicating update success via flash.
-     *
-     * @param int $count The number of updated records
-     *
-     * @return array
-     */
-    protected function userMessageForAffectedRows($count)
-    {
-        if ($count === 0) {
-            return [
-                'warning',
-                'Nothing updateable was found',
-            ];
-        }
-
-        return [
-            'success',
-            'Updated successfully',
-        ];
-    }
-
-    /**
-     * Standard value for indicating creation success via flash.
-     *
-     * @param string $recordType A human-readable label for the created record
-     *
-     * @return array
-     */
-    protected function successMessage($recordType)
-    {
-        return [
-            'success',
-            ucfirst($recordType).' created successfully!',
-        ];
-    }
 
     /**
      * Apply search terms to a query.
@@ -78,12 +36,9 @@ abstract class Controller extends BaseController
         }
 
         // Split by field.
-        $fields = array_map(
-            function ($field) {
-                return explode(':', $field);
-            },
-            explode(' ', $query)
-        );
+        $fields = array_map(function ($field) {
+            return explode(':', $field);
+        }, explode(' ', $query));
 
         // Flatten.
         $fields = array_reduce(
