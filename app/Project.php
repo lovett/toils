@@ -114,20 +114,6 @@ class Project extends Model
     }
 
     /**
-     * Human-readable value for active boolean fied.
-     *
-     * @return string
-     */
-    public function status()
-    {
-        if ($this->active) {
-            return 'active';
-        }
-
-        return 'inactive';
-    }
-
-    /**
      * Human-readable value for taxDeducted boolean field.
      *
      * @return string

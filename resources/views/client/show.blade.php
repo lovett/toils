@@ -3,6 +3,9 @@
 @section('page_main')
     <div class="container">
         <h1>{{ $model->name }}</h1>
+
+        <p>@include('partials.active', ['value' => $model->active])</p>
+
         @if ($model->contactName)
             {{ $model->contactName }}
             <address>

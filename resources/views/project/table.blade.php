@@ -16,7 +16,7 @@
                     </a>
                 </td>
                 <td>
-                    {{ $project->status() }}
+                    @include('partials.active', ['value' => $project->active])
                 </td>
                 <td>
                     @if ($project->client)

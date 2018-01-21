@@ -57,7 +57,10 @@ class Client extends Model
      *
      * @var array
      */
-    protected $casts = ['totalTime' => 'integer'];
+    protected $casts = [
+        'active' => 'boolean',
+        'totalTime' => 'integer'
+    ];
 
     /**
      * The attributes that are datetimes.
@@ -155,17 +158,4 @@ class Client extends Model
         return $this->hasManyThrough('App\Time', 'App\Project');
     }
 
-    /**
-     * Human readable string for the value of the active flag.
-     *
-     * @return string
-     */
-    public function status()
-    {
-        if ($this->active) {
-            return 'active';
-        }
-
-        return 'inactive';
-    }
 }

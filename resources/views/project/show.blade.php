@@ -7,7 +7,7 @@
 	            <div class="well">
 		            <dl>
 		                <dt>Status</dt>
-		                <dd>{{ $project->status() }}</dd>
+                        <dd>@include('partials.active', ['value' => $project->active])</dd>
 
 		                <dt>Taxes</dt>
 		                <dd>{{ $project->taxStatus() }}</dd>

@@ -81,7 +81,7 @@ class Invoice extends Model
     /**
      * The attributes that are datetimes.
      *
-     * @var arrayn
+     * @var array
      */
     protected $dates = [
         'created_at',
@@ -241,6 +241,13 @@ class Invoice extends Model
         $times->update(['invoice_id' => $this->getKey()]);
 
         DB::commit();
+    }
+
+    /**
+     * Custom attribute for treating payment date field as a boolean
+     */
+    public function getIsPaidAttribute() {
+        return $this->paid !== null;
     }
 
     /**

@@ -15,3 +15,21 @@ main .container {
 main dl dd {
     margin-bottom: 1em;
 }
+
+.icon {
+    vertical-align: middle;
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    stroke-width: 0;
+    stroke: currentColor;
+    fill: currentColor;
+
+    &.active {
+        fill: forestgreen;
+    }
+
+    &.inactive {
+        fill: crimson;
+    }
+}

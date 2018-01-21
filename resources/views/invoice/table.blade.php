@@ -3,6 +3,7 @@
         <thead>
             <tr>
                 <th>Number</th>
+                <th>Paid?</th>
                 <th>Name</th>
                 <th>Client</th>
                 <th>Project</th>
@@ -15,6 +16,11 @@
                 <tr>
                     <td>
                         {{ $invoice->number }}
+                    </td>
+                    <td>
+                        @if($invoice->isPaid)
+                            <svg class="icon active"><use xlink:href="#icon-checkmark"></use></svg>
+                        @endif
                     </td>
                     <td>
                         <a href="{{ route('invoice.edit', $invoice) }}">
