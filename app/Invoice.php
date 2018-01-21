@@ -276,9 +276,9 @@ class Invoice extends Model
             'amount' => $this->amount,
             'name' => $this->name,
             'summary' => $this->summary,
-            'end' => TimeHelper::dateField($now),
+            'end' => TimeHelper::date($now),
             // Suggested start is the next day after the previous end.
-            'start' => TimeHelper::dateField($this->end->addDay()),
+            'start' => TimeHelper::date($this->end->addDay()),
         ];
 
         return $suggestion;

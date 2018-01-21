@@ -4,7 +4,7 @@
     @endif
 
     <div class="col-sm-10 {{ $label ? '' : 'col-sm-offset-2' }}">
-        {!! Form::text($fieldName, TimeHelper::timeField($model->$name), ['class' => 'form-control']) !!}
+        {!! Form::text($fieldName, TimeHelper::time($model->$name), ['class' => 'form-control']) !!}
 
         <pickable
             format="hh:mm A"

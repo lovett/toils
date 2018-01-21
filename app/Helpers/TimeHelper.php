@@ -60,7 +60,7 @@ class TimeHelper
     /**
      * Convert minutes to hours with rounding.
      *
-     * @param int $minutes   The number to be divided
+     * @param int $minutes The number to be divided
      * @param int $precision How many decimal places
      *
      * @return int
@@ -76,7 +76,7 @@ class TimeHelper
      * For situations where you have a date from a custom query
      * that wasn't automatically converted by Eloquent.
      *
-     * @param string $value   The raw datetime string
+     * @param string $value The raw datetime string
      * @param string $default The value to return in case of nulls
      *
      * @return Carbon;
@@ -93,33 +93,47 @@ class TimeHelper
     }
 
     /**
-     * Default application formatter for dates.
+     * Format a date textually: such as Jan 1 2018
      *
      * @param Carbon|null $value The value to format
      *
      * @return string
      */
-    public static function date(Carbon $value)
+    public static function readableShortDate(Carbon $value = null)
     {
-        if (empty($value)) {
+        if (is_null($value)) {
             return '';
         }
 
         return $value->format('M n Y');
     }
 
-    public static function dateField(Carbon $value = null)
+    /**
+     * Format a date numerically: 2018-01-01
+     *
+     * @param Carbon|null $value The value to format
+     *
+     * @return string
+     */
+    public static function date(Carbon $value = null)
     {
-        if (empty($value)) {
+        if (is_null($value)) {
             return '';
         }
 
-        return $value->format('Y-m-d');
+        return $value->format(self::$dateFormat);
     }
 
-    public static function timeField(Carbon $value = null)
+    /**
+     * Format a time in 12-hour format: 1:00 AM
+     *
+     * @param Carbon|null $value The value to format
+     *
+     * @return string
+     */
+    public static function time(Carbon $value = null)
     {
-        if (empty($valu)) {
+        if (is_null($value)) {
             return '';
         }
 

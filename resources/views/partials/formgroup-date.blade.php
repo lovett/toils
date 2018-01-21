@@ -4,7 +4,7 @@
     @endif
 
     <div class="col-sm-10 {{ $label ? '' : 'col-sm-offset-2' }}">
-        {!! Form::text($name, TimeHelper::dateField($model->$name), ['class' => 'form-control']) !!}
+        {!! Form::text($name, TimeHelper::date($model->$name), ['class' => 'form-control']) !!}
 
         @if (isset($autofill))
             <autofill-hint
@@ -16,7 +16,7 @@
         @endif
 
         <pickable
-            initial-value="{{ $model->$name->format(TimeHelper::$dateFormat) }}"
+            initial-value="{{ TimeHelper::date($model->$name) }}"
             field-selector="INPUT[name={{ $name }}]">
             &nbsp;
         </pickable>
