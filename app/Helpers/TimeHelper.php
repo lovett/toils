@@ -125,47 +125,4 @@ class TimeHelper
 
         return $value->format('g:i A');
     }
-
-
-    public static function ranges() {
-        return [
-            'today' => new DateTime(),
-
-            'yesterday' => new DateTime('-1 day'),
-
-            '2-days-ago' => new DateTime('-2 day'),
-
-            '3-days-ago' => new DateTime('-3 day'),
-
-            'month' => new DatePeriod(
-                new DateTime('Jan 1'),
-                new DateInterval('P1M'),
-                new DateTime('Dec 31')
-            ),
-
-            'day' => new DatePeriod(
-                new DateTime('Jan 1'),
-                new DateInterval('P1D'),
-                new DateTime('Feb 1')
-            ),
-
-            'year' => new DatePeriod(
-                new DateTime('-5 years'),
-                new DateInterval('P1Y'),
-                new DateTime('first day of next year')
-            ),
-
-            'hour' => new DatePeriod(
-                new DateTime('Jan 1 1:00'),
-                new DateInterval('PT1H'),
-                new DateTime('Jan 1 13:00')
-            ),
-
-            'minute' => new DatePeriod(
-                new DateTime('Jan 1 00:00'),
-                new DateInterval('PT5M'),
-                new DateTime('Jan 1 01:00')
-            ),
-        ];
-    }
 }

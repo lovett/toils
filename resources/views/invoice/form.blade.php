@@ -16,9 +16,9 @@
 
         @include('partials.formgroup-menu', ['name' => 'project_id', 'label' => 'Project', 'items' => $projects, 'selectedItem' => $model->project_id, 'vchange' => 'fetch'])
 
-        @include('partials.formgroup-date', ['name' => 'start', 'label' => 'Start', 'ranges' => TimeHelper::ranges(), 'autofill' => true])
+        @include('partials.formgroup-date', ['name' => 'start', 'label' => 'Start', 'autofill' => true])
 
-        @include('partials.formgroup-date', ['name' => 'end', 'label' => 'End', 'ranges' => TimeHelper::ranges(), 'autofill' => true])
+        @include('partials.formgroup-date', ['name' => 'end', 'label' => 'End', 'autofill' => true])
 
         @include('partials.formgroup-standard', ['name' => 'name', 'label' => 'Name', 'autofill' => true])
 
@@ -40,9 +40,9 @@
             </div>
         </div>
 
-        @include('partials.formgroup-date', ['name' => 'sent', 'label' => 'Sent', 'ranges' => TimeHelper::ranges()])
+        @include('partials.formgroup-date', ['name' => 'sent', 'label' => 'Sent'])
 
-        @include('partials.formgroup-date', ['name' => 'due', 'label' => 'Due', 'ranges' => TimeHelper::ranges(), 'autofill' => true])
+        @include('partials.formgroup-date', ['name' => 'due', 'label' => 'Due', 'autofill' => true])
 
         @include('partials.save-button')
 
