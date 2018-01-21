@@ -10,6 +10,10 @@
 
         {!! Form::model($model, ['route' => $submission_route, 'method' => $submission_method, 'class' => 'invoice-form form-horizontal']) !!}
 
+        @isset($client)
+        @include('partials.project-menu-filtered', ['client' => $client])
+        @endisset
+
         @include('partials.formgroup-menu', ['name' => 'project_id', 'label' => 'Project', 'items' => $projects, 'selectedItem' => $model->project_id, 'vchange' => 'fetch'])
 
         @include('partials.formgroup-date', ['name' => 'start', 'label' => 'Start', 'ranges' => TimeHelper::ranges(), 'autofill' => true])

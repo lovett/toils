@@ -71,4 +71,6 @@
 
 @section('subnav_supplemental')
     <li>{!! link_to_route('project.create', 'New project', ['client' => $model->id]) !!}</li>
+    <li>{!! link_to_route('time.create', 'New time entry', ['client' => $model->id]) !!}</li>
+    <li>{!! link_to_route('invoice.create', 'New invoice', ['client' => $model->id]) !!}</li>
 @endsection

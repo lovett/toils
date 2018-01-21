@@ -66,6 +66,15 @@ class TimeController extends Controller
      */
     public function create(Request $request)
     {
+        $clientId = $request->input('client', null);
+        if ($clientId) {
+            $client = $request->user()->client($clientId)->firstOrFail();
+            $projects = $request->user()->projectsForMenu($client->getKey());
+        } else {
+            $client = null;
+            $projects = $request->user()->projectsForMenu();
+        }
+
         $projects = $request->user()->projectsForMenu();
 
         $projectId = $request->input('project', null);
@@ -92,6 +101,7 @@ class TimeController extends Controller
             'submission_route' => 'time.store',
             'submission_method' => 'POST',
             'projects' => $projects,
+            'client' => $client,
         ];
 
         return view('time.form', $viewVars);

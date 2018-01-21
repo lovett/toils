@@ -21,6 +21,10 @@
     <div class="container">
         {!! Form::model($model, ['route' => $submission_route, 'method' => $submission_method, 'class' => 'form-horizontal']) !!}
 
+        @isset($client)
+        @include('partials.project-menu-filtered', ['client' => $client])
+        @endisset
+
         @include('partials.formgroup-menu', ['name' => 'project_id', 'label' => 'Project', 'items' => $projects, 'selectedItem' => $model->project_id])
 
         @include('partials.formgroup-standard', ['name' => 'estimatedDuration', 'label' => 'Estimate'])

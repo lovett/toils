@@ -76,11 +76,21 @@ class InvoiceController extends Controller
      */
     public function create(Request $request)
     {
+        $clientId = $request->input('client', null);
+        if ($clientId) {
+            $client = $request->user()->client($clientId)->firstOrFail();
+            $projects = $request->user()->projectsForMenu($client->getKey());
+        } else {
+            $client = null;
+            $projects = $request->user()->projectsForMenu();
+        }
+
         $invoice = new Invoice();
 
         $viewVars = [
             'pageTitle' => 'New Invoice',
-            'projects' => $request->user()->projectsForMenu(),
+            'projects' => $projects,
+            'client' => $client,
             'model' => $invoice,
             'submission_route' => 'invoice.store',
             'submission_method' => 'POST',

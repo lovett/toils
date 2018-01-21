@@ -132,9 +132,15 @@ class User extends Authenticatable
      *
      * @return array
      */
-    public function projectsForMenu()
+    public function projectsForMenu($clientId=0)
     {
-        $query = $this->projects()->with('client')->orderBy('name');
+        if ($clientId > 0) {
+            $query = $this->client($clientId)->projects()->getQuery();
+        } else {
+            $query = $this->projects();
+        }
+
+        $query->with('client')->orderBy('name');
 
         return $this->asMenu($query, 'id', ['name', 'client.name'], ' :: ');
     }
