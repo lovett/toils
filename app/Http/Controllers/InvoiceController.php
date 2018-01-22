@@ -127,29 +127,37 @@ class InvoiceController extends Controller
         MessagingHelper::flashCreated($invoice->name);
 
         return redirect()->route(
-            'invoice.show',
+            'invoice.list',
             [$invoice->id]
         );
     }
 
     /**
-     * Display an invoice.
+     * Render an invoice as a PDF
      *
      * @param Request $request The incoming request
-     * @param int     $id      an invoice primary key
+     * @param int $id an invoice primary key
      *
      * @return Response
      */
     public function show(Request $request, $id)
     {
-        $invoice = $request->user()->invoices()->findOrFail($id);
+        $invoice = $request->user()->invoice($id);
 
         $viewVars = [
-            'model' => $invoice,
+            'user' => $request->user(),
+            'invoice' => $invoice,
+            'client' => $invoice->client,
             'pageTitle' => $invoice->name,
         ];
 
-        return view('invoice.show', $viewVars);
+        //return view('invoice.show', $viewVars);
+
+        $pdf = app()->make('dompdf.wrapper');
+        $pdf->loadView('invoice.show', $viewVars);
+
+        $filename = sprintf('invoice_%s.pdf', $invoice->number);
+        return $pdf->stream($filename);
     }
 
     /**

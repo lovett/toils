@@ -165,12 +165,13 @@ return [
         Illuminate\View\ViewServiceProvider::class,
 
         /*
-         * Package Service Providers...
+         * Providers from third-party packages
          */
         Collective\Html\HtmlServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
 
         /*
-         * Application Service Providers...
+         * Provides from Laravel
          */
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
@@ -229,13 +230,21 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
+        /*
+         * Facades provided by third-party packages
+         */
+        'Form' => Collective\Html\FormFacade::class,
+        'HTML' => Collective\Html\HtmlFacade::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
+
+        /*
+         * Facades provided by this application
+         */
         'TimeHelper' => App\Helpers\TimeHelper::class,
         'AddressHelper' => App\Helpers\AddressHelper::class,
         'LinkHelper' => App\Helpers\LinkHelper::class,
         'MessagingHelper' => App\Helpers\MessagingHelper::class,
         'CurrencyHelper' => App\Helpers\CurrencyHelper::class,
-        'Form' => Collective\Html\FormFacade::class,
-        'HTML' => Collective\Html\HtmlFacade::class,
     ],
 
 ];

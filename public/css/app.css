@@ -8376,3 +8376,14 @@ main dl dd {
   fill: crimson;
 }
 
+.file-icon {
+  display: block;
+  margin-top: .25em;
+  width: 2em;
+  height: 2em;
+}
+
+address {
+  white-space: pre-line;
+}
+

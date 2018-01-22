@@ -15,7 +15,10 @@
             @foreach ($collection as $invoice)
                 <tr>
                     <td>
-                        {{ $invoice->number }}
+                        <a href="{{ route('invoice.show', $invoice) }}" target="_blank">
+                            {{ $invoice->number }}
+                            <svg class="icon file-icon"><use xlink:href="#icon-file-pdf"></use></svg>
+                        </a>
                     </td>
                     <td>
                         @if($invoice->isPaid)

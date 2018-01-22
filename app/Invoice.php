@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Traits\Search;
 use App\Time;
+use App\Client;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Helpers\TimeHelper;
@@ -227,16 +228,6 @@ class Invoice extends Model
         return $this->belongsTo('App\Project');
     }
 
-    /**
-     * Client associated with the invoice.
-     *
-     * @return HasOne
-     */
-    public function client()
-    {
-        return $this->project()->with('client');
-    }
-
     public function attachTime()
     {
         DB::beginTransaction();
@@ -250,6 +241,18 @@ class Invoice extends Model
         $times->update(['invoice_id' => $this->getKey()]);
 
         DB::commit();
+    }
+
+    /**
+     * Custom attribute for de-nesting the client relation
+     *
+     * An invoice is indirectly related to a client through a project.
+     * The invoice should already have eager-loaded the project relation.
+     *
+     * @return Client The client associated with this invoice's project
+     */
+    public function getClientAttribute() {
+        return $this->project->client;
     }
 
     /**

@@ -124,6 +124,15 @@ class TimeHelper
         return $value->format(self::$dateFormat);
     }
 
+    public static function longDate(Carbon $value = null)
+    {
+        if (is_null($value)) {
+            return '';
+        }
+
+        return $value->format('F jS, Y');
+    }
+
     /**
      * Format a time in 12-hour format: 1:00 AM
      *
