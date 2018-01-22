@@ -102,7 +102,7 @@ class User extends Authenticatable
      * Single invoice associated with the user
      */
     public function invoice($id) {
-        return $this->invoices()->where('invoices.id', $id)->firstOrFail();
+        return $this->invoices()->where('invoices.id', $id)->with('project.client')->firstOrFail();
     }
 
     /**

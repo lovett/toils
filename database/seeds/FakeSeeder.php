@@ -25,13 +25,11 @@ class FakeSeeder extends Seeder
         Model::unguard();
 
         // A user with predicatable credentials for use during development.
-        User::updateOrCreate(
-            ['name' => 'test'],
-            [
-                'email' => 'test@example.com',
-                'password' => bcrypt('test'),
-            ]
-        );
+        factory(User::class)->create([
+            'name' => 'test',
+            'email' => 'test@example.com',
+            'password' => bcrypt('test'),
+        ]);
 
         // Additional users.
         factory(User::class, 3)->create();
