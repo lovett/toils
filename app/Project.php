@@ -24,10 +24,22 @@ class Project extends Model
      *
      * @var array
      */
-    public static $searchables = ['name' => 'projects.name'];
+    public static $searchables = [
+        'name' => 'projects.name',
+    ];
+
 
     /**
-     * The attributes that are mass assignable.
+     * When a project is updated, mark its client as updated as well.
+     *
+     * @var array
+     */
+     protected $touches = [
+         'client',
+     ];
+
+    /**
+     * The attributes that are mass-assignable.
      *
      * @var array
      */

@@ -28,6 +28,21 @@ class Time extends Model
     ];
 
     /**
+     * When a time entry is updated, mark its project as updated as well.
+     *
+     * Although this only applies to update and not create, that
+     * should be fine since a time entry is usually started and
+     * finished at separate times. A create-only time entry would be
+     * less common.
+     *
+     * @var array
+     */
+    protected $touches = [
+        'project',
+    ];
+
+
+    /**
      * Fields that can be used for searching.
      *
      * Keys are field aliases suitable for use in UI.

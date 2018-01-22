@@ -52,6 +52,15 @@ class Invoice extends Model
     ];
 
     /**
+     * When an invoice is updated, mark its project updated as well.
+     *
+     * @var array
+     */
+    protected $touches = [
+        'project',
+    ];
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
