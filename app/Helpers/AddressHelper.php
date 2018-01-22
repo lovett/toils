@@ -62,10 +62,25 @@ class AddressHelper
 
         $plainValue = preg_replace('/[^0-9x\#*]/', null, $value);
 
-        try {
-            $formattedValue = phone($plainValue, 'US')->formatInternational();
-        } catch (Exception $e) {
-            $formattedValue = $plainValue;
+        $matchResult = preg_match("/(1)?(\d{3})?(\d{3})(\d{4})(.*)?/", $plainValue, $matches);
+
+        if ($matchResult !== 1) {
+            return $value;
+        }
+
+        $formattedValue = '';
+        if (!empty($matches[1])) {
+            $formattedValue .= sprintf('+%s ', $matches[1]);
+        }
+
+        if (!empty($matches[2])) {
+            $formattedValue .= sprintf('(%s) ', $matches[2]);
+        }
+
+        $formattedValue .= sprintf('%s-%s ', $matches[3], $matches[4]);
+
+        if (!empty($matches[5])) {
+            $formattedValue .= $matches[5];
         }
 
         return sprintf(
