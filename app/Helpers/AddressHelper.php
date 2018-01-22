@@ -9,6 +9,20 @@ use Exception;
  */
 class AddressHelper
 {
+
+    public static function userMailingAddress($record)
+    {
+        $fields = ['displayName', 'address1', 'address2', 'city', 'locality', 'postalCode', ['Tel', 'phone'], 'email'];
+        return static::mailingAddress($record, $fields);
+    }
+
+    public static function clientMailingAddress($record)
+    {
+        $fields = ['name', ['c/o', 'contactName'], 'address1', 'address2', 'city', 'locality', 'postalCode'];
+        return static::mailingAddress($record, $fields);
+    }
+
+
     /**
      * Display a mailing address, taking care to account for missing fields.
      *
@@ -16,35 +30,30 @@ class AddressHelper
      *
      * @return string
      */
-    public static function mailingAddress($record)
+    private static function mailingAddress($record, $fields=[])
     {
-        $out = '';
-
-        $appendIfSet = function (
-            $key,
-            $out,
-            $prefix = '',
-            $suffix = ''
-        ) use ($record) {
-            if (empty($record->$key) === false) {
-                $out .= $prefix.$record->$key.$suffix;
+        $address = array_reduce($fields, function ($acc, $field) use ($record) {
+            if (is_array($field)) {
+                list($prefix, $key) = $field;
+            } else {
+                $prefix = '';
+                $key = $field;
             }
 
-            return $out;
-        };
+            $suffix = "\n";
+            if ($key === 'city') {
+                $suffix = ', ';
+            } elseif ($key === 'locality') {
+                $suffix = ' ';
+            }
 
-        $punctuationAfterLocality = ', ';
-        if (empty($record->locality)) {
-            $punctuationAfterLocality = '';
-        }
+            if (!empty($record->$key)) {
+                $acc .= ltrim(sprintf("%s %s%s", $prefix, $record->$key, $suffix));
+            }
+            return $acc;
+        }, '');
 
-        $out = $appendIfSet('address1', $out, null, "\n");
-        $out = $appendIfSet('address2', $out, null, "\n");
-        $out = $appendIfSet('city', $out, null, $punctuationAfterLocality);
-        $out = $appendIfSet('locality', $out, null, ' ');
-        $out = $appendIfSet('postalCode', $out);
-
-        return $out;
+        return $address;
     }
 
     /**

@@ -6,17 +6,16 @@
 
         <p>@include('partials.active', ['value' => $model->active])</p>
 
+        @if ($model->phone)
+        <p>{!! AddressHelper::phoneUrl($model->phone) !!}</p>
+        @endif
+
+        @if ($model->contactEmail)
+            <p><a href="mailto:{{ $model->contactEmail }}">{{ $model->contactEmail }}</a></p>
+        @endif
+
         @if ($model->contactName)
-            {{ $model->contactName }}
-            <address>
-                <a href="mailto:{{ $model->contactEmail }}">{{ $model->contactEmail }}</a>
-                <div>
-                    {{ AddressHelper::mailingAddress($model) }}
-                </div>
-                <div>
-                    {!! AddressHelper::phoneUrl($model->phone) !!}
-                </div>
-            </address>
+            <address>{{ AddressHelper::clientMailingAddress($model) }}</address>
         @endif
 
         <div class="row">
