@@ -128,21 +128,30 @@ class User extends Authenticatable
     }
 
     /**
-     * Return a menu-friendly list of the user's projects.
+     * Return a menu-friendly list of the user's projects across all clients
      *
      * @return array
      */
-    public function projectsForMenu($clientId=0)
+    public function projectsForMenu()
     {
-        if ($clientId > 0) {
-            $query = $this->client($clientId)->projects()->getQuery();
-        } else {
-            $query = $this->projects();
-        }
+        $query = $this->projects()->with('client')->orderBy('name');
+
+        return $this->asMenu($query, 'id', ['name', 'client.name'], ' :: ');
+    }
+
+    /**
+     * Return a menu-friendly list of the user's projects for a single client
+     *
+     * @return array
+     */
+    public function projectsByClientForMenu($clientId)
+    {
+        $query = $this->client($clientId)->projects()->getQuery();
 
         $query->with('client')->orderBy('name');
 
         return $this->asMenu($query, 'id', ['name', 'client.name'], ' :: ');
     }
+
 
 }

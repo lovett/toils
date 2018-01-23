@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<ruleset name="Toils Coding Standard">
+  <!-- https://github.com/squizlabs/PHP_CodeSniffer/wiki/Annotated-ruleset.xml -->
+
+  <description>A custom coding standard for the toils application</description>
+
+  <!-- use the PSR2 standard in its entirety -->
+  <rule ref="PSR2" />
+
+  <!-- use most of the squiz standard -->
+  <rule ref="Squiz">
+    <exclude name="Squiz.Arrays.ArrayDeclaration.CloseBraceNotAligned" />
+    <exclude name="Squiz.Arrays.ArrayDeclaration.KeyNotAligned" />
+    <exclude name="Squiz.Arrays.ArrayDeclaration.ValueNotAligned" />
+    <exclude name="Squiz.Commenting.ClosingDeclarationComment.Missing" />
+    <exclude name="Squiz.Commenting.FileComment.Missing" />
+    <exclude name="Squiz.Commenting.FunctionComment.ParamCommentFullStop" />
+    <exclude name="Squiz.Commenting.FunctionComment.MissingReturn" />
+    <exclude name="Squiz.Commenting.FunctionComment.IncorrectParamVarName" />
+    <exclude name="Squiz.Commenting.FileComment.MissingPackageTag" />
+    <exclude name="Squiz.Commenting.FunctionComment.InvalidReturn" />
+    <exclude name="Squiz.Files.FileExtension.ClassFound" />
+    <exclude name="Squiz.Operators.ComparisonOperatorUsage.ImplicitTrue" />
+    <exclude name="Squiz.Strings.ConcatenationSpacing.PaddingFound" />
+    <exclude name="Squiz.Strings.DoubleQuoteUsage.ContainsVar" />
+    <exclude name="Squiz.WhiteSpace.FunctionClosingBraceSpace.SpacingBeforeClose" />
+    <exclude name="Squiz.WhiteSpace.FunctionSpacing.After" />
+    <exclude name="Squiz.WhiteSpace.FunctionSpacing.Before" />
+    <exclude name="Squiz.WhiteSpace.ObjectOperatorSpacing.Before" />
+    <exclude name="Squiz.WhiteSpace.MemberVarSpacing.Incorrect" />
+    <exclude name="Squiz.Objects.ObjectInstantiation.NotAssigned" />
+    <exclude name="Squiz.Formatting.OperatorBracket.MissingBrackets" />
+  </rule>
+
+  <!-- use most of the zend standard -->
+  <rule ref="Zend">
+    <exclude name="PEAR.Functions.FunctionCallSignature.CloseBracketLine" />
+    <exclude name="PEAR.Functions.FunctionCallSignature.ContentAfterOpenBracket" />
+    <exclude name="PEAR.Functions.FunctionCallSignature.MultipleArguments" />
+    <exclude name="Generic.Functions.OpeningFunctionBraceBsdAllman.BraceOnSameLine" />
+    <exclude name="Generic.Files.LineLength.TooLong" />
+    <exclude name="Zend.NamingConventions.ValidVariableName.PrivateNoUnderscore" />
+    <exclude name="Zend.NamingConventions.ValidVariableName.ContainsNumbers" />
+
+    <!-- same rule exists in squiz standard -->
+    <exclude name="Zend.NamingConventions.ValidVariableName.NotCamelCaps" />
+  </rule>
+
+  <!-- Laravel seeds and migrations are not namespaced -->
+  <rule ref="PSR1.Classes.ClassDeclaration.MissingNamespace">
+    <exclude-pattern>*/database/seeds/*</exclude-pattern>
+    <exclude-pattern>*/database/migrations/*</exclude-pattern>
+  </rule>
+
+  <!-- Laravel seeds and migrations do not follow the usual naming convention -->
+  <rule ref="Squiz.Classes.ClassFileName.NoMatch">
+    <exclude-pattern>*/database/migrations/*</exclude-pattern>
+  </rule>
+
+  <!-- Framework class isn't hinted, preventing app class from overriding -->
+  <rule ref="Squiz.Commenting.FunctionComment.TypeHintMissing">
+    <exclude-pattern>app/Exceptions/Handler.php</exclude-pattern>
+  </rule>
+</ruleset>

@@ -63,11 +63,9 @@ class ClientController extends Controller
     /**
      * Show the form for creating a new client.
      *
-     * @param Request $request The incoming request
-     *
      * @return Response
      */
-    public function create(Request $request)
+    public function create()
     {
         $client = new Client();
 
@@ -182,7 +180,7 @@ class ClientController extends Controller
     {
         $client = $request->user()->client($id);
 
-        $affectedRows = $client->update($request->all());
+        $client->update($request->all());
 
         if ($client->active === 0) {
             // An inactive client should not have active projects.
@@ -211,7 +209,7 @@ class ClientController extends Controller
 
         $client = $request->user()->client($id);
 
-        $affectedRows = $client->delete();
+        $client->delete();
 
         MessagingHelper::flashDeleted($client->name);
 

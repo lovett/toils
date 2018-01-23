@@ -141,7 +141,7 @@ class Invoice extends Model
      *
      * @return Relation
      */
-    public function scopeListingByUser($query, $userId=0)
+    public function scopeListingByUser($query)
     {
         $query->leftJoin(
             'projects',

@@ -69,13 +69,13 @@ class TimeController extends Controller
         $clientId = $request->input('client', null);
         if ($clientId) {
             $client = $request->user()->client($clientId)->firstOrFail();
-            $projects = $request->user()->projectsForMenu($client->getKey());
-        } else {
+            $projects = $request->user()->projectsByClientForMenu($client->getKey());
+        }
+
+        if (is_null($clientId)) {
             $client = null;
             $projects = $request->user()->projectsForMenu();
         }
-
-        $projects = $request->user()->projectsForMenu();
 
         $projectId = $request->input('project', null);
 
@@ -127,8 +127,6 @@ class TimeController extends Controller
         $time->user()->associate($request->user());
         $time->save();
 
-        $userMessage = $this->successMessage('time entry');
-
         MessagingHelper::flashCreated('time entry');
 
         return redirect()->route(
@@ -174,7 +172,7 @@ class TimeController extends Controller
     {
         $time = $request->user()->time()->findOrFail($id);
 
-        $affectedRows = $time->update($request->all());
+        $time->update($request->all());
 
         MessagingHelper::flashUpdated('time entry');
 
@@ -193,7 +191,7 @@ class TimeController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        $affectedRows = $request->user()->time()->where('id', $id)->delete();
+        $request->user()->time()->where('id', $id)->delete();
 
         MessagingHelper::flashDeleted('time entry');
 

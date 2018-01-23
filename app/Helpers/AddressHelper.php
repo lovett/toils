@@ -33,17 +33,18 @@ class AddressHelper
     private static function mailingAddress($record, $fields=[])
     {
         $address = array_reduce($fields, function ($acc, $field) use ($record) {
+            $prefix = '';
+            $key = $field;
             if (is_array($field)) {
                 list($prefix, $key) = $field;
-            } else {
-                $prefix = '';
-                $key = $field;
             }
 
             $suffix = "\n";
             if ($key === 'city') {
                 $suffix = ', ';
-            } elseif ($key === 'locality') {
+            }
+
+            if ($key === 'locality') {
                 $suffix = ' ';
             }
 

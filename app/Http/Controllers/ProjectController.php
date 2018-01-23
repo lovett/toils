@@ -208,7 +208,7 @@ class ProjectController extends Controller
     {
         $project = $request->user()->project($id);
 
-        $affectedRows = $project->update($request->all());
+        $project->update($request->all());
 
         MessagingHelper::flashUpdated($project->name);
 
@@ -232,9 +232,7 @@ class ProjectController extends Controller
     {
         $project = $request->user()->project($id);
 
-        $affectedRows = $project->delete();
-
-        $message = sprintf("%s has been deleted", $project->name);
+        $project->delete();
 
         MessagingHelper::flashDeleted($project->name);
 
