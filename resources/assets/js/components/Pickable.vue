@@ -12,6 +12,10 @@
 
                 <p v-if="pickDate">
                     <strong>Relative</strong>
+                    <a @click.prevent="relativeWeekStart(0)" href="#">start of this week</a>
+                    <a @click.prevent="relativeWeekEnd(0)" href="#">end of this week</a>
+                    <a @click.prevent="relativeWeekStart(-1)" href="#">start of last week</a>
+                    <a @click.prevent="relativeWeekEnd(-1)" href="#">end of last week</a>
                     <a @click.prevent="relativeDay(0)" href="#">today</a>
                     <a @click.prevent="relativeDay(-1)" href="#">yesterday</a>
                     <a @click.prevent="relativeDay(-2)" href="#">2 days ago</a>
@@ -154,6 +158,14 @@
 
             relativeYear: function (val) {
                 this.pickedDate = moment().add(val, 'years');
+            },
+
+            relativeWeekStart: function (val) {
+                this.pickedDate = moment().day(0).add(val * 7, 'days');
+            },
+
+            relativeWeekEnd: function (val) {
+                this.pickedDate = moment().day(6).add(val * 7, 'days');
             }
         }
     }

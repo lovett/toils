@@ -42967,6 +42967,10 @@ exports.push([module.i, "\n.hidden[data-v-2482a0b2] {\n    display: none;\n}\n.p
 //
 //
 //
+//
+//
+//
+//
 
 var moment = __webpack_require__(0);
 module.exports = {
@@ -43040,6 +43044,14 @@ module.exports = {
 
         relativeYear: function relativeYear(val) {
             this.pickedDate = moment().add(val, 'years');
+        },
+
+        relativeWeekStart: function relativeWeekStart(val) {
+            this.pickedDate = moment().day(0).add(val * 7, 'days');
+        },
+
+        relativeWeekEnd: function relativeWeekEnd(val) {
+            this.pickedDate = moment().day(6).add(val * 7, 'days');
         }
     }
 };
@@ -43349,6 +43361,62 @@ var render = function() {
         _vm.pickDate
           ? _c("p", [
               _c("strong", [_vm._v("Relative")]),
+              _vm._v(" "),
+              _c(
+                "a",
+                {
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      _vm.relativeWeekStart(0)
+                    }
+                  }
+                },
+                [_vm._v("start of this week")]
+              ),
+              _vm._v(" "),
+              _c(
+                "a",
+                {
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      _vm.relativeWeekEnd(0)
+                    }
+                  }
+                },
+                [_vm._v("end of this week")]
+              ),
+              _vm._v(" "),
+              _c(
+                "a",
+                {
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      _vm.relativeWeekStart(-1)
+                    }
+                  }
+                },
+                [_vm._v("start of last week")]
+              ),
+              _vm._v(" "),
+              _c(
+                "a",
+                {
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      _vm.relativeWeekEnd(-1)
+                    }
+                  }
+                },
+                [_vm._v("end of last week")]
+              ),
               _vm._v(" "),
               _c(
                 "a",
