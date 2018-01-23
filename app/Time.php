@@ -158,22 +158,6 @@ class Time extends Model
     }
 
     /**
-     * Custom accessor to set default value for start date.
-     *
-     * @param string $value The value stored in the database
-     *
-     * @return Carbon;
-     */
-    public function getStartAttribute($value)
-    {
-        if (empty($value)) {
-            $value = 'now';
-        }
-
-        return new Carbon($value);
-    }
-
-    /**
      * Custom accessor to convert null to zero.
      *
      * @param int|null $value The value stored in the database
@@ -337,4 +321,30 @@ class Time extends Model
         return $suggestion;
     }
 
+    /**
+     * Round start time to nearest 5-minute interval
+     *
+     */
+    public function setStartAttribute($value)
+    {
+        $this->attributes['start'] = TimeHelper::roundToNearestMinuteMultiple($value, 5);
+    }
+
+    /**
+     * Default start time to nearest 5-minute interval
+     *
+     */
+    public function getStartAttribute(string $value)
+    {
+        $carbonInstance = new Carbon($value);
+        return TimeHelper::roundToNearestMinuteMultiple($carbonInstance, 5);
+    }
+
+    /**
+     * Round duration minutes to nearest 5-minute interval
+     */
+    public function setMinutesAttribute(int $value)
+    {
+        $this->attributes['minutes'] = TimeHelper::roundToNearestMultiple($value, 5);
+    }
 }

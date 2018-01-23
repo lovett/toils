@@ -11,18 +11,27 @@
                 </div>
 
                 <p v-if="pickDate">
-                    <strong>Relative</strong>
+                    <strong>Relative Week</strong>
                     <a @click.prevent="relativeWeekStart(0)" href="#">start of this week</a>
                     <a @click.prevent="relativeWeekEnd(0)" href="#">end of this week</a>
                     <a @click.prevent="relativeWeekStart(-1)" href="#">start of last week</a>
                     <a @click.prevent="relativeWeekEnd(-1)" href="#">end of last week</a>
+                </p>
+
+                <p v-if="pickDate">
+                    <strong>Relative Month</strong>
+                    <a @click.prevent="relativeMonthStart(0)" href="#">start of this month</a>
+                    <a @click.prevent="relativeMonthEnd(0)" href="#">end of this month</a>
+                    <a @click.prevent="relativeMonthStart(-1)" href="#">start of last month</a>
+                    <a @click.prevent="relativeMonthEnd(-1)" href="#">end of last month</a>
+                </p>
+
+                <p v-if="pickDate">
+                    <strong>Relative Day</strong>
                     <a @click.prevent="relativeDay(0)" href="#">today</a>
                     <a @click.prevent="relativeDay(-1)" href="#">yesterday</a>
                     <a @click.prevent="relativeDay(-2)" href="#">2 days ago</a>
                     <a @click.prevent="relativeDay(-3)" href="#">3 days ago</a>
-                    <a @click.prevent="relativeYear(-1)" href="#">last year</a>
-                    <a @click.prevent="relativeYear(0)" href="#">this year</a>
-                    <a @click.prevent="relativeYear(1)" href="#">next year</a>
                 </p>
 
                 <p v-if="pickDate">
@@ -42,10 +51,13 @@
 
                 <p v-if="pickTime">
                     <strong>Minute</strong>
-                    <a v-for="m in 60" @click.prevent="minute(m - 1)" href="#">{{ m }}</a>
+                    <a @click.prevent="minute(0)" href="#">00</a>
+                    <a v-for="m in 59" v-if="m % 5 === 0" @click.prevent="minute(m)" href="#">
+                        {{ (m < 10) ? '0' + m : m }}
+                    </a>
                 </p>
-
-                <p>
+                <p v-if="pickTime">
+                    <strong>Time of Day</strong>
                     <a @click.prevent="meridiem('AM')" href="#">AM</a>
                     <a @click.prevent="meridiem('PM')" href="#">PM</a>
                 </p>
@@ -133,6 +145,9 @@
             },
 
             hour: function (val) {
+                if (this.pickedDate.hour() > 12) {
+                    val += 12;
+                }
                 this.pickedDate = moment(this.pickedDate).hour(val);
             },
 
@@ -161,11 +176,19 @@
             },
 
             relativeWeekStart: function (val) {
-                this.pickedDate = moment().day(0).add(val * 7, 'days');
+                this.pickedDate = moment().startOf('week').add(val * 7, 'days');
             },
 
             relativeWeekEnd: function (val) {
-                this.pickedDate = moment().day(6).add(val * 7, 'days');
+                this.pickedDate = moment().endOf('week').add(val * 7, 'days');
+            },
+
+            relativeMonthStart: function (val) {
+                this.pickedDate = moment().startOf('month').add(val, 'months');
+            },
+
+            relativeMonthEnd: function (val) {
+                this.pickedDate = moment().endOf('month').add(val, 'months');
             }
         }
     }

@@ -7,7 +7,7 @@
         {!! Form::text($fieldName, TimeHelper::time($model->$name), ['class' => 'form-control']) !!}
 
         <pickable
-            format="hh:mm A"
+            format="h:mm A"
             field-selector="INPUT[name={{ $fieldName }}]">
             &nbsp;
         </pickable>

@@ -148,4 +148,18 @@ class TimeHelper
 
         return $value->format('g:i A');
     }
+
+    public static function roundToNearestMinuteMultiple(Carbon $value, int $multiple)
+    {
+        $value->minute = self::roundToNearestMultiple($value->minute, $multiple);
+        $value->second = 0;
+
+        return $value;
+    }
+
+    public static function roundToNearestMultiple(int $value, int $multiple)
+    {
+        return floor($value / $multiple) * $multiple;
+    }
+
 }
