@@ -1,0 +1,8 @@
+--ignore-dir=storage
+--ignore-dir=vendor
+--ignore-dir=cache
+--ignore-dir=public
+--ignore-file=ext:lock
+--ignore-file=is:artisan
+--type-add=blade:match:/blade\.php/
+--type-add=vue:ext:vue
