@@ -25,10 +25,7 @@
 
         methods: {
             apply: function () {
-                document.querySelector(this.fieldSelector).setAttribute(
-                    'value',
-                    this.suggestion
-                );
+                document.querySelector(this.fieldSelector).value = this.suggestion;
             }
         }
     };

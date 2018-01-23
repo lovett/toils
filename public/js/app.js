@@ -59843,7 +59843,7 @@ module.exports = {
 
     methods: {
         apply: function apply() {
-            document.querySelector(this.fieldSelector).setAttribute('value', this.suggestion);
+            document.querySelector(this.fieldSelector).value = this.suggestion;
         }
     }
 };

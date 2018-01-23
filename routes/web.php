@@ -17,4 +17,9 @@ Route::get('invoice/suggestions/project/{projectId?}', [
     'uses' => 'InvoiceController@suggestByProject'
 ]);
 
+Route::get('time/suggestions/project/{projectId?}', [
+    'as' => 'time.suggestByProject',
+    'uses' => 'TimeController@suggestByProject'
+]);
+
 Route::redirect('/', '/login', 301);

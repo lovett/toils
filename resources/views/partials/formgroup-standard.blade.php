@@ -7,7 +7,12 @@
         {!! Form::text($name, isset($model)? $model->$name : '', ['class' => 'form-control']) !!}
 
         @if (isset($autofill))
-            <autofill-hint field-selector="INPUT[name={{ $name }}]" v-bind:value="suggested{{ ucfirst($name) }}" v-bind:previous="previous{{ ucfirst($name) }}"></autofill-hint>
+            <autofill-hint
+                field-selector="INPUT[name={{ $name }}]"
+                v-bind:suggestion="suggested{{ ucfirst($name) }}"
+                v-bind:previous="previous{{ ucfirst($name) }}">
+                &nbsp;
+            </autofill-hint>
         @endif
 
         @if ($errors->has($name))

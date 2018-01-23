@@ -58,6 +58,21 @@ class TimeController extends Controller
     }
 
     /**
+     * Provide autocompletion candidates based on the past invoice for a time entry
+     *
+     * @param Request $request The incoming request
+     * @param int $id The id of the project to base the candidates on.
+     *
+     * @return Response A json response.
+     */
+    public function suggestByProject(Request $request, $id)
+    {
+        $id = (int)$id;
+        $time = $request->user()->timeByProject($id)->firstOrFail();
+        return response()->json($time->suggestion);
+    }
+
+    /**
      * Show the form for creating a new time entry.
      *
      * @param Request $request The incoming request
@@ -86,18 +101,9 @@ class TimeController extends Controller
         $time = new Time();
         $time->project_id = $projectId;
 
-        $previousModel = $request->user()->time();
-        if ($projectId !== null) {
-            $previousModel->where('project_id', $projectId);
-        }
-
-        $previousModel->orderBy('start', 'DESC');
-        $previousModel->limit(1);
-
         $viewVars = [
             'pageTitle' => 'New Time Entry',
             'model' => $time,
-            'previousModel' => $previousModel->first(),
             'submission_route' => 'time.store',
             'submission_method' => 'POST',
             'projects' => $projects,

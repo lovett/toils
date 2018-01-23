@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Traits\Search;
 use App\Invoice;
+use stdClass;
+use App\Helpers\TimeHelper;
 
 /**
  * Eloquent model for the times table.
@@ -305,4 +307,34 @@ class Time extends Model
 
         DB::commit();
     }
+
+    /**
+     * Hints for autocomplete
+     *
+     * Returns an object whose values can be used to auto-populate
+     * form fields during create or update.
+     *
+     * @return object An object with suggested and previously-used values.
+     */
+    public function getSuggestionAttribute()
+    {
+        $now = Carbon::now();
+
+        $suggestion = new stdClass();
+
+        $suggestion->previous = [
+            'estimatedDuration' => $this->estimatedDuration,
+            'start' => TimeHelper::date($this->start),
+            'summary' => $this->summary,
+        ];
+
+        $suggestion->suggested = [
+            'estimatedDuration' => $this->estimatedDuration,
+            'start' => TimeHelper::date($now),
+            'summary' => $this->summary,
+        ];
+
+        return $suggestion;
+    }
+
 }

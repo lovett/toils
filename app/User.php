@@ -115,6 +115,11 @@ class User extends Authenticatable
         return $this->hasMany('App\Time');
     }
 
+    public function timeByProject($id)
+    {
+        return $this->time()->where('project_id', $id);
+    }
+
     /**
      * Return a menu-friendly list of the user's clients.
      *
