@@ -348,8 +348,12 @@ class Time extends Model
      * Default start time to nearest 5-minute interval
      *
      */
-    public function getStartAttribute(string $value)
+    public function getStartAttribute(string $value=null)
     {
+        if (empty($value)) {
+            return null;
+        }
+
         $carbonInstance = new Carbon($value);
         return TimeHelper::roundToNearestMinuteMultiple($carbonInstance, 5);
     }
