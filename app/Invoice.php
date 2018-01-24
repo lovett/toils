@@ -263,6 +263,18 @@ class Invoice extends Model
     }
 
     /**
+     * Custom attribute for calculating days remaining until due
+     */
+    public function getDaysUntilDueAttribute() {
+        if ($this->isPaid) {
+            return 0;
+        }
+
+        $now = new Carbon();
+        return $now->diffInDays($this->due, false);
+    }
+
+    /**
      * Hints for autocomplete
      *
      * Returns an object whose values can be used to auto-populate
@@ -294,5 +306,14 @@ class Invoice extends Model
         ];
 
         return $suggestion;
+    }
+
+    /**
+     * Set the date paid when the receipt is set
+     */
+    public function setReceiptAttribute($value)
+    {
+        $this->attributes['receipt'] = $value;
+        $this->attributes['paid'] = ($value === null)? null : new Carbon();
     }
 }

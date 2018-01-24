@@ -2,8 +2,6 @@
 
 Auth::routes();
 
-Route::resource('time', 'TimeController');
-Route::resource('invoice', 'InvoiceController');
 Route::resource('project', 'ProjectController');
 Route::resource('client', 'ClientController');
 
@@ -17,9 +15,19 @@ Route::get('invoice/suggestions/project/{projectId?}', [
     'uses' => 'InvoiceController@suggestByProject'
 ]);
 
+Route::get('invoice/{invoiceId}/receipt', [
+    'as' => 'invoice.receipt',
+    'uses' => 'InvoiceController@receipt'
+]);
+
+Route::resource('invoice', 'InvoiceController');
+
+
 Route::get('time/suggestions/project/{projectId?}', [
     'as' => 'time.suggestByProject',
     'uses' => 'TimeController@suggestByProject'
 ]);
+
+Route::resource('time', 'TimeController');
 
 Route::redirect('/', '/login', 301);

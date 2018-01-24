@@ -110,8 +110,7 @@ class CreateBaseSchema extends Migration
                 $table->date('start')->nullable();
                 $table->date('end')->nullable();
                 $table->text('summary')->nullable();
-                $table->string('receiptType', 20)->nullable();
-                $table->integer('receiptSize')->nullable()->unsigned();
+                $table->string('receipt', 40)->nullable();
                 $table->timestamps();
                 $table->softDeletes();
                 $table->foreign('project_id')->references('id')->on('projects');

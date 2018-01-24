@@ -23,7 +23,5 @@ $factory->define(App\Invoice::class, function (Faker $faker) {
         'start' => $randomTime,
         'end' => $randomTime->copy()->addDays(30),
         'summary' => $faker->paragraph(),
-        'receiptType' => array_rand($mimeTypes),
-        'receiptSize' => $faker->numberBetween(500, 100 * 1024),
     ];
 });

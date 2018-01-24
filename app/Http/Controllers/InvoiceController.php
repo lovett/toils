@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Client;
+use App\Helpers\MessagingHelper;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\InvoiceRequest;
 use App\Invoice;
 use Illuminate\Http\Request;
@@ -113,26 +115,18 @@ class InvoiceController extends Controller
     {
         $invoice = new Invoice();
 
-        // $invoice->active       = (int) $request->active;
-        // $invoice->name         = $request->name;
-        // $invoice->contactName  = $request->contactName;
-        // $invoice->contactEmail = $request->contactEmail;
-        // $invoice->address1     = $request->address1;
-        // $invoice->address2     = $request->address2;
-        // $invoice->city         = $request->city;
-        // $invoice->locality     = $request->locality;
-        // $invoice->postalCode   = $request->postalCode;
-        // $invoice->phone        = $request->phone;
+        $storedPath = $this->storeReceipt($request);
 
+        if ($storedPath) {
+            $invoice->receipt = $storedPath;
+        }
+
+        $invoice->update($request->all());
         $invoice->save();
-        $invoice->user()->associate($request->user());
 
-        MessagingHelper::flashCreated($invoice->name);
+        MessagingHelper::flashCreated("invoice #{$invoice->number}");
 
-        return redirect()->route(
-            'invoice.list',
-            [$invoice->id]
-        );
+        return redirect()->route('invoice.index', [$invoice->id]);
     }
 
     /**
@@ -193,28 +187,25 @@ class InvoiceController extends Controller
      * Update an existing invoice.
      *
      * @param InvoiceRequest $request The incoming request
-     * @param int           $id      an invoice primary key
+     * @param int $id An invoice primary key
      *
      * @return Response
      */
     public function update(InvoiceRequest $request, $id)
     {
-        $invoice = Invoice::find($id);
+        $invoice = $request->user()->invoice($id);
 
-        $affectedRows = $invoice->update($request->all());
+        $storedPath = $this->storeReceipt($request);
 
-        if ($invoice->active === 0) {
-            // An inactive invoice should not have active projects.
-            $projects = $invoice->projects();
-            $projects->update(['active' => false]);
+        if ($storedPath) {
+            $invoice->receipt = $storedPath;
         }
 
-        $userMessage = $this->userMessageForAffectedRows($affectedRows);
+        $invoice->update($request->all());
 
-        return redirect()->route(
-            'invoice.show',
-            [$invoice->id]
-        )->with('userMessage', $userMessage);
+        MessagingHelper::flashUpdated("invoice #{$invoice->number}");
+
+        return redirect()->route('invoice.index', [$invoice->id]);
     }
 
     /**
@@ -248,4 +239,40 @@ class InvoiceController extends Controller
             $userMessage
         );
     }
+
+    protected function storeReceipt(InvoiceRequest $request)
+    {
+        if (!$request->hasFile('receipt')) {
+            return null;
+        }
+
+        $path = sprintf('receipts/%d', date('Y'));
+
+        return $request->file('receipt')->store($path);
+    }
+
+    /**
+     * Make a previously-uploaded receipt available for download
+     *
+     * @param InvoiceRequest $request The incoming request
+     * @param int $id An invoice primary key
+     *
+     * @return Response
+     *
+     */
+    public function receipt(InvoiceRequest $request, $id)
+    {
+
+        $invoice = $request->user()->invoice($id);
+
+        abort_unless($invoice->receipt, 404);
+
+        $extension = pathinfo($invoice->receipt, PATHINFO_EXTENSION);
+        $name = sprintf('receipt_%s.%s', $invoice->number, $extension);
+
+        return response()->file(Storage::path($invoice->receipt));
+
+
+    }
+
 }

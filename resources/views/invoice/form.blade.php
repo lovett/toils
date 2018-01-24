@@ -8,7 +8,7 @@
     <div class="container">
     <autofill inline-template url="{{ route('invoice.suggestByProject') }}" fields="start, end, name, summary, amount, due">
 
-        {!! Form::model($model, ['route' => $submission_route, 'method' => $submission_method, 'class' => 'invoice-form form-horizontal']) !!}
+        {!! Form::model($model, ['files' => true, 'route' => $submission_route, 'method' => $submission_method, 'class' => 'invoice-form form-horizontal']) !!}
 
         @isset($client)
         @include('partials.project-menu-filtered', ['client' => $client])
@@ -36,13 +36,17 @@
 
             {!! Form::label('receipt', 'Receipt', ['class' => 'col-sm-1 control-label']) !!}
             <div class="col-sm-2">
-                <input type="file" id="receipt" />
+                {!! Form::file('receipt') !!}
             </div>
         </div>
 
         @include('partials.formgroup-date', ['name' => 'sent', 'label' => 'Sent'])
 
         @include('partials.formgroup-date', ['name' => 'due', 'label' => 'Due', 'autofill' => true])
+
+        @include('partials.formgroup-date', ['name' => 'paid', 'label' => 'Paid', 'autofill' => false])
+
+
 
         @include('partials.save-button')
 
