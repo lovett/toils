@@ -6,6 +6,7 @@ use App\Invoice;
 use App\Time;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class InvoiceObserver
 {
@@ -22,6 +23,10 @@ class InvoiceObserver
         ]);
 
         Log::debug("Released ${affectedRows} time entries from deleted invoice {$invoice->id}");
+
+        if ($invoice->receipt) {
+            Storage::delete($invoice->receipt);
+        }
     }
 
     /**
