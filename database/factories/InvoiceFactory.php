@@ -18,10 +18,7 @@ $factory->define(App\Invoice::class, function (Faker $faker) {
         'amount' => $faker->randomFloat(2, 50, 1000),
         'sent' => $randomTime->copy()->addDays(30),
         'due' => $randomTime->copy()->addDays(61),
-        'paid' => array_rand([
-            null,
-            $randomTime->copy()->addDays($faker->numberBetween(62, 90)),
-        ]),
+        'paid' => $faker->optional()->dateTimeBetween('-1 year', '-1 day'),
         'name' => sprintf('%s Invoice', $faker->colorName()),
         'start' => $randomTime,
         'end' => $randomTime->copy()->addDays(30),
