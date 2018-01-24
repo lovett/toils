@@ -220,24 +220,13 @@ class InvoiceController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        $affectedRows = $request->user()->invoices()->where('id', $id)->delete();
+        $invoice = $request->user()->invoice($id);
 
-        $userMessage = [
-            'success',
-            'Deleted successfully',
-        ];
+        $invoice->delete();
 
-        if ($affectedRows === 0) {
-            $userMessage = [
-                'warning',
-                'Nothing deletable was found',
-            ];
-        }
+        MessagingHelper::flashDeleted("invoice #{$invoice->number}");
 
-        return redirect()->route('invoice.index')->with(
-            'userMessage',
-            $userMessage
-        );
+        return redirect()->route('invoice.index');
     }
 
     protected function storeReceipt(InvoiceRequest $request)

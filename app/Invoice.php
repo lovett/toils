@@ -228,21 +228,6 @@ class Invoice extends Model
         return $this->belongsTo('App\Project');
     }
 
-    public function attachTime()
-    {
-        DB::beginTransaction();
-
-        $this->times()->update(['invoice_id' => null]);
-
-        $times = Time::whereBetween('start', [$this->start, $this->end]);
-        $times->where('project_id', $this->project_id);
-        $times->whereNull('invoice_id');
-
-        $times->update(['invoice_id' => $this->getKey()]);
-
-        DB::commit();
-    }
-
     /**
      * Custom attribute for de-nesting the client relation
      *
@@ -315,5 +300,29 @@ class Invoice extends Model
     {
         $this->attributes['receipt'] = $value;
         $this->attributes['paid'] = ($value === null)? null : new Carbon();
+    }
+
+    /**
+     * Round the start attribute to the beginning of the day
+     */
+    public function setStartAttribute(string $value = null)
+    {
+        if (!empty($value)) {
+            $value = (new Carbon($value))->startOfDay();
+        }
+
+        $this->attributes['start'] = $value;
+    }
+
+    /**
+     * Round the end attribute to the end of the day
+     */
+    public function setEndAttribute(string $value = null)
+    {
+        if (!empty($value)) {
+            $value = (new Carbon($value))->endOfDay();
+        }
+
+        $this->attributes['end'] = $value;
     }
 }

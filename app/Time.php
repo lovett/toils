@@ -125,6 +125,20 @@ class Time extends Model
         return $query;
     }
 
+    /**
+     * Query scope to filter by invoice
+     *
+     * @param Builder $query An existing query
+     * @param Invoice $invoice An invoice
+     *
+     * @return Builder
+     */
+    public function scopeForInvoice($query, Invoice $invoice)
+    {
+        $query->where('invoice_id', $invoice->id);
+        return $query;
+    }
+
 
     /**
      * User associated with the time entry.
