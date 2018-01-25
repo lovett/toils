@@ -29,5 +29,6 @@ Route::get('time/suggestions/project/{projectId?}', [
 ]);
 
 Route::resource('time', 'TimeController');
+Route::resource('estimate', 'EstimateController');
 
 Route::redirect('/', '/login', 301);

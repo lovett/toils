@@ -70,18 +70,12 @@ class CreateBaseSchema extends Migration
                 $table->string('status', 50)->nullable();
                 $table->string('recipient', 100)->nullable();
                 $table->integer('client_id')->unsigned()->nullable();
-                $table->integer('project_id')->unsigned()->nullable();
                 $table->integer('fee')->nullable();
-                $table->integer('totalHours')->nullable()->unsigned();
+                $table->integer('hours')->unsigned()->default(0);
                 $table->text('summary')->nullable();
-                $table->string('submissionType', 50)->nullable();
-                $table->integer('submissionSize')->nullable()->unsigned();
-                $table->string('signatureType', 50)->nullable();
-                $table->integer('signatureSize')->nullable()->unsigned();
                 $table->timestamps();
                 $table->softDeletes();
                 $table->foreign('client_id')->references('id')->on('clients');
-                $table->foreign('project_id')->references('id')->on('projects');
             }
         );
 

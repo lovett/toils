@@ -5,7 +5,6 @@
 
     <div class="container">
         @include('time.table', ['collection' => $times])
-
     </div>
 
     @include('partials.pagination', ['collection' => $times])

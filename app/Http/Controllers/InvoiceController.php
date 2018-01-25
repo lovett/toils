@@ -121,7 +121,7 @@ class InvoiceController extends Controller
             $invoice->receipt = $storedPath;
         }
 
-        $invoice->update($request->all());
+        $invoice->fill($request->all());
         $invoice->save();
 
         MessagingHelper::flashCreated("invoice #{$invoice->number}");

@@ -73,6 +73,7 @@
                     {!! LinkHelper::primaryNavLink('invoice.index', 'Invoices') !!}
                     {!! LinkHelper::primaryNavLink('project.index', 'Projects') !!}
                     {!! LinkHelper::primaryNavLink('client.index', 'Clients') !!}
+                    {!! LinkHelper::primaryNavLink('estimate.index', 'Estimates') !!}
                     <li>
                         <a href="{{ route('logout') }}"
                            onclick="event.preventDefault();document.getElementById('logout-form').submit();">

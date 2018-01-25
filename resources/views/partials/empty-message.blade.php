@@ -1,3 +1,3 @@
-@if ($collection->isEmpty() === 0)
+@if ($collection->isEmpty())
     <p>{{ $message or "None" }}</p>
 @endif

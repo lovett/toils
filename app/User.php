@@ -49,6 +49,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Estimates associated with the user
+     *
+     * @return BelongsToMany
+     */
+    public function estimates()
+    {
+        return $this->belongsToMany('App\Estimate');
+    }
+
+    /**
      * Single client associated with user
      *
      */
@@ -86,6 +96,14 @@ class User extends Authenticatable
      */
     public function project($id) {
         return $this->projects()->where('id', $id)->firstOrFail();
+    }
+
+    /**
+     * Single estimate associated with the user
+     *
+     */
+    public function estimate($id) {
+        return $this->estimates()->where('id', $id)->firstOrFail();
     }
 
     /**
