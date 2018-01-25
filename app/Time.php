@@ -57,6 +57,7 @@ class Time extends Model
         'start' => 'times.start',
         'minutes' => 'times.mintues',
         'end' => 'times.end',
+        'invoice' => 'times.invoice_id',
     ];
 
     /**

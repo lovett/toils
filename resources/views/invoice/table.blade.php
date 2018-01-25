@@ -38,9 +38,13 @@
                         </a>
                     </td>
                     <td>
-                        {{ TimeHelper::dateFromRaw($invoice->start) }} - {{ TimeHelper::dateFromRaw($invoice->end) }}
+                        {{ TimeHelper::dateFromRaw($invoice->start) }} → {{ TimeHelper::dateFromRaw($invoice->end) }}
                         <p class="small">
-                            {{ TimeHelper::hoursAndMinutes($invoice->totalMinutes) }}
+                            @if ($invoice->totalMinutes > 0)
+                                <a href="{{ route('time.index', ['q' => "invoice:{$invoice->id}"]) }}">{{ TimeHelper::hoursAndMinutes($invoice->totalMinutes) }}</a>
+                            @else
+                                0 hours
+                            @endif
                         </p>
                     </td>
                     <td class="text-right">
