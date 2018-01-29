@@ -89,19 +89,19 @@ class Invoice extends Model
     ];
 
     /**
-     * The attributes that are datetimes.
+     * The attributes that should be mutated to dates.
      *
      * @var array
      */
     protected $dates = [
         'created_at',
-        'updated_at',
         'deleted_at',
-        'sent',
         'due',
-        'paid',
-        'start',
         'end',
+        'paid',
+        'sent',
+        'start',
+        'updated_at',
     ];
 
     /**

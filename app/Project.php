@@ -67,11 +67,15 @@ class Project extends Model
     ];
 
     /**
-     * The attributes that are datetimes.
+     * The attributes that should be mutated to dates.
      *
      * @var array
      */
-    protected $dates = ['deleted_at' => 'datetime'];
+    protected $dates = [
+        'created_at',
+        'deleted_at',
+        'updated_at',
+    ];
 
     /**
      * Master query for getting a list of records.

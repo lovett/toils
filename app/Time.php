@@ -86,12 +86,15 @@ class Time extends Model
     ];
 
     /**
-     * The attributes that are datetimes.
+     * The attributes that should be mutated to dates.
      *
      * @var array
      */
     protected $dates = [
-        'deleted_at' => 'datetime'
+        'created_at',
+        'deleted_at',
+        'start',
+        'updated_at',
     ];
 
     /**

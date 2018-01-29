@@ -65,16 +65,16 @@ class Estimate extends Model
     ];
 
     /**
-     * The attributes that are dates.
+     * The attributes that should be mutated to dates.
      *
      * @var array
      */
     protected $dates = [
-        'submitted',
         'closed',
         'created_at',
-        'updated_at',
         'deleted_at',
+        'submitted',
+        'updated_at',
     ];
 
     /**
