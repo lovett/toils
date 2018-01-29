@@ -120,7 +120,7 @@ class CreateBaseSchema extends Migration
                 $table->integer('project_id')->unsigned();
                 $table->integer('invoice_id')->nullable()->unsigned();
                 $table->date('start')->nullable();
-                $table->date('minutes')->nullable()->unsigned();
+                $table->integer('minutes')->nullable()->unsigned();
                 $table->text('summary')->nullable();
                 $table->timestamps();
                 $table->softDeletes();
