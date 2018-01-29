@@ -27,7 +27,7 @@ class CreateBaseSchema extends Migration
                 $table->string('address2', 50)->nullable();
                 $table->string('city', 50)->nullable();
                 $table->string('locality', 20)->nullable();
-                $table->integer('postalCode')->nullable()->unsigned();
+                $table->string('postalCode')->nullable();
                 $table->string('phone', 20)->nullable();
                 $table->timestamps();
                 $table->softDeletes();
