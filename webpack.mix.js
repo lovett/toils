@@ -1,10 +1,5 @@
 let mix = require('laravel-mix');
 
-mix.browserSync({
-    proxy: 'localhost:8083',
-    port: 3010
-});
-
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management
@@ -16,5 +11,14 @@ mix.browserSync({
  |
  */
 
-mix.js('resources/assets/js/app.js', 'public/js')
-   .sass('resources/assets/sass/app.scss', 'public/css');
+
+mix.browserSync({
+    proxy: 'localhost:8083',
+    port: 3010,
+    open: false
+});
+
+mix.disableNotifications();
+
+mix.js('resources/assets/js/app.js', 'public/js');
+mix.sass('resources/assets/sass/app.scss', 'public/css');
