@@ -71,28 +71,6 @@ class TimeHelper
     }
 
     /**
-     * Convert a datetime string to a Carbon instance.
-     *
-     * For situations where you have a date from a custom query
-     * that wasn't automatically converted by Eloquent.
-     *
-     * @param string $value The raw datetime string
-     * @param string $default The value to return in case of nulls
-     *
-     * @return Carbon;
-     */
-    public static function dateFromRaw($value, $default = '')
-    {
-        if (empty($value)) {
-            return $default;
-        }
-
-        $value = Carbon::parse($value);
-
-        return self::date($value);
-    }
-
-    /**
      * Format a date textually: such as Jan 1 2018
      *
      * @param Carbon|null $value The value to format

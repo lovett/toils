@@ -51,7 +51,7 @@
                 <table class="table">
                     @foreach ($invoices as $invoice)
                         <tr>
-                            <td>{{ TimeHelper::dateFromRaw($invoice->sent) }}</td>
+                            <td>{{ TimeHelper::readableShortDate($invoice->sent) }}</td>
                             <td>{{ CurrencyHelper::withSymbol($invoice->amount) }}</td>
                         </tr>
                     @endforeach

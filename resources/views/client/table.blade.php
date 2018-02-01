@@ -27,10 +27,10 @@
                     {{ TimeHelper::hoursAndMinutes($client->totalTime) }}
                 </td>
                 <td>
-                    {{ TimeHelper::dateFromRaw($client->latestTime, 'never')}}
+                    {{ TimeHelper::readableShortDate($client->latestTime, 'never')}}
                 </td>
                 <td>
-                    {{ TimeHelper::dateFromRaw($client->created_at) }}
+                    {{ TimeHelper::readableShortDate($client->created_at) }}
                 </td>
             </tr>
         @endforeach

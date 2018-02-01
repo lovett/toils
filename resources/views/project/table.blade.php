@@ -26,7 +26,7 @@
                     @endif
                 </td>
                 <td>
-                    {{ TimeHelper::dateFromRaw($project->created_at) }}
+                    {{ TimeHelper::readableShortDate($project->created_at) }}
                 </td>
             </tr>
         @endforeach
