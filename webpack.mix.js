@@ -13,9 +13,11 @@ let mix = require('laravel-mix');
 
 
 mix.browserSync({
-    proxy: 'localhost:8083',
+    notify: false,
+    online: true,
+    open: false,
     port: 3010,
-    open: false
+    proxy: 'localhost:8083'
 });
 
 mix.disableNotifications();
