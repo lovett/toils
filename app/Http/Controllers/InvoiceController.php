@@ -17,6 +17,7 @@ class InvoiceController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        view()->share('module', 'invoice');
     }
 
     /**
@@ -45,13 +46,14 @@ class InvoiceController extends Controller
         $invoices = $invoices->simplePaginate(15);
 
         $viewVars = [
+            'collection' => $invoices,
+            'emptyMessage' => 'There are no invoices.',
             'pageTitle' => 'Invoices',
-            'invoices' => $invoices,
             'query' => $query,
             'searchFields' => array_keys(Invoice::$searchables),
         ];
 
-        return view('invoice.list', $viewVars);
+        return view('list', $viewVars);
     }
 
     /**

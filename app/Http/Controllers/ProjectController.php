@@ -21,8 +21,7 @@ class ProjectController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        //$this->middleware('returnable', ['only' => ['index', 'show']]);
-        //$this->middleware('backto', ['only' => ['store']]);
+        view()->share('module', 'project');
     }
 
     /**
@@ -52,13 +51,14 @@ class ProjectController extends Controller
         $projects = $projects->simplePaginate(15);
 
         $viewVars = [
+            'collection' => $projects,
+            'emptyMessage' => 'There are no projects.',
             'pageTitle' => 'Project List',
-            'projects' => $projects,
             'query' => $query,
             'searchFields' => array_keys(Project::$searchables),
         ];
 
-        return view('project.list', $viewVars);
+        return view('list', $viewVars);
     }
 
     /**

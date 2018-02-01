@@ -22,6 +22,7 @@ class ClientController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        view()->share('module', 'client');
     }
 
     /**
@@ -51,13 +52,14 @@ class ClientController extends Controller
         $clients = $clients->simplePaginate(15);
 
         $viewVars = [
+            'collection' => $clients,
+            'emptyMessage' => 'There are no clients.',
             'pageTitle' => 'Client List',
-            'clients' => $clients,
             'query' => $query,
             'searchFields' => array_keys(Client::$searchables),
         ];
 
-        return view('client.list', $viewVars);
+        return view('list', $viewVars);
     }
 
     /**

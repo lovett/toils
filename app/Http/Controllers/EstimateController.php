@@ -22,6 +22,7 @@ class EstimateController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        view()->share('module', 'estimate');
     }
 
     /**
@@ -51,14 +52,14 @@ class EstimateController extends Controller
         $estimates = $estimates->simplePaginate(15);
 
         $viewVars = [
-            'pageTitle' => 'Estimate List',
+            'collection' => $estimates,
             'emptyMessage' => 'There are no estimates.',
-            'estimates' => $estimates,
+            'pageTitle' => 'Estimate List',
             'query' => $query,
             'searchFields' => array_keys(Estimate::$searchables),
         ];
 
-        return view('estimate.list', $viewVars);
+        return view('list', $viewVars);
     }
 
     /**
@@ -77,12 +78,12 @@ class EstimateController extends Controller
         $clients = $request->user()->clientsForMenu();
 
         $viewVars = [
+            'clients' => $clients,
+            'model' => $estimate,
             'pageTitle' => 'New Estimate',
             'statuses' => $estimate->statuses,
-            'model' => $estimate,
-            'clients' => $clients,
-            'submission_route' => 'estimate.store',
             'submission_method' => 'POST',
+            'submission_route' => 'estimate.store',
         ];
 
         return view('estimate.form', $viewVars);

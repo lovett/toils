@@ -19,6 +19,7 @@ class TimeController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        view()->share('module', 'time');
     }
 
     /**
@@ -48,13 +49,14 @@ class TimeController extends Controller
         $time = $time->simplepaginate(15);
 
         $viewvars = [
+            'collection' => $time,
+            'emptyMessage' => 'There are no time entries.',
             'pageTitle' => 'Time',
             'query' => $query,
             'searchFields' => array_keys(Time::$searchables),
-            'times' => $time,
         ];
 
-        return view('time.list', $viewvars);
+        return view('list', $viewvars);
     }
 
     /**
