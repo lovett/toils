@@ -18,7 +18,7 @@ class TimeHelper
     /**
      * Display an integer as an "x hours, y minutes" English phrase.
      *
-     * @param int $minutes The value to be converted for display
+     * @param int $minutes The value to be displayed
      *
      * @return string
      */
@@ -30,28 +30,18 @@ class TimeHelper
 
         $hours = intval($minutes / 60);
 
-        $minutes = ($minutes % 60);
-
-        $hoursLabel = 'hours';
-        if ($hours === 1) {
-            $hoursLabel = 'hours';
-        }
-
-        $minutesLabel = 'minutes';
-        if ($minutes === 1) {
-            $minutesLabel = 'minute';
-        }
-
         $format = '%d %s';
 
         $out = [];
 
         if ($hours > 0) {
-            $out[] = sprintf($format, $hours, $hoursLabel);
+            $label = ($hours === 1)? 'hour' : 'hours';
+            $out[] = sprintf($format, $hours, $label);
         }
 
         if (empty($out) || $minutes > 0) {
-            $out[] = sprintf($format, $minutes, $minutesLabel);
+            $label = ($minutes === 1)? 'minute' : 'minutes';
+            $out[] = sprintf($format, $minutes, $label);
         }
 
         return implode(', ', $out);
