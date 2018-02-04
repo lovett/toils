@@ -17,6 +17,19 @@
 
 		                <dt>Total Time</dt>
 		                <dd>{{ TimeHelper::hoursAndMinutes($totalTime) }}</dd>
+
+		                <dt>Total Money</dt>
+		                <dd>
+                            {{ CurrencyHelper::wholeNumberWithSymbol($totalMoney) }}
+                            @if ($totalUnpaidMoney > 0)
+                                <small>plus {{ CurrencyHelper::wholeNumberWithSymbol($totalUnpaidMoney) }} unpaid</small>
+                            @endif
+                        </dd>
+
+
+		                <dt>Hourly Rate</dt>
+		                <dd>{{ CurrencyHelper::hourlyRate($totalTime, $totalMoney) }}</dd>
+
 		            </dl>
 	            </div>
 	        </div>
