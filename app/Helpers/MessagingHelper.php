@@ -30,7 +30,7 @@ class MessagingHelper
     public static function flashDeleted($label='') {
         $resource = ucfirst(LinkHelper::firstRouteSegment());
         Session::flash('userMessage', "{$resource} {$label} has been deleted.");
-        Session::flash('userMessageType', 'warning');
+        Session::flash('userMessageType', 'success');
     }
 
 }
