@@ -152,9 +152,9 @@ class ProjectController extends Controller
 
         $totalTime = $project->time()->sum('minutes');
 
-        $totalMoney = $project->invoices()->whereNotNull('paid')->sum('amount');
+        $totalMoney = $project->invoices()->paid()->sum('amount');
 
-        $totalUnpaidMoney = $project->invoices()->whereNull('paid')->sum('amount');
+        $totalUnpaidMoney = $project->invoices()->unpaid()->sum('amount');
 
         $slice = array_slice($timeByMonth, 0, $numMonths);
 

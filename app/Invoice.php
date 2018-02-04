@@ -118,6 +118,31 @@ class Invoice extends Model
     }
 
     /**
+     * Query scope for narrowing to unpaid invoices
+     *
+     * @param Builder $query An existing query.
+     *
+     * @return Builder;
+     */
+    public function scopeUnpaid($query)
+    {
+        return $query->whereNull('paid');
+    }
+
+    /**
+     * Query scope for narrowing to paid invoices
+     *
+     * @param Builder $query An existing query.
+     *
+     * @return Builder;
+     */
+    public function scopePaid($query)
+    {
+        return $query->whereNotNull('paid');
+    }
+
+
+    /**
      * Query scope to restrict by record age
      *
      * @param Builder $query An existing query.
