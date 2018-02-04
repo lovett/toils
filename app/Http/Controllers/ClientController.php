@@ -184,12 +184,6 @@ class ClientController extends Controller
 
         $client->update($request->all());
 
-        if ($client->active === 0) {
-            // An inactive client should not have active projects.
-            $projects = $client->projects();
-            $projects->update(['active' => false]);
-        }
-
         MessagingHelper::flashUpdated($client->name);
 
         return redirect()->route(
