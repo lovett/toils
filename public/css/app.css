@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);/*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
+@import url(https://fonts.googleapis.com/css?family=Libre+Franklin:300,400,600);/*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
 
 html {
   font-family: sans-serif;
@@ -237,7 +237,7 @@ html {
 }
 
 body {
-  font-family: "Raleway", sans-serif;
+  font-family: "Libre Franklin", sans-serif;
   font-size: 14px;
   line-height: 1.6;
   color: #636b6f;
