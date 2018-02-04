@@ -6,7 +6,8 @@
                 <th>Name</th>
                 <th>Client</th>
                 <th>Project</th>
-                <th>Time</th>
+                <th>Start</th>
+                <th>End</th>
                 <th class="text-right">Amount</th>
                 <th class="text-right">Payment</th>
             </tr>
@@ -38,7 +39,7 @@
                         </a>
                     </td>
                     <td>
-                        {{ TimeHelper::readableShortDate($invoice->start) }} → {{ TimeHelper::readableShortDate($invoice->end) }}
+                        {{ TimeHelper::date($invoice->start) }}
                         <p class="small">
                             @if ($invoice->totalMinutes > 0)
                                 <a href="{{ route('time.index', ['q' => "invoice:{$invoice->id}"]) }}">{{ TimeHelper::hoursAndMinutes($invoice->totalMinutes) }}</a>
@@ -46,6 +47,9 @@
                                 0 hours
                             @endif
                         </p>
+                    </td>
+                    <td>
+                        {{ TimeHelper::date($invoice->end) }}
                     </td>
                     <td class="text-right">
                         {{ CurrencyHelper::withSymbol($invoice->amount) }}
