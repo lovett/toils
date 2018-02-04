@@ -62,7 +62,7 @@
         <h2>Time</h2>
         @include('partials.empty-message', ['collection' => $time])
 
-        @include('time.table', ['collection' => $time]);
+        @include('time.table', ['collection' => $time])
     </div>
 
     @include('partials.timestamps-footer', ['record' => $model])
