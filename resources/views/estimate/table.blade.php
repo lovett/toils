@@ -31,7 +31,7 @@
                     @endif
                 </td>
                 <td>
-                    {{ CurrencyHelper::wholeNumberWithSymbol($estimate->fee) }}
+                    {{ CurrencyHelper::money($estimate->fee) }}
                 </td>
                 <td>
                     {{ $estimate->hours }}

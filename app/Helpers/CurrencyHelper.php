@@ -8,30 +8,27 @@ class CurrencyHelper
 {
 
     /**
-     * Format a monetary value with cents and currency symbol.
+     * Format a monetary value with cents
      *
      * @param float $value The value to format.
      *
      * @return string
      */
-    public static function withSymbol($value, $symbol='$')
+    public static function money($value)
     {
-        return $symbol . money_format('%.2n', $value);
+        return money_format('%.2n', $value);
     }
 
     /**
-     * Format a monetary value as a whole number.
+     * Calculate an hourly rate
      *
-     * @param float $value The value to format.
+     * @param float $value Total money
+     * @param int $minutes Total time
      *
-     * @return string
+     * @return int Hourly money, rounded
+     *
      */
-    public static function wholeNumberWithSymbol($value, $symbol='$')
-    {
-        return $symbol . money_format('%.0n', $value);
-    }
-
-    public static function hourlyRate($amount=0, $minutes=0, $symbol='$')
+    public static function hourlyRate($amount=0, $minutes=0)
     {
         if ($minutes < 1) {
             return '';
@@ -39,6 +36,6 @@ class CurrencyHelper
 
         $rate = $amount / $minutes * 60;
 
-        return static::withSymbol($rate, $symbol);
+        return money_format('%.0n', $rate);
     }
 }

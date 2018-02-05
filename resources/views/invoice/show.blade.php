@@ -140,7 +140,7 @@
                     </div>
 
                     <div class="due">
-                        <p>AMOUNT DUE: {{ CurrencyHelper::withSymbol($invoice->amount) }}</p>
+                        <p>AMOUNT DUE: {{ CurrencyHelper::money($invoice->amount) }}</p>
 
                         <p>DUE BY: {{ TimeHelper::longDate($invoice->due) }}</p>
                     </div>

@@ -20,9 +20,9 @@
 
 		                <dt>Total Money</dt>
 		                <dd>
-                            {{ CurrencyHelper::wholeNumberWithSymbol($totalMoney) }}
+                            {{ CurrencyHelper::money($totalMoney) }}
                             @if ($totalUnpaidMoney > 0)
-                                <small>plus {{ CurrencyHelper::wholeNumberWithSymbol($totalUnpaidMoney) }} unpaid</small>
+                                <small>plus {{ CurrencyHelper::money($totalUnpaidMoney) }} unpaid</small>
                             @endif
                         </dd>
 

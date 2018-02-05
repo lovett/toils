@@ -52,7 +52,7 @@
                         {{ TimeHelper::date($invoice->end) }}
                     </td>
                     <td class="text-right">
-                        {{ CurrencyHelper::withSymbol($invoice->amount) }}
+                        {{ CurrencyHelper::money($invoice->amount) }}
                     </td>
                     <td class="text-right">
                         @if($invoice->isPaid && $invoice->receipt)
