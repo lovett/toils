@@ -117,6 +117,10 @@ class InvoiceController extends Controller
     {
         $invoice = new Invoice();
 
+        $projectId = $request->input('project_id', 0);
+
+        $project = $request->user()->projects()->findOrFail($projectId);
+
         $storedPath = $this->storeReceipt($request);
 
         if ($storedPath) {
@@ -124,6 +128,7 @@ class InvoiceController extends Controller
         }
 
         $invoice->fill($request->all());
+        $invoice->project()->associate($project);
         $invoice->save();
 
         MessagingHelper::flashCreated("invoice #{$invoice->number}");
