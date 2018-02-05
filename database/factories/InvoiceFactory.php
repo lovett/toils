@@ -14,7 +14,6 @@ $factory->define(App\Invoice::class, function (Faker $faker) {
     $mimeTypes = ['application/pdf', 'image/jpeg', null];
 
     return [
-        'number' => $faker->numberBetween(1000, 9000),
         'amount' => $faker->randomFloat(2, 50, 1000),
         'sent' => $randomTime->copy()->addDays(30),
         'due' => $randomTime->copy()->addDays(61),

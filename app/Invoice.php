@@ -67,7 +67,6 @@ class Invoice extends Model
      * @var array
      */
     protected $fillable = [
-        'number',
         'amount',
         'sent',
         'due',
@@ -86,6 +85,7 @@ class Invoice extends Model
      */
     protected $casts = [
         'amount' => 'float',
+        'number' => 'integer',
     ];
 
     /**
@@ -282,6 +282,11 @@ class Invoice extends Model
 
         $now = new Carbon();
         return $now->diffInDays($this->due, false);
+    }
+
+    public function getNumberAttribute($value)
+    {
+        return sprintf('%04d', $value);
     }
 
     /**

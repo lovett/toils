@@ -11,6 +11,16 @@ use Illuminate\Support\Facades\Storage;
 class InvoiceObserver
 {
     /**
+     * Auto-generate an invoice number before creating an invoice
+     *
+     */
+    public function creating(Invoice $invoice)
+    {
+        $currentMax = (int)Invoice::withTrashed()->max('number');
+        $invoice->number = $currentMax + 1;
+    }
+
+    /**
      * Disassociate time entries from a deleted invoice
      *
      * @param  Invoice  $invoice
