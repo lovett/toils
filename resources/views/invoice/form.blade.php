@@ -35,9 +35,15 @@
             </div>
 
             {!! Form::label('receipt', 'Receipt', ['class' => 'col-sm-1 control-label']) !!}
-            <div class="col-sm-2">
+            <div class="col-sm-3">
                 {!! Form::file('receipt') !!}
             </div>
+
+            @if ($model->receipt)
+                <div class="col-sm-3 text-right">
+                    <a href="{{ route('invoice.receipt', $model->id) }}">view existing receipt</a>
+                </div>
+            @endif
         </div>
 
         @include('partials.formgroup-date', ['name' => 'sent', 'label' => 'Sent'])
