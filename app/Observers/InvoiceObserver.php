@@ -35,9 +35,7 @@ class InvoiceObserver
 
         Log::debug("Released ${affectedRows} time entries from deleted invoice {$invoice->id}");
 
-        if ($invoice->receipt) {
-            Storage::delete($invoice->receipt);
-        }
+        $invoice->trashReceipt();
     }
 
     /**

@@ -205,6 +205,9 @@ class InvoiceController extends Controller
         $storedPath = $this->storeReceipt($request);
 
         if ($storedPath) {
+            if ($invoice->receipt) {
+                $invoice->trashReceipt();
+            }
             $invoice->receipt = $storedPath;
         }
 

@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Helpers\TimeHelper;
 use stdClass;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Eloquent model for the invoices table.
@@ -355,4 +356,22 @@ class Invoice extends Model
 
         $this->attributes['end'] = $value;
     }
+
+    /**
+     * Move a previously-uploaded receipt to the trash
+     *
+     * @return void
+     */
+    public function trashReceipt()
+    {
+        $path = $this->receipt;
+
+        if (empty($path)) {
+            return;
+        }
+
+        $trashPath = sprintf('trash/%s', $path);
+        Storage::move($path, $trashPath);
+    }
+
 }
