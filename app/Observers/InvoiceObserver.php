@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Invoice;
 use App\Time;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -36,6 +37,19 @@ class InvoiceObserver
 
         if ($invoice->receipt) {
             Storage::delete($invoice->receipt);
+        }
+    }
+
+    /**
+     * Set date paid if a receipt is present
+     *
+     * @param Invoice $invoice
+     * @return void
+     */
+    public function saving(Invoice $invoice)
+    {
+        if ($invoice->receipt && empty($invoice->paid)) {
+            $invoice->paid = new Carbon();
         }
     }
 
