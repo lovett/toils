@@ -144,14 +144,14 @@ class Invoice extends Model
 
 
     /**
-     * Query scope to restrict by record age
+     * Query scope to restrict by recentness
      *
      * @param Builder $query An existing query.
      * @param int $limit If greater than zero, the max number of records to return.
      *
      * @return Builder;
      */
-    public function scopeRecent($query, $limit=0)
+    public function scopeNewest($query, $limit=0)
     {
         $query->orderBy('sent', 'DESC');
         if ($limit > 0) {

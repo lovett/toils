@@ -128,9 +128,9 @@ class ClientController extends Controller
     {
         $client = $request->user()->clients()->with('projects')->findOrFail($id);
 
-        $invoices = $client->invoices()->recent(5)->get();
+        $invoices = $client->invoices()->newest(5)->get();
 
-        $time = $client->time()->recent(10)->get();
+        $time = $client->time()->newest(10)->get();
 
         $viewVars = [
             'model' => $client,

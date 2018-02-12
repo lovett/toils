@@ -67,7 +67,7 @@ class InvoiceController extends Controller
     public function suggestByProject(Request $request, $id = 0)
     {
         $id = (int)$id;
-        $invoice = $request->user()->project($id)->invoices()->recent(1)->firstOrFail();
+        $invoice = $request->user()->project($id)->invoices()->newest(1)->firstOrFail();
         return response()->json($invoice->suggestion);
     }
 
