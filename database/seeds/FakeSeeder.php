@@ -32,47 +32,35 @@ class FakeSeeder extends Seeder
         ]);
 
         // Additional users.
-        factory(User::class, 3)->create();
+        factory(User::class, 1)->create();
 
         // Clients, projects, and time.
-        $clientAccumulator = new Collection();
-        User::all()->each(
-            function ($user) use (&$clientAccumulator) {
+        User::all()->each(function ($user) {
                 // First-round client assignment
-                $clientsPerUser = 5;
-                $clients = factory(Client::class, $clientsPerUser)->make();
+                $clients = factory(Client::class, 5)->make();
 
                 $user->clients()->saveMany($clients->all());
 
                 // Projects for the newly created clients
                 $clients->each(function ($client) use ($user) {
-                    $projectsPerClient = 4;
-                    $projects = factory(Project::class, $projectsPerClient)->make();
-                    $client->projects()->saveMany($projects->all());
+                    $projects = factory(Project::class, 2)->make();
+                    $client->projects()->saveMany($projects);
 
                     // Time entries for the newly created projects
                     $projects->each( function ($project) use ($user) {
-                        $timeEntriesPerProject = 20;
-                        $time = factory(Time::class, $timeEntriesPerProject)->make([
+                        $time = factory(Time::class, 5)->make([
                             'user_id' => $user->getKey(),
                         ]);
 
-                        $project->time()->saveMany($time->all());
+                        $project->time()->saveMany($time);
                     });
 
                     // Invoices for the newly created projects
                     $projects->each( function ($project) use ($user) {
-                        $invoicesPerProject = 3;
-                        $invoices = factory(Invoice::class, $invoicesPerProject)->make();
-                        $project->invoices()->saveMany($invoices->all());
+                        $invoices = factory(Invoice::class, 2)->make();
+                        $project->invoices()->saveMany($invoices);
                     });
                 });
-
-                // // Second-round client assignment: add user to other users' clients.
-                // if ($clientAccumulator->isEmpty() === false) {
-                //     $user->clients()->saveMany($clientAccumulator->random($clientsPerUser));
-                // }
-                $clientAccumulator = $clientAccumulator->merge($clients);
             }
         );
 
