@@ -29,6 +29,7 @@ class TimeHelper
         }
 
         $hours = intval($minutes / 60);
+        $minutes = $minutes % 60;
 
         $format = '%d %s';
 
