@@ -9,7 +9,7 @@
                 <th>Start</th>
                 <th>End</th>
                 <th class="text-right">Amount</th>
-                <th class="text-right">Payment</th>
+                <th class="text-right">Status</th>
             </tr>
         </thead>
         <tbody>
@@ -55,26 +55,33 @@
                         {{ CurrencyHelper::money($invoice->amount) }}
                     </td>
                     <td class="text-right">
-                        @if($invoice->isPaid && $invoice->receipt)
+                        @if ($invoice->isPaid && $invoice->receipt)
                             <svg class="icon"><use xlink:href="#icon-file-empty"></use></svg>
                             <a href="{{ route('invoice.receipt', $invoice->id) }}">
-                                {{ TimeHelper::date($invoice->paid) }}
+                                paid
                             </a>
+                            <p class="small">
+                                on {{ TimeHelper::date($invoice->paid) }}
+                            </p>
                         @elseif ($invoice->isPaid)
-                            {{ TimeHelper::date($invoice->paid) }}
-                        @elseif ($invoice->daysUntilDue === 0)
-                            <svg class="icon"><use xlink:href="#icon-clock"></use></svg>
-                            due today
+                            paid
+                            <p class="small">
+                                {{ TimeHelper::date($invoice->paid) }}
+                            </p>
                         @elseif ($invoice->daysUntilDue > 0)
-                            <svg class="icon"><use xlink:href="#icon-clock"></use></svg>
-                            due in
-                            {{ $invoice->daysUntilDue }}
-                            {{ str_plural('day', $invoice->daysUntilDue) }}
+                            waiting
+                            <p class="small">
+                                {{ $invoice->daysUntilDue }}
+                                {{ str_plural('day', $invoice->daysUntilDue) }}
+                                <svg class="icon"><use xlink:href="#icon-clock"></use></svg>
+                            </p>
                         @else
-                            <svg class="icon inactive"><use xlink:href="#icon-blocked"></use></svg>
-                            due
-                            {{ abs($invoice->daysUntilDue) }}
-                            {{ str_plural('day', $invoice->daysUntilDue) }} ago
+                            overdue
+                            <p class="small">
+                                {{ abs($invoice->daysUntilDue) }}
+                                {{ str_plural('day', $invoice->daysUntilDue) }}
+                                <svg class="icon inactive"><use xlink:href="#icon-blocked"></use></svg>
+                            </p>
                         @endif
                     </td>
                 </tr>

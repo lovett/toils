@@ -215,6 +215,8 @@ class Invoice extends Model
 
         $query->groupBy('invoices.id');
 
+        $query->orderByRaw('invoices.paid is null desc, invoices.due asc');
+
         return $query;
     }
 
