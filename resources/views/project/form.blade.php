@@ -6,21 +6,25 @@
     @endif
 
     <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-body">
 
-        {!! Form::model($model, ['route' => $submission_route, 'method' => $submission_method, 'class' => 'form-horizontal']) !!}
+                {!! Form::model($model, ['route' => $submission_route, 'method' => $submission_method, 'class' => 'form-horizontal']) !!}
 
-        @include('partials.formgroup-standard', ['name' => 'name', 'label' => 'Name', 'value' => $model->name])
+                @include('partials.formgroup-standard', ['name' => 'name', 'label' => 'Name', 'value' => $model->name])
 
-        @include('partials.formgroup-menu', ['name' => 'client_id', 'label' => 'Client', 'items' => $clients, 'selectedItem' => $model->client_id])
+                @include('partials.formgroup-menu', ['name' => 'client_id', 'label' => 'Client', 'items' => $clients, 'selectedItem' => $model->client_id])
 
-        @include('partials.formgroup-checkbox', ['name' => 'active', 'label' => 'This project is active', 'checked' => $model->active])
+                @include('partials.formgroup-checkbox', ['name' => 'active', 'label' => 'This project is active', 'checked' => $model->active])
 
-        @include('partials.formgroup-checkbox', ['name' => 'billable', 'label' => 'This project is billable', 'checked' => $model->billable])
+                @include('partials.formgroup-checkbox', ['name' => 'billable', 'label' => 'This project is billable', 'checked' => $model->billable])
 
-        @include('partials.formgroup-checkbox', ['name' => 'taxDeducted', 'label' => 'Tax will be deducted', 'checked' => $model->taxDeducted])
+                @include('partials.formgroup-checkbox', ['name' => 'taxDeducted', 'label' => 'Tax will be deducted', 'checked' => $model->taxDeducted])
 
-        @include('partials.save-button')
+                @include('partials.save-button')
 
-        {!! Form::close() !!}
+                {!! Form::close() !!}
+            </div>
+        </div>
     </div>
 @endsection

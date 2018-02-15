@@ -7,28 +7,32 @@
     @endif
 
     <div class="container">
-        <autofill inline-template url="{{ route('time.suggestByProject') }}" fields="estimatedDuration, start, summary">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <autofill inline-template url="{{ route('time.suggestByProject') }}" fields="estimatedDuration, start, summary">
 
-            {!! Form::model($model, ['route' => $submission_route, 'method' => $submission_method, 'class' => 'form-horizontal']) !!}
+                    {!! Form::model($model, ['route' => $submission_route, 'method' => $submission_method, 'class' => 'form-horizontal']) !!}
 
-            @isset($client)
-            @include('partials.project-menu-filtered', ['client' => $client])
-            @endisset
+                    @isset($client)
+                    @include('partials.project-menu-filtered', ['client' => $client])
+                    @endisset
 
-            @include('partials.formgroup-menu', ['name' => 'project_id', 'label' => 'Project', 'items' => $projects, 'selectedItem' => $model->project_id, 'vchange' => 'fetch'])
+                    @include('partials.formgroup-menu', ['name' => 'project_id', 'label' => 'Project', 'items' => $projects, 'selectedItem' => $model->project_id, 'vchange' => 'fetch'])
 
-            @include('partials.formgroup-standard', ['name' => 'estimatedDuration', 'label' => 'Estimate', 'autofill' => true])
+                    @include('partials.formgroup-standard', ['name' => 'estimatedDuration', 'label' => 'Estimate', 'autofill' => true])
 
-            @include('partials.formgroup-date', ['name' => 'start', 'label' => 'Date', 'autofill' => true])
+                    @include('partials.formgroup-date', ['name' => 'start', 'label' => 'Date', 'autofill' => true])
 
-            @include('partials.formgroup-time', ['name' => 'start', 'fieldName' => 'startTime', 'label' => 'Start'])
-            @include('partials.formgroup-time', ['name' => 'end', 'fieldName' => 'endTime', 'label' => 'End'])
+                    @include('partials.formgroup-time', ['name' => 'start', 'fieldName' => 'startTime', 'label' => 'Start'])
+                    @include('partials.formgroup-time', ['name' => 'end', 'fieldName' => 'endTime', 'label' => 'End'])
 
-            @include('partials.formgroup-textarea', ['name' => 'summary', 'label' => 'Summary', 'autofill' => true])
+                    @include('partials.formgroup-textarea', ['name' => 'summary', 'label' => 'Summary', 'autofill' => true])
 
-            @include('partials.save-button')
+                    @include('partials.save-button')
 
-            {!! Form::close() !!}
-        </autofill>
+                    {!! Form::close() !!}
+                </autofill>
+            </div>
+        </div>
     </div>
 @endsection
