@@ -44,6 +44,8 @@ class Invoice extends Model
     public static $searchables = [
         'name' => 'invoices.name',
         'summary' => 'invoices.summary',
+        'client' => 'clientName',
+        'project' => 'projectName',
     ];
 
     /**

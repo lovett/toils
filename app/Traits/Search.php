@@ -19,7 +19,8 @@ trait Search
         array_walk(
             $fields,
             function ($values, $field) use ($query) {
-                $query->where($field, 'LIKE', array_shift($values));
+
+                $query->where($field, 'LIKE', sprintf('%%%s%%', array_shift($values)));
 
                 if (count($values) === 0) {
                     return $query;
@@ -30,7 +31,7 @@ trait Search
                         array_walk(
                             $values,
                             function ($value) use ($field, $query) {
-                                $query->orWhere($field, 'LIKE', $value);
+                                $query->orWhere($field, 'LIKE', sprintf('%%%s%%', $value));
                             }
                         );
                     }
