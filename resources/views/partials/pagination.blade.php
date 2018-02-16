@@ -1,3 +1,3 @@
 <nav class="container text-center">
-    {{ $collection->render() }}
+    {{ $collection->appends(['q' => $query])->links() }}
 </nav>
