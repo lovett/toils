@@ -16,28 +16,22 @@ trait Search
      */
     public static function search(Builder $query, array $fields = [])
     {
-        array_walk(
-            $fields,
-            function ($values, $field) use ($query) {
-
-                $query->where($field, 'LIKE', sprintf('%%%s%%', array_shift($values)));
-
-                if (count($values) === 0) {
-                    return $query;
-                }
-
-                $query->where(
-                    function ($query) use ($field, $values) {
-                        array_walk(
-                            $values,
-                            function ($value) use ($field, $query) {
-                                $query->orWhere($field, 'LIKE', sprintf('%%%s%%', $value));
-                            }
-                        );
-                    }
-                );
+        foreach ($fields as $name => $values) {
+            if (empty($values)) {
+                continue;
             }
-        );
+
+            $query->where(function ($query) use ($name, $values) {
+                foreach ($values as $value) {
+                    if (is_numeric($value)) {
+                        $query->orWhere($name, '=', (int)$value);
+                    }
+
+                    $wildValue = '%' . $value . '%';
+                    $query->orWhere($name, 'LIKE', $wildValue);
+                }
+            });
+        }
 
         return $query;
     }

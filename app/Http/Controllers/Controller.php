@@ -14,8 +14,8 @@ class Controller extends BaseController
     /**
      * Apply search terms to a query.
      *
-     * @param string|null $query       The search terms provided by the request
-     * @param array       $searchables A searchables array from a model
+     * @param string|null $query The search terms provided by the request
+     * @param array $searchables A searchables array from a model
      *
      * @return array
      */
@@ -27,50 +27,35 @@ class Controller extends BaseController
 
         $query = strtolower($query);
         $query = filter_var($query, FILTER_SANITIZE_STRING);
+        $query = str_replace(':', ': ', $query);
 
-        if (strpos($query, ':') === false) {
-            // No fields were specified, so treat the first searchable as a default
-            $defaultField = current(array_keys($searchables));
+        $terms = array_fill_keys(array_values($searchables), []);
 
-            $query = sprintf('%s: %s', $defaultField, $query);
+        // The first searchable field is used as the default, in case one
+        // isn't specified in the query
+        $field = current(array_values($searchables));
+
+        $index = 0;
+
+        foreach (preg_split('/\s+/', $query) as $word) {
+            if (strpos($word, ':') !== false) {
+                $word = rtrim($word, ':');
+
+                if (array_key_exists($word, $searchables)) {
+                    $field = $searchables[$word];
+                    $index = sizeof($terms[$field]);
+                    continue;
+                }
+            }
+
+            if (empty($terms[$field][$index])) {
+                $terms[$field][$index] = '';
+            }
+
+            $terms[$field][$index] = trim($terms[$field][$index] . ' ' . $word);
         }
 
-        // Split by field.
-        $pairs = collect(preg_split('/[^:] /', $query));
+        return $terms;
 
-        $fields = $pairs->reduce(function ($accumulator, $pair) use ($searchables) {
-            list($field, $value) = preg_split('/:\s*/', $pair);
-
-            if (is_numeric($value)) {
-                $value = (int) $value;
-            }
-
-            // Skip unsupported fields.
-            if (array_key_exists($field, $searchables) === false) {
-                return $accumulator;
-            }
-
-            $queryField = $searchables[$field];
-            if (array_key_exists($queryField, $accumulator) === false) {
-                $accumulator[$queryField] = [];
-            }
-
-            // Apply a suffix wildcard to non-wildcard strings.
-            if (is_string($value) && strpos($value, '*') === false) {
-                $value .= '*';
-            }
-
-            // Convert wildcards to SQL syntax.
-            if (strpos($value, '*') !== false) {
-                $value = str_replace('*', '%', $value);
-            }
-
-            $accumulator[$queryField][] = $value;
-
-            return $accumulator;
-
-        }, []);
-
-        return $fields;
     }
 }
