@@ -46,6 +46,7 @@ class Invoice extends Model
         'summary' => 'invoices.summary',
         'client' => 'clientName',
         'project' => 'projectName',
+        'sent' => 'invoices.sent',
     ];
 
     /**

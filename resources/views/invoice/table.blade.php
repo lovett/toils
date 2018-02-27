@@ -3,8 +3,8 @@
         <thead>
             <tr>
                 <th>Number</th>
+                <th>Sent</th>
                 <th>Name</th>
-                <th>Client</th>
                 <th>Project</th>
                 <th>Start</th>
                 <th>End</th>
@@ -24,22 +24,26 @@
                         </a>
                     </td>
                     <td>
+                        {{ TimeHelper::readableShortDate($invoice->sent) }}
+                    </td>
+                    <td>
                         <a href="{{ route('invoice.edit', $invoice) }}">
                             {{ $invoice->name }}
                         </a>
                     </td>
                     <td>
-                        <a href="{{ route('client.show', ['record' => $invoice->clientId]) }}">
+                        <div>
+                            <a href="{{ route('project.show', ['record' => $invoice->projectId]) }}">
+                                {{ $invoice->projectName }}
+                            </a>
+
+                            <p class="small">↳ <a href="{{ route('client.show', ['record' => $invoice->clientId]) }}">
                             {{ $invoice->clientName }}
-                        </a>
+                            </p>
+                        </div>
                     </td>
                     <td>
-                        <a href="{{ route('project.show', ['record' => $invoice->projectId]) }}">
-                            {{ $invoice->projectName }}
-                        </a>
-                    </td>
-                    <td>
-                        {{ TimeHelper::date($invoice->start) }}
+                        {{ TimeHelper::readableShortDate($invoice->start) }}
                         <p class="small">
                             @if ($invoice->totalMinutes > 0)
                                 <a href="{{ route('time.index', ['q' => "invoice:{$invoice->id}"]) }}">{{ TimeHelper::hoursAndMinutes($invoice->totalMinutes) }}</a>
@@ -49,7 +53,7 @@
                         </p>
                     </td>
                     <td>
-                        {{ TimeHelper::date($invoice->end) }}
+                        {{ TimeHelper::readableShortDate($invoice->end) }}
                     </td>
                     <td class="text-right">
                         {{ CurrencyHelper::money($invoice->amount) }}
