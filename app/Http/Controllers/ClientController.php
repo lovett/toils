@@ -119,6 +119,9 @@ class ClientController extends Controller
     /**
      * Display a client
      *
+     * A homepage for knowing everything about a client: its projects,
+     * invoices, time entries, contact information.
+     *
      * @param Request $request The incoming request
      * @param int $id A client primary key
      *
@@ -128,7 +131,7 @@ class ClientController extends Controller
     {
         $client = $request->user()->clients()->with('projects')->findOrFail($id);
 
-        $invoices = $client->invoices()->newest(5)->get();
+        $invoices = $client->invoices()->forList()->newest(5)->get();
 
         $time = $client->time()->newest(10)->get();
 
@@ -139,9 +142,7 @@ class ClientController extends Controller
             'time' => $time,
         ];
 
-
-
-        return view('client.show', $viewVars)->with('subnav', ['client.index' => 'hi']);
+        return view('client.show', $viewVars);
     }
 
     /**

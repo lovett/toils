@@ -164,6 +164,55 @@ class Invoice extends Model
     }
 
     /**
+     * Query scope for presenting a list of records
+     *
+     * Adds extra fields to the select clause to provide additional
+     * context when the query will be rendered in a table as a list.
+     *
+     * Considers the joins property of the query to avoid redundant
+     * joins. The caller is still responsible for eager loading.
+     *
+     * @param Builder $query An existing query.
+     *
+     * @return Builder;
+     */
+    public function scopeForList($query)
+    {
+        $joins = $query->getQuery()->joins;
+
+        $query->select('invoices.*');
+
+        collect($joins)->each(function ($join) use($query) {
+            if ($join->table === 'projects') {
+                $query->selectRaw('projects.name as projectName');
+                $query->selectRaw('projects.id as projectId');
+            }
+
+            if ($join->table === 'clients') {
+                $query->selectRaw('clients.name as clientName');
+                $query->selectRaw('clients.id as clientId');
+            }
+        });
+
+        $query->selectRaw('SUM(times.minutes) as totalMinutes');
+
+        $query->leftJoin(
+            'times',
+            'invoices.id',
+            '=',
+            'times.invoice_id'
+        );
+
+        $query->whereNull('times.deleted_at');
+
+        $query->groupBy('invoices.id');
+
+        $query->orderByRaw('invoices.paid is null desc, invoices.due asc');
+
+        return $query;
+    }
+
+    /**
      * Query scope for
      *
      * @param Builder $builder The query to start with

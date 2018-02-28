@@ -3,66 +3,64 @@
 @section('page_main')
     <div class="container">
         <h1>{{ $model->name }}</h1>
-
         <p>@include('partials.active', ['value' => $model->active])</p>
 
-        @if ($model->phone)
-        <p>{!! AddressHelper::phoneUrl($model->phone) !!}</p>
-        @endif
+        <div class="panel panel-default">
+            <div class="panel-body row">
+                <div class="col-sm-6 col-md-3">
 
-        @if ($model->contactEmail)
-            <p><a href="mailto:{{ $model->contactEmail }}">{{ $model->contactEmail }}</a></p>
-        @endif
+                    @if ($model->contactEmail)
+                        <p><a href="mailto:{{ $model->contactEmail }}">{{ $model->contactEmail }}</a></p>
+                    @endif
 
-        @if ($model->contactName)
-            <address>{{ AddressHelper::clientMailingAddress($model) }}</address>
-        @endif
+                    @if ($model->phone)
+                    <p>{!! AddressHelper::phoneUrl($model->phone) !!}</p>
+                    @endif
 
-        <div class="row">
-            <div class="col-sm-4">
-                <h2>Active Projects</h2>
-
-                @include('partials.empty-message', ['collection' => $model->projects->where('active', true)])
-
-                @foreach ($model->projects->where('active', true) as $project)
+                </div>
+                <div class="col-sm-6 col-md-3">
+                    @if ($model->contactName)
+                        <address>{{ AddressHelper::clientContact($model) }}</address>
+                    @endif
+                </div>
+                <div class="col-sm-12 col-md-6">
+                    Active projects:
                     <p>
-                        <a href="{{ route('project.show', ['project' => $project]) }}">{{ $project->name }}</a>
+                        @foreach ($model->projects->where('active', true) as $project)
+                            <a href="{{ route('project.show', ['project' => $project]) }}">{{ $project->name }}</a>
+                        @endforeach
                     </p>
-                @endforeach
-            </div>
 
-            <div class="col-sm-4">
-                <h2>Inactive Projects</h2>
-
-                @include('partials.empty-message', ['collection' => $model->projects->where('active', false)])
-
-                @foreach ($model->projects->where('active', false) as $project)
+                    Inactive projects:
                     <p>
-                        <a href="{{ route('project.show', ['project' => $project]) }}">{{ $project->name }}</a>
+                        @foreach ($model->projects->where('active', false) as $project)
+                            <a href="{{ route('project.show', ['project' => $project]) }}">{{ $project->name }}</a>
+                        @endforeach
                     </p>
-                @endforeach
-            </div>
 
-            <div class="col-sm-4">
-                <h2>Recent Invoices</h2>
 
-                @include('partials.empty-message', ['collection' => $invoices])
-
-                <table class="table">
-                    @foreach ($invoices as $invoice)
-                        <tr>
-                            <td>{{ TimeHelper::readableShortDate($invoice->sent) }}</td>
-                            <td>{{ CurrencyHelper::money($invoice->amount) }}</td>
-                        </tr>
-                    @endforeach
-                </table>
+                </div>
             </div>
         </div>
+
+        <h2>Recent Invoices</h2>
+
+        @include('partials.empty-message', ['collection' => $invoices])
+
+        @if ($invoices->isNotEmpty())
+            <div class="panel panel-default">
+                @include('invoice.table', ['collection' => $invoices])
+            </div>
+        @endif
 
         <h2>Time</h2>
         @include('partials.empty-message', ['collection' => $time])
 
-        @include('time.table', ['collection' => $time])
+        @if ($time->isNotEmpty())
+        <div class="panel panel-default">
+            @include('time.table', ['collection' => $time])
+        </div>
+        @endif
     </div>
 
     @include('partials.timestamps-footer', ['record' => $model])

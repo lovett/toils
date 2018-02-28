@@ -37,9 +37,11 @@
                                 {{ $invoice->projectName }}
                             </a>
 
+                            @if ($invoice->clientName)
                             <p class="small">↳ <a href="{{ route('client.show', ['record' => $invoice->clientId]) }}">
-                            {{ $invoice->clientName }}
+                                {{ $invoice->clientName }}
                             </p>
+                            @endif
                         </div>
                     </td>
                     <td>

@@ -22,6 +22,12 @@ class AddressHelper
         return static::mailingAddress($record, $fields);
     }
 
+    public static function clientContact($record)
+    {
+        $fields = [['c/o', 'contactName'], 'address1', 'address2', 'city', 'locality', 'postalCode'];
+        return static::mailingAddress($record, $fields);
+    }
+
 
     /**
      * Display a mailing address, taking care to account for missing fields.
