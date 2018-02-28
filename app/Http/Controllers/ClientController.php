@@ -140,6 +140,7 @@ class ClientController extends Controller
             'pageTitle' => $client->name,
             'invoices' => $invoices,
             'time' => $time,
+            'stats' => $client->stats(),
         ];
 
         return view('client.show', $viewVars);

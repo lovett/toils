@@ -24,7 +24,7 @@ class AddressHelper
 
     public static function clientContact($record)
     {
-        $fields = [['c/o', 'contactName'], 'address1', 'address2', 'city', 'locality', 'postalCode'];
+        $fields = ['contactName', 'address1', 'address2', 'city', 'locality', 'postalCode'];
         return static::mailingAddress($record, $fields);
     }
 

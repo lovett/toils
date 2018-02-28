@@ -7,23 +7,30 @@
 
         <div class="panel panel-default">
             <div class="panel-body row">
-                <div class="col-sm-6 col-md-3">
-
+                <div class="col-sm-6 col-md-4">
+                    <dl>
+                        <dt>Unpaid invoices</dt>
+                        <dd>{{ CurrencyHelper::money($stats['unpaid']) }}</dd>
+                        <dt>Total money</dt>
+                        <dd>{{ CurrencyHelper::money($stats['total_money']) }}</dd>
+                        <dt>Age</dt>
+                        <dd>{{ $stats['age'] }}</dt>
+                    </dl>
+                </div>
+                <div class="col-sm-6 col-md-4">
                     @if ($model->contactEmail)
                         <p><a href="mailto:{{ $model->contactEmail }}">{{ $model->contactEmail }}</a></p>
                     @endif
 
                     @if ($model->phone)
-                    <p>{!! AddressHelper::phoneUrl($model->phone) !!}</p>
+                        <p>{!! AddressHelper::phoneUrl($model->phone) !!}</p>
                     @endif
 
-                </div>
-                <div class="col-sm-6 col-md-3">
                     @if ($model->contactName)
                         <address>{{ AddressHelper::clientContact($model) }}</address>
                     @endif
                 </div>
-                <div class="col-sm-12 col-md-6">
+                <div class="col-sm-12 col-md-4">
                     Active projects:
                     <p>
                         @foreach ($model->projects->where('active', true) as $project)

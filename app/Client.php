@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Traits\Search;
+use Carbon\Carbon;
 
 /**
  * Eloquent model for the clients table.
@@ -111,6 +112,16 @@ class Client extends Model
         $builder = $builder->groupBy('clients.id');
 
         return $builder;
+    }
+
+    public function stats()
+    {
+        $stats = [];
+        $stats['paid'] = $this->invoices()->paid()->sum('amount');
+        $stats['unpaid'] = $this->invoices()->unpaid()->sum('amount');
+        $stats['total_money'] = $stats['paid'] + $stats['unpaid'];
+        $stats['age'] = Carbon::now()->diffForHumans($this->created_at, true);
+        return $stats;
     }
 
     /**
