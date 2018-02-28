@@ -102,3 +102,19 @@ main dl dd {
 address {
     white-space: pre-line;
 }
+
+input[type=file] {
+    line-height: 2.25;
+
+    &::-webkit-file-upload-button {
+        border: 1px solid #ccd0d2;
+        color: #555;
+        border-radius: 4px;
+        padding: .5em 1em;
+        background-color: #eee;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+}
