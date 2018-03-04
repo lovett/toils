@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Project;
 
 class DashboardController extends Controller
 {
@@ -15,7 +16,7 @@ class DashboardController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        view()->share('pageTitle', 'Dashboard');
+        view()->share('module', 'dashboard');
     }
 
     /**
@@ -23,8 +24,20 @@ class DashboardController extends Controller
      *
      * @return Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('home');
+        $baseQuery = $request->user()->projects();
+
+        $projects = Project::listing($baseQuery);
+
+        $activeProjects = $projects->active()->newest()->get();
+
+        $viewVars = [
+            'pageTitle' => 'Dashboard',
+            'activeProjects' => $activeProjects,
+            'totalUnbilled' => $activeProjects->sum('unbilledTime'),
+        ];
+
+        return view('dashboard', $viewVars);
     }
 }

@@ -131,4 +131,9 @@ class TimeHelper
         return floor($value / $multiple) * $multiple;
     }
 
+    public static function daysAgo(Carbon $value = null)
+    {
+        return $value->diffForHumans();
+    }
+
 }

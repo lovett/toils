@@ -86,6 +86,21 @@ class Project extends Model
      */
     public static function listing(Builder $query)
     {
+        $query->selectRaw(
+            'projects.*,
+            coalesce(sum(times.minutes), 0) as unbilledTime'
+        );
+
+        $query->leftJoin(
+            'times',
+            function ($join) {
+                $join->on('times.project_id', '=', 'projects.id');
+                $join->whereNull('times.invoice_id');
+            }
+        );
+
+        $query->groupBy('projects.id');
+
         return $query->with('client')->orderByRaw('LOWER(projects.name) ASC');
     }
 
@@ -128,6 +143,55 @@ class Project extends Model
     {
         return $this->hasMany('App\Invoice');
     }
+
+    /**
+     * Query scope for narrowing to active projects
+     *
+     * @param Builder $query An existing query.
+     *
+     * @return Builder;
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('active', true);
+    }
+
+    /**
+     * Query scope for narrowing to inactive projects
+     *
+     * @param Builder $query An existing query.
+     *
+     * @return Builder;
+     */
+    public function scopeInActive($query)
+    {
+        return $query->where('active', false);
+    }
+
+    /**
+     * Query scope to restrict by recentness
+     *
+     * @param Builder $query An existing query.
+     * @param int $limit If greater than zero, the max number of records to return.
+     *
+     * @return Builder;
+     */
+    public function scopeNewest($query, $limit=0)
+    {
+        $query->orderBy('updated_at', 'DESC');
+        if ($limit > 0) {
+            $query->limit($limit);
+        }
+        return $query;
+    }
+
+
+    public function scopeUnbilledTime($query)
+    {
+        $query->with('time');
+    }
+
+
 
     /**
      * Human-readable value for taxDeducted boolean field.

@@ -6098,3 +6098,21 @@ input[type=file]::-webkit-file-upload-button:hover {
   cursor: pointer;
 }
 
+.grid {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-flow: row wrap;
+          flex-flow: row wrap;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+}
+
+.grid .panel {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+

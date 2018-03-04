@@ -118,3 +118,13 @@ input[type=file] {
         }
     }
 }
+
+.grid {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+
+    .panel {
+        box-sizing: border-box;
+    }
+}

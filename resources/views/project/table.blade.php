@@ -3,6 +3,7 @@
         <tr>
             <th>Name</th>
             <th>Status</th>
+            <th>Unbilled Time</th>
             <th>Client</th>
             <th>Created</th>
         </tr>
@@ -17,6 +18,9 @@
                 </td>
                 <td>
                     @include('partials.active', ['value' => $project->active])
+                </td>
+                <td>
+                    {{ TimeHelper::hoursAndMinutes($project->unbilledTime) }}
                 </td>
                 <td>
                     @if ($project->client)

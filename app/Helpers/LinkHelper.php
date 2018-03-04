@@ -36,6 +36,12 @@ class LinkHelper
         );
     }
 
+    public static function buttonLink($route, $label, array $params = [], array $attribs = [])
+    {
+        $attribs = ['role' => 'button', 'class' => 'btn btn-primary'];
+        return link_to_route($route, $label, $params, $attribs);
+    }
+
     /**
      * Render a non-primary navigation link with awareness of current route
      *
@@ -70,6 +76,7 @@ class LinkHelper
      */
     public static function showSubnav() {
         $routeSegments = explode('.', Route::currentRouteName());
+
         return sizeof($routeSegments) > 1;
     }
 
