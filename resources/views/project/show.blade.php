@@ -2,13 +2,13 @@
 
 @section('page_main')
     <div class="container">
+        <h1>{{ $project->name }}</h1>
+        <p>@include('partials.active', ['value' => $project->active])</p>
+
         <div class="row">
 	        <div class="col-sm-3">
 	            <div class="well">
 		            <dl>
-		                <dt>Status</dt>
-                        <dd>@include('partials.active', ['value' => $project->active])</dd>
-
 		                <dt>Taxes</dt>
 		                <dd>{{ $project->taxStatus() }}</dd>
 
