@@ -78,6 +78,26 @@ class Project extends Model
     ];
 
     /**
+     * Computed accessor for a human-readable version of taxDeducted boolean.
+     *
+     * @return string
+     */
+    public function getTaxStatusAttribute()
+    {
+        return ($this->taxDeducted) ? 'deducted' : 'not deducted';
+    }
+
+    /**
+     * Computed accessor for a Human-readable version of billable boolean.
+     *
+     * @return string
+     */
+    public function getBillableStatusAttribute()
+    {
+        return ($this->billable) ? 'yes' : 'no';
+    }
+
+    /**
      * Master query for getting a list of records.
      *
      * @param Builder $query The query to start with
@@ -189,35 +209,5 @@ class Project extends Model
     public function scopeUnbilledTime($query)
     {
         $query->with('time');
-    }
-
-
-
-    /**
-     * Human-readable value for taxDeducted boolean field.
-     *
-     * @return string
-     */
-    public function taxStatus()
-    {
-        if ($this->taxDeducted) {
-            return 'deducted';
-        }
-
-        return 'not deducted';
-    }
-
-    /**
-     * Human-readable value for billable boolean field.
-     *
-     * @return string
-     */
-    public function billableStatus()
-    {
-        if ($this->billable) {
-            return 'yes';
-        }
-
-        return 'no';
     }
 }

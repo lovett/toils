@@ -9,8 +9,8 @@
 	        <div class="col-sm-3">
 	            <div class="well">
 		            <dl>
-		                <dt>Taxes</dt>
-		                <dd>{{ $project->taxStatus() }}</dd>
+                        <dt>Billable</dt>
+                        <dd>{{ $project->billableStatus }}</dd>
 
 		                <dt>Client</dt>
 		                <dd>{!! link_to_route('client.show', $project->client->name, ['client' => $project->client]) !!}</dd>
@@ -18,18 +18,22 @@
 		                <dt>Total Time</dt>
 		                <dd>{{ TimeHelper::hoursAndMinutes($totalTime) }}</dd>
 
-		                <dt>Total Money</dt>
-		                <dd>
-                            {{ CurrencyHelper::money($totalMoney) }}
-                            @if ($totalUnpaidMoney > 0)
-                                <small>plus {{ CurrencyHelper::money($totalUnpaidMoney) }} unpaid</small>
-                            @endif
-                        </dd>
+                        @if ($project->billable)
+		                    <dt>Taxes</dt>
+		                    <dd>{{ $project->taxStatus }}</dd>
+
+		                    <dt>Total Money</dt>
+		                    <dd>
+                                {{ CurrencyHelper::money($totalMoney) }}
+                                @if ($totalUnpaidMoney > 0)
+                                    <small>plus {{ CurrencyHelper::money($totalUnpaidMoney) }} unpaid</small>
+                                @endif
+                            </dd>
 
 
-		                <dt>Hourly Rate</dt>
-		                <dd>{{ CurrencyHelper::hourlyRate($totalTime, $totalMoney) }}</dd>
-
+		                    <dt>Hourly Rate</dt>
+		                    <dd>{{ CurrencyHelper::hourlyRate($totalTime, $totalMoney) }}</dd>
+                        @endif
 		            </dl>
 	            </div>
 	        </div>
