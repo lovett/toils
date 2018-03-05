@@ -30,9 +30,8 @@
                                 @endif
                             </dd>
 
-
 		                    <dt>Hourly Rate</dt>
-		                    <dd>{{ CurrencyHelper::hourlyRate($totalTime, $totalMoney) }}</dd>
+		                    <dd>{{ CurrencyHelper::hourlyRate($totalMoney, $totalTime) }}</dd>
                         @endif
 		            </dl>
 	            </div>

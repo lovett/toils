@@ -22,19 +22,19 @@ class CurrencyHelper
     /**
      * Calculate an hourly rate
      *
-     * @param float $value Total money
+     * @param float $money Total money
      * @param int $minutes Total time
      *
      * @return int Hourly money, rounded
      *
      */
-    public static function hourlyRate($amount=0, $minutes=0)
+    public static function hourlyRate($money=0, $minutes=0)
     {
         if ($minutes < 1) {
             return '';
         }
 
-        $rate = $amount / $minutes * 60;
+        $rate = $money / $minutes * 60;
 
         return money_format('%.0n', $rate);
     }
