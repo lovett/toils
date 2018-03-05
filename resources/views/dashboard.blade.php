@@ -33,7 +33,7 @@
 
                         <div class="panel-footer grid ">
                             {!! link_to_route('time.create', 'time', ['project' => $project->id]) !!}
-                            {!! link_to_route('invoice.create', 'invoice', ['client' => $project->client_id]) !!}
+                            {!! link_to_route('invoice.create', 'invoice', ['project' => $project->id]) !!}
                         </div>
                     </div>
                 @endforeach

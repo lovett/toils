@@ -86,7 +86,7 @@ class TimeController extends Controller
         $clientId = $request->input('client', null);
         if ($clientId) {
             $client = $request->user()->client($clientId)->firstOrFail();
-            $projects = $request->user()->projectsByClientForMenu($client->getKey());
+            $projects = $request->user()->projectsForMenu($client->getKey());
         }
 
         if (is_null($clientId)) {

@@ -73,7 +73,7 @@ class User extends Authenticatable
      *
      */
     public function client($id) {
-        return $this->clients()->where('id', $id)->firstOrFail();
+        return $this->clients()->where('id', $id);
     }
 
     /**
@@ -105,7 +105,7 @@ class User extends Authenticatable
      *
      */
     public function project($id) {
-        return $this->projects()->where('id', $id)->firstOrFail();
+        return $this->projects()->where('id', $id);
     }
 
     /**
@@ -113,7 +113,7 @@ class User extends Authenticatable
      *
      */
     public function estimate($id) {
-        return $this->estimates()->where('id', $id)->firstOrFail();
+        return $this->estimates()->where('id', $id);
     }
 
     /**
@@ -161,30 +161,19 @@ class User extends Authenticatable
     }
 
     /**
-     * Return a menu-friendly list of the user's projects across all clients
+     * Return a menu-friendly list of the user's projects
      *
      * @return array
      */
-    public function projectsForMenu()
+    public function projectsForMenu($clientId=null)
     {
         $query = $this->projects()->with('client')->orderBy('name');
 
-        return $this->asMenu($query, 'id', ['name', 'client.name'], ' :: ');
-    }
-
-    /**
-     * Return a menu-friendly list of the user's projects for a single client
-     *
-     * @return array
-     */
-    public function projectsByClientForMenu($clientId)
-    {
-        $query = $this->client($clientId)->projects()->getQuery();
-
-        $query->with('client')->orderBy('name');
+        if ($clientId) {
+            $query->where('projects.client_id', $clientId);
+        }
 
         return $this->asMenu($query, 'id', ['name', 'client.name'], ' :: ');
     }
-
 
 }

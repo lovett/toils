@@ -81,18 +81,24 @@ class InvoiceController extends Controller
     public function create(Request $request)
     {
         $clientId = $request->input('client', null);
+        $projectId = $request->input('project', null);
 
-        if ($clientId) {
+        if ($projectId) {
+            $project = $request->user()->project($projectId)->with('client')->firstOrFail();
+            $client = $project->client;
+            $projects = $request->user()->projectsForMenu($client->getKey());
+        } else if ($clientId) {
+            $project = null;
             $client = $request->user()->client($clientId)->firstOrFail();
-            $projects = $request->user()->projectsByClientForMenu($client->getKey());
-        }
-
-        if (is_null($clientId)) {
+            $projects = $request->user()->projectsForMenu($client->getKey());
+        } else {
+            $project = null;
             $client = null;
             $projects = $request->user()->projectsForMenu();
         }
 
         $invoice = new Invoice();
+        $invoice->project_id = $projectId;
 
         $viewVars = [
             'pageTitle' => 'New Invoice',
