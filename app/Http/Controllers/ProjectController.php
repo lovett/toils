@@ -150,6 +150,8 @@ class ProjectController extends Controller
             $numMonths
         );
 
+        $invoices = $project->invoices()->forList()->newest(5)->get();
+
         $totalTime = $project->time()->sum('minutes');
 
         $totalMoney = $project->invoices()->paid()->sum('amount');
@@ -161,6 +163,7 @@ class ProjectController extends Controller
         $sliceTotal = array_sum($slice);
 
         $viewVars = [
+            'invoices' => $invoices,
             'project' => $project,
             'pageTitle' => $project->name,
             'totalTime' => $totalTime,

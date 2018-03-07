@@ -54,6 +54,16 @@
 	            </div>
 	        </div>
         </div>
+        <h2>Recent Invoices</h2>
+
+        @include('partials.empty-message', ['collection' => $invoices])
+
+        @if ($invoices->isNotEmpty())
+            <div class="panel panel-default">
+                @include('invoice.table', ['collection' => $invoices])
+            </div>
+        @endif
+
     </div>
     @include('partials.timestamps-footer', ['record' => $project])
 @endsection
