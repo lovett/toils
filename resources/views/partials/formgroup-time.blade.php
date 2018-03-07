@@ -4,13 +4,17 @@
     @endif
 
     <div class="col-sm-10 {{ $label ? '' : 'col-sm-offset-2' }}">
-        {!! Form::text($fieldName, TimeHelper::time($model->$name), ['class' => 'form-control']) !!}
 
+        @isset($pickable)
         <pickable
+            name="{{ $fieldName }}"
             format="h:mm A"
-            field-selector="INPUT[name={{ $fieldName }}]">
-            &nbsp;
-        </pickable>
+            groups="{{ implode($pickable, ',') }}"
+            initial-value="{{ TimeHelper::date($model->$name) }}"
+        />
+        @else
+        {!! Form::text($fieldName, TimeHelper::time($model->$name), ['class' => 'form-control']) !!}
+        @endisset
 
         @if ($errors->has($name))
             <div class="help-block">{{ $errors->first($name)}}</div>

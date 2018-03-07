@@ -18,9 +18,9 @@
 
                     @include('partials.formgroup-menu', ['name' => 'project_id', 'label' => 'Project', 'items' => $projects, 'selectedItem' => $model->project_id, 'vchange' => 'fetch'])
 
-                    @include('partials.formgroup-date', ['name' => 'start', 'label' => 'Start', 'autofill' => true])
+                    @include('partials.formgroup-date', ['name' => 'start', 'label' => 'Start', 'autofill' => true, 'pickable' => ['relday', 'relweek', 'month', 'day', 'year']])
 
-                    @include('partials.formgroup-date', ['name' => 'end', 'label' => 'End', 'autofill' => true])
+                    @include('partials.formgroup-date', ['name' => 'end', 'label' => 'End', 'autofill' => true, 'pickable' => ['relday', 'relweek', 'month', 'day', 'year']])
 
                     @include('partials.formgroup-standard', ['name' => 'name', 'label' => 'Name', 'autofill' => true])
 
@@ -48,9 +48,9 @@
                         @endif
                     </div>
 
-                    @include('partials.formgroup-date', ['name' => 'sent', 'label' => 'Sent'])
+                    @include('partials.formgroup-date', ['name' => 'sent', 'label' => 'Sent', 'pickable' => ['relday', 'month', 'day', 'year']])
 
-                    @include('partials.formgroup-date', ['name' => 'due', 'label' => 'Due', 'autofill' => true])
+                    @include('partials.formgroup-date', ['name' => 'due', 'label' => 'Due', 'autofill' => true, 'pickable' => ['month', 'day', 'year']])
 
                     @include('partials.formgroup-date', ['name' => 'paid', 'label' => 'Paid', 'autofill' => false])
 

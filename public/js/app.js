@@ -42849,7 +42849,7 @@ exports = module.exports = __webpack_require__(11)(false);
 
 
 // module
-exports.push([module.i, "\n.hidden[data-v-2482a0b2] {\n    display: none;\n}\n.pullup[data-v-2482a0b2] {\n    text-align: center;\n    font-size: .85em;\n}\n.shortcuts strong[data-v-2482a0b2] {\n    display: block;\n}\n.shortcuts a[data-v-2482a0b2] {\n    display: inline-block;\n    margin-right: 1em;\n    padding: 0 .5em;\n    text-decoration: none;\n    -webkit-transition: all .25s;\n    transition: all .25s;\n}\n.shortcuts a[data-v-2482a0b2]:hover {\n    color: #fff;\n    background-color: #333;\n}\n\n", ""]);
+exports.push([module.i, "\n.hidden[data-v-2482a0b2] {\n    display: none;\n}\n.shortcuts[data-v-2482a0b2] {\n    position: relative;\n    margin-top: 1em;\n}\n.shortcuts strong[data-v-2482a0b2] {\n    display: block;\n}\n.shortcuts a[data-v-2482a0b2] {\n    display: inline-block;\n    margin-right: 1em;\n    padding: 0 .5em;\n    text-decoration: none;\n    -webkit-transition: all .25s;\n    transition: all .25s;\n}\n.shortcuts a[data-v-2482a0b2]:hover {\n    color: #fff;\n    background-color: #333;\n}\n.shortcuts .active[data-v-2482a0b2] {\n    background-color: #333;\n    color: white;\n}\n.shortcuts .pullup[data-v-2482a0b2] {\n    position: absolute;\n    top: .25em;\n    right: .25em;\n}\n.shortcuts .pullup a[data-v-2482a0b2] {\n    font-size: 0.85em;\n    margin: 0;\n}\n.shortcuts .pullup a[data-v-2482a0b2]:hover {\n    color: inherit;\n    background-color: inherit;\n    text-decoration: underline;\n}\n.shortcuts .well[data-v-2482a0b2] {\n    margin-bottom: 0;\n}\n", ""]);
 
 // exports
 
@@ -42954,37 +42954,94 @@ exports.push([module.i, "\n.hidden[data-v-2482a0b2] {\n    display: none;\n}\n.p
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 var moment = __webpack_require__(0);
+
 module.exports = {
     props: {
         format: {
             type: String,
             default: 'YYYY-MM-DD'
         },
-        initialValue: {
-            type: [String, Object],
-            default: function _default() {
-                return moment();
-            }
+        groups: {
+            type: String,
+            default: ''
         },
-        fieldSelector: {
+        initialValue: {
+            type: String,
+            default: ''
+        },
+        name: {
             type: String
         }
     },
 
     data: function data() {
+        var initial = moment(this.initialValue, this.format, true);
+
+        if (!initial.isValid()) {
+            initial = moment();
+        }
+
+        var groupList = this.groups.split(',');
+
         return {
             isOpen: false,
-            pickedDate: moment(this.initialValue),
-            pickDate: this.format.indexOf('MM') > -1,
-            pickTime: this.format.indexOf(':') > -1
+            now: moment(),
+            lastYear: moment().subtract(1, 'year'),
+            nextYear: moment().add(1, 'year'),
+            pickableGroups: groupList,
+            pickedDate: initial,
+            daysAgo: moment().diff(initial, 'days'),
+            value: initial.format(this.format)
         };
     },
 
     watch: {
+        value: function value() {
+            var d = moment(this.value, this.format, true);
+            if (d.isValid()) {
+                this.pickedDate = d;
+            }
+        },
+
         pickedDate: function pickedDate() {
-            document.querySelector(this.fieldSelector).setAttribute('value', this.pickedDate.format(this.format));
+            this.value = this.pickedDate.format(this.format);
+            this.daysAgo = moment().diff(this.pickedDate, 'days');
         }
     },
 
@@ -42999,6 +43056,10 @@ module.exports = {
 
         month: function month(val) {
             this.pickedDate = moment(this.pickedDate).month(val - 1);
+        },
+
+        year: function year(val) {
+            this.pickedDate = moment(this.pickedDate).year(val);
         },
 
         hour: function hour(val) {
@@ -43347,6 +43408,28 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
+    _c("input", {
+      directives: [
+        {
+          name: "model",
+          rawName: "v-model",
+          value: _vm.value,
+          expression: "value"
+        }
+      ],
+      staticClass: "form-control",
+      attrs: { type: "text" },
+      domProps: { value: _vm.value },
+      on: {
+        input: function($event) {
+          if ($event.target.composing) {
+            return
+          }
+          _vm.value = $event.target.value
+        }
+      }
+    }),
+    _vm._v(" "),
     _c(
       "a",
       {
@@ -43376,11 +43459,11 @@ var render = function() {
                 }
               }
             },
-            [_vm._v("▲")]
+            [_vm._v("close")]
           )
         ]),
         _vm._v(" "),
-        _vm.pickDate
+        _vm.pickableGroups.includes("relweek")
           ? _c("p", [
               _c("strong", [_vm._v("Relative Week")]),
               _vm._v(" "),
@@ -43442,7 +43525,7 @@ var render = function() {
             ])
           : _vm._e(),
         _vm._v(" "),
-        _vm.pickDate
+        _vm.pickableGroups.includes("relmonth")
           ? _c("p", [
               _c("strong", [_vm._v("Relative Month")]),
               _vm._v(" "),
@@ -43504,13 +43587,14 @@ var render = function() {
             ])
           : _vm._e(),
         _vm._v(" "),
-        _vm.pickDate
+        _vm.pickableGroups.includes("relday")
           ? _c("p", [
               _c("strong", [_vm._v("Relative Day")]),
               _vm._v(" "),
               _c(
                 "a",
                 {
+                  class: { active: _vm.daysAgo == 0 },
                   attrs: { href: "#" },
                   on: {
                     click: function($event) {
@@ -43525,6 +43609,7 @@ var render = function() {
               _c(
                 "a",
                 {
+                  class: { active: _vm.daysAgo == 1 },
                   attrs: { href: "#" },
                   on: {
                     click: function($event) {
@@ -43539,6 +43624,7 @@ var render = function() {
               _c(
                 "a",
                 {
+                  class: { active: _vm.daysAgo == 2 },
                   attrs: { href: "#" },
                   on: {
                     click: function($event) {
@@ -43553,6 +43639,7 @@ var render = function() {
               _c(
                 "a",
                 {
+                  class: { active: _vm.daysAgo == 3 },
                   attrs: { href: "#" },
                   on: {
                     click: function($event) {
@@ -43566,7 +43653,7 @@ var render = function() {
             ])
           : _vm._e(),
         _vm._v(" "),
-        _vm.pickDate
+        _vm.pickableGroups.includes("month")
           ? _c(
               "p",
               [
@@ -43576,6 +43663,7 @@ var render = function() {
                   return _c(
                     "a",
                     {
+                      class: { active: m == _vm.pickedDate.month() + 1 },
                       attrs: { href: "#" },
                       on: {
                         click: function($event) {
@@ -43592,7 +43680,7 @@ var render = function() {
             )
           : _vm._e(),
         _vm._v(" "),
-        _vm.pickDate
+        _vm.pickableGroups.includes("day")
           ? _c(
               "p",
               [
@@ -43602,6 +43690,7 @@ var render = function() {
                   return _c(
                     "a",
                     {
+                      class: { active: d == _vm.pickedDate.date() },
                       attrs: { href: "#" },
                       on: {
                         click: function($event) {
@@ -43618,7 +43707,62 @@ var render = function() {
             )
           : _vm._e(),
         _vm._v(" "),
-        _vm.pickTime
+        _vm.pickableGroups.includes("year")
+          ? _c("p", [
+              _c("strong", [_vm._v("Year")]),
+              _vm._v(" "),
+              _c(
+                "a",
+                {
+                  class: {
+                    active: _vm.pickedDate.year() == _vm.lastYear.year()
+                  },
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      _vm.year(_vm.lastYear.year())
+                    }
+                  }
+                },
+                [_vm._v(_vm._s(_vm.lastYear.year()))]
+              ),
+              _vm._v(" "),
+              _c(
+                "a",
+                {
+                  class: { active: _vm.pickedDate.year() == _vm.now.year() },
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      _vm.year(_vm.now.year())
+                    }
+                  }
+                },
+                [_vm._v(_vm._s(_vm.now.year()))]
+              ),
+              _vm._v(" "),
+              _c(
+                "a",
+                {
+                  class: {
+                    active: _vm.pickedDate.year() == _vm.nextYear.year()
+                  },
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      _vm.year(_vm.nextYear.year())
+                    }
+                  }
+                },
+                [_vm._v(_vm._s(_vm.nextYear.year()))]
+              )
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.pickableGroups.includes("time")
           ? _c(
               "p",
               [
@@ -43628,6 +43772,11 @@ var render = function() {
                   return _c(
                     "a",
                     {
+                      class: {
+                        active:
+                          _vm.pickedDate.hour() == h ||
+                          _vm.pickedDate.hour() - 12 == h
+                      },
                       attrs: { href: "#" },
                       on: {
                         click: function($event) {
@@ -43644,7 +43793,7 @@ var render = function() {
             )
           : _vm._e(),
         _vm._v(" "),
-        _vm.pickTime
+        _vm.pickableGroups.includes("time")
           ? _c(
               "p",
               [
@@ -43669,6 +43818,7 @@ var render = function() {
                     ? _c(
                         "a",
                         {
+                          class: { active: _vm.pickedDate.minute() == m },
                           attrs: { href: "#" },
                           on: {
                             click: function($event) {
@@ -43692,13 +43842,14 @@ var render = function() {
             )
           : _vm._e(),
         _vm._v(" "),
-        _vm.pickTime
+        _vm.pickableGroups.includes("time")
           ? _c("p", [
               _c("strong", [_vm._v("Time of Day")]),
               _vm._v(" "),
               _c(
                 "a",
                 {
+                  class: { active: _vm.pickedDate.hour() < 12 },
                   attrs: { href: "#" },
                   on: {
                     click: function($event) {
@@ -43713,6 +43864,7 @@ var render = function() {
               _c(
                 "a",
                 {
+                  class: { active: _vm.pickedDate.hour() > 11 },
                   attrs: { href: "#" },
                   on: {
                     click: function($event) {

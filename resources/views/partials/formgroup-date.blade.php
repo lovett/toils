@@ -4,8 +4,6 @@
     @endif
 
     <div class="col-sm-10 {{ $label ? '' : 'col-sm-offset-2' }}">
-        {!! Form::text($name, TimeHelper::date($model->$name), ['class' => 'form-control']) !!}
-
         @if (isset($autofill))
             <autofill-hint
                 field-selector="INPUT[name={{ $name }}]"
@@ -15,11 +13,15 @@
             </autofill-hint>
         @endif
 
+        @isset($pickable)
         <pickable
+            name="{{ $name }}"
+            groups="{{ implode($pickable, ',') }}"
             initial-value="{{ TimeHelper::date($model->$name) }}"
-            field-selector="INPUT[name={{ $name }}]">
-            &nbsp;
-        </pickable>
+        />
+        @else
+        {!! Form::text($name, TimeHelper::date($model->$name), ['class' => 'form-control']) !!}
+        @endisset
 
         @if ($errors->has($name))
             <div class="help-block">{{ $errors->first($name)}}</div>

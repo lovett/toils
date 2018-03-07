@@ -1,5 +1,7 @@
 <template>
     <div>
+        <input type="text" v-model="value" class="form-control"/>
+
         <a href="#" @click.prevent="toggle($event)" v-bind:class="{hidden: isOpen}">
             shortcuts
         </a>
@@ -7,10 +9,10 @@
         <div class="shortcuts" v-bind:class="{hidden: !isOpen}">
             <div class="well">
                 <div class="pullup">
-                    <a href="#" @click.prevent="toggle($event)">▲</a>
+                    <a href="#" @click.prevent="toggle($event)">close</a>
                 </div>
 
-                <p v-if="pickDate">
+                <p v-if="pickableGroups.includes('relweek')">
                     <strong>Relative Week</strong>
                     <a @click.prevent="relativeWeekStart(0)" href="#">start of this week</a>
                     <a @click.prevent="relativeWeekEnd(0)" href="#">end of this week</a>
@@ -18,7 +20,7 @@
                     <a @click.prevent="relativeWeekEnd(-1)" href="#">end of last week</a>
                 </p>
 
-                <p v-if="pickDate">
+                <p v-if="pickableGroups.includes('relmonth')">
                     <strong>Relative Month</strong>
                     <a @click.prevent="relativeMonthStart(0)" href="#">start of this month</a>
                     <a @click.prevent="relativeMonthEnd(0)" href="#">end of this month</a>
@@ -26,40 +28,47 @@
                     <a @click.prevent="relativeMonthEnd(-1)" href="#">end of last month</a>
                 </p>
 
-                <p v-if="pickDate">
+                <p v-if="pickableGroups.includes('relday')">
                     <strong>Relative Day</strong>
-                    <a @click.prevent="relativeDay(0)" href="#">today</a>
-                    <a @click.prevent="relativeDay(-1)" href="#">yesterday</a>
-                    <a @click.prevent="relativeDay(-2)" href="#">2 days ago</a>
-                    <a @click.prevent="relativeDay(-3)" href="#">3 days ago</a>
+                    <a v-bind:class="{active: daysAgo == 0}" @click.prevent="relativeDay(0)" href="#">today</a>
+                    <a v-bind:class="{active: daysAgo == 1}" @click.prevent="relativeDay(-1)" href="#">yesterday</a>
+                    <a v-bind:class="{active: daysAgo == 2}" @click.prevent="relativeDay(-2)" href="#">2 days ago</a>
+                    <a v-bind:class="{active: daysAgo == 3}" @click.prevent="relativeDay(-3)" href="#">3 days ago</a>
                 </p>
 
-                <p v-if="pickDate">
+                <p v-if="pickableGroups.includes('month')">
                     <strong>Month</strong>
-                    <a v-for="m in 12" @click.prevent="month(m)" href="#">{{ m }}</a>
+                    <a v-bind:class="{active: m == pickedDate.month() + 1}" v-for="m in 12" @click.prevent="month(m)" href="#">{{ m }}</a>
                 </p>
 
-                <p v-if="pickDate">
+                <p v-if="pickableGroups.includes('day')">
                     <strong>Day</strong>
-                    <a v-for="d in 31" @click.prevent="day(d)" href="#">{{ d }}</a>
+                    <a v-bind:class="{active: d == pickedDate.date()}" v-for="d in 31" @click.prevent="day(d)" href="#">{{ d }}</a>
                 </p>
 
-                <p v-if="pickTime">
+                <p v-if="pickableGroups.includes('year')">
+                    <strong>Year</strong>
+                    <a v-bind:class="{active: pickedDate.year() == lastYear.year()}" @click.prevent="year(lastYear.year())" href="#">{{ lastYear.year() }}</a>
+                    <a v-bind:class="{active: pickedDate.year() == now.year()}" @click.prevent="year(now.year())" href="#">{{ now.year() }}</a>
+                    <a v-bind:class="{active: pickedDate.year() == nextYear.year()}" @click.prevent="year(nextYear.year())" href="#">{{ nextYear.year() }}</a>
+                </p>
+
+                <p v-if="pickableGroups.includes('time')">
                     <strong>Hour</strong>
-                    <a v-for="h in 12" @click.prevent="hour(h)" href="#">{{ h }}</a>
+                    <a v-bind:class="{active: pickedDate.hour() == h || pickedDate.hour() - 12 == h}" v-for="h in 12" @click.prevent="hour(h)" href="#">{{ h }}</a>
                 </p>
 
-                <p v-if="pickTime">
+                <p v-if="pickableGroups.includes('time')">
                     <strong>Minute</strong>
                     <a @click.prevent="minute(0)" href="#">00</a>
-                    <a v-for="m in 59" v-if="m % 5 === 0" @click.prevent="minute(m)" href="#">
+                    <a v-bind:class="{active: pickedDate.minute() == m}" v-for="m in 59" v-if="m % 5 === 0" @click.prevent="minute(m)" href="#">
                         {{ (m < 10) ? '0' + m : m }}
                     </a>
                 </p>
-                <p v-if="pickTime">
+                <p v-if="pickableGroups.includes('time')">
                     <strong>Time of Day</strong>
-                    <a @click.prevent="meridiem('AM')" href="#">AM</a>
-                    <a @click.prevent="meridiem('PM')" href="#">PM</a>
+                    <a v-bind:class="{active: pickedDate.hour() < 12}" @click.prevent="meridiem('AM')" href="#">AM</a>
+                    <a v-bind:class="{active: pickedDate.hour() > 11}" @click.prevent="meridiem('PM')" href="#">PM</a>
                 </p>
             </div>
         </div>
@@ -71,9 +80,9 @@
         display: none;
     }
 
-    .pullup {
-        text-align: center;
-        font-size: .85em;
+    .shortcuts {
+        position: relative;
+        margin-top: 1em;
     }
 
     .shortcuts strong {
@@ -93,41 +102,86 @@
         background-color: #333;
     }
 
+    .shortcuts .active {
+        background-color: #333;
+        color: white;
+    }
+
+    .shortcuts .pullup {
+        position: absolute;
+        top: .25em;
+        right: .25em;
+    }
+
+    .shortcuts .pullup a {
+        font-size: 0.85em;
+        margin: 0;
+    }
+
+    .shortcuts .pullup a:hover {
+        color: inherit;
+        background-color: inherit;
+        text-decoration: underline;
+    }
+
+    .shortcuts .well {
+        margin-bottom: 0;
+    }
 </style>
 <script>
     const moment = require('moment');
+
     module.exports = {
         props: {
             format: {
                 type: String,
                 default: 'YYYY-MM-DD'
             },
-            initialValue: {
-                type: [String, Object],
-                default: function() {
-                    return moment();
-                }
+            groups: {
+                type: String,
+                default: ''
             },
-            fieldSelector: {
+            initialValue: {
+                type: String,
+                default: ''
+            },
+            name: {
                 type: String
-            }
+            },
         },
 
         data: function () {
+            let initial = moment(this.initialValue, this.format, true);
+
+            if (!initial.isValid()) {
+                initial = moment();
+            }
+
+            const groupList = this.groups.split(',');
+
             return {
                 isOpen: false,
-                pickedDate: moment(this.initialValue),
-                pickDate: this.format.indexOf('MM') > -1,
-                pickTime: this.format.indexOf(':') > -1
+                now: moment(),
+                lastYear: moment().subtract(1, 'year'),
+                nextYear: moment().add(1, 'year'),
+                pickableGroups: groupList,
+                pickedDate: initial,
+                daysAgo: moment().diff(initial, 'days'),
+                value: initial.format(this.format),
             };
         },
 
         watch: {
+            value: function () {
+                const d = moment(this.value, this.format, true);
+                if (d.isValid()) {
+                    this.pickedDate = d;
+                }
+            },
+
             pickedDate: function () {
-                document.querySelector(this.fieldSelector).setAttribute(
-                    'value',
-                    this.pickedDate.format(this.format)
-                );
+                this.value = this.pickedDate.format(this.format);
+                this.daysAgo = moment().diff(this.pickedDate, 'days');
             }
         },
 
@@ -142,6 +196,10 @@
 
             month: function (val) {
                 this.pickedDate = moment(this.pickedDate).month(val - 1);
+            },
+
+            year: function (val) {
+                this.pickedDate = moment(this.pickedDate).year(val);
             },
 
             hour: function (val) {
