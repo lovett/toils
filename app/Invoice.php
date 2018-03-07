@@ -212,66 +212,6 @@ class Invoice extends Model
         return $query;
     }
 
-    /**
-     * Query scope for
-     *
-     * @param Builder $builder The query to start with
-     *
-     * @return Relation
-     */
-    public function scopeListingByUser($query)
-    {
-        $query->leftJoin(
-            'projects',
-            'invoices.project_id',
-            '=',
-            'projects.id'
-        );
-
-        $query->whereNull('projects.deleted_at');
-
-        $query->join(
-            'clients',
-            'projects.client_id',
-            '=',
-            'clients.id'
-        );
-
-        $query->whereNull('clients.deleted_at');
-
-        $query->join(
-            'client_user',
-            'client_user.client_id',
-            '=',
-            'clients.id'
-        );
-
-        $query->select([
-            'invoices.*',
-            'clients.name as clientName',
-            'clients.id as clientId',
-            'projects.name as projectName',
-            'projects.id as projectId',
-        ]);
-
-        $query->selectRaw('SUM(times.minutes) as totalMinutes');
-
-        $query->leftJoin(
-            'times',
-            'invoices.id',
-            '=',
-            'times.invoice_id'
-        );
-
-        $query->whereNull('times.deleted_at');
-
-        $query->groupBy('invoices.id');
-
-        $query->orderByRaw('invoices.paid is null desc, invoices.due asc');
-
-        return $query;
-    }
-
     public function __construct(array $attributes=[])
     {
 

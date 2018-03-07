@@ -123,7 +123,23 @@ class User extends Authenticatable
      */
     public function invoices()
     {
-        return Invoice::listingByUser($this->getKey());
+        $query = Invoice::leftJoin(
+            'projects',
+            'projects.id',
+            '=',
+            'invoices.project_id'
+        );
+
+        $query->leftJoin(
+            'client_user',
+            'client_user.client_id',
+            '=',
+            'projects.client_id'
+        );
+
+        $query->where('client_user.user_id', $this->getKey());
+
+        return $query;
     }
 
     /**
