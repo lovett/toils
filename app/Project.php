@@ -49,6 +49,10 @@ class Project extends Model
         'billable',
         'taxDeducted',
         'client_id',
+        'allottedTotalMinutes',
+        'allottedWeeklyMinutes',
+        'allottedTotalHours',
+        'allottedWeeklyHours',
     ];
 
     /**
@@ -64,6 +68,8 @@ class Project extends Model
         'taxDeducted' => 'boolean',
         'user_id' => 'integer',
         'client_id' => 'integer',
+        'allottedTotalMinutes' => 'integer',
+        'allottedWeeklyMinutes' => 'integer',
     ];
 
     /**
@@ -76,6 +82,59 @@ class Project extends Model
         'deleted_at',
         'updated_at',
     ];
+
+    /**
+     * Custom accessor for allottedTotalMinutes specified in hours
+     *
+     * Although the database stores minutes, sometimes it is more
+     * convenient to use hours.
+     */
+    public function getAllottedTotalHoursAttribute()
+    {
+        if (is_null($this->allottedTotalMinutes)) {
+            return null;
+        }
+
+        return round($this->allottedTotalMinutes / 60, 2);
+    }
+
+    /**
+     * Custom mutator for allottedTotalMinutes specified in hours
+     *
+     * For occasions when it's more convenient to deal with hours
+     * rather than minutes.
+     */
+    public function setAllottedTotalHoursAttribute($value)
+    {
+        $this->attributes['allottedTotalMinutes'] = round($value * 60);
+    }
+
+    /**
+     * Custom accessor for allottedWeeklyMinutes specified in hours
+     *
+     * Although the database stores minutes, sometimes it is more
+     * convenient to use hours.
+     */
+    public function getAllottedWeeklyHoursAttribute()
+    {
+        if (is_null($this->allottedWeeklyMinutes)) {
+            return null;
+        }
+
+        return round($this->allottedWeeklyMinutes / 60, 2);
+    }
+
+    /**
+     * Custom mutator for allottedWeeklyMinutes specified in hours
+     *
+     * For occasions when it's more convenient to deal with hours
+     * rather than minutes.
+     */
+    public function setAllottedWeeklyHoursAttribute($value)
+    {
+        $this->attributes['allottedWeeklyMinutes'] = round($value * 60);
+    }
+
 
     /**
      * Computed accessor for a human-readable version of taxDeducted boolean.
@@ -95,6 +154,43 @@ class Project extends Model
     public function getBillableStatusAttribute()
     {
         return ($this->billable) ? 'yes' : 'no';
+    }
+
+    /**
+     * Computed accessor for how much billable time is left on the project
+     *
+     * @return int|null A number in minutes, or null if no budget has been set.
+     */
+    public function getTotalTimeRemainingAttribute()
+    {
+        if (is_null($this->allottedTotalMinutes)) {
+            return null;
+        }
+
+        $totalTime = $this->time()->sum('minutes');
+
+        $remaining = $this->allottedTotalMinutes - $totalTime;
+
+        return $remaining;
+
+    }
+
+    /**
+     * Computed accessor for how much billable time is left this week
+     *
+     * @return int|null A number in minutes, or null if no weekly budget is set.
+     */
+    public function getWeeklyTimeRemainingAttribute()
+    {
+        if (is_null($this->allottedWeeklyMinutes)) {
+            return null;
+        }
+
+        $timeThisWeek = $this->time()->thisWeek()->sum('minutes');
+
+        $remaining = $this->allottedWeeklyMinutes - $timeThisWeek;
+
+        return $remaining;
     }
 
     /**
@@ -210,4 +306,5 @@ class Project extends Model
     {
         $query->with('time');
     }
+
 }

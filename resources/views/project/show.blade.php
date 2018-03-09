@@ -32,6 +32,17 @@
 
 		                    <dt>Hourly Rate</dt>
 		                    <dd>{{ CurrencyHelper::hourlyRate($totalMoney, $totalTime) }}</dd>
+
+                            @if ($totalTimeRemaining)
+                                <dt>Time Remaining</dt>
+                                <dd>{{ TimeHelper::hoursAndMinutes($totalTimeRemaining) }}</dd>
+                            @endif
+
+                            @if ($weeklyTimeRemaining)
+                                <dt>Time Remining This Week</dt>
+                                <dd>{{ TimeHelper::hoursAndMinutes($weeklyTimeRemaining) }}</dd>
+                            @endif
+
                         @endif
 		            </dl>
 	            </div>

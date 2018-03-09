@@ -144,15 +144,16 @@ class ProjectController extends Controller
 
         $numMonths = 6;
 
-        $timeByMonth = Time::forProjectAndUserByMonth(
+        $timeByMonth = Time::forProjectAndUserByInterval(
             $project,
             $request->user(),
+            'month',
             $numMonths
         );
 
-        $invoices = $project->invoices()->forList()->newest(5)->get();
-
         $totalTime = $project->time()->sum('minutes');
+
+        $invoices = $project->invoices()->forList()->newest(5)->get();
 
         $totalMoney = $project->invoices()->paid()->sum('amount');
 
@@ -172,6 +173,8 @@ class ProjectController extends Controller
             'slice' => $slice,
             'sliceTotal' => $sliceTotal,
             'sliceRange' => $numMonths,
+            'totalTimeRemaining' => $project->totalTimeRemaining,
+            'weeklyTimeRemaining' => $project->weeklyTimeRemaining,
         ];
 
         return view('project.show', $viewVars);
@@ -215,7 +218,7 @@ class ProjectController extends Controller
      */
     public function update(ProjectRequest $request, $id)
     {
-        $project = $request->user()->project($id);
+        $project = $request->user()->project($id)->firstOrFail();
 
         $project->update($request->all());
 
@@ -239,7 +242,7 @@ class ProjectController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        $project = $request->user()->project($id);
+        $project = $request->user()->project($id)->firstOrFail();
 
         $project->delete();
 

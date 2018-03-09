@@ -113,16 +113,32 @@ class Time extends Model
     }
 
     /**
+     * Query scope to restrict time entries to the current week
+     *
+     * @param Builder $query An existing query.
+     * @param int $limit If greater than zero, the max number of records to return.
+     *
+     * @return Builder
+     */
+    public function scopeThisWeek($query)
+    {
+        $now = new Carbon();
+        $query->where('start', '>=', $now->startOfWeek());
+        return $query;
+    }
+
+    /**
      * Query scope to restrict by recentness
      *
      * @param Builder $query An existing query.
      * @param int $limit If greater than zero, the max number of records to return.
      *
-     * @return Builder;
+     * @return Builder
      */
     public function scopeNewest($query, $limit=0)
     {
         $query->orderBy('start', 'desc');
+
         if ($limit > 0) {
             $query->limit($limit);
         }
@@ -230,20 +246,48 @@ class Time extends Model
     }
 
     /**
-     * Tally time by month with no gaps.
+     * Tally time by time interval with no gaps.
      *
-     * @param Project $project    Project model instance
-     * @param User    $user       User model instance
-     * @param int     $monthCount How many months to go back from present
+     * @param Project $project Project model instance
+     * @param User $user User model instance
+     * @param string $timeInterval Time scale for the tallies: week, month, or year
+     * @param int $intervalCount How many intervals to go back from present. If null, take everything.
      *
      * @return array
      */
-    public static function forProjectAndUserByMonth(
+    public static function forProjectAndUserByInterval(
         Project $project,
         User $user,
-        $monthCount = 6
+        $timeInterval = 'month',
+        $intervalCount = null
     ) {
-        if (empty($monthCount)) {
+        switch($timeInterval) {
+            case 'week':
+                $diffMethod = 'diffInWeeks';
+                $sqlDateModifier = 'weekday 6';
+                $sqlInterval = 'day';
+                $sqlDateSelector = '-7 day';
+                $intervalMultiplier = 7;
+                break;
+            case 'month':
+                $diffMethod = 'diffInMonths';
+                $sqlDateModifier = 'start of month';
+                $sqlInterval = 'month';
+                $sqlDateSelector = '-1 month';
+                $intervalMultiplier = 1;
+                break;
+            case 'year':
+                $diffMethod = 'diffInYears';
+                $sqlDateModifier = 'start of year';
+                $sqlInterval = 'year';
+                $sqlDateSelector = '-1 year';
+                $intervalMultiplier = 1;
+                break;
+            default:
+                throw new InvalidArgumentException('invalid timeInterval');
+        }
+
+        if (is_null($intervalCount)) {
             $minStart = self::where('project_id', $project->getKey())
                       ->where('user_id', $user->getKey())
                       ->min('start');
@@ -252,20 +296,20 @@ class Time extends Model
                 return [];
             }
 
-            $monthCount = Carbon::now()->diffInMonths(Carbon::parse($minStart));
+            $intervalCount = Carbon::now()->$diffMethod(Carbon::parse($minStart));
         }
 
         $query = "
         WITH RECURSIVE
             tally_range(dt) AS (
-                SELECT date('now', 'start of month')
+                SELECT date('now', '{$sqlDateModifier}')
                 UNION ALL
-                SELECT date(dt, '-1 month')
+                SELECT date(dt, '{$sqlDateSelector}')
                 FROM tally_range
-                WHERE dt > date('now', 'start of month', :range)
+                WHERE dt > date('now', '{$sqlDateModifier}', :range)
             ),
             tallies(dt, minutes) AS (
-                SELECT date(start, 'start of month') AS dt, SUM(minutes)
+                SELECT date(start, '{$sqlDateModifier}') AS dt, SUM(minutes)
                 FROM times
                 WHERE project_id=:projectId
                 AND user_id=:userId
@@ -277,7 +321,7 @@ class Time extends Model
         $result = DB::select(
             $query,
             [
-                'range' => (abs($monthCount) * -1).' months',
+                'range' => (abs($intervalCount) * $intervalMultiplier * -1) . ' ' . str_plural($sqlInterval),
                 'projectId' => $project->getKey(),
                 'userId' => $user->getKey(),
             ]

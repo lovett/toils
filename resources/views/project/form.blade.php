@@ -11,9 +11,14 @@
 
                 {!! Form::model($model, ['route' => $submission_route, 'method' => $submission_method, 'class' => 'form-horizontal']) !!}
 
-                @include('partials.formgroup-standard', ['name' => 'name', 'label' => 'Name', 'value' => $model->name])
+                @include('partials.formgroup-standard', ['name' => 'name', 'label' => 'Name'])
 
                 @include('partials.formgroup-menu', ['name' => 'client_id', 'label' => 'Client', 'items' => $clients, 'selectedItem' => $model->client_id])
+
+                @include('partials.formgroup-standard', ['name' => 'allottedTotalHours', 'label' => 'Total Hours'])
+
+                @include('partials.formgroup-standard', ['name' => 'allottedWeeklyHours', 'label' => 'Weekly Hours'])
+
 
                 @include('partials.formgroup-checkbox', ['name' => 'active', 'label' => 'This project is active', 'checked' => $model->active])
 
