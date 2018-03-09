@@ -17,7 +17,14 @@ mix.browserSync({
     online: true,
     open: false,
     port: 3010,
-    proxy: 'localhost:8083'
+    proxy: {
+        target: 'localhost:8083',
+        reqHeaders: function() {
+            return {
+                host: 'localhost:3010'
+            };
+        }
+    }
 });
 
 mix.disableNotifications();
