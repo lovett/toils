@@ -42593,28 +42593,72 @@ module.exports = Component.exports
 
 module.exports = {
     props: {
-        // The Ajax endpoint to request autofill values from.
+        // Whether the component should self-trigger a call to the endpoint.
+        //
+        // This can be useful when the form has been prepopulated server-side.
+        autofetch: {
+            type: Boolean,
+            default: false
+        },
+
+        // A space-delimited list of field names participating in autofill.
+        //
+        // The names in this list should reflect the keys within the JSON
+        // returned by the endpoint. For each name, two data keys will be
+        // created: previous and suggested.
+        fields: {
+            type: String,
+            default: ''
+        },
+
+        // The endpoint that will provide autofill values.
         url: {
             type: String,
             required: true
-        },
-
-        // A comma-delimited list of field names. Field name must match key in Ajax response.
-        fields: {
-            type: String
         }
     },
 
     data: function data() {
-        return this.fields.split(/,\s*/).reduce(function (acc, field) {
+        // Convert the fields prop into a blank object.
+        //
+        // Each field name becomes a pair of camel-cased keys: the previous
+        // value of the field, and the suggested value of the field.
+        // At this point a fetch has not occurred, so their values are null.
+        // Ensuring they exist gives child Pickable and AutofillHint components
+        // something to bind to, so that the values can pass down to them once
+        // a fetch has happened.
+        var data = this.fields.split(/\s+/).reduce(function (acc, field) {
+            // Get the field name ready for camel casing.
             var capitalizedName = field[0].toUpperCase() + field.substring(1);
+
             acc['suggested' + capitalizedName] = null;
             acc['previous' + capitalizedName] = null;
+
             return acc;
         }, {});
+
+        return data;
+    },
+
+    // Automatically trigger a fetch.
+    //
+    // If the autofetch prop is true and there is a dropdown that has been
+    // marked as the autofillTrigger ref, trigger a change event on it to
+    // cause a fetch.
+    mounted: function mounted() {
+        if (!this.autofetch) {
+            return;
+        }
+
+        if (!this.$refs.hasOwnProperty('autofillTrigger')) {
+            return;
+        }
+
+        this.$refs.autofillTrigger.dispatchEvent(new Event('change'));
     },
 
     methods: {
+        // Make a request to the endpoint.
         fetch: function (_fetch) {
             function fetch(_x) {
                 return _fetch.apply(this, arguments);
@@ -42634,11 +42678,11 @@ module.exports = {
                 return fetchResponse.json();
             }).then(function (jsonResponse) {
                 ['previous', 'suggested'].forEach(function (group) {
-                    Object.keys(jsonResponse[group]).forEach(function (field) {
-                        var dataField = group + field[0].toUpperCase() + field.substring(1);
-                        if (self.hasOwnProperty(dataField)) {
-                            self[dataField] = jsonResponse[group][field];
-                        }
+                    var jsonGroup = jsonResponse[group];
+
+                    Object.keys(jsonGroup).forEach(function (jsonKey) {
+                        var dataKey = group + jsonKey[0].toUpperCase() + jsonKey.substring(1);
+                        self[dataKey] = jsonGroup[jsonKey];
                     });
                 });
             });
@@ -42706,7 +42750,20 @@ module.exports = Component.exports
 //
 
 module.exports = {
-    props: ['suggestion', 'previous', 'fieldSelector'],
+    props: {
+        suggestion: {
+            type: [String, Number],
+            default: ''
+        },
+        previous: {
+            type: [String, Number],
+            default: ''
+        },
+        fieldSelector: {
+            type: String,
+            default: ''
+        }
+    },
 
     data: function data() {
         return {};
@@ -42720,7 +42777,10 @@ module.exports = {
 
     methods: {
         apply: function apply() {
-            document.querySelector(this.fieldSelector).value = this.suggestion;
+            if (this.fieldSelector) {
+                document.querySelector(this.fieldSelector).value = this.suggestion;
+            }
+            this.$emit('set', this.suggestion);
         }
     }
 };
@@ -42988,6 +43048,12 @@ exports.push([module.i, "\n.hidden[data-v-2482a0b2] {\n    display: none;\n}\n.s
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 var moment = __webpack_require__(0);
 
@@ -43002,6 +43068,14 @@ module.exports = {
             default: ''
         },
         initialValue: {
+            type: String,
+            default: ''
+        },
+        previousValue: {
+            type: String,
+            default: ''
+        },
+        suggestedValue: {
             type: String,
             default: ''
         },
@@ -43046,6 +43120,10 @@ module.exports = {
     },
 
     methods: {
+        setValue: function setValue(value) {
+            this.value = value;
+        },
+
         toggle: function toggle() {
             this.isOpen = !this.isOpen;
         },
@@ -43407,397 +43485,72 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _c("input", {
-      directives: [
-        {
-          name: "model",
-          rawName: "v-model",
-          value: _vm.value,
-          expression: "value"
-        }
-      ],
-      staticClass: "form-control",
-      attrs: { type: "text" },
-      domProps: { value: _vm.value },
-      on: {
-        input: function($event) {
-          if ($event.target.composing) {
-            return
+  return _c(
+    "div",
+    [
+      _c("input", {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.value,
+            expression: "value"
           }
-          _vm.value = $event.target.value
-        }
-      }
-    }),
-    _vm._v(" "),
-    _c(
-      "a",
-      {
-        class: { hidden: _vm.isOpen },
-        attrs: { href: "#" },
+        ],
+        staticClass: "form-control",
+        attrs: { type: "text", name: _vm.name },
+        domProps: { value: _vm.value },
         on: {
-          click: function($event) {
-            $event.preventDefault()
-            _vm.toggle($event)
+          input: function($event) {
+            if ($event.target.composing) {
+              return
+            }
+            _vm.value = $event.target.value
           }
         }
-      },
-      [_vm._v("\n        shortcuts\n    ")]
-    ),
-    _vm._v(" "),
-    _c("div", { staticClass: "shortcuts", class: { hidden: !_vm.isOpen } }, [
-      _c("div", { staticClass: "well" }, [
-        _c("div", { staticClass: "pullup" }, [
-          _c(
-            "a",
-            {
-              attrs: { href: "#" },
-              on: {
-                click: function($event) {
-                  $event.preventDefault()
-                  _vm.toggle($event)
+      }),
+      _vm._v(" "),
+      _c("autofill-hint", {
+        attrs: { suggestion: _vm.suggestedValue, previous: _vm.previousValue },
+        on: { set: _vm.setValue }
+      }),
+      _vm._v(" "),
+      _c(
+        "a",
+        {
+          class: { hidden: _vm.isOpen },
+          attrs: { href: "#" },
+          on: {
+            click: function($event) {
+              $event.preventDefault()
+              _vm.toggle($event)
+            }
+          }
+        },
+        [_vm._v("\n        shortcuts\n    ")]
+      ),
+      _vm._v(" "),
+      _c("div", { staticClass: "shortcuts", class: { hidden: !_vm.isOpen } }, [
+        _c("div", { staticClass: "well" }, [
+          _c("div", { staticClass: "pullup" }, [
+            _c(
+              "a",
+              {
+                attrs: { href: "#" },
+                on: {
+                  click: function($event) {
+                    $event.preventDefault()
+                    _vm.toggle($event)
+                  }
                 }
-              }
-            },
-            [_vm._v("close")]
-          )
-        ]),
-        _vm._v(" "),
-        _vm.pickableGroups.includes("relweek")
-          ? _c("p", [
-              _c("strong", [_vm._v("Relative Week")]),
-              _vm._v(" "),
-              _c(
-                "a",
-                {
-                  attrs: { href: "#" },
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      _vm.relativeWeekStart(0)
-                    }
-                  }
-                },
-                [_vm._v("start of this week")]
-              ),
-              _vm._v(" "),
-              _c(
-                "a",
-                {
-                  attrs: { href: "#" },
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      _vm.relativeWeekEnd(0)
-                    }
-                  }
-                },
-                [_vm._v("end of this week")]
-              ),
-              _vm._v(" "),
-              _c(
-                "a",
-                {
-                  attrs: { href: "#" },
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      _vm.relativeWeekStart(-1)
-                    }
-                  }
-                },
-                [_vm._v("start of last week")]
-              ),
-              _vm._v(" "),
-              _c(
-                "a",
-                {
-                  attrs: { href: "#" },
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      _vm.relativeWeekEnd(-1)
-                    }
-                  }
-                },
-                [_vm._v("end of last week")]
-              )
-            ])
-          : _vm._e(),
-        _vm._v(" "),
-        _vm.pickableGroups.includes("relmonth")
-          ? _c("p", [
-              _c("strong", [_vm._v("Relative Month")]),
-              _vm._v(" "),
-              _c(
-                "a",
-                {
-                  attrs: { href: "#" },
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      _vm.relativeMonthStart(0)
-                    }
-                  }
-                },
-                [_vm._v("start of this month")]
-              ),
-              _vm._v(" "),
-              _c(
-                "a",
-                {
-                  attrs: { href: "#" },
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      _vm.relativeMonthEnd(0)
-                    }
-                  }
-                },
-                [_vm._v("end of this month")]
-              ),
-              _vm._v(" "),
-              _c(
-                "a",
-                {
-                  attrs: { href: "#" },
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      _vm.relativeMonthStart(-1)
-                    }
-                  }
-                },
-                [_vm._v("start of last month")]
-              ),
-              _vm._v(" "),
-              _c(
-                "a",
-                {
-                  attrs: { href: "#" },
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      _vm.relativeMonthEnd(-1)
-                    }
-                  }
-                },
-                [_vm._v("end of last month")]
-              )
-            ])
-          : _vm._e(),
-        _vm._v(" "),
-        _vm.pickableGroups.includes("relday")
-          ? _c("p", [
-              _c("strong", [_vm._v("Relative Day")]),
-              _vm._v(" "),
-              _c(
-                "a",
-                {
-                  class: { active: _vm.daysAgo == 0 },
-                  attrs: { href: "#" },
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      _vm.relativeDay(0)
-                    }
-                  }
-                },
-                [_vm._v("today")]
-              ),
-              _vm._v(" "),
-              _c(
-                "a",
-                {
-                  class: { active: _vm.daysAgo == 1 },
-                  attrs: { href: "#" },
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      _vm.relativeDay(-1)
-                    }
-                  }
-                },
-                [_vm._v("yesterday")]
-              ),
-              _vm._v(" "),
-              _c(
-                "a",
-                {
-                  class: { active: _vm.daysAgo == 2 },
-                  attrs: { href: "#" },
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      _vm.relativeDay(-2)
-                    }
-                  }
-                },
-                [_vm._v("2 days ago")]
-              ),
-              _vm._v(" "),
-              _c(
-                "a",
-                {
-                  class: { active: _vm.daysAgo == 3 },
-                  attrs: { href: "#" },
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      _vm.relativeDay(-3)
-                    }
-                  }
-                },
-                [_vm._v("3 days ago")]
-              )
-            ])
-          : _vm._e(),
-        _vm._v(" "),
-        _vm.pickableGroups.includes("month")
-          ? _c(
-              "p",
-              [
-                _c("strong", [_vm._v("Month")]),
-                _vm._v(" "),
-                _vm._l(12, function(m) {
-                  return _c(
-                    "a",
-                    {
-                      class: { active: m == _vm.pickedDate.month() + 1 },
-                      attrs: { href: "#" },
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          _vm.month(m)
-                        }
-                      }
-                    },
-                    [_vm._v(_vm._s(m))]
-                  )
-                })
-              ],
-              2
+              },
+              [_vm._v("close")]
             )
-          : _vm._e(),
-        _vm._v(" "),
-        _vm.pickableGroups.includes("day")
-          ? _c(
-              "p",
-              [
-                _c("strong", [_vm._v("Day")]),
-                _vm._v(" "),
-                _vm._l(31, function(d) {
-                  return _c(
-                    "a",
-                    {
-                      class: { active: d == _vm.pickedDate.date() },
-                      attrs: { href: "#" },
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          _vm.day(d)
-                        }
-                      }
-                    },
-                    [_vm._v(_vm._s(d))]
-                  )
-                })
-              ],
-              2
-            )
-          : _vm._e(),
-        _vm._v(" "),
-        _vm.pickableGroups.includes("year")
-          ? _c("p", [
-              _c("strong", [_vm._v("Year")]),
-              _vm._v(" "),
-              _c(
-                "a",
-                {
-                  class: {
-                    active: _vm.pickedDate.year() == _vm.lastYear.year()
-                  },
-                  attrs: { href: "#" },
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      _vm.year(_vm.lastYear.year())
-                    }
-                  }
-                },
-                [_vm._v(_vm._s(_vm.lastYear.year()))]
-              ),
-              _vm._v(" "),
-              _c(
-                "a",
-                {
-                  class: { active: _vm.pickedDate.year() == _vm.now.year() },
-                  attrs: { href: "#" },
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      _vm.year(_vm.now.year())
-                    }
-                  }
-                },
-                [_vm._v(_vm._s(_vm.now.year()))]
-              ),
-              _vm._v(" "),
-              _c(
-                "a",
-                {
-                  class: {
-                    active: _vm.pickedDate.year() == _vm.nextYear.year()
-                  },
-                  attrs: { href: "#" },
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      _vm.year(_vm.nextYear.year())
-                    }
-                  }
-                },
-                [_vm._v(_vm._s(_vm.nextYear.year()))]
-              )
-            ])
-          : _vm._e(),
-        _vm._v(" "),
-        _vm.pickableGroups.includes("time")
-          ? _c(
-              "p",
-              [
-                _c("strong", [_vm._v("Hour")]),
-                _vm._v(" "),
-                _vm._l(12, function(h) {
-                  return _c(
-                    "a",
-                    {
-                      class: {
-                        active:
-                          _vm.pickedDate.hour() == h ||
-                          _vm.pickedDate.hour() - 12 == h
-                      },
-                      attrs: { href: "#" },
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          _vm.hour(h)
-                        }
-                      }
-                    },
-                    [_vm._v(_vm._s(h))]
-                  )
-                })
-              ],
-              2
-            )
-          : _vm._e(),
-        _vm._v(" "),
-        _vm.pickableGroups.includes("time")
-          ? _c(
-              "p",
-              [
-                _c("strong", [_vm._v("Minute")]),
+          ]),
+          _vm._v(" "),
+          _vm.pickableGroups.includes("relweek")
+            ? _c("p", [
+                _c("strong", [_vm._v("Relative Week")]),
                 _vm._v(" "),
                 _c(
                   "a",
@@ -43806,80 +43559,414 @@ var render = function() {
                     on: {
                       click: function($event) {
                         $event.preventDefault()
-                        _vm.minute(0)
+                        _vm.relativeWeekStart(0)
                       }
                     }
                   },
-                  [_vm._v("00")]
+                  [_vm._v("start of this week")]
                 ),
                 _vm._v(" "),
-                _vm._l(59, function(m) {
-                  return m % 5 === 0
-                    ? _c(
-                        "a",
-                        {
-                          class: { active: _vm.pickedDate.minute() == m },
-                          attrs: { href: "#" },
-                          on: {
-                            click: function($event) {
-                              $event.preventDefault()
-                              _vm.minute(m)
-                            }
+                _c(
+                  "a",
+                  {
+                    attrs: { href: "#" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        _vm.relativeWeekEnd(0)
+                      }
+                    }
+                  },
+                  [_vm._v("end of this week")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "a",
+                  {
+                    attrs: { href: "#" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        _vm.relativeWeekStart(-1)
+                      }
+                    }
+                  },
+                  [_vm._v("start of last week")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "a",
+                  {
+                    attrs: { href: "#" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        _vm.relativeWeekEnd(-1)
+                      }
+                    }
+                  },
+                  [_vm._v("end of last week")]
+                )
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.pickableGroups.includes("relmonth")
+            ? _c("p", [
+                _c("strong", [_vm._v("Relative Month")]),
+                _vm._v(" "),
+                _c(
+                  "a",
+                  {
+                    attrs: { href: "#" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        _vm.relativeMonthStart(0)
+                      }
+                    }
+                  },
+                  [_vm._v("start of this month")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "a",
+                  {
+                    attrs: { href: "#" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        _vm.relativeMonthEnd(0)
+                      }
+                    }
+                  },
+                  [_vm._v("end of this month")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "a",
+                  {
+                    attrs: { href: "#" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        _vm.relativeMonthStart(-1)
+                      }
+                    }
+                  },
+                  [_vm._v("start of last month")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "a",
+                  {
+                    attrs: { href: "#" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        _vm.relativeMonthEnd(-1)
+                      }
+                    }
+                  },
+                  [_vm._v("end of last month")]
+                )
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.pickableGroups.includes("relday")
+            ? _c("p", [
+                _c("strong", [_vm._v("Relative Day")]),
+                _vm._v(" "),
+                _c(
+                  "a",
+                  {
+                    class: { active: _vm.daysAgo == 0 },
+                    attrs: { href: "#" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        _vm.relativeDay(0)
+                      }
+                    }
+                  },
+                  [_vm._v("today")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "a",
+                  {
+                    class: { active: _vm.daysAgo == 1 },
+                    attrs: { href: "#" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        _vm.relativeDay(-1)
+                      }
+                    }
+                  },
+                  [_vm._v("yesterday")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "a",
+                  {
+                    class: { active: _vm.daysAgo == 2 },
+                    attrs: { href: "#" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        _vm.relativeDay(-2)
+                      }
+                    }
+                  },
+                  [_vm._v("2 days ago")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "a",
+                  {
+                    class: { active: _vm.daysAgo == 3 },
+                    attrs: { href: "#" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        _vm.relativeDay(-3)
+                      }
+                    }
+                  },
+                  [_vm._v("3 days ago")]
+                )
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.pickableGroups.includes("month")
+            ? _c(
+                "p",
+                [
+                  _c("strong", [_vm._v("Month")]),
+                  _vm._v(" "),
+                  _vm._l(12, function(m) {
+                    return _c(
+                      "a",
+                      {
+                        class: { active: m == _vm.pickedDate.month() + 1 },
+                        attrs: { href: "#" },
+                        on: {
+                          click: function($event) {
+                            $event.preventDefault()
+                            _vm.month(m)
                           }
-                        },
-                        [
-                          _vm._v(
-                            "\n                    " +
-                              _vm._s(m < 10 ? "0" + m : m) +
-                              "\n                "
-                          )
-                        ]
-                      )
-                    : _vm._e()
-                })
-              ],
-              2
-            )
-          : _vm._e(),
-        _vm._v(" "),
-        _vm.pickableGroups.includes("time")
-          ? _c("p", [
-              _c("strong", [_vm._v("Time of Day")]),
-              _vm._v(" "),
-              _c(
-                "a",
-                {
-                  class: { active: _vm.pickedDate.hour() < 12 },
-                  attrs: { href: "#" },
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      _vm.meridiem("AM")
-                    }
-                  }
-                },
-                [_vm._v("AM")]
-              ),
-              _vm._v(" "),
-              _c(
-                "a",
-                {
-                  class: { active: _vm.pickedDate.hour() > 11 },
-                  attrs: { href: "#" },
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      _vm.meridiem("PM")
-                    }
-                  }
-                },
-                [_vm._v("PM")]
+                        }
+                      },
+                      [_vm._v(_vm._s(m))]
+                    )
+                  })
+                ],
+                2
               )
-            ])
-          : _vm._e()
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.pickableGroups.includes("day")
+            ? _c(
+                "p",
+                [
+                  _c("strong", [_vm._v("Day")]),
+                  _vm._v(" "),
+                  _vm._l(31, function(d) {
+                    return _c(
+                      "a",
+                      {
+                        class: { active: d == _vm.pickedDate.date() },
+                        attrs: { href: "#" },
+                        on: {
+                          click: function($event) {
+                            $event.preventDefault()
+                            _vm.day(d)
+                          }
+                        }
+                      },
+                      [_vm._v(_vm._s(d))]
+                    )
+                  })
+                ],
+                2
+              )
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.pickableGroups.includes("year")
+            ? _c("p", [
+                _c("strong", [_vm._v("Year")]),
+                _vm._v(" "),
+                _c(
+                  "a",
+                  {
+                    class: {
+                      active: _vm.pickedDate.year() == _vm.lastYear.year()
+                    },
+                    attrs: { href: "#" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        _vm.year(_vm.lastYear.year())
+                      }
+                    }
+                  },
+                  [_vm._v(_vm._s(_vm.lastYear.year()))]
+                ),
+                _vm._v(" "),
+                _c(
+                  "a",
+                  {
+                    class: { active: _vm.pickedDate.year() == _vm.now.year() },
+                    attrs: { href: "#" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        _vm.year(_vm.now.year())
+                      }
+                    }
+                  },
+                  [_vm._v(_vm._s(_vm.now.year()))]
+                ),
+                _vm._v(" "),
+                _c(
+                  "a",
+                  {
+                    class: {
+                      active: _vm.pickedDate.year() == _vm.nextYear.year()
+                    },
+                    attrs: { href: "#" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        _vm.year(_vm.nextYear.year())
+                      }
+                    }
+                  },
+                  [_vm._v(_vm._s(_vm.nextYear.year()))]
+                )
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.pickableGroups.includes("time")
+            ? _c(
+                "p",
+                [
+                  _c("strong", [_vm._v("Hour")]),
+                  _vm._v(" "),
+                  _vm._l(12, function(h) {
+                    return _c(
+                      "a",
+                      {
+                        class: {
+                          active:
+                            _vm.pickedDate.hour() == h ||
+                            _vm.pickedDate.hour() - 12 == h
+                        },
+                        attrs: { href: "#" },
+                        on: {
+                          click: function($event) {
+                            $event.preventDefault()
+                            _vm.hour(h)
+                          }
+                        }
+                      },
+                      [_vm._v(_vm._s(h))]
+                    )
+                  })
+                ],
+                2
+              )
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.pickableGroups.includes("time")
+            ? _c(
+                "p",
+                [
+                  _c("strong", [_vm._v("Minute")]),
+                  _vm._v(" "),
+                  _c(
+                    "a",
+                    {
+                      attrs: { href: "#" },
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          _vm.minute(0)
+                        }
+                      }
+                    },
+                    [_vm._v("00")]
+                  ),
+                  _vm._v(" "),
+                  _vm._l(59, function(m) {
+                    return m % 5 === 0
+                      ? _c(
+                          "a",
+                          {
+                            class: { active: _vm.pickedDate.minute() == m },
+                            attrs: { href: "#" },
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                _vm.minute(m)
+                              }
+                            }
+                          },
+                          [
+                            _vm._v(
+                              "\n                    " +
+                                _vm._s(m < 10 ? "0" + m : m) +
+                                "\n                "
+                            )
+                          ]
+                        )
+                      : _vm._e()
+                  })
+                ],
+                2
+              )
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.pickableGroups.includes("time")
+            ? _c("p", [
+                _c("strong", [_vm._v("Time of Day")]),
+                _vm._v(" "),
+                _c(
+                  "a",
+                  {
+                    class: { active: _vm.pickedDate.hour() < 12 },
+                    attrs: { href: "#" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        _vm.meridiem("AM")
+                      }
+                    }
+                  },
+                  [_vm._v("AM")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "a",
+                  {
+                    class: { active: _vm.pickedDate.hour() > 11 },
+                    attrs: { href: "#" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        _vm.meridiem("PM")
+                      }
+                    }
+                  },
+                  [_vm._v("PM")]
+                )
+              ])
+            : _vm._e()
+        ])
       ])
-    ])
-  ])
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true

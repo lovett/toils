@@ -4,23 +4,26 @@
     @endif
 
     <div class="col-sm-10 {{ $label ? '' : 'col-sm-offset-2' }}">
-        @if (isset($autofill))
-            <autofill-hint
-                field-selector="INPUT[name={{ $name }}]"
-                v-bind:suggestion="suggested{{ ucfirst($name) }}"
-                v-bind:previous="previous{{ ucfirst($name) }}">
-                &nbsp;
-            </autofill-hint>
-        @endif
-
         @isset($pickable)
         <pickable
             name="{{ $name }}"
             groups="{{ implode($pickable, ',') }}"
             initial-value="{{ TimeHelper::date($model->$name) }}"
+            @isset($autofill)
+            v-bind:suggested-value="suggested{{ ucfirst($name) }}"
+            v-bind:previous-value="previous{{ ucfirst($name) }}"
+            @endisset
         />
         @else
         {!! Form::text($name, TimeHelper::date($model->$name), ['class' => 'form-control']) !!}
+        @isset($autofill)
+        <autofill-hint
+            field-selector="INPUT[name={{ $name }}]"
+            v-bind:suggestion="suggested{{ ucfirst($name) }}"
+            v-bind:previous="previous{{ ucfirst($name) }}"
+        />
+        @endisset
+
         @endisset
 
         @if ($errors->has($name))

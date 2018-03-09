@@ -9,7 +9,12 @@
     <div class="container">
         <div class="panel panel-default">
             <div class="panel-body">
-                <autofill inline-template url="{{ route('time.suggestByProject') }}" fields="estimatedDuration, start, summary">
+o                <autofill
+                    inline-template
+                    url="{{ route('time.suggestByProject') }}"
+                    fields="estimatedDuration start summary"
+                    v-bind:autofetch="{{ ($model->project_id > 0)? 'true' : 'false' }}"
+                >
 
                     {!! Form::model($model, ['route' => $submission_route, 'method' => $submission_method, 'class' => 'form-horizontal']) !!}
 

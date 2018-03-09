@@ -1,28 +1,72 @@
 <script>
     module.exports = {
         props: {
-            // The Ajax endpoint to request autofill values from.
+            // Whether the component should self-trigger a call to the endpoint.
+            //
+            // This can be useful when the form has been prepopulated server-side.
+            autofetch: {
+                type: Boolean,
+                default: false
+            },
+
+            // A space-delimited list of field names participating in autofill.
+            //
+            // The names in this list should reflect the keys within the JSON
+            // returned by the endpoint. For each name, two data keys will be
+            // created: previous and suggested.
+            fields: {
+                type: String,
+                default: ''
+            },
+
+            // The endpoint that will provide autofill values.
             url: {
                 type: String,
                 required: true
-            },
-
-            // A comma-delimited list of field names. Field name must match key in Ajax response.
-            fields: {
-                type: String
             }
         },
 
         data: function () {
-            return this.fields.split(/,\s*/).reduce(function (acc, field) {
-                var capitalizedName = field[0].toUpperCase() + field.substring(1);
+            // Convert the fields prop into a blank object.
+            //
+            // Each field name becomes a pair of camel-cased keys: the previous
+            // value of the field, and the suggested value of the field.
+            // At this point a fetch has not occurred, so their values are null.
+            // Ensuring they exist gives child Pickable and AutofillHint components
+            // something to bind to, so that the values can pass down to them once
+            // a fetch has happened.
+            const data = this.fields.split(/\s+/).reduce(function (acc, field) {
+                // Get the field name ready for camel casing.
+                const capitalizedName = field[0].toUpperCase() + field.substring(1);
+
                 acc['suggested' + capitalizedName] = null;
                 acc['previous' + capitalizedName] = null;
+
                 return acc;
             }, {});
+
+            return data;
+        },
+
+        // Automatically trigger a fetch.
+        //
+        // If the autofetch prop is true and there is a dropdown that has been
+        // marked as the autofillTrigger ref, trigger a change event on it to
+        // cause a fetch.
+        mounted: function () {
+            if (!this.autofetch) {
+                return;
+            }
+
+            if (!this.$refs.hasOwnProperty('autofillTrigger')) {
+                return;
+            }
+
+            this.$refs.autofillTrigger.dispatchEvent(new Event('change'));
         },
 
         methods: {
+            // Make a request to the endpoint.
             fetch: function (e) {
                 const self = this;
 
@@ -32,11 +76,11 @@
                     return fetchResponse.json();
                 }).then(function (jsonResponse) {
                     ['previous', 'suggested'].forEach(function (group) {
-                        Object.keys(jsonResponse[group]).forEach(function (field) {
-                            var dataField = group + field[0].toUpperCase() + field.substring(1);
-                            if (self.hasOwnProperty(dataField)) {
-                                self[dataField] = jsonResponse[group][field];
-                            }
+                        const jsonGroup = jsonResponse[group];
+
+                        Object.keys(jsonGroup).forEach(function (jsonKey) {
+                            const dataKey = group + jsonKey[0].toUpperCase() + jsonKey.substring(1);
+                            self[dataKey] = jsonGroup[jsonKey];
                         });
                     });
                 });

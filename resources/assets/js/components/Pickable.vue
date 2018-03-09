@@ -1,6 +1,12 @@
 <template>
     <div>
-        <input type="text" v-model="value" class="form-control"/>
+        <input type="text" v-bind:name="name" v-model="value" class="form-control"/>
+
+        <autofill-hint
+            v-on:set="setValue"
+            v-bind:suggestion="suggestedValue"
+            v-bind:previous="previousValue"
+        />
 
         <a href="#" @click.prevent="toggle($event)" v-bind:class="{hidden: isOpen}">
             shortcuts
@@ -145,9 +151,17 @@
                 type: String,
                 default: ''
             },
+            previousValue: {
+                type: String,
+                default: '',
+            },
+            suggestedValue: {
+                type: String,
+                default: ''
+            },
             name: {
                 type: String
-            },
+            }
         },
 
         data: function () {
@@ -186,6 +200,10 @@
         },
 
         methods: {
+            setValue: function (value) {
+                this.value = value;
+            },
+
             toggle: function () {
                 this.isOpen = !this.isOpen;
             },

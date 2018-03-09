@@ -13,7 +13,7 @@
     @endif
 
     <div class="{{ implode(' ', $colClasses) }}">
-        {!! Form::select($name, $items, $selectedItem, ['class' => 'form-control', 'v-on:change' => $vchange]) !!}
+        {!! Form::select($name, $items, $selectedItem, ['class' => 'form-control', 'ref' => 'autofillTrigger', 'v-on:change' => $vchange]) !!}
 
         @if ($errors->has($name))
             <div class="help-block">{{ $errors->first($name)}}</div>

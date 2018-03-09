@@ -7,11 +7,20 @@
 
 <script>
     module.exports = {
-        props: [
-            'suggestion',
-            'previous',
-            'fieldSelector'
-        ],
+        props: {
+            suggestion: {
+                type: [String, Number],
+                default: ''
+            },
+            previous: {
+                type: [String, Number],
+                default: ''
+            },
+            fieldSelector: {
+                type: String,
+                default: ''
+            }
+        },
 
         data: function () {
             return {}
@@ -25,7 +34,10 @@
 
         methods: {
             apply: function () {
-                document.querySelector(this.fieldSelector).value = this.suggestion;
+                if (this.fieldSelector) {
+                    document.querySelector(this.fieldSelector).value = this.suggestion;
+                }
+                this.$emit('set', this.suggestion);
             }
         }
     };

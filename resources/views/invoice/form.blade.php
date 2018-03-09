@@ -8,7 +8,12 @@
     <div class="container">
         <div class="panel panel-default">
             <div class="panel-body">
-                <autofill inline-template url="{{ route('invoice.suggestByProject') }}" fields="start, end, name, summary, amount, due">
+                <autofill
+                    inline-template
+                    url="{{ route('invoice.suggestByProject') }}"
+                    fields="start end name summary amount due paid"
+                    v-bind:autofetch="{{ ($model->project_id > 0)? 'true' : 'false' }}"
+                >
 
                     {!! Form::model($model, ['files' => true, 'route' => $submission_route, 'method' => $submission_method, 'class' => 'invoice-form form-horizontal']) !!}
 
