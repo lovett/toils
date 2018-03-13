@@ -5,7 +5,9 @@
                 <th>Number</th>
                 <th>Sent</th>
                 <th>Name</th>
-                <th>Project</th>
+                @unless(Route::is('project.show'))
+                    <th>Project</th>
+                @endunless
                 <th>Start</th>
                 <th>End</th>
                 <th class="text-right">Amount</th>
@@ -31,6 +33,7 @@
                             {{ $invoice->name }}
                         </a>
                     </td>
+                    @unless(Route::is('project.show'))
                     <td>
                         <div>
                             <a href="{{ route('project.show', ['record' => $invoice->projectId]) }}">
@@ -44,6 +47,7 @@
                             @endif
                         </div>
                     </td>
+                    @endunless
                     <td>
                         {{ TimeHelper::readableShortDate($invoice->start) }}
                         <p class="small">
