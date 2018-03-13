@@ -151,6 +151,8 @@ class ProjectController extends Controller
             $numMonths
         );
 
+        $time = $project->time()->newest(10)->get();
+
         $totalTime = $project->time()->sum('minutes');
 
         $invoices = $project->invoices()->forList()->newest(5)->get();
@@ -173,6 +175,7 @@ class ProjectController extends Controller
             'slice' => $slice,
             'sliceTotal' => $sliceTotal,
             'sliceRange' => $numMonths,
+            'time' => $time,
             'totalTimeRemaining' => $project->totalTimeRemaining,
             'weeklyTimeRemaining' => $project->weeklyTimeRemaining,
         ];

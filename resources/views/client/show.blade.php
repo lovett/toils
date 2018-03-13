@@ -50,6 +50,15 @@
             </div>
         </div>
 
+        <h2>Time</h2>
+        @include('partials.empty-message', ['collection' => $time])
+
+        @if ($time->isNotEmpty())
+            <div class="panel panel-default">
+                @include('time.table', ['collection' => $time])
+            </div>
+        @endif
+
         <h2>Recent Invoices</h2>
 
         @include('partials.empty-message', ['collection' => $invoices])
@@ -60,14 +69,6 @@
             </div>
         @endif
 
-        <h2>Time</h2>
-        @include('partials.empty-message', ['collection' => $time])
-
-        @if ($time->isNotEmpty())
-        <div class="panel panel-default">
-            @include('time.table', ['collection' => $time])
-        </div>
-        @endif
     </div>
 
     @include('partials.timestamps-footer', ['record' => $model])
