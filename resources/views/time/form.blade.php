@@ -9,7 +9,7 @@
     <div class="container">
         <div class="panel panel-default">
             <div class="panel-body">
-o                <autofill
+                <autofill
                     inline-template
                     url="{{ route('time.suggestByProject') }}"
                     fields="estimatedDuration start summary"
@@ -32,6 +32,8 @@ o                <autofill
                     @include('partials.formgroup-time', ['name' => 'end', 'fieldName' => 'endTime', 'label' => 'End', 'pickable' => ['time']])
 
                     @include('partials.formgroup-textarea', ['name' => 'summary', 'label' => 'Summary', 'autofill' => true])
+
+                    @include('partials.formgroup-standard', ['name' => 'tagList', 'label' => 'Tags'])
 
                     @include('partials.save-button')
 

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TimeRequest;
 use App\Time;
+use App\Tag;
+use App\Helpers\MessagingHelper;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -81,7 +83,7 @@ class TimeController extends Controller
      *
      * @return response
      */
-    public function create(Request $request)
+    public function create(TimeRequest $request)
     {
         $clientId = $request->input('client', null);
         if ($clientId) {
@@ -152,7 +154,7 @@ class TimeController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        $time = $request->user()->time()->findOrFail($id);
+        $time = $request->user()->time()->with('tags')->findOrFail($id);
 
         $viewVars = [
             'pageTitle' => 'Edit Time Entry',
@@ -181,6 +183,11 @@ class TimeController extends Controller
         $time = $request->user()->time()->findOrFail($id);
 
         $time->update($request->all());
+
+        Tag::syncFromList(
+            $time,
+            $request->input('tagList')
+        );
 
         MessagingHelper::flashUpdated('time entry');
 

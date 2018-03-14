@@ -12,6 +12,7 @@ use App\Traits\Search;
 use App\Invoice;
 use stdClass;
 use App\Helpers\TimeHelper;
+use App\Tag;
 
 /**
  * Eloquent model for the times table.
@@ -189,6 +190,14 @@ class Time extends Model
     public function invoice()
     {
         return $this->belongsTo('App\Invoice');
+    }
+
+    /**
+     * Tags associated with the time entry
+     */
+    public function tags()
+    {
+        return $this->morphToMany('App\Tag', 'taggable');
     }
 
     /**
@@ -387,9 +396,15 @@ class Time extends Model
      * Round start time to nearest 5-minute interval
      *
      */
-    public function setStartAttribute($value)
+    public function setStartAttribute($value=null)
     {
-        $this->attributes['start'] = TimeHelper::roundToNearestMinuteMultiple($value, 5);
+        if (empty($value)) {
+            return null;
+        }
+
+        $carbonInstance = new Carbon($value);
+
+        $this->attributes['start'] = TimeHelper::roundToNearestMinuteMultiple($carbonInstance, 5);
     }
 
     /**
@@ -413,4 +428,21 @@ class Time extends Model
     {
         $this->attributes['minutes'] = TimeHelper::roundToNearestMultiple($value, 5);
     }
+
+    /**
+     * Computed accessor for converting a collection of tags to a
+     * comma-delimited list.
+     */
+    public function getTagListAttribute()
+    {
+       return $this->tags->implode('name', ', ');
+    }
+
+
+    public function syncTagsFromList($tagList)
+    {
+        $tags = Tag::createFromList($tagList);
+        $this->tags()->sync($tags);
+    }
+
 }
