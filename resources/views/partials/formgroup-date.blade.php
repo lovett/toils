@@ -13,6 +13,9 @@
             v-bind:suggested-value="suggested{{ ucfirst($name) }}"
             v-bind:previous-value="previous{{ ucfirst($name) }}"
             @endisset
+            @if ($errors->has($name))
+            error="{{ $errors->first($name) }}"
+            @endif
         />
         @else
         {!! Form::text($name, TimeHelper::date($model->$name), ['class' => 'form-control']) !!}
@@ -23,11 +26,11 @@
             v-bind:previous="previous{{ ucfirst($name) }}"
         />
         @endisset
-
-        @endisset
-
         @if ($errors->has($name))
             <div class="help-block">{{ $errors->first($name)}}</div>
         @endif
+
+        @endisset
+
     </div>
 </div>

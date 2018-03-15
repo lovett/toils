@@ -12,6 +12,8 @@
             shortcuts
         </a>
 
+        <div class="help-block">{{ error }}</div>
+
         <div class="shortcuts" v-bind:class="{hidden: !isOpen}">
             <div class="well">
                 <div class="pullup">
@@ -160,6 +162,9 @@
                 default: ''
             },
             name: {
+                type: String
+            },
+            error: {
                 type: String
             }
         },

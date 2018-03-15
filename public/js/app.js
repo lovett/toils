@@ -43054,6 +43054,8 @@ exports.push([module.i, "\n.hidden[data-v-2482a0b2] {\n    display: none;\n}\n.s
 //
 //
 //
+//
+//
 
 var moment = __webpack_require__(0);
 
@@ -43080,6 +43082,9 @@ module.exports = {
             default: ''
         },
         name: {
+            type: String
+        },
+        error: {
             type: String
         }
     },
@@ -43529,6 +43534,8 @@ var render = function() {
         },
         [_vm._v("\n        shortcuts\n    ")]
       ),
+      _vm._v(" "),
+      _c("div", { staticClass: "help-block" }, [_vm._v(_vm._s(_vm.error))]),
       _vm._v(" "),
       _c("div", { staticClass: "shortcuts", class: { hidden: !_vm.isOpen } }, [
         _c("div", { staticClass: "well" }, [
