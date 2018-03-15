@@ -74,7 +74,7 @@ class TimeHelper
             return '';
         }
 
-        return $value->format('M n, Y');
+        return $value->format('M j Y');
     }
 
     /**

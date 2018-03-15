@@ -16,7 +16,7 @@
             <tr>
                 <td>
                     <a href="{{ route('time.edit', $time) }}">
-                        {{ TimeHelper::readableShortDate($time->start) }}
+                        {{ TimeHelper::date($time->start) }}
                     </a>
                 </td>
                 <td>
