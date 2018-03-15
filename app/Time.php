@@ -68,9 +68,9 @@ class Time extends Model
      */
     protected $fillable = [
         'start',
+        'end',
         'minutes',
         'summary',
-        'estimatedDuration',
         'project_id',
     ];
 
@@ -230,6 +230,20 @@ class Time extends Model
         $end = clone $this->start;
 
         return $end->addMinutes($this->minutes);
+    }
+
+    /**
+     * Custom mutator to calculate minutes from end and start times.
+     *
+     * @return int|null;
+     */
+    public function setEndAttribute(Carbon $value = null)
+    {
+        if (empty($this->start)) {
+            return nulll;
+        }
+
+        $this->attributes['minutes'] = $value->diffInMinutes($this->start);
     }
 
     /**

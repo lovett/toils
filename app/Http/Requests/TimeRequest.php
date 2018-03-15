@@ -2,13 +2,15 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Carbon\Carbon;
+use App\Time;
 
 /**
  * Form request class for Time.
  */
-class TimeRequest extends Request
+class TimeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -17,9 +19,12 @@ class TimeRequest extends Request
      */
     public function authorize()
     {
-        $projectId = $this->input('project_id', 0);
 
-        $this->user()->projects()->findOrFail($projectId);
+        // Users can only modify their own entries.
+        $time = Time::where([
+            'id' => $this->route('time'),
+            'user_id' => $this->user()->id
+        ])->firstOrFail();
 
         return true;
     }
@@ -32,11 +37,13 @@ class TimeRequest extends Request
     public function rules()
     {
         return [
-            'project_id' => 'numeric|required',
-            'estimatedDuration' => 'numeric',
-            'start' => 'date',
-            'end' => 'date',
-            'summary' => 'string',
+            'estimatedDuration' => 'nullable|integer',
+            'project_id' => 'required|exists:projects,id',
+            'start' => 'required|date_format:Y-m-d',
+            'startTime' => 'required|date_format:g:i A',
+            'endTime' => 'nullable|date_format:g:i A',
+            'summary' => 'required',
+            'tags' => 'nullable|string',
         ];
     }
 
@@ -47,58 +54,61 @@ class TimeRequest extends Request
      */
     public function messages()
     {
-        return ['required' => 'This field is required'];
+        return [
+            'required' => 'This field is required.',
+            'date_format' => 'This isn\'t the right format.',
+            'integer' => 'This field should be a number.',
+        ];
     }
 
     /**
-     * Manipulate the input before performing validation.
+     * Manipulate the input after validation
+     *
+     * Merge separate date and time fields and apply additional
+     * validation logic.
      *
      * @return Validator;
      */
-    protected function getValidatorInstance()
+    public function withValidator($validator)
     {
-        // Set default values.
-        collect(
-            [
-                'project_id',
-                'estimatedDuration',
-                'start',
-                'minutes',
-            ]
-        )->each(
-            function ($field) {
-                if ($field === 'start') {
-                    $value = sprintf(
-                        '%s %s',
-                        $this->input($field.'Date', ''),
-                        $this->input($field.'Time', '')
-                    );
 
-                    $value = new Carbon($value);
-                }
+        $validator->after(function ($validator) {
 
-                if ($field === 'project_id') {
-                    $value = $this->input($field, 0);
-                }
-
-                if ($field === 'estimatedDuration') {
-                    $value = $this->input($field, 0);
-                }
-
-                if ($field === 'minutes') {
-                    $value = 0;
-                    $start = $this->input('startTime', 0);
-                    $end   = $this->input('endTime', 0);
-
-                    if ($start && $end) {
-                        $value = (strtotime($end) - strtotime($start)) / 60;
-                    }
-                }
-
-                $this->merge([$field => $value]);
+            // Bail if errors have already been found.
+            if ($validator->errors()->any()) {
+                return;
             }
-        );
 
-        return parent::getValidatorInstance();
+            $fields = [];
+            $fields['start'] = Carbon::createFromFormat(
+                'Y-m-d g:i A',
+                sprintf('%s %s', $this->input('start'), $this->input('startTime'))
+            );
+
+            // Add hours and minutes to the end field, using the start
+            // field as a base. Roll forward by one day if start is
+            // greater than end, implying the entry crosses the
+            // midnight boundary.
+
+            $fields['end'] = Carbon::createFromFormat(
+                'Y-m-d g:i A',
+                sprintf('%s %s', $this->input('start'), $this->input('endTime'))
+            );
+
+            if ($fields['start'] > $fields['end']) {
+                $fields['end'] = $fields['end']->addDay(1);
+            }
+
+            // Catch typos which are valid but otherwise produce a
+            // huge time interval.
+            if ($fields['end']->diffInHours($fields['start']) > 12) {
+                $validator->errors()->add('end', 'This end date is over 12 hours from the start.');
+            }
+
+            $fields['project_id'] = (int)$this->input('project_id');
+
+            $this->merge($fields);
+        });
     }
+
 }
