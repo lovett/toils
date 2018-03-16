@@ -8,7 +8,7 @@ use App\Project;
 use Illuminate\Contracts\Validation\Validator;
 
 /**
- * Form request class for Projects.
+ * Validation logic for form submissions that modify project records.
  */
 class ProjectRequest extends FormRequest
 {
@@ -19,14 +19,9 @@ class ProjectRequest extends FormRequest
      */
     public function authorize()
     {
-        $projectId = $this->route('project');
-        $clientId  = $this->input('client_id', 0);
-
-        $this->user()->clients()->findOrFail($clientId);
-
-        if ($projectId) {
-            $this->user()->projects()->findOrFail($projectId);
-        }
+        // Users can only modify projects they are associated with.
+        $id = $this->route('project');
+        $project = $this->user()->project($id)->firstOrFail();
 
         return true;
     }
@@ -39,16 +34,18 @@ class ProjectRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'string|required|max:255',
-            'client_id' => 'numeric|required',
-            'active' => 'boolean',
-            'billable' => 'boolean',
-            'taxDeducted' => 'boolean',
+            'name' => 'required|max:255',
+            'client_id' => 'required|exists:clients,id',
+            'allottedTotalHours' => 'nullable|numeric|min:0',
+            'allottedWeeklyHours' => 'nullable|numeric|min:0',
+            'active' => 'nullable|boolean',
+            'billable' => 'nullable|boolean',
+            'taxDeducted' => 'nullable|boolean',
         ];
     }
 
     /**
-     * Map validation rules to errors.
+     * Customize error messages.
      *
      * @return array
      */
@@ -58,24 +55,40 @@ class ProjectRequest extends FormRequest
     }
 
     /**
-     * Manipulate the input before performing validation.
+     * Manipulate the input after validation
      *
-     * @return Validator;
+     * Explicitly cast booleans and integers.
+     *
+     * @return void;
      */
-    protected function getValidatorInstance()
+    protected function withValidator($validator)
     {
-        // Set default values.
-        collect([
-            'active',
-            'billable',
-            'taxDeducted',
-        ])->each(
-            function ($field) {
-                $value = $this->input($field, 0);
-                $this->merge([$field => $value]);
-            }
-        );
 
-        return parent::getValidatorInstance();
+        $validator->after(function ($validator) {
+            // Bail if errors have already been found
+            if ($validator->errors()->any()) {
+                return;
+            }
+
+            $fields = [];
+            $fields['active'] = (bool)$this->input('active', false);
+            $fields['billable'] = (bool)$this->input('billable', false);
+            $fields['taxDeducted'] = (bool)$this->input('taxDeducted', false);
+
+            $fields['allottedTotalHours'] = $this->input('allottedTotalHours', null);
+            $fields['allottedWeeklyHours'] = $this->input('allottedWeeklyHours', null);
+
+            if (!is_null($fields['allottedTotalHours'])) {
+                $fields['allottedTotalHours'] = (float)$fields['allottedTotalHours'];
+            }
+
+            if (!is_null($fields['allottedWeeklyHours'])) {
+                $fields['allottedWeeklyHours'] = (float)$fields['allottedWeeklyHours'];
+            }
+
+
+            $this->merge($fields);
+
+        });
     }
 }

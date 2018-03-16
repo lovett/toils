@@ -8,7 +8,7 @@ use Carbon\Carbon;
 use App\Time;
 
 /**
- * Form request class for Time.
+ * Validation logic for form requests that modify time entries.
  */
 class TimeRequest extends FormRequest
 {
@@ -19,7 +19,6 @@ class TimeRequest extends FormRequest
      */
     public function authorize()
     {
-
         // Users can only modify their own entries.
         $time = Time::where([
             'id' => $this->route('time'),
@@ -48,7 +47,7 @@ class TimeRequest extends FormRequest
     }
 
     /**
-     * Map validation rules to errors.
+     * Customize error messages.
      *
      * @return array
      */
@@ -67,7 +66,7 @@ class TimeRequest extends FormRequest
      * Merge separate date and time fields and apply additional
      * validation logic.
      *
-     * @return Validator;
+     * @return void;
      */
     public function withValidator($validator)
     {
