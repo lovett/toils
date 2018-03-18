@@ -4,15 +4,19 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use App\Client;
 use Illuminate\Contracts\Validation\Validator;
 
 /**
- * Form request class for Projects.
+ * Validation logic for form submissions that modify client records.
  */
 class ClientRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
+     *
+     * This is a weaker check than other request classes because a client
+     * is a root-like object that other things are attached to.
      *
      * @return bool
      */
@@ -29,7 +33,7 @@ class ClientRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|max:255|unique:clients,'.$this->id,
+            'name' => 'required|max:255|unique:clients',
         ];
     }
 
@@ -44,22 +48,15 @@ class ClientRequest extends FormRequest
     }
 
     /**
-     * Manipulate the input before performing validation.
-     *
-     * @return Validatoro
+     * Unlike other application modules, this one doesn't do any
+     * post-validation input manipulation.
      */
-    protected function getValidatorInstance()
+    protected function withValidator($validator)
     {
-        // Set default values.
-        collect(
-            ['active']
-        )->each(
-            function ($field) {
-                $value = $this->input($field, 0);
-                $this->merge([$field => $value]);
+        $validator->after(function ($validator) {
+            if ($validator->errors()->any()) {
+                return;
             }
-        );
-
-        return parent::getValidatorInstance();
+        });
     }
 }
