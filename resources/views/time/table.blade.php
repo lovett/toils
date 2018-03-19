@@ -36,6 +36,19 @@
 
                 <td>
                     {{ str_limit($time->summary, 75) }}
+
+                    @if (count($time->tags) > 0)
+                        <p>
+                            @foreach ($time->tags as $tag)
+                                <span class="tag">
+                                    <svg class="icon">
+                                        <use xlink:href="#icon-price-tag" />
+                                    </svg>
+                                    {{ $tag->name }}
+                                </span>
+                            @endforeach
+                        </p>
+                    @endif
                 </td>
 
                 </td>

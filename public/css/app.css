@@ -6116,3 +6116,7 @@ input[type=file]::-webkit-file-upload-button:hover {
           box-sizing: border-box;
 }
 
+.tag {
+  padding-right: 1em;
+}
+

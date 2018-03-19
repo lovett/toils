@@ -107,7 +107,7 @@ class Time extends Model
      */
     public static function listing(Builder $builder)
     {
-        $builder = $builder->with('project');
+        $builder = $builder->with('project')->with('tags');
         $builder = $builder->orderBy('start', 'desc');
 
         return $builder;
