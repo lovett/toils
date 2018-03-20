@@ -5,6 +5,10 @@ namespace App\Http\Requests;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * Validation logic for form submissions that modify invoice records.
+ */
+
 class InvoiceRequest extends FormRequest
 {
     /**
@@ -14,6 +18,16 @@ class InvoiceRequest extends FormRequest
      */
     public function authorize()
     {
+        // Users can only modify invoices associated with projects they belong to.
+        $id = $this->route('invoice');
+
+        if (!is_null($id)) {
+            $invoice = $this->user()->invoice($id)->firstOrFail();
+            $project = $this->user()->project($invoice->project_id)->firstOrFail();
+            return true;
+        }
+
+        // Otherwise, a login is required for invoice creation.
         return Auth::check();
     }
 
@@ -25,7 +39,55 @@ class InvoiceRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'project_id' => 'required|exists:projects,id',
+            'start' => 'required|date_format:Y-m-d',
+            'end' => 'required|date_format:Y-m-d',
+            'name' => 'required',
+            'summary' => 'required',
+            'amount' => 'integer',
+            'sent' => 'nullable|date_format:Y-m-d',
+            'due' => 'nullable|date_format:Y-m-d',
+            'paid' => 'nullable|date_format:Y-m-d',
         ];
     }
+
+    /**
+     * Customize error messages.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'required' => 'This field is required.',
+            'date_format' => 'This isn\'t the right format.',
+            'integer' => 'This field should be a number.',
+        ];
+    }
+
+    /**
+     * Manipulate the input after validation
+     *
+     * @return void
+     */
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+
+            // Bail if errors have already been found.
+            if ($validator->errors()->any()) {
+                return;
+            }
+
+            $fields = [];
+
+            $fields['project_id'] = (int)$this->input('project_id');
+
+            $fields['amount'] = (float)$this->input('amount');
+
+            $this->merge($fields);
+        });
+
+    }
+
 }
