@@ -13,7 +13,8 @@
     </thead>
     <tbody>
         @foreach ($collection as $time)
-            <tr>
+            @php($unfinishedClass = ($time->minutes === 0)? 'warning' : '')
+            <tr class="{{ $unfinishedClass }}">
                 <td>
                     <a href="{{ route('time.edit', $time) }}">
                         {{ TimeHelper::date($time->start) }}
@@ -21,11 +22,14 @@
                 </td>
                 <td>
                     {{ $time->start->format('g:i A') }}
-
+                    →
                     @if ($time->end)
-                        → {{ $time->end->format('g:i A') }}
+                        {{ $time->end->format('g:i A') }}
+                        <div class="small">{{ TimeHelper::hoursAndMinutes($time->minutes) }}</div>
+                    @else
+                        ?
+                        <p><a href="#" class="btn finish btn-info btn-xs">Finish</a></p>
                     @endif
-                    <div class="small">{{ TimeHelper::hoursAndMinutes($time->minutes) }}</div>
                 </td>
 
                 @unless(Route::is('project.show'))

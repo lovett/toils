@@ -207,17 +207,17 @@ class Time extends Model
      *
      * @return integer;
      */
-    public function getMinutesAttribute($value)
+    public function getMinutesAttribute($value=null)
     {
         if (is_numeric($value) === false) {
             $value = 0;
         }
 
-        return $value;
+        return (int)$value;
     }
 
     /**
-     * Custom accessor to calculate end time from start and duration.
+     * Custom accessor to calculate end time from start and minutes.
      *
      * @return Carbon|null;
      */
@@ -241,6 +241,11 @@ class Time extends Model
     {
         if (empty($this->start)) {
             return nulll;
+        }
+
+        if (is_null($value)) {
+            $this->attributes['minutes'] = 0;
+            return null;
         }
 
         $this->attributes['minutes'] = $value->diffInMinutes($this->start);
@@ -438,8 +443,12 @@ class Time extends Model
     /**
      * Round duration minutes to nearest 5-minute interval
      */
-    public function setMinutesAttribute(int $value)
+    public function setMinutesAttribute(int $value=null)
     {
+        if (is_null($value)) {
+            $this->attributes['minutes'] = 0;
+            return;
+        }
         $this->attributes['minutes'] = TimeHelper::roundToNearestMultiple($value, 5);
     }
 

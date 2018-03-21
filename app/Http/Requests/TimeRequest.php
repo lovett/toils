@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Carbon\Carbon;
@@ -19,13 +20,16 @@ class TimeRequest extends FormRequest
      */
     public function authorize()
     {
-        // Users can only modify their own entries.
-        $time = Time::where([
-            'id' => $this->route('time'),
-            'user_id' => $this->user()->id
-        ])->firstOrFail();
+        $id = $this->route('time');
 
-        return true;
+        // Users can only modify their own entries.
+        if (!is_null($id)) {
+            $time = $this->user()->time()->findOrFail($id);
+            return true;
+        }
+
+        // Otherwise, a login is required to create entries.
+        return Auth::check();
     }
 
     /**
@@ -78,7 +82,8 @@ class TimeRequest extends FormRequest
                 return;
             }
 
-            $fields = [];
+            $fields = ['end' => null];
+
             $fields['start'] = Carbon::createFromFormat(
                 'Y-m-d g:i A',
                 sprintf('%s %s', $this->input('start'), $this->input('startTime'))
@@ -88,19 +93,21 @@ class TimeRequest extends FormRequest
             // field as a base. Roll forward by one day if start is
             // greater than end, implying the entry crosses the
             // midnight boundary.
+            if (!empty($this->input('endTime'))) {
+                $fields['end'] = Carbon::createFromFormat(
+                    'Y-m-d g:i A',
+                    sprintf('%s %s', $this->input('start'), $this->input('endTime'))
+                );
 
-            $fields['end'] = Carbon::createFromFormat(
-                'Y-m-d g:i A',
-                sprintf('%s %s', $this->input('start'), $this->input('endTime'))
-            );
-
-            if ($fields['start'] > $fields['end']) {
-                $fields['end'] = $fields['end']->addDay(1);
+                if ($fields['start'] > $fields['end']) {
+                    $fields['end'] = $fields['end']->addDay(1);
+                }
             }
 
-            // Catch typos which are valid but otherwise produce a
-            // huge time interval.
-            if ($fields['end']->diffInHours($fields['start']) > 12) {
+            // Catch typos involving valid datetime values but
+            // otherwise produce a huge time interval. Such as a PM
+            // time that was accidentally submitted as AM.
+            if (!is_null($fields['end']) && $fields['end']->diffInHours($fields['start']) > 12) {
                 $validator->errors()->add('end', 'This end date is over 12 hours from the start.');
             }
 
