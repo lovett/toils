@@ -83,7 +83,7 @@ class TimeController extends Controller
      *
      * @return response
      */
-    public function create(TimeRequest $request)
+    public function create(Request $request)
     {
         $clientId = $request->input('client', null);
         if ($clientId) {
