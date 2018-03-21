@@ -6,9 +6,9 @@
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
             <ul class="list-inline">
-                <li>{!! LinkHelper::buttonLink('project.create', 'New project') !!}</li>
-                <li>{!! LinkHelper::buttonLink('client.create', 'New client') !!}</li>
-                <li>{!! LinkHelper::buttonLink('estimate.create', 'New estimate') !!}</li>
+                <li>{!! LinkHelper::smallButtonLink('project.create', 'New project') !!}</li>
+                <li>{!! LinkHelper::smallButtonLink('client.create', 'New client') !!}</li>
+                <li>{!! LinkHelper::smallButtonLink('estimate.create', 'New estimate') !!}</li>
             </ul>
         </div>
     </div>
@@ -16,6 +16,12 @@
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
 
+            @if ($unfinishedTime->isNotEmpty())
+                <h2>In Progress</h2>
+                <div class="panel panel-default">
+                    @include('time.table', ['collection' => $unfinishedTime])
+                </div>
+            @endif
 
             <h2>Projects</h2>
             <p>{{ TimeHelper::hoursAndMinutes($totalUnbilled) }} of billable time.</p>
@@ -32,8 +38,8 @@
                         </div>
 
                         <div class="panel-footer grid ">
-                            {!! link_to_route('time.create', 'time', ['project' => $project->id]) !!}
-                            {!! link_to_route('invoice.create', 'invoice', ['project' => $project->id]) !!}
+                            {!! LinkHelper::extraSmallButtonLink('time.create', 'time', ['project' => $project->id]) !!}
+                            {!! LinkHelper::extraSmallButtonLink('invoice.create', 'invoice', ['project' => $project->id]) !!}
                         </div>
                     </div>
                 @endforeach

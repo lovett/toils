@@ -32,9 +32,12 @@ class DashboardController extends Controller
 
         $activeProjects = $projects->active()->newest()->get();
 
+        $unfinishedTime = $request->user()->time()->unfinished(5)->get();
+
         $viewVars = [
             'pageTitle' => 'Dashboard',
             'activeProjects' => $activeProjects,
+            'unfinishedTime' => $unfinishedTime,
             'totalUnbilled' => $activeProjects->sum('unbilledTime'),
         ];
 

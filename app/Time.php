@@ -114,6 +114,23 @@ class Time extends Model
     }
 
     /**
+     * Query scope to restrict to in-progress, unfinished records.
+     *
+     * @param Builder $query An existing query.
+     */
+    public function scopeUnfinished($query, $limit=null)
+    {
+        $query->where('minutes', 0);
+        $query->orderBy('start', 'desc');
+
+        if (!is_null($limit)) {
+            $query->limit($limit);
+        }
+
+        return $query;
+    }
+
+    /**
      * Query scope to restrict time entries to the current week
      *
      * @param Builder $query An existing query.

@@ -38,8 +38,25 @@ class LinkHelper
 
     public static function buttonLink($route, $label, array $params = [], array $attribs = [])
     {
-        $attribs = ['role' => 'button', 'class' => 'btn btn-primary'];
+        $class = 'btn btn-primary';
+        if (array_key_exists('class', $attribs)) {
+            $attribs['class'] = $class . ' ' . $attribs['class'];
+        } else {
+            $attribs['class'] = $class;
+        }
         return link_to_route($route, $label, $params, $attribs);
+    }
+
+    public static function smallButtonLink($route, $label, array $params = [], array $attributes = [])
+    {
+        $attributes['class'] = 'btn-sm';
+        return static::buttonLink($route, $label, $params, $attributes);
+    }
+
+    public static function extraSmallButtonLink($route, $label, array $params = [], array $attributes = [])
+    {
+        $attributes['class'] = 'btn-xs';
+        return static::buttonLink($route, $label, $params, $attributes);
     }
 
     /**
