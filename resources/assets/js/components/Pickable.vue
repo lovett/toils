@@ -170,10 +170,15 @@
         },
 
         data: function () {
+            let value = null;
             let initial = moment(this.initialValue, this.format, true);
 
             if (!initial.isValid()) {
                 initial = moment();
+            }
+
+            if (this.initialValue) {
+                value = initial.format(this.format);
             }
 
             const groupList = this.groups.split(',');
@@ -186,7 +191,7 @@
                 pickableGroups: groupList,
                 pickedDate: initial,
                 daysAgo: moment().diff(initial, 'days'),
-                value: initial.format(this.format),
+                value: value
             };
         },
 

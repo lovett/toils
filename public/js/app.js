@@ -43090,10 +43090,15 @@ module.exports = {
     },
 
     data: function data() {
+        var value = null;
         var initial = moment(this.initialValue, this.format, true);
 
         if (!initial.isValid()) {
             initial = moment();
+        }
+
+        if (this.initialValue) {
+            value = initial.format(this.format);
         }
 
         var groupList = this.groups.split(',');
@@ -43106,7 +43111,7 @@ module.exports = {
             pickableGroups: groupList,
             pickedDate: initial,
             daysAgo: moment().diff(initial, 'days'),
-            value: initial.format(this.format)
+            value: value
         };
     },
 
