@@ -8,16 +8,21 @@
             v-bind:previous="previousValue"
         />
 
-        <a href="#" @click.prevent="toggle($event)" v-bind:class="{hidden: isOpen}">
-            shortcuts
-        </a>
+        <div class="actions">
+            <a href="#" @click.prevent="current()">now</a>
+            <a href="#" @click.prevent="toggle($event)" v-bind:class="{hidden: isOpen}">
+                more shortcuts
+            </a>
+        </div>
 
         <div class="help-block">{{ error }}</div>
 
         <div class="shortcuts" v-bind:class="{hidden: !isOpen}">
             <div class="well">
                 <div class="pullup">
-                    <a href="#" @click.prevent="toggle($event)">close</a>
+                    <button type="button" @click.prevent="toggle($event)" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
 
                 <p v-if="pickableGroups.includes('relweek')">
@@ -88,6 +93,16 @@
         display: none;
     }
 
+    .actions {
+        font-size: .75em;
+        text-transform: uppercase;
+        padding: 1em 0;
+    }
+
+    .actions A {
+        margin-right: 1em;
+    }
+
     .shortcuts {
         position: relative;
         margin-top: 1em;
@@ -96,6 +111,11 @@
     .shortcuts strong {
         display: block;
     }
+
+    .shortcuts .close {
+        padding: .5em;
+    }
+
 
     .shortcuts a {
         display: inline-block;
@@ -216,6 +236,10 @@
 
             toggle: function () {
                 this.isOpen = !this.isOpen;
+            },
+
+            current: function () {
+                this.pickedDate = moment();
             },
 
             day: function (val) {

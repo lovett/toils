@@ -42909,7 +42909,7 @@ exports = module.exports = __webpack_require__(11)(false);
 
 
 // module
-exports.push([module.i, "\n.hidden[data-v-2482a0b2] {\n    display: none;\n}\n.shortcuts[data-v-2482a0b2] {\n    position: relative;\n    margin-top: 1em;\n}\n.shortcuts strong[data-v-2482a0b2] {\n    display: block;\n}\n.shortcuts a[data-v-2482a0b2] {\n    display: inline-block;\n    margin-right: 1em;\n    padding: 0 .5em;\n    text-decoration: none;\n    -webkit-transition: all .25s;\n    transition: all .25s;\n}\n.shortcuts a[data-v-2482a0b2]:hover {\n    color: #fff;\n    background-color: #333;\n}\n.shortcuts .active[data-v-2482a0b2] {\n    background-color: #333;\n    color: white;\n}\n.shortcuts .pullup[data-v-2482a0b2] {\n    position: absolute;\n    top: .25em;\n    right: .25em;\n}\n.shortcuts .pullup a[data-v-2482a0b2] {\n    font-size: 0.85em;\n    margin: 0;\n}\n.shortcuts .pullup a[data-v-2482a0b2]:hover {\n    color: inherit;\n    background-color: inherit;\n    text-decoration: underline;\n}\n.shortcuts .well[data-v-2482a0b2] {\n    margin-bottom: 0;\n}\n", ""]);
+exports.push([module.i, "\n.hidden[data-v-2482a0b2] {\n    display: none;\n}\n.actions[data-v-2482a0b2] {\n    font-size: .75em;\n    text-transform: uppercase;\n    padding: 1em 0;\n}\n.actions A[data-v-2482a0b2] {\n    margin-right: 1em;\n}\n.shortcuts[data-v-2482a0b2] {\n    position: relative;\n    margin-top: 1em;\n}\n.shortcuts strong[data-v-2482a0b2] {\n    display: block;\n}\n.shortcuts .close[data-v-2482a0b2] {\n    padding: .5em;\n}\n.shortcuts a[data-v-2482a0b2] {\n    display: inline-block;\n    margin-right: 1em;\n    padding: 0 .5em;\n    text-decoration: none;\n    -webkit-transition: all .25s;\n    transition: all .25s;\n}\n.shortcuts a[data-v-2482a0b2]:hover {\n    color: #fff;\n    background-color: #333;\n}\n.shortcuts .active[data-v-2482a0b2] {\n    background-color: #333;\n    color: white;\n}\n.shortcuts .pullup[data-v-2482a0b2] {\n    position: absolute;\n    top: .25em;\n    right: .25em;\n}\n.shortcuts .pullup a[data-v-2482a0b2] {\n    font-size: 0.85em;\n    margin: 0;\n}\n.shortcuts .pullup a[data-v-2482a0b2]:hover {\n    color: inherit;\n    background-color: inherit;\n    text-decoration: underline;\n}\n.shortcuts .well[data-v-2482a0b2] {\n    margin-bottom: 0;\n}\n", ""]);
 
 // exports
 
@@ -42918,6 +42918,26 @@ exports.push([module.i, "\n.hidden[data-v-2482a0b2] {\n    display: none;\n}\n.s
 /* 173 */
 /***/ (function(module, exports, __webpack_require__) {
 
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -43136,6 +43156,10 @@ module.exports = {
 
         toggle: function toggle() {
             this.isOpen = !this.isOpen;
+        },
+
+        current: function current() {
+            this.pickedDate = moment();
         },
 
         day: function day(val) {
@@ -43525,20 +43549,36 @@ var render = function() {
         on: { set: _vm.setValue }
       }),
       _vm._v(" "),
-      _c(
-        "a",
-        {
-          class: { hidden: _vm.isOpen },
-          attrs: { href: "#" },
-          on: {
-            click: function($event) {
-              $event.preventDefault()
-              _vm.toggle($event)
+      _c("div", { staticClass: "actions" }, [
+        _c(
+          "a",
+          {
+            attrs: { href: "#" },
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                _vm.current()
+              }
             }
-          }
-        },
-        [_vm._v("\n        shortcuts\n    ")]
-      ),
+          },
+          [_vm._v("now")]
+        ),
+        _vm._v(" "),
+        _c(
+          "a",
+          {
+            class: { hidden: _vm.isOpen },
+            attrs: { href: "#" },
+            on: {
+              click: function($event) {
+                $event.preventDefault()
+                _vm.toggle($event)
+              }
+            }
+          },
+          [_vm._v("\n            more shortcuts\n        ")]
+        )
+      ]),
       _vm._v(" "),
       _c("div", { staticClass: "help-block" }, [_vm._v(_vm._s(_vm.error))]),
       _vm._v(" "),
@@ -43546,9 +43586,14 @@ var render = function() {
         _c("div", { staticClass: "well" }, [
           _c("div", { staticClass: "pullup" }, [
             _c(
-              "a",
+              "button",
               {
-                attrs: { href: "#" },
+                staticClass: "close",
+                attrs: {
+                  type: "button",
+                  "data-dismiss": "alert",
+                  "aria-label": "Close"
+                },
                 on: {
                   click: function($event) {
                     $event.preventDefault()
@@ -43556,7 +43601,7 @@ var render = function() {
                   }
                 }
               },
-              [_vm._v("close")]
+              [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
             )
           ]),
           _vm._v(" "),
