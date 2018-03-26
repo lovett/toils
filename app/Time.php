@@ -485,4 +485,10 @@ class Time extends Model
         $this->tags()->sync($tags);
     }
 
+
+    public function finish() {
+        $this->end = new Carbon();
+        $this->save();
+    }
+
 }

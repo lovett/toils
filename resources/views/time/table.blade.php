@@ -28,7 +28,11 @@
                         <div class="small">{{ TimeHelper::hoursAndMinutes($time->minutes) }}</div>
                     @else
                         ?
-                        <p><a href="#" class="btn finish btn-info btn-xs">Finish</a></p>
+
+                        {!! Form::model($time, ['route' => ['time.finish'], 'method' => 'POST']) !!}
+                        {!! Form::hidden('id', $time->id) !!}
+                        {!! Form::button('FINISH', ['type' => 'submit', 'class' => 'btn finish btn-info btn-xs']) !!}
+                        {!! Form::close() !!}
                     @endif
                 </td>
 

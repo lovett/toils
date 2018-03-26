@@ -212,4 +212,15 @@ class TimeController extends Controller
 
         return redirect()->route('time.index');
     }
+
+    public function finish(Request $request)
+    {
+
+        $id = $request->input('id', null);
+        $time = $request->user()->time()->findOrFail($id);
+
+        $time->finish();
+
+        return redirect()->route('time.index');
+    }
 }

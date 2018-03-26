@@ -28,6 +28,11 @@ Route::get('time/suggestions/project/{projectId?}', [
     'uses' => 'TimeController@suggestByProject'
 ]);
 
+Route::post('time/finish', [
+    'as' => 'time.finish',
+    'uses' => 'TimeController@finish',
+]);
+
 Route::resource('time', 'TimeController');
 Route::resource('estimate', 'EstimateController');
 
