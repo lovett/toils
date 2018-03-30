@@ -9,12 +9,14 @@
             @endunless
             <th>Summary</th>
             <th class="text-right">Accuracy</th>
+            <th>Status</th>
         </tr>
     </thead>
     <tbody>
         @foreach ($collection as $time)
             @php($unfinishedClass = ($time->minutes === 0)? 'warning' : '')
-            <tr class="{{ $unfinishedClass }}">
+            @php($billableClass = ($time->billable)? '' : 'unbillable')
+            <tr class="{{ $unfinishedClass }} {{ $billableClass }}">
                 <td>
                     <a href="{{ route('time.edit', $time) }}">
                         {{ TimeHelper::date($time->start) }}
@@ -65,6 +67,16 @@
                         {{ $time->accuracy }}%
                     @endif
                 </td>
+                <td class="text-center">
+                    @unless ($time->billable)
+                        <svg class="icon inactive"><use xlink:href="#icon-blocked" /></svg>
+                    @endunless
+
+                    @if ($time->invoice_id)
+                        <svg class="icon active"><use xlink:href="#icon-checkmark" /></svg>
+                    @endif
+                </td>
+
             </tr>
         @endforeach
     </tbody>

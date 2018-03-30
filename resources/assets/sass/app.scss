@@ -137,3 +137,9 @@ input[type=file] {
     margin-top: .5em;
     text-transform: uppercase;
 }
+
+.unbillable {
+    td {
+        background-color: #efefef;
+    }
+}

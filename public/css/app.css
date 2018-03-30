@@ -6125,3 +6125,7 @@ input[type=file]::-webkit-file-upload-button:hover {
   text-transform: uppercase;
 }
 
+.unbillable td {
+  background-color: #efefef;
+}
+

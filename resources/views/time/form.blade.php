@@ -35,6 +35,8 @@
 
                     @include('partials.formgroup-standard', ['name' => 'tagList', 'label' => 'Tags'])
 
+                    @include('partials.formgroup-checkbox', ['name' => 'billable', 'label' => 'This entry is billable', 'checked' => $model->billable])
+
                     @include('partials.save-button')
 
                     {!! Form::close() !!}

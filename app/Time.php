@@ -28,6 +28,7 @@ class Time extends Model
      */
     protected $attributes = [
         'minutes' => 0,
+        'billable' => true,
     ];
 
     /**
@@ -72,6 +73,7 @@ class Time extends Model
         'minutes',
         'summary',
         'project_id',
+        'billable',
     ];
 
     /**
