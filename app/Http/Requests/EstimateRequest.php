@@ -5,12 +5,15 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Contracts\Validation\Validator;
+use App\Traits\StandardValidationMessages;
 
 /**
  * Form request class for Estimates.
  */
 class EstimateRequest extends FormRequest
 {
+    use StandardValidationMessages;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -30,16 +33,6 @@ class EstimateRequest extends FormRequest
     {
         return [
         ];
-    }
-
-    /**
-     * Map validation rules to errors.
-     *
-     * @return array
-     */
-    public function messages()
-    {
-        return ['required' => 'This field is required'];
     }
 
     /**

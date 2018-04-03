@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
+use App\Traits\StandardValidationMessages;
 
 /**
  * Validation logic for form submissions that modify invoice records.
@@ -11,6 +12,8 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class InvoiceRequest extends FormRequest
 {
+    use StandardValidationMessages;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -48,20 +51,6 @@ class InvoiceRequest extends FormRequest
             'sent' => 'nullable|date_format:Y-m-d',
             'due' => 'nullable|date_format:Y-m-d',
             'paid' => 'nullable|date_format:Y-m-d',
-        ];
-    }
-
-    /**
-     * Customize error messages.
-     *
-     * @return array
-     */
-    public function messages()
-    {
-        return [
-            'required' => 'This field is required.',
-            'date_format' => 'This isn\'t the right format.',
-            'integer' => 'This field should be a number.',
         ];
     }
 

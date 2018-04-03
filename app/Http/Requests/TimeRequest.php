@@ -7,12 +7,15 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Carbon\Carbon;
 use App\Time;
+use App\Traits\StandardValidationMessages;
 
 /**
  * Validation logic for form requests that modify time entries.
  */
 class TimeRequest extends FormRequest
 {
+    use StandardValidationMessages;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -47,20 +50,6 @@ class TimeRequest extends FormRequest
             'endTime' => 'nullable|date_format:g:i A',
             'summary' => 'required',
             'tags' => 'nullable|string',
-        ];
-    }
-
-    /**
-     * Customize error messages.
-     *
-     * @return array
-     */
-    public function messages()
-    {
-        return [
-            'required' => 'This field is required.',
-            'date_format' => 'This isn\'t the right format.',
-            'integer' => 'This field should be a number.',
         ];
     }
 

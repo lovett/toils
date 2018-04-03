@@ -6,12 +6,15 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Project;
 use Illuminate\Contracts\Validation\Validator;
+use App\Traits\StandardValidationMessages;
 
 /**
  * Validation logic for form submissions that modify project records.
  */
 class ProjectRequest extends FormRequest
 {
+    use StandardValidationMessages;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -42,16 +45,6 @@ class ProjectRequest extends FormRequest
             'billable' => 'nullable|boolean',
             'taxDeducted' => 'nullable|boolean',
         ];
-    }
-
-    /**
-     * Customize error messages.
-     *
-     * @return array
-     */
-    public function messages()
-    {
-        return ['required' => 'This field is required'];
     }
 
     /**

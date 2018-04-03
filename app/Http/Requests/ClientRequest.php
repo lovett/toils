@@ -6,12 +6,15 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Client;
 use Illuminate\Contracts\Validation\Validator;
+use App\Traits\StandardValidationMessages;
 
 /**
  * Validation logic for form submissions that modify client records.
  */
 class ClientRequest extends FormRequest
 {
+    use StandardValidationMessages;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -37,15 +40,6 @@ class ClientRequest extends FormRequest
         ];
     }
 
-    /**
-     * Map validation rules to errors.
-     *
-     * @return array
-     */
-    public function messages()
-    {
-        return ['required' => 'This field is required'];
-    }
 
     /**
      * Unlike other application modules, this one doesn't do any
