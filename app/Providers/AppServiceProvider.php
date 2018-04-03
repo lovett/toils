@@ -6,8 +6,10 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use App\Observers\InvoiceObserver;
 use App\Observers\ClientObserver;
+use App\Observers\TimeObserver;
 use App\Invoice;
 use App\Client;
+use App\Time;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
 
         Invoice::observe(InvoiceObserver::class);
         Client::observe(ClientObserver::class);
+        Time::observe(TimeObserver::class);
 
         Blade::if('notempty', function ($value) {
             return !empty($value);
