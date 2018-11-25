@@ -29,3 +29,11 @@ outdated-php:
 
 # Check for all out-of-date packages
 outdated: outdated-php outdated-js
+
+# Create a package upgrade commit.
+#
+# "puc" stands for Package Upgrade Commit
+puc: dummy
+	git checkout master
+	git add package.json package-lock.json composer.json composer.lock
+	git commit -m "Upgrade npm and composer packages"
