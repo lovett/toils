@@ -114,7 +114,7 @@ class User extends Authenticatable
      *
      */
     public function estimate($id) {
-        return $this->estimates()->where('id', $id);
+        return $this->estimates()->where('estimates.id', $id)->firstOrFail();
     }
 
     /**
