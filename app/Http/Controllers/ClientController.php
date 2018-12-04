@@ -131,6 +131,8 @@ class ClientController extends Controller
     {
         $client = $request->user()->clients()->with('projects')->findOrFail($id);
 
+        $estimates = $client->estimates()->forList()->get();
+
         $invoices = $client->invoices()->forList()->newest(5)->get();
 
         $time = $client->time()->newest(10)->get();
@@ -139,6 +141,7 @@ class ClientController extends Controller
             'model' => $client,
             'pageTitle' => $client->name,
             'invoices' => $invoices,
+            'estimates' => $estimates,
             'time' => $time,
             'stats' => $client->stats(),
         ];

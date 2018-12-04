@@ -174,4 +174,14 @@ class Client extends Model
         return $this->hasManyThrough('App\Time', 'App\Project');
     }
 
+    /**
+     * Estimates associated with the client.
+     *
+     * @return HasMany
+     */
+    public function estimates()
+    {
+        return $this->hasMany('App\Estimate');
+    }
+
 }

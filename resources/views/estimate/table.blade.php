@@ -3,7 +3,10 @@
         <tr>
             <th>Name</th>
             <th>Recipient</th>
-            <th>Client</th>
+
+            @unless(Route::is('client.show'))
+                <th>Client</th>
+            @endunless
             <th>Fee</th>
             <th>Hours</th>
             <th>Status</th>
@@ -21,6 +24,7 @@
                 <td>
                     {{ $estimate->recipient }}
                 </td>
+                @unless(Route::is('client.show'))
                 <td>
                     @if ($estimate->clientId)
                     <a href="{{ route('client.show', ['record' => $estimate->clientId]) }}">
@@ -30,6 +34,7 @@
                     none
                     @endif
                 </td>
+                @endunless
                 <td>
                     {{ CurrencyHelper::money($estimate->fee) }}
                 </td>

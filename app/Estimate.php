@@ -134,6 +134,7 @@ class Estimate extends Model
      */
     public function scopeForList($query)
     {
+        $query->select('estimates.*');
         $query->leftJoin('clients', 'estimates.client_id', '=', 'clients.id');
         $query->selectRaw('clients.name as clientName');
         $query->selectRaw('clients.id as clientId');

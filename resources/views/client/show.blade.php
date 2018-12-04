@@ -69,6 +69,16 @@
             </div>
         @endif
 
+        <h2>Estimates</h2>
+
+        @include('partials.empty-message', ['collection' => $estimates])
+
+        @if ($estimates->isNotEmpty())
+            <div class="panel panel-default">
+                @include('estimate.table', ['collection' => $estimates])
+            </div>
+        @endif
+
     </div>
 
     @include('partials.timestamps-footer', ['record' => $model])
