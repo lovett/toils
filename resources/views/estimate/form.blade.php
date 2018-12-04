@@ -40,7 +40,7 @@
                     </div>
                 </div>
 
-                @include('partials.formgroup-textarea', ['name' => 'summary', 'label' => 'Summary', 'autofill' => true])
+                @include('partials.formgroup-textarea', ['name' => 'summary', 'label' => 'Summary'])
 
 
                 @include('partials.save-button')
