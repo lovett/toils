@@ -15,9 +15,9 @@
 
                 @include('partials.formgroup-standard', ['name' => 'name', 'label' => 'Name'])
 
-                @include('partials.formgroup-date', ['name' => 'submitted', 'label' => 'Submission Date'])
+                @include('partials.formgroup-date', ['name' => 'submitted', 'label' => 'Submission Date', 'pickable' => ['month', 'day', 'year']])
 
-                @include('partials.formgroup-date', ['name' => 'closed', 'label' => 'Close Date'])
+                @include('partials.formgroup-date', ['name' => 'closed', 'label' => 'Close Date', 'pickable' => ['month', 'day', 'year']])
 
                 @include('partials.formgroup-menu', ['name' => 'status', 'label' => 'Status', 'items' => $statuses, 'selectedItem' => $model->status])
 
