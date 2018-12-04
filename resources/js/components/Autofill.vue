@@ -9,6 +9,15 @@
                 default: false
             },
 
+            // Whether the component should be active.
+            //
+            // If false, the component will deactivate. Useful when
+            // functionality is desired for adds but not for edits.
+            enabled: {
+                type: Boolean,
+                default: true
+            },
+
             // A space-delimited list of field names participating in autofill.
             //
             // The names in this list should reflect the keys within the JSON
@@ -54,6 +63,10 @@
         // marked as the autofillTrigger ref, trigger a change event on it to
         // cause a fetch.
         mounted: function () {
+            if (!this.enabled) {
+                return;
+            }
+
             if (!this.autofetch) {
                 return;
             }

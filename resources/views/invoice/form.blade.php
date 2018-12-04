@@ -13,6 +13,7 @@
                     url="{{ route('invoice.suggestByProject') }}"
                     fields="start end name summary amount due paid"
                     v-bind:autofetch="{{ ($model->project_id > 0)? 'true' : 'false' }}"
+                    v-bind:enabled="{{ Route::is('invoice.edit') ? 'false' : 'true' }}"
                 >
 
                     {!! Form::model($model, ['files' => true, 'route' => $submission_route, 'method' => $submission_method, 'class' => 'invoice-form form-horizontal']) !!}

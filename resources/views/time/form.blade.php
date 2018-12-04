@@ -14,6 +14,7 @@
                     url="{{ route('time.suggestByProject') }}"
                     fields="estimatedDuration start summary"
                     v-bind:autofetch="{{ ($model->project_id > 0)? 'true' : 'false' }}"
+                    v-bind:enabled="{{ Route::is('time.edit') ? 'false' : 'true' }}"
                 >
 
                     {!! Form::model($model, ['route' => $submission_route, 'method' => $submission_method, 'class' => 'form-horizontal']) !!}
@@ -24,7 +25,7 @@
 
                     @include('partials.formgroup-menu', ['name' => 'project_id', 'label' => 'Project', 'items' => $projects, 'selectedItem' => $model->project_id, 'vchange' => 'fetch'])
 
-                    @include('partials.formgroup-standard', ['name' => 'estimatedDuration', 'label' => 'Estimate', 'autofill' => true])
+                    @include('partials.formgroup-standard', ['name' => 'estimatedDuration', 'label' => 'Time Estimate', 'autofill' => true])
 
                     @include('partials.formgroup-date', ['name' => 'start', 'label' => 'Date', 'autofill' => true, 'pickable' => ['relday', 'month', 'day', 'year']])
 
