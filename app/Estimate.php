@@ -118,4 +118,27 @@ class Estimate extends Model
     {
         return $this->hasOne('App\Client');
     }
+
+    /**
+     * Query scope for presenting a list of records
+     *
+     * Adds extra fields to the select clause to provide additional
+     * context when the query will be rendered in a table as a list.
+     *
+     * Considers the joins property of the query to avoid redundant
+     * joins. The caller is still responsible for eager loading.
+     *
+     * @param Builder $query An existing query.
+     *
+     * @return Builder;
+     */
+    public function scopeForList($query)
+    {
+        $query->leftJoin('clients', 'estimates.client_id', '=', 'clients.id');
+        $query->selectRaw('clients.name as clientName');
+        $query->selectRaw('clients.id as clientId');
+
+        return $query;
+    }
+
 }
