@@ -120,6 +120,24 @@ class Estimate extends Model
     }
 
     /**
+     * Query scope to restrict by recentness
+     *
+     * @param Builder $query An existing query.
+     * @param int $limit If greater than zero, the max number of records to return.
+     *
+     * @return Builder
+     */
+    public function scopeNewest($query, $limit=0)
+    {
+        $query->orderBy('submitted', 'desc');
+
+        if ($limit > 0) {
+            $query->limit($limit);
+        }
+        return $query;
+    }
+
+    /**
      * Query scope for presenting a list of records
      *
      * Adds extra fields to the select clause to provide additional

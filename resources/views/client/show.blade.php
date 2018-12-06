@@ -51,6 +51,7 @@
         </div>
 
         <h2>Time</h2>
+        <p>{!! link_to_route('time.index', 'View all', ['q' => 'client:' . $model->name]) !!}</p>
         @include('partials.empty-message', ['collection' => $time])
 
         @if ($time->isNotEmpty())
@@ -59,7 +60,8 @@
             </div>
         @endif
 
-        <h2>Recent Invoices</h2>
+        <h2>Invoices</h2>
+        <p>{!! link_to_route('invoice.index', 'View all', ['q' => 'client:' . $model->name]) !!}</p>
 
         @include('partials.empty-message', ['collection' => $invoices])
 
@@ -70,6 +72,7 @@
         @endif
 
         <h2>Estimates</h2>
+        <p>{!! link_to_route('estimate.index', 'View all', ['q' => 'client:' . $model->name]) !!}</p>
 
         @include('partials.empty-message', ['collection' => $estimates])
 

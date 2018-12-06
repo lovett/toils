@@ -138,6 +138,8 @@ class ProjectController extends Controller
      */
     public function show(Request $request, $id)
     {
+        $fetchLimit = 5;
+
         $project = $request->user()->projects()
                  ->with('client')
                  ->findOrFail($id);
@@ -151,11 +153,11 @@ class ProjectController extends Controller
             $numMonths
         );
 
-        $time = $project->time()->newest(10)->get();
+        $time = $project->time()->newest($fetchLimit)->get();
 
         $totalTime = $project->time()->sum('minutes');
 
-        $invoices = $project->invoices()->forList()->newest(5)->get();
+        $invoices = $project->invoices()->forList()->newest($fetchLimit)->get();
 
         $totalMoney = $project->invoices()->paid()->sum('amount');
 

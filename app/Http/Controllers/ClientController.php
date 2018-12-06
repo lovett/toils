@@ -129,13 +129,15 @@ class ClientController extends Controller
      */
     public function show(Request $request, $id)
     {
+        $fetchLimit = 5;
+
         $client = $request->user()->clients()->with('projects')->findOrFail($id);
 
-        $estimates = $client->estimates()->forList()->get();
+        $estimates = $client->estimates()->forList()->newest($fetchLimit)->get();
 
-        $invoices = $client->invoices()->forList()->newest(5)->get();
+        $invoices = $client->invoices()->forList()->newest($fetchLimit)->get();
 
-        $time = $client->time()->newest(10)->get();
+        $time = $client->time()->newest($fetchLimit)->get();
 
         $viewVars = [
             'model' => $client,
