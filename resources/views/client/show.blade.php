@@ -5,8 +5,8 @@
         <h1>{{ $model->name }}</h1>
         <p>@include('partials.active', ['value' => $model->active])</p>
 
-        <div class="panel panel-default">
-            <div class="panel-body row">
+        <div class="card mb-5">
+            <div class="card-body row">
                 <div class="col-sm-6 col-md-4">
                     <dl>
                         <dt>Unpaid invoices</dt>
@@ -55,7 +55,7 @@
         @include('partials.empty-message', ['collection' => $time])
 
         @if ($time->isNotEmpty())
-            <div class="panel panel-default">
+            <div class="card mb-5">
                 @include('time.table', ['collection' => $time])
             </div>
         @endif
@@ -66,7 +66,7 @@
         @include('partials.empty-message', ['collection' => $invoices])
 
         @if ($invoices->isNotEmpty())
-            <div class="panel panel-default">
+            <div class="card mb-5">
                 @include('invoice.table', ['collection' => $invoices])
             </div>
         @endif
@@ -77,7 +77,7 @@
         @include('partials.empty-message', ['collection' => $estimates])
 
         @if ($estimates->isNotEmpty())
-            <div class="panel panel-default">
+            <div class="card mb-5">
                 @include('estimate.table', ['collection' => $estimates])
             </div>
         @endif
@@ -88,7 +88,7 @@
 @endsection
 
 @section('subnav_supplemental')
-    <li>{!! link_to_route('project.create', 'New project', ['client' => $model->id]) !!}</li>
-    <li>{!! link_to_route('time.create', 'New time entry', ['client' => $model->id]) !!}</li>
-    <li>{!! link_to_route('invoice.create', 'New invoice', ['client' => $model->id]) !!}</li>
+    <li class="nav-item">{!! link_to_route('project.create', 'New project', ['client' => $model->id], ['class' => 'nav-link']) !!}</li>
+    <li class="nav-item">{!! link_to_route('time.create', 'New time entry', ['client' => $model->id], ['class' => 'nav-link']) !!}</li>
+    <li class="nav-item">{!! link_to_route('invoice.create', 'New invoice', ['client' => $model->id], ['class' => 'nav-link']) !!}</li>
 @endsection

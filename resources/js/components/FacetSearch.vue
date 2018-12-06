@@ -2,13 +2,13 @@
     <div class="facet-search">
         <div class="input-group">
             <input type="search" ref="q" name="q" class="form-control" placeholder="Search…" v-model="facetedQuery" />
-            <span class="input-group-btn">
-                <button class="btn btn-default" type="submit">Search</button>
+            <span class="input-group-append">
+                <button class="btn" type="submit">Search</button>
             </span>
         </div>
         <ul class="list-inline facets">
-            <li>Facets:</li>
-            <li v-for="facet in facetList">
+            <li class="list-inline-item">Facets:</li>
+            <li class="list-inline-item" v-for="facet in facetList">
                 <a v-on:click="apply(facet)" href="#">{{ facet }}</a>
             </li>
         </ul>

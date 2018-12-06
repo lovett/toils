@@ -14,7 +14,7 @@
     </thead>
     <tbody>
         @foreach ($collection as $time)
-            @php($unfinishedClass = ($time->minutes === 0)? 'warning' : '')
+            @php($unfinishedClass = ($time->minutes === 0)? 'table-warning' : '')
             @php($billableClass = ($time->billable)? '' : 'unbillable')
             <tr class="{{ $unfinishedClass }} {{ $billableClass }}">
                 <td>
@@ -33,7 +33,7 @@
 
                         {!! Form::model($time, ['route' => ['time.finish'], 'method' => 'POST']) !!}
                         {!! Form::hidden('id', $time->id) !!}
-                        {!! Form::button('FINISH', ['type' => 'submit', 'class' => 'btn finish btn-info btn-xs']) !!}
+                        {!! Form::button('FINISH', ['type' => 'submit', 'class' => 'btn finish btn-info btn-sm']) !!}
                         {!! Form::close() !!}
                     @endif
                 </td>

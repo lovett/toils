@@ -6,8 +6,8 @@
     @endif
 
     <div class="container">
-        <div class="panel panel-default">
-            <div class="panel-body">
+        <div class="card">
+            <div class="card-body">
                 <autofill
                     inline-template
                     url="{{ route('invoice.suggestByProject') }}"
@@ -16,7 +16,7 @@
                     v-bind:enabled="{{ Route::is('invoice.edit') ? 'false' : 'true' }}"
                 >
 
-                    {!! Form::model($model, ['files' => true, 'route' => $submission_route, 'method' => $submission_method, 'class' => 'invoice-form form-horizontal']) !!}
+                    {!! Form::model($model, ['files' => true, 'route' => $submission_route, 'method' => $submission_method, 'class' => 'invoice-form']) !!}
 
                     @isset($client)
                     @include('partials.project-menu-filtered', ['client' => $client])
@@ -32,19 +32,22 @@
 
                     @include('partials.formgroup-textarea', ['name' => 'summary', 'label' => 'Summary', 'autofill' => true])
 
-                    <div class="form-group">
-                        {!! Form::label('amount', 'Amount', ['class' => 'col-sm-2 control-label']) !!}
+                    <div class="form-group row">
+                        {!! Form::label('amount', 'Amount', ['class' => 'col-sm-2 col-form-label text-right']) !!}
                         <div class="col-sm-3">
                             <div class="input-group">
-                                <div class="input-group-addon">$</div>
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">$</span>
+                                </div>
                                 {!! Form::text('amount', $model->amount, ['class' => 'form-control']) !!}
                             </div>
                             <autofill-hint target="INPUT[name=amount]" v-bind:value="suggestedAmount" v-bind:previous="previousAmount"></autofill-hint>
                         </div>
 
-                        {!! Form::label('receipt', 'Receipt', ['class' => 'col-sm-1 control-label']) !!}
+                        {!! Form::label('receipt', 'Receipt', ['class' => 'col-sm-1 col-form-label']) !!}
                         <div class="col-sm-3">
-                            {!! Form::file('receipt') !!}
+                            {!! Form::file('receipt', ['id' => 'invoice-receipt', 'class' => 'custom-file-input']) !!}
+                            <label class="custom-file-label" for="invoice-receipt">Choose file</label>
                         </div>
 
                         @if ($model->receipt)

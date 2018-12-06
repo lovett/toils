@@ -1,4 +1,4 @@
-<div class="col-sm-offset-2">
+<div class="offset-sm-2">
     <p class="alert alert-info" role="alert">
         <svg class="icon"><use xlink:href="#icon-bullhorn"></use></svg>
         Only showing projects for {{ $client->name }}.

@@ -1,5 +1,5 @@
 <div class="form-group">
     <div class="col-sm-12 text-center">
-	    {!! Form::button('Save', ['type' => 'submit', 'class' => 'btn btn-default']) !!}
+	    {!! Form::button('Save', ['type' => 'submit', 'class' => 'btn btn-primary']) !!}
     </div>
 </div>

@@ -7,68 +7,46 @@
 
 // Bootstrap
 //
-// The imports below reflect the contents of the main bootstrap
-// scss file, so that the unused portions can both be selectively
-// disabled and easily re-enabled if needed.
+//
+// The imports below reflect the contents of
+// node_modules/bootstrap/scss/bootstrap.scss so that the unused portions
+// can both be selectively disabled and easily re-enabled if needed.
 
-// The main import, which brings in  everything. Only kept for reference.
-//@import "~bootstrap-sass/assets/stylesheets/bootstrap";
-
-// Core variables and mixins
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/variables";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/mixins";
-
-// Reset and dependencies
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/normalize";
-//@import "~bootstrap-sass/assets/stylesheets/bootstrap/print";
-//@import "~bootstrap-sass/assets/stylesheets/bootstrap/glyphicons";
-
-// Core CSS
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/scaffolding";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/type";
-//@import "~bootstrap-sass/assets/stylesheets/bootstrap/code";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/grid";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/tables";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/forms";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/buttons";
-
-// Components
-//@import "~bootstrap-sass/assets/stylesheets/bootstrap/component-animations";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/dropdowns";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/button-groups";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/input-groups";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/navs";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/navbar";
-//@import "~bootstrap-sass/assets/stylesheets/bootstrap/breadcrumbs";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/pagination";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/pager";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/labels";
-//@import "~bootstrap-sass/assets/stylesheets/bootstrap/badges";
-//@import "~bootstrap-sass/assets/stylesheets/bootstrap/jumbotron";
-//@import "~bootstrap-sass/assets/stylesheets/bootstrap/thumbnails";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/alerts";
-//@import "~bootstrap-sass/assets/stylesheets/bootstrap/progress-bars";
-//@import "~bootstrap-sass/assets/stylesheets/bootstrap/media";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/list-group";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/panels";
-//@import "~bootstrap-sass/assets/stylesheets/bootstrap/responsive-embed";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/wells";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/close";
-
-// Components w/ JavaScript
-//@import "~bootstrap-sass/assets/stylesheets/bootstrap/modals";
-//@import "~bootstrap-sass/assets/stylesheets/bootstrap/tooltip";
-//@import "~bootstrap-sass/assets/stylesheets/bootstrap/popovers";
-//@import "~bootstrap-sass/assets/stylesheets/bootstrap/carousel";
-
-// Utility classes
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/utilities";
-@import "~bootstrap-sass/assets/stylesheets/bootstrap/responsive-utilities";
-
-
-main .container {
-    margin-bottom: 2em;
-}
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+@import "~bootstrap/scss/root";
+@import "~bootstrap/scss/reboot";
+@import "~bootstrap/scss/type";
+@import "~bootstrap/scss/images";
+//@import "~bootstrap/scss/code";
+@import "~bootstrap/scss/grid";
+@import "~bootstrap/scss/tables";
+@import "~bootstrap/scss/forms";
+@import "~bootstrap/scss/buttons";
+@import "~bootstrap/scss/transitions";
+@import "~bootstrap/scss/dropdown";
+@import "~bootstrap/scss/button-group";
+@import "~bootstrap/scss/input-group";
+@import "~bootstrap/scss/custom-forms";
+@import "~bootstrap/scss/nav";
+@import "~bootstrap/scss/navbar";
+@import "~bootstrap/scss/card";
+//@import "~bootstrap/scss/breadcrumb";
+@import "~bootstrap/scss/pagination";
+//@import "~bootstrap/scss/badge";
+//@import "~bootstrap/scss/jumbotron";
+@import "~bootstrap/scss/alert";
+@import "~bootstrap/scss/progress";
+//@import "~bootstrap/scss/media";
+@import "~bootstrap/scss/list-group";
+@import "~bootstrap/scss/close";
+@import "~bootstrap/scss/modal";
+@import "~bootstrap/scss/tooltip";
+@import "~bootstrap/scss/popover";
+@import "~bootstrap/scss/carousel";
+@import "~bootstrap/scss/utilities";
+// @import "~bootstrap/scss/print";
 
 main dl dd {
     margin-bottom: 1em;
@@ -101,22 +79,6 @@ main dl dd {
 
 address {
     white-space: pre-line;
-}
-
-input[type=file] {
-    line-height: 2.25;
-
-    &::-webkit-file-upload-button {
-        border: 1px solid #ccd0d2;
-        color: #555;
-        border-radius: 4px;
-        padding: .5em 1em;
-        background-color: #eee;
-
-        &:hover {
-            cursor: pointer;
-        }
-    }
 }
 
 .grid {

@@ -27,7 +27,17 @@ class LinkHelper
     public static function primaryNavLink($route, $label, array $params = [], array $attribs = []) {
         $resource = static::firstRouteSegment();
         $linkedRoute = explode('.', $route);
-        $liClass = ($linkedRoute[0] === $resource) ? 'active' : '';
+        $liClass = 'nav-item';
+        $linkClass = 'nav-link';
+        if ($linkedRoute[0] === $resource) {
+            $liClass .= ' active';
+        }
+
+        if (isset($attribs['class'])) {
+            $linkClass .= ' ' . $attribs['class'];
+        }
+
+        $attribs['class'] = $linkClass;
 
         return sprintf(
             '<li class="%s">%s</li>',
@@ -74,7 +84,18 @@ class LinkHelper
      * @return string
      */
     public static function navLink($route, $label, array $params = [], array $attribs = []) {
-        $liClass = Request::routeIs($route) ? 'active' : '';
+        $liClass = 'nav-item';
+        $linkClass = 'nav-link';
+
+        if (Request::routeIs($route)) {
+            $linkClass .= ' active';
+        }
+
+        if (isset($attribs['class'])) {
+            $linkClass .= ' ' . $attribs['class'];
+        }
+
+        $attribs['class'] = $linkClass;
 
         return sprintf(
             '<li class="%s">%s</li>',

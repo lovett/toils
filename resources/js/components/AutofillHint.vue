@@ -1,5 +1,5 @@
 <template>
-    <p v-if="suggestion" class="help-block small">
+    <p v-if="suggestion" class="form-text ml-auto small">
         <span>Suggested:</span>
         <a href="#" v-bind:title="previousValue" v-on:click.prevent="apply">{{ suggestion }}</a>
     </p>

@@ -7,8 +7,8 @@
     @endif
 
     <div class="container">
-        <div class="panel panel-default">
-            <div class="panel-body">
+        <div class="card">
+            <div class="card-body">
                 <autofill
                     inline-template
                     url="{{ route('time.suggestByProject') }}"
@@ -17,7 +17,7 @@
                     v-bind:enabled="{{ Route::is('time.edit') ? 'false' : 'true' }}"
                 >
 
-                    {!! Form::model($model, ['route' => $submission_route, 'method' => $submission_method, 'class' => 'form-horizontal']) !!}
+                    {!! Form::model($model, ['route' => $submission_route, 'method' => $submission_method]) !!}
 
                     @isset($client)
                     @include('partials.project-menu-filtered', ['client' => $client])

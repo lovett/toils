@@ -8,7 +8,7 @@
         @include('partials.empty-message', ['collection' => $collection, 'message' => $emptyMessage])
 
         @if ($collection->isNotEmpty())
-            <div class="panel panel-default">
+            <div class="card">
                 @include($module . '.table', ['collection' => $collection])
             </div>
         @endif

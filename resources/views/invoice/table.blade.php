@@ -16,8 +16,8 @@
         </thead>
         <tbody>
             @foreach ($collection as $invoice)
-                @php($overdueClass = ($invoice->daysUntilDue < 0)? 'danger' : '')
-                @php($upcomingClass = ($invoice->daysUntilDue > 0)? 'warning' : '')
+                @php($overdueClass = ($invoice->daysUntilDue < 0)? 'table-danger' : '')
+                @php($upcomingClass = ($invoice->daysUntilDue > 0)? 'table-warning' : '')
                 <tr class="{{ $overdueClass }} {{ $upcomingClass }}">
                     <td>
                         <a href="{{ route('invoice.show', $invoice) }}" target="_blank">

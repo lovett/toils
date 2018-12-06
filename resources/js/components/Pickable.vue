@@ -18,71 +18,73 @@
         <div class="help-block">{{ error }}</div>
 
         <div class="shortcuts" v-bind:class="{hidden: !isOpen}">
-            <div class="well">
-                <div class="pullup">
-                    <button type="button" @click.prevent="toggle($event)" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+            <div class="card bg-light">
+                <div class="card-body">
+                    <div class="pullup">
+                        <button type="button" @click.prevent="toggle($event)" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <p v-if="pickableGroups.includes('relweek')">
+                        <strong>Relative Week</strong>
+                        <a @click.prevent="relativeWeekStart(0)" href="#">start of this week</a>
+                        <a @click.prevent="relativeWeekEnd(0)" href="#">end of this week</a>
+                        <a @click.prevent="relativeWeekStart(-1)" href="#">start of last week</a>
+                        <a @click.prevent="relativeWeekEnd(-1)" href="#">end of last week</a>
+                    </p>
+
+                    <p v-if="pickableGroups.includes('relmonth')">
+                        <strong>Relative Month</strong>
+                        <a @click.prevent="relativeMonthStart(0)" href="#">start of this month</a>
+                        <a @click.prevent="relativeMonthEnd(0)" href="#">end of this month</a>
+                        <a @click.prevent="relativeMonthStart(-1)" href="#">start of last month</a>
+                        <a @click.prevent="relativeMonthEnd(-1)" href="#">end of last month</a>
+                    </p>
+
+                    <p v-if="pickableGroups.includes('relday')">
+                        <strong>Relative Day</strong>
+                        <a v-bind:class="{active: daysAgo == 0}" @click.prevent="relativeDay(0)" href="#">today</a>
+                        <a v-bind:class="{active: daysAgo == 1}" @click.prevent="relativeDay(-1)" href="#">yesterday</a>
+                        <a v-bind:class="{active: daysAgo == 2}" @click.prevent="relativeDay(-2)" href="#">2 days ago</a>
+                        <a v-bind:class="{active: daysAgo == 3}" @click.prevent="relativeDay(-3)" href="#">3 days ago</a>
+                    </p>
+
+                    <p v-if="pickableGroups.includes('month')">
+                        <strong>Month</strong>
+                        <a v-bind:class="{active: m == pickedDate.month() + 1}" v-for="m in 12" @click.prevent="month(m)" href="#">{{ m }}</a>
+                    </p>
+
+                    <p v-if="pickableGroups.includes('day')">
+                        <strong>Day</strong>
+                        <a v-bind:class="{active: d == pickedDate.date()}" v-for="d in 31" @click.prevent="day(d)" href="#">{{ d }}</a>
+                    </p>
+
+                    <p v-if="pickableGroups.includes('year')">
+                        <strong>Year</strong>
+                        <a v-bind:class="{active: pickedDate.year() == lastYear.year()}" @click.prevent="year(lastYear.year())" href="#">{{ lastYear.year() }}</a>
+                        <a v-bind:class="{active: pickedDate.year() == now.year()}" @click.prevent="year(now.year())" href="#">{{ now.year() }}</a>
+                        <a v-bind:class="{active: pickedDate.year() == nextYear.year()}" @click.prevent="year(nextYear.year())" href="#">{{ nextYear.year() }}</a>
+                    </p>
+
+                    <p v-if="pickableGroups.includes('time')">
+                        <strong>Hour</strong>
+                        <a v-bind:class="{active: pickedDate.hour() == h || pickedDate.hour() - 12 == h}" v-for="h in 12" @click.prevent="hour(h)" href="#">{{ h }}</a>
+                    </p>
+
+                    <p v-if="pickableGroups.includes('time')">
+                        <strong>Minute</strong>
+                        <a @click.prevent="minute(0)" href="#">00</a>
+                        <a v-bind:class="{active: pickedDate.minute() == m}" v-for="m in 59" v-if="m % 5 === 0" @click.prevent="minute(m)" href="#">
+                            {{ (m < 10) ? '0' + m : m }}
+                        </a>
+                    </p>
+                    <p v-if="pickableGroups.includes('time')">
+                        <strong>Time of Day</strong>
+                        <a v-bind:class="{active: pickedDate.hour() < 12}" @click.prevent="meridiem('AM')" href="#">AM</a>
+                        <a v-bind:class="{active: pickedDate.hour() > 11}" @click.prevent="meridiem('PM')" href="#">PM</a>
+                    </p>
                 </div>
-
-                <p v-if="pickableGroups.includes('relweek')">
-                    <strong>Relative Week</strong>
-                    <a @click.prevent="relativeWeekStart(0)" href="#">start of this week</a>
-                    <a @click.prevent="relativeWeekEnd(0)" href="#">end of this week</a>
-                    <a @click.prevent="relativeWeekStart(-1)" href="#">start of last week</a>
-                    <a @click.prevent="relativeWeekEnd(-1)" href="#">end of last week</a>
-                </p>
-
-                <p v-if="pickableGroups.includes('relmonth')">
-                    <strong>Relative Month</strong>
-                    <a @click.prevent="relativeMonthStart(0)" href="#">start of this month</a>
-                    <a @click.prevent="relativeMonthEnd(0)" href="#">end of this month</a>
-                    <a @click.prevent="relativeMonthStart(-1)" href="#">start of last month</a>
-                    <a @click.prevent="relativeMonthEnd(-1)" href="#">end of last month</a>
-                </p>
-
-                <p v-if="pickableGroups.includes('relday')">
-                    <strong>Relative Day</strong>
-                    <a v-bind:class="{active: daysAgo == 0}" @click.prevent="relativeDay(0)" href="#">today</a>
-                    <a v-bind:class="{active: daysAgo == 1}" @click.prevent="relativeDay(-1)" href="#">yesterday</a>
-                    <a v-bind:class="{active: daysAgo == 2}" @click.prevent="relativeDay(-2)" href="#">2 days ago</a>
-                    <a v-bind:class="{active: daysAgo == 3}" @click.prevent="relativeDay(-3)" href="#">3 days ago</a>
-                </p>
-
-                <p v-if="pickableGroups.includes('month')">
-                    <strong>Month</strong>
-                    <a v-bind:class="{active: m == pickedDate.month() + 1}" v-for="m in 12" @click.prevent="month(m)" href="#">{{ m }}</a>
-                </p>
-
-                <p v-if="pickableGroups.includes('day')">
-                    <strong>Day</strong>
-                    <a v-bind:class="{active: d == pickedDate.date()}" v-for="d in 31" @click.prevent="day(d)" href="#">{{ d }}</a>
-                </p>
-
-                <p v-if="pickableGroups.includes('year')">
-                    <strong>Year</strong>
-                    <a v-bind:class="{active: pickedDate.year() == lastYear.year()}" @click.prevent="year(lastYear.year())" href="#">{{ lastYear.year() }}</a>
-                    <a v-bind:class="{active: pickedDate.year() == now.year()}" @click.prevent="year(now.year())" href="#">{{ now.year() }}</a>
-                    <a v-bind:class="{active: pickedDate.year() == nextYear.year()}" @click.prevent="year(nextYear.year())" href="#">{{ nextYear.year() }}</a>
-                </p>
-
-                <p v-if="pickableGroups.includes('time')">
-                    <strong>Hour</strong>
-                    <a v-bind:class="{active: pickedDate.hour() == h || pickedDate.hour() - 12 == h}" v-for="h in 12" @click.prevent="hour(h)" href="#">{{ h }}</a>
-                </p>
-
-                <p v-if="pickableGroups.includes('time')">
-                    <strong>Minute</strong>
-                    <a @click.prevent="minute(0)" href="#">00</a>
-                    <a v-bind:class="{active: pickedDate.minute() == m}" v-for="m in 59" v-if="m % 5 === 0" @click.prevent="minute(m)" href="#">
-                        {{ (m < 10) ? '0' + m : m }}
-                    </a>
-                </p>
-                <p v-if="pickableGroups.includes('time')">
-                    <strong>Time of Day</strong>
-                    <a v-bind:class="{active: pickedDate.hour() < 12}" @click.prevent="meridiem('AM')" href="#">AM</a>
-                    <a v-bind:class="{active: pickedDate.hour() > 11}" @click.prevent="meridiem('PM')" href="#">PM</a>
-                </p>
             </div>
         </div>
     </div>

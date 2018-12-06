@@ -6,12 +6,12 @@
     @endif
 
     <div class="container">
-        <div class="panel panel-default">
-            <div class="panel-body">
+        <div class="card">
+            <div class="card-body">
 
                 @include('partials.error-alert')
 
-                {!! Form::model($model, ['route' => $submission_route, 'method' => $submission_method, 'class' => 'form-horizontal']) !!}
+                {!! Form::model($model, ['route' => $submission_route, 'method' => $submission_method]) !!}
 
                 @include('partials.formgroup-standard', ['name' => 'name', 'label' => 'Name'])
 

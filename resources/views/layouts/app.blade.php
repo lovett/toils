@@ -13,8 +13,8 @@
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}" />
 </head>
-<body class="{{ $appSection or '' }}">
-    <svg class="hidden">
+<body>
+    <svg class="d-none">
         <defs>
             <symbol id="icon-price-tag" viewBox="0 0 32 32">
             <title>price-tag</title>
@@ -48,50 +48,43 @@
             </symbol>
         </defs>
     </svg>
-    <nav class="navbar navbar-default navbar-static-top">
-        <div class="container-fluid">
-            <div class="navbar-header">
+    <nav class="navbar sticky-top navbar-expand-lg bg-white border-bottom mb-5">
+        <!-- Brand -->
+        <a class="navbar-brand" href="{{ url('/') }}">
+            {{ config('app.name') }}
+        </a>
 
-                <!-- Collapsed Hamburger -->
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#app-navbar-collapse" aria-expanded="false">
-                    <span class="sr-only">Toggle Navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-                <!-- Brand -->
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name') }}
-                </a>
-            </div>
-
-            <div class="collapse navbar-collapse" id="app-navbar-collapse">
-                <ul class="nav navbar-nav navbar-right">
-                    @guest
-                    {!! LinkHelper::primaryNavLink('login', 'Login') !!}
-                    {!! LinkHelper::primaryNavLink('register', 'Registration') !!}
+        <div class="collapse navbar-collapse" id="app-navbar-collapse">
+            <ul class="navbar-nav ml-auto">
+                @guest
+                {!! LinkHelper::primaryNavLink('login', 'Login') !!}
+                {!! LinkHelper::primaryNavLink('register', 'Registration') !!}
                     @else
-                    {!! LinkHelper::primaryNavLink('dashboard', 'Dashboard')  !!}
-                    {!! LinkHelper::primaryNavLink('time.index', 'Time') !!}
-                    {!! LinkHelper::primaryNavLink('invoice.index', 'Invoices') !!}
-                    {!! LinkHelper::primaryNavLink('project.index', 'Projects') !!}
-                    {!! LinkHelper::primaryNavLink('client.index', 'Clients') !!}
-                    {!! LinkHelper::primaryNavLink('estimate.index', 'Estimates') !!}
-                    <li>
-                        <a href="{{ route('logout') }}"
-                           onclick="event.preventDefault();document.getElementById('logout-form').submit();">
-                            Logout
-                        </a>
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                            {{ csrf_field() }}
-                        </form>
-                    </li>
-                    @endguest
-                </ul>
-            </div>
+                {!! LinkHelper::primaryNavLink('dashboard', 'Dashboard')  !!}
+                {!! LinkHelper::primaryNavLink('time.index', 'Time') !!}
+                {!! LinkHelper::primaryNavLink('invoice.index', 'Invoices') !!}
+                {!! LinkHelper::primaryNavLink('project.index', 'Projects') !!}
+                {!! LinkHelper::primaryNavLink('client.index', 'Clients') !!}
+                {!! LinkHelper::primaryNavLink('estimate.index', 'Estimates') !!}
+                <li class="nav-item">
+                    <a href="{{ route('logout') }}"
+                       class="nav-link"
+                       onclick="event.preventDefault();document.getElementById('logout-form').submit();">
+                        Logout
+                    </a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        {{ csrf_field() }}
+                    </form>
+                </li>
+                @endguest
+            </ul>
         </div>
     </nav>
+
 
     @if (Session::has('userMessage'))
         <div class="container">
@@ -106,7 +99,7 @@
 
     <main id="app">
         @if (LinkHelper::showSubnav())
-        <div class="container">
+        <div class="container mb-4">
             <ul class="nav nav-tabs">
                 @foreach (LinkHelper::getSubnav() as $link)
                     {!! $link !!}

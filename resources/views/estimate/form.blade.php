@@ -6,12 +6,12 @@
     @endif
 
     <div class="container">
-        <div class="panel panel-default">
-            <div class="panel-body">
+        <div class="card">
+            <div class="card-body">
 
                 @include('partials.error-alert')
 
-                {!! Form::model($model, ['route' => $submission_route, 'method' => $submission_method, 'class' => 'form-horizontal']) !!}
+                {!! Form::model($model, ['route' => $submission_route, 'method' => $submission_method]) !!}
 
                 @include('partials.formgroup-standard', ['name' => 'name', 'label' => 'Name'])
 
@@ -25,18 +25,20 @@
 
                 @include('partials.formgroup-menu', ['name' => 'client_id', 'label' => 'Client', 'items' => $clients, 'selectedItem' => $model->client_id])
 
-                <div class="form-group">
-                    {!! Form::label('fee', 'Fee', ['class' => 'col-sm-2 control-label']) !!}
+                <div class="form-group row">
+                    {!! Form::label('fee', 'Fee', ['class' => 'col-sm-2 col-form-label text-right']) !!}
                     <div class="col-sm-3">
                         <div class="input-group">
-                            <div class="input-group-addon">$</div>
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">$</span>
+                            </div>
                             {!! Form::text('fee', $model->fee, ['class' => 'form-control']) !!}
                         </div>
                     </div>
 
-                    {!! Form::label('hours', 'Hours', ['class' => 'col-sm-1 control-label']) !!}
+                    {!! Form::label('hours', 'Hours', ['class' => 'col-sm-1 col-form-label']) !!}
                     <div class="col-sm-2">
-                        {!! Form::text('hours', $model->hours) !!}
+                        {!! Form::text('hours', $model->hours, ['class' => 'form-control']) !!}
                     </div>
                 </div>
 
