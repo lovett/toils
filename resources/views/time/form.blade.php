@@ -25,7 +25,7 @@
 
                     @include('partials.formgroup-menu', ['name' => 'project_id', 'label' => 'Project', 'items' => $projects, 'selectedItem' => $model->project_id, 'vchange' => 'fetch'])
 
-                    @include('partials.formgroup-standard', ['name' => 'estimatedDuration', 'label' => 'Time Estimate', 'autofill' => true])
+                    @include('partials.formgroup-standard', ['name' => 'estimatedDuration', 'label' => 'Time Estimate', 'inlineSuffix' => 'minutes', 'size' => 2, 'autofill' => true])
 
                     @include('partials.formgroup-date', ['name' => 'start', 'label' => 'Date', 'autofill' => true, 'pickable' => ['relday', 'month', 'day', 'year']])
 
