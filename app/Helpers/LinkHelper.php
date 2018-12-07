@@ -133,9 +133,13 @@ class LinkHelper
         $resource = static::firstRouteSegment();
         $capitalizedResource = ucfirst($resource);
 
-        $links = [
-            LinkHelper::navLink("{$resource}.index", "{$capitalizedResource} List", []),
-        ];
+        $links = [];
+
+        if ($resource === 'password') {
+            return $links;
+        }
+
+        $link[] = LinkHelper::navLink("{$resource}.index", "{$capitalizedResource} List", []);
 
         if (strpos($action, '@show') !== false || strpos($action, '@edit') !== false) {
             $links[] = LinkHelper::navLink("{$resource}.show", "{$capitalizedResource} Overview", $params);
