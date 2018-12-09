@@ -55,11 +55,11 @@ class Time extends Model
      * @var array
      */
     public static $searchables = [
+        'client' => 'clients.name',
+        'project' => 'projects.name',
         'summary' => 'times.summary',
-        'start' => 'times.start',
-        'minutes' => 'times.mintues',
-        'end' => 'times.end',
-        'invoice' => 'times.invoice_id',
+        'date' => 'times.start',
+        'tag' => 'tags.name'
     ];
 
     /**
@@ -109,8 +109,24 @@ class Time extends Model
      */
     public static function listing(Builder $builder)
     {
+        $builder = $builder->select('times.*');
+        $builder = $builder->addSelect('clients.id as client_id');
+        $builder = $builder->addSelect('clients.name as client_name');
+        $builder = $builder->addSelect('projects.name as project_name');
+        $builder = $builder->addSelect('projects.id as project_id');
+        $builder = $builder->addSelect('tags.name as tag_name');
+        $builder = $builder->join('projects', 'times.project_id', '=', 'projects.id');
+        $builder = $builder->join('clients', 'projects.client_id', '=', 'clients.id');
+        $builder = $builder->leftJoin('taggables', function ($join)  {
+            $join = $join->on('times.id', '=', 'taggables.taggable_id');
+            $join = $join->where('taggables.taggable_type', '=', 'App\Time');
+            return $join;
+        });
+
+        $builder = $builder->leftJoin('tags', 'taggables.tag_id', '=', 'tags.id');
         $builder = $builder->with('project')->with('tags');
         $builder = $builder->orderBy('start', 'desc');
+        $builder = $builder->groupBy('times.id');
 
         return $builder;
     }
@@ -199,7 +215,6 @@ class Time extends Model
     {
         return $this->belongsTo('App\Project');
     }
-
 
     /**
      * Invoice associated with the time entry.

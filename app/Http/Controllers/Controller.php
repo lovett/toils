@@ -26,7 +26,7 @@ class Controller extends BaseController
         }
 
         $query = strtolower($query);
-        $query = filter_var($query, FILTER_SANITIZE_STRING);
+        $query = filter_var($query, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
         $query = str_replace(':', ': ', $query);
 
         $terms = array_fill_keys(array_values($searchables), []);

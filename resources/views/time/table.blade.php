@@ -39,8 +39,17 @@
                 </td>
 
                 @unless(Route::is('project.show'))
-                <td>
-                    {!! link_to_route('project.show', $time->project->name, ['id' => $time->project->id]) !!}
+                    <td>
+                        {!! link_to_route('project.show', $time->project->name, ['id' => $time->project->id]) !!}
+
+                        @if (Route::is('time.index'))
+                            <p>
+                                <small>
+                                    {!! link_to_route('client.show', $time->client_name, ['id' => $time->client_id]) !!}
+                                </small>
+                            </p>
+                        @endif
+
                 </td>
                 @endunless
 
