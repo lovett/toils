@@ -115,11 +115,11 @@ class Time extends Model
         }, $joins);
 
         $builder = $builder->select('times.*');
-        $builder = $builder->addSelect('clients.id as client_id');
-        $builder = $builder->addSelect('clients.name as client_name');
-        $builder = $builder->addSelect('projects.name as project_name');
-        $builder = $builder->addSelect('projects.id as project_id');
-        $builder = $builder->addSelect('tags.name as tag_name');
+        $builder = $builder->addSelect('clients.id as clientId');
+        $builder = $builder->addSelect('clients.name as clientName');
+        $builder = $builder->addSelect('projects.name as projectName');
+        $builder = $builder->addSelect('projects.id as projectId');
+        $builder = $builder->addSelect('tags.name as tagName');
 
         if (!in_array('projects', $joinedTables)) {
             $builder = $builder->join('projects', 'times.project_id', '=', 'projects.id');
