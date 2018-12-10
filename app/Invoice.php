@@ -45,7 +45,7 @@ class Invoice extends Model
         'name' => 'invoices.name',
         'summary' => 'invoices.summary',
         'client' => 'clientName',
-        'project' => 'projectName',
+        'project' => 'projecName',
         'sent' => 'invoices.sent',
     ];
 
@@ -164,52 +164,49 @@ class Invoice extends Model
     }
 
     /**
-     * Query scope for presenting a list of records
+     * Master query for getting a list of records.
      *
-     * Adds extra fields to the select clause to provide additional
-     * context when the query will be rendered in a table as a list.
-     *
-     * Considers the joins property of the query to avoid redundant
-     * joins. The caller is still responsible for eager loading.
-     *
-     * @param Builder $query An existing query.
-     *
-     * @return Builder;
+     * @param Builder $builder The query to start with.
+     * @return Relation;
      */
-    public function scopeForList($query)
+    public static function listing(Builder $builder)
     {
-        $joins = $query->getQuery()->joins;
+        $joins = $builder->getQuery()->joins ?: [];
+        $joinedTables = array_map(function ($join) {
+            return $join->table;
+        }, $joins);
 
-        $query->select('invoices.*');
+        $builder = $builder->selectRaw('invoices.*');
+        $builder = $builder->selectRaw('SUM(times.minutes) as totalMinutes');
 
-        collect($joins)->each(function ($join) use($query) {
-            if ($join->table === 'projects') {
-                $query->selectRaw('projects.name as projectName');
-                $query->selectRaw('projects.id as projectId');
-            }
-
-            if ($join->table === 'clients') {
-                $query->selectRaw('clients.name as clientName');
-                $query->selectRaw('clients.id as clientId');
-            }
-        });
-
-        $query->selectRaw('SUM(times.minutes) as totalMinutes');
-
-        $query->leftJoin(
+        $builder = $builder->leftJoin(
             'times',
             'invoices.id',
             '=',
             'times.invoice_id'
         );
 
-        $query->whereNull('times.deleted_at');
+        $builder = $builder->leftJoin(
+            'clients',
+            'projects.client_id',
+            '=',
+            'clients.id'
+        );
 
-        $query->groupBy('invoices.id');
+        if (!in_array('projects', $joinedTables)) {
+            $builder = $builder->join('projects', 'times.project_id', '=', 'projects.id');
+        }
 
-        $query->orderByRaw('invoices.paid is null desc, invoices.due asc');
 
-        return $query;
+        $builder = $builder->addSelect('clients.id as client_id');
+        $builder = $builder->addSelect('clients.name as clientName');
+        $builder = $builder->addSelect('projects.name as projectName');
+        $builder = $builder->addSelect('projects.id as project_id');
+        $builder = $builder->whereNull('times.deleted_at');
+        $builder = $builder->groupBy('invoices.id');
+        $builder = $builder->orderByRaw('invoices.paid is null desc, invoices.due asc');
+
+        return $builder;
     }
 
     public function __construct(array $attributes=[])

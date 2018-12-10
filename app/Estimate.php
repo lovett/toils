@@ -84,9 +84,23 @@ class Estimate extends Model
      *
      * @return Relation
      */
-    public static function listing(Builder $query)
+    public static function listing(Builder $builder)
     {
-        return $query->orderByRaw('LOWER(estimates.name) ASC');
+        $joins = $builder->getQuery()->joins ?: [];
+        $joinedTables = array_map(function ($join) {
+            return $join->table;
+        }, $joins);
+
+        $builder->select('estimates.*');
+
+        if (!in_array('clients', $joins)) {
+            $builder->leftJoin('clients', 'estimates.client_id', '=', 'clients.id');
+        }
+
+        $builder->selectRaw('clients.name as clientName');
+        $builder->selectRaw('clients.id as clientId');
+        $builder->orderByRaw('LOWER(estimates.name) ASC');
+        return $builder;
     }
 
     /**
@@ -136,28 +150,4 @@ class Estimate extends Model
         }
         return $query;
     }
-
-    /**
-     * Query scope for presenting a list of records
-     *
-     * Adds extra fields to the select clause to provide additional
-     * context when the query will be rendered in a table as a list.
-     *
-     * Considers the joins property of the query to avoid redundant
-     * joins. The caller is still responsible for eager loading.
-     *
-     * @param Builder $query An existing query.
-     *
-     * @return Builder;
-     */
-    public function scopeForList($query)
-    {
-        $query->select('estimates.*');
-        $query->leftJoin('clients', 'estimates.client_id', '=', 'clients.id');
-        $query->selectRaw('clients.name as clientName');
-        $query->selectRaw('clients.id as clientId');
-
-        return $query;
-    }
-
 }

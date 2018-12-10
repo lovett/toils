@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Client;
+use App\Invoice;
+use App\Time;
+use App\Estimate;
 use App\Helpers\MessagingHelper;
 use App\Http\Requests\ClientRequest;
 use Illuminate\Http\Request;
@@ -133,11 +136,14 @@ class ClientController extends Controller
 
         $client = $request->user()->clients()->with('projects')->findOrFail($id);
 
-        $estimates = $client->estimates()->forList()->newest($fetchLimit)->get();
+        $estimateBaseQuery = $client->estimates()->newest($fetchLimit)->getQuery();
+        $estimates = Estimate::listing($estimateBaseQuery)->get();
 
-        $invoices = $client->invoices()->forList()->newest($fetchLimit)->get();
+        $invoiceBaseQuery = $client->invoices()->newest($fetchLimit)->getQuery();
+        $invoices = Invoice::listing($invoiceBaseQuery)->get();
 
-        $time = $client->time()->newest($fetchLimit)->get();
+        $timeBaseQuery = $client->time()->newest($fetchLimit)->getQuery();
+        $time = Time::listing($timeBaseQuery)->get();
 
         $viewVars = [
             'model' => $client,

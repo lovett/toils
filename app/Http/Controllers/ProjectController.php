@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Client;
+use App\Invoice;
 use App\Helpers\MessagingHelper;
 use App\Http\Requests\ProjectRequest;
 use App\Project;
@@ -157,7 +158,8 @@ class ProjectController extends Controller
 
         $totalTime = $project->time()->sum('minutes');
 
-        $invoices = $project->invoices()->forList()->newest($fetchLimit)->get();
+        $invoiceBaseQuery = $project->invoices()->newest($fetchLimit)->getQuery();
+        $invoices = Invoice::listing($invoiceBaseQuery)->get();
 
         $totalMoney = $project->invoices()->paid()->sum('amount');
 

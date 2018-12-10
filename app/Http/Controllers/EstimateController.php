@@ -36,7 +36,8 @@ class EstimateController extends Controller
     {
         $query = $request->get('q');
 
-        $estimates = $request->user()->estimates()->forList();
+        $baseQuery = $request->user()->estimates()->getQuery();
+        $estimates = Estimate::listing($baseQuery);
 
         if ($query !== null) {
             $searchFields = $this->parseSearchQuery(

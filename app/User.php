@@ -131,13 +131,6 @@ class User extends Authenticatable
             'invoices.project_id'
         );
 
-        $query->join(
-            'clients',
-            'projects.client_id',
-            '=',
-            'clients.id'
-        );
-
         $query->leftJoin(
             'client_user',
             'client_user.client_id',

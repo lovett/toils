@@ -32,7 +32,9 @@ class InvoiceController extends Controller
 
         $query = $request->get('q');
 
-        $invoices = $request->user()->invoices()->forList();
+        $baseQuery = $request->user()->invoices();
+
+        $invoices = Invoice::listing($baseQuery);
 
         if ($query !== null) {
             $searchFields = $this->parseSearchQuery(

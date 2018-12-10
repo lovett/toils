@@ -109,13 +109,22 @@ class Time extends Model
      */
     public static function listing(Builder $builder)
     {
+        $joins = $builder->getQuery()->joins ?: [];
+        $joinedTables = array_map(function ($join) {
+            return $join->table;
+        }, $joins);
+
         $builder = $builder->select('times.*');
         $builder = $builder->addSelect('clients.id as client_id');
         $builder = $builder->addSelect('clients.name as client_name');
         $builder = $builder->addSelect('projects.name as project_name');
         $builder = $builder->addSelect('projects.id as project_id');
         $builder = $builder->addSelect('tags.name as tag_name');
-        $builder = $builder->join('projects', 'times.project_id', '=', 'projects.id');
+
+        if (!in_array('projects', $joinedTables)) {
+            $builder = $builder->join('projects', 'times.project_id', '=', 'projects.id');
+        }
+
         $builder = $builder->join('clients', 'projects.client_id', '=', 'clients.id');
         $builder = $builder->leftJoin('taggables', function ($join)  {
             $join = $join->on('times.id', '=', 'taggables.taggable_id');
@@ -495,13 +504,11 @@ class Time extends Model
        return $this->tags->implode('name', ', ');
     }
 
-
     public function syncTagsFromList($tagList)
     {
         $tags = Tag::createFromList($tagList);
         $this->tags()->sync($tags);
     }
-
 
     public function finish() {
         $this->end = new Carbon();
