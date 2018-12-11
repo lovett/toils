@@ -3,7 +3,7 @@
         <thead>
             <tr>
                 <th>Number</th>
-                <th>Sent</th>
+                <th>Due</th>
                 <th>Name</th>
                 @unless(Route::is('project.show'))
                     <th>Project</th>
@@ -26,7 +26,7 @@
                         </a>
                     </td>
                     <td>
-                        {{ TimeHelper::readableShortDate($invoice->sent) }}
+                        {{ TimeHelper::readableShortDate($invoice->due) }}
                     </td>
                     <td>
                         <a href="{{ route('invoice.edit', $invoice) }}">

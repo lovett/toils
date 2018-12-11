@@ -204,7 +204,7 @@ class Invoice extends Model
         $builder = $builder->addSelect('projects.id as project_id');
         $builder = $builder->whereNull('times.deleted_at');
         $builder = $builder->groupBy('invoices.id');
-        $builder = $builder->orderByRaw('invoices.paid is null desc, invoices.due asc');
+        $builder = $builder->orderByRaw('invoices.paid is null desc, invoices.due desc');
 
         return $builder;
     }
