@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Project;
+use App\Time;
 
 class DashboardController extends Controller
 {
@@ -32,7 +33,8 @@ class DashboardController extends Controller
 
         $activeProjects = $projects->active()->newest()->get();
 
-        $unfinishedTime = $request->user()->time()->unfinished(5)->get();
+        $unfinishedTimeQuery = $request->user()->time()->unfinished()->getQuery();
+        $unfinishedTime = Time::listing($unfinishedTimeQuery)->get();
 
         $viewVars = [
             'pageTitle' => 'Dashboard',
