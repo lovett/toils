@@ -53,12 +53,14 @@
                     @if (count($time->tags) > 0)
                         <p>
                             @foreach ($time->tags as $tag)
-                                <span class="tag">
-                                    <svg class="icon">
-                                        <use xlink:href="#icon-price-tag" />
-                                    </svg>
-                                    {{ $tag->name }}
-                                </span>
+                                <a href="{{ route('time.index', ['q' => "tag:{$tag->name}"]) }}">
+                                    <span class="tag">
+                                        <svg class="icon">
+                                            <use xlink:href="#icon-price-tag" />
+                                        </svg>
+                                        {{ $tag->name }}
+                                    </span>
+                                </a>
                             @endforeach
                         </p>
                     @endif
