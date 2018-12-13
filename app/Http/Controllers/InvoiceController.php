@@ -89,6 +89,10 @@ class InvoiceController extends Controller
         $clientId = $request->input('client', null);
         $projectId = $request->input('project', null);
 
+        $project = null;
+        $client = null;
+        $projects = $request->user()->projectsForMenu();
+
         if ($projectId) {
             $project = $request->user()->project($projectId)->with('client')->firstOrFail();
             $client = $project->client;
@@ -97,10 +101,6 @@ class InvoiceController extends Controller
             $project = null;
             $client = $request->user()->client($clientId)->firstOrFail();
             $projects = $request->user()->projectsForMenu($client->getKey());
-        } else {
-            $project = null;
-            $client = null;
-            $projects = $request->user()->projectsForMenu();
         }
 
         $invoice = new Invoice();
@@ -279,11 +279,12 @@ class InvoiceController extends Controller
         abort_unless($invoice->receipt, 404);
 
         $extension = pathinfo($invoice->receipt, PATHINFO_EXTENSION);
+
         $name = sprintf('receipt_%s.%s', $invoice->number, $extension);
 
-        return response()->file(Storage::path($invoice->receipt));
-
-
+        return response()->file(
+            Storage::path($invoice->receipt),
+            $name
+        );
     }
-
 }

@@ -49,11 +49,12 @@ class LinkHelper
     public static function buttonLink($route, $label, array $params = [], array $attribs = [])
     {
         $class = 'btn btn-primary';
+
+        $attribs['class'] = $class;
         if (array_key_exists('class', $attribs)) {
             $attribs['class'] = $class . ' ' . $attribs['class'];
-        } else {
-            $attribs['class'] = $class;
         }
+
         return link_to_route($route, $label, $params, $attribs);
     }
 

@@ -27,7 +27,7 @@ class InvoiceRequest extends FormRequest
         if (!is_null($id)) {
             $invoice = $this->user()->invoice($id)->firstOrFail();
             $project = $this->user()->project($invoice->project_id)->firstOrFail();
-            return true;
+            return $invoice && $project;
         }
 
         // Otherwise, a login is required for invoice creation.

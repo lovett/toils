@@ -28,7 +28,8 @@ class TimeRequest extends FormRequest
         // Users can only modify their own entries.
         if (!is_null($id)) {
             $time = $this->user()->time()->findOrFail($id);
-            return true;
+
+            return $id && $time;
         }
 
         // Otherwise, a login is required to create entries.

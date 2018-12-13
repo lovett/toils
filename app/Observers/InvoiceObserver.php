@@ -33,7 +33,13 @@ class InvoiceObserver
             'invoice_id' => null,
         ]);
 
-        Log::debug("Released ${affectedRows} time entries from deleted invoice {$invoice->id}");
+        $message = sprintf(
+            'Released %d time entries from deleted invoice %s',
+            $affectedRows,
+            $invoice->id
+        );
+
+        Log::debug($message);
 
         $invoice->trashReceipt();
     }
@@ -59,7 +65,6 @@ class InvoiceObserver
      */
     public function saved(Invoice $invoice)
     {
-
         DB::transaction(function () use ($invoice) {
             $detachedRows = Time::forInvoice($invoice)->update([
                 'invoice_id' => null,
@@ -71,7 +76,14 @@ class InvoiceObserver
             $attachedRows = $times->update(['invoice_id' => $invoice->getKey()]);
             DB::commit();
 
-            Log::debug("Detached ${detachedRows} time entries and attached ${attachedRows} to saved invoice {$invoice->id}");
+            $message = sprintf(
+                'Detached %d time entries and attached %d to saved invoice %s',
+                $detachedRows,
+                $attachedRows,
+                $invoice->id
+            );
+
+            Log::debug($message);
         });
     }
 }

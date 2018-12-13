@@ -87,9 +87,6 @@ class Estimate extends Model
     public static function listing(Builder $builder)
     {
         $joins = $builder->getQuery()->joins ?: [];
-        $joinedTables = array_map(function ($join) {
-            return $join->table;
-        }, $joins);
 
         $builder->select('estimates.*');
 

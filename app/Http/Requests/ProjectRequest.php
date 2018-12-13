@@ -26,7 +26,7 @@ class ProjectRequest extends FormRequest
         $id = $this->route('project');
         $project = $this->user()->project($id)->firstOrFail();
 
-        return true;
+        return $id && $project;
     }
 
     /**
