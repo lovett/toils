@@ -16,9 +16,7 @@
         "browser-sync-webpack-plugin": "2.2.2",
         "jquery": "3.3.1",
         "laravel-mix": "2.1.14",
-        "lodash": "4.17.11",
         "moment": "2.22.2",
-        "popper.js": "1.14.5",
         "vue": "2.5.17"
     }
 }
