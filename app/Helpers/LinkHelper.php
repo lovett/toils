@@ -139,7 +139,7 @@ class LinkHelper
             return $links;
         }
 
-        $link[] = LinkHelper::navLink("{$resource}.index", "{$capitalizedResource} List", []);
+        $links[] = LinkHelper::navLink("{$resource}.index", "{$capitalizedResource} List", []);
 
         if (strpos($action, '@show') !== false || strpos($action, '@edit') !== false) {
             $links[] = LinkHelper::navLink("{$resource}.show", "{$capitalizedResource} Overview", $params);
