@@ -8,8 +8,14 @@
                 <th width="20%">Project</th>
             @endunless
             <th>Summary</th>
-            <th class="text-right">Accuracy</th>
-            <th>Status</th>
+
+            @unless(Route::is('dashboard'))
+                <th class="text-right">Accuracy</th>
+            @endunless
+
+            @unless(Route::is('dashboard'))
+                <th>Status</th>
+            @endunless
         </tr>
     </thead>
     <tbody>
@@ -66,12 +72,15 @@
                     @endif
                 </td>
 
-                </td>
+                @unless(Route::is('dashboard'))
                 <td class="text-right">
                     @if ($time->accuracy)
                         {{ $time->accuracy }}%
                     @endif
                 </td>
+                @endunless
+
+                @unless(Route::is('dashboard'))
                 <td class="text-center">
                     @unless ($time->billable)
                         <svg class="icon inactive"><use xlink:href="#icon-blocked" /></svg>
@@ -81,7 +90,7 @@
                         <svg class="icon active"><use xlink:href="#icon-checkmark" /></svg>
                     @endif
                 </td>
-
+                @endunless
             </tr>
         @endforeach
     </tbody>
