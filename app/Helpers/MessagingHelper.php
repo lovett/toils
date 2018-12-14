@@ -10,27 +10,46 @@ use Illuminate\Support\Facades\Route;
  *
  * The value of the userMessageType key should be one of:
  * success, info, warning, danger.
- *
- * @see https://getbootstrap.com/docs/3.3/components/#alerts
  */
 class MessagingHelper
 {
-    public static function flashCreated($label='') {
+
+
+    /**
+     * Flash a standard message to the session about record creation.
+     *
+     * @param string $label The name of the newly-created record type.
+     */
+    public static function flashCreated(string $label = '')
+    {
         $resource = ucfirst(LinkHelper::firstRouteSegment());
         Session::flash('userMessage', "{$resource} {$label} has been created.");
         Session::flash('userMessageType', 'success');
     }
 
-    public static function flashUpdated($label='') {
+
+    /**
+     * Flash a standard message to the session about a record being successfully updated.
+     *
+     * @param string $label The name of the newly-updated record type.
+     */
+    public static function flashUpdated(string $label = '')
+    {
         $resource = ucfirst(LinkHelper::firstRouteSegment());
         Session::flash('userMessage', "{$resource} {$label} has been updated.");
         Session::flash('userMessageType', 'success');
     }
 
-    public static function flashDeleted($label='') {
+
+    /**
+     * Flash a standard message to the session about a record being successfully deleted.
+     *
+     * @param string $label The name of the newly-updated record type.
+     */
+    public static function flashDeleted(string $label = '')
+    {
         $resource = ucfirst(LinkHelper::firstRouteSegment());
         Session::flash('userMessage', "{$resource} {$label} has been deleted.");
         Session::flash('userMessageType', 'success');
     }
-
 }

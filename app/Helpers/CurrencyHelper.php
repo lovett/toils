@@ -7,6 +7,7 @@ namespace App\Helpers;
 class CurrencyHelper
 {
 
+
     /**
      * Format a monetary value with cents
      *
@@ -14,7 +15,7 @@ class CurrencyHelper
      *
      * @return string
      */
-    public static function money($value)
+    public static function money(float $value)
     {
         return money_format('%.2n', $value);
     }
@@ -22,13 +23,12 @@ class CurrencyHelper
     /**
      * Calculate an hourly rate
      *
-     * @param float $money Total money
-     * @param int $minutes Total time
+     * @param float $money   Total money.
+     * @param int   $minutes Total time.
      *
      * @return int Hourly money, rounded
-     *
      */
-    public static function hourlyRate($money=0, $minutes=0)
+    public static function hourlyRate(float $money = 0, int $minutes = 0)
     {
         if ($minutes < 1) {
             return '';

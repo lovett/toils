@@ -10,13 +10,14 @@ use Illuminate\Support\Facades\Route;
  */
 class LinkHelper
 {
+
+
     /**
      * Render a primary navigation link with awareness of the current route
      *
      * If the route matches resource of the current route, the link is
      * displayed in the active state.
      *
-     * @param string $section The current section declared by the controller
      * @param string $route   The route to link to
      * @param string $label   The text of the link
      * @param array  $params  Querystring parameters to include with the link
@@ -24,7 +25,8 @@ class LinkHelper
      *
      * @return string
      */
-    public static function primaryNavLink($route, $label, array $params = [], array $attribs = []) {
+    public static function primaryNavLink(string $route, string $label, array $params = [], array $attribs = [])
+    {
         $resource = static::firstRouteSegment();
         $linkedRoute = explode('.', $route);
         $liClass = 'nav-item';
@@ -46,7 +48,15 @@ class LinkHelper
         );
     }
 
-    public static function buttonLink($route, $label, array $params = [], array $attribs = [])
+    /**
+     * Render a link as a button.
+     *
+     * @param string $route   The route to link to
+     * @param string $label   The text of the link
+     * @param array  $params  Querystring parameters to include with the link
+     * @param array  $attribs Additional attributes for the link tag
+     */
+    public static function buttonLink(string $route, string $label, array $params = [], array $attribs = [])
     {
         $class = 'btn btn-primary';
 
@@ -58,16 +68,19 @@ class LinkHelper
         return link_to_route($route, $label, $params, $attribs);
     }
 
-    public static function smallButtonLink($route, $label, array $params = [], array $attributes = [])
-    {
-        $attributes['class'] = 'btn-sm';
-        return static::buttonLink($route, $label, $params, $attributes);
-    }
 
-    public static function extraSmallButtonLink($route, $label, array $params = [], array $attributes = [])
+    /**
+     * Render a link as a small button.
+     *
+     * @param string $route   The route to link to
+     * @param string $label   The text of the link
+     * @param array  $params  Querystring parameters to include with the link
+     * @param array  $attribs Additional attributes for the link tag
+     */
+    public static function smallButtonLink(string $route, string $label, array $params = [], array $attribs = [])
     {
-        $attributes['class'] = 'btn-xs';
-        return static::buttonLink($route, $label, $params, $attributes);
+        $attribs['class'] = 'btn-sm';
+        return static::buttonLink($route, $label, $params, $attribs);
     }
 
     /**
@@ -76,7 +89,6 @@ class LinkHelper
      * If the route matches the current route, the link is displayed
      * in the active state.
      *
-     * @param string $section The current section declared by the controller
      * @param string $route   The route to link to
      * @param string $label   The text of the link
      * @param array  $params  Querystring parameters to include with the link
@@ -84,7 +96,8 @@ class LinkHelper
      *
      * @return string
      */
-    public static function navLink($route, $label, array $params = [], array $attribs = []) {
+    public static function navLink(string $route, string $label, array $params = [], array $attribs = [])
+    {
         $liClass = 'nav-item';
         $linkClass = 'nav-link';
 
@@ -113,10 +126,11 @@ class LinkHelper
      *
      * @return boolean
      */
-    public static function showSubnav() {
+    public static function showSubnav()
+    {
         $routeSegments = explode('.', Route::currentRouteName());
 
-        return sizeof($routeSegments) > 1;
+        return count($routeSegments) > 1;
     }
 
     /**
@@ -127,7 +141,8 @@ class LinkHelper
      *
      * @return array
      */
-    public static function getSubnav() {
+    public static function getSubnav()
+    {
         $action = Route::getCurrentRoute()->getActionName();
         $params = Route::getCurrentRoute()->parameters;
 
@@ -140,18 +155,21 @@ class LinkHelper
             return $links;
         }
 
-        $links[] = LinkHelper::navLink("{$resource}.index", "{$capitalizedResource} List", []);
+        $links[] = self::navLink("{$resource}.index", "{$capitalizedResource} List", []);
 
         if (strpos($action, '@show') !== false || strpos($action, '@edit') !== false) {
-            $links[] = LinkHelper::navLink("{$resource}.show", "{$capitalizedResource} Overview", $params);
-            $links[] = LinkHelper::navLink("{$resource}.edit", "Edit {$capitalizedResource}", $params);
+            $links[] = self::navLink("{$resource}.show", "{$capitalizedResource} Overview", $params);
+            $links[] = self::navLink("{$resource}.edit", "Edit {$capitalizedResource}", $params);
         }
 
-        $links[] = LinkHelper::navLink("{$resource}.create", "New {$capitalizedResource}", []);
+        $links[] = self::navLink("{$resource}.create", "New {$capitalizedResource}", []);
 
         return $links;
     }
 
+    /**
+     * Return the first segment of the current route.
+     */
     public static function firstRouteSegment()
     {
         $routeSegments = explode('.', Route::currentRouteName());

@@ -60,7 +60,7 @@ class Client extends Model
      */
     protected $casts = [
         'active' => 'boolean',
-        'totalTime' => 'integer'
+        'totalTime' => 'integer',
     ];
 
     /**
@@ -114,6 +114,9 @@ class Client extends Model
         return $builder;
     }
 
+    /**
+     * At-a-glance numbers that summarize a client in various ways.
+     */
     public function stats()
     {
         $stats = [];
@@ -183,5 +186,4 @@ class Client extends Model
     {
         return $this->hasMany('App\Estimate');
     }
-
 }

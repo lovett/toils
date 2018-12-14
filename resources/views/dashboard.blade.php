@@ -36,8 +36,8 @@
                             <h5 class="card-title">{!! link_to_route('project.show', $project->name, ['id' => $project->id]) !!}</h5>
                             <p>{{ TimeHelper::hoursAndMinutes($project->unbilledTime) }}</p>
 
-                            {!! LinkHelper::extraSmallButtonLink('time.create', 'time', ['project' => $project->id]) !!}
-                            {!! LinkHelper::extraSmallButtonLink('invoice.create', 'invoice', ['project' => $project->id]) !!}
+                            {!! LinkHelper::smallButtonLink('time.create', 'time', ['project' => $project->id]) !!}
+                            {!! LinkHelper::smallButtonLink('invoice.create', 'invoice', ['project' => $project->id]) !!}
                         </div>
 
                         <div class="card-footer text-muted">

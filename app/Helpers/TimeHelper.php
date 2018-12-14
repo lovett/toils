@@ -13,6 +13,11 @@ use DateTime;
 class TimeHelper
 {
 
+    /**
+     * The default format for representing a date.
+     *
+     * @var string
+     */
     public static $dateFormat = 'Y-m-d';
 
     /**
@@ -22,7 +27,7 @@ class TimeHelper
      *
      * @return string
      */
-    public static function hoursAndMinutes($minutes)
+    public static function hoursAndMinutes(int $minutes)
     {
         if ($minutes === 0) {
             return '0 minutes';
@@ -36,12 +41,12 @@ class TimeHelper
         $out = [];
 
         if ($hours > 0) {
-            $label = ($hours === 1)? 'hour' : 'hours';
+            $label = ($hours === 1) ? 'hour' : 'hours';
             $out[] = sprintf($format, $hours, $label);
         }
 
         if (empty($out) || $minutes > 0) {
-            $label = ($minutes === 1)? 'minute' : 'minutes';
+            $label = ($minutes === 1) ? 'minute' : 'minutes';
             $out[] = sprintf($format, $minutes, $label);
         }
 
@@ -51,12 +56,12 @@ class TimeHelper
     /**
      * Convert minutes to hours with rounding.
      *
-     * @param int $minutes The number to be divided
+     * @param int $minutes   The number to be divided
      * @param int $precision How many decimal places
      *
      * @return int
      */
-    public static function minutesToHours($minutes, $precision = 2)
+    public static function minutesToHours(int $minutes, int $precision = 2)
     {
         return round(($minutes / 60), $precision);
     }
@@ -70,7 +75,7 @@ class TimeHelper
      */
     public static function readableShortDate(Carbon $value = null)
     {
-        if (is_null($value)) {
+        if ($value === null) {
             return '';
         }
 
@@ -86,16 +91,23 @@ class TimeHelper
      */
     public static function date(Carbon $value = null)
     {
-        if (is_null($value)) {
+        if ($value === null) {
             return '';
         }
 
         return $value->format(self::$dateFormat);
     }
 
+    /**
+     * Format a date in long form: January 1st, 2018
+     *
+     * @param Carbon|null $value The value to format
+     *
+     * @return strig
+     */
     public static function longDate(Carbon $value = null)
     {
-        if (is_null($value)) {
+        if ($value === null) {
             return '';
         }
 
@@ -111,13 +123,21 @@ class TimeHelper
      */
     public static function time(Carbon $value = null)
     {
-        if (is_null($value)) {
+        if ($value === null) {
             return '';
         }
 
         return $value->format('g:i A');
     }
 
+    /**
+     * Round the minutes of a time value to a given multiple.
+     *
+     * @param Carbon|null $value    The value to format
+     * @param int         $multiple The nearest value to round to.
+     *
+     * @return string
+     */
     public static function roundToNearestMinuteMultiple(Carbon $value, int $multiple)
     {
         $value->minute = self::roundToNearestMultiple($value->minute, $multiple);
@@ -126,14 +146,28 @@ class TimeHelper
         return $value;
     }
 
+    /**
+     * Round a number to a given multiple.
+     *
+     * @param int $value    The value to round.
+     * @param int $multiple The nearest value to round to.
+     *
+     * @return int
+     */
     public static function roundToNearestMultiple(int $value, int $multiple)
     {
         return floor($value / $multiple) * $multiple;
     }
 
+    /**
+     * Format a date as a number of days relative to the present.
+     *
+     * @param Carbon|null $value The value to format.
+     *
+     * @return string
+     */
     public static function daysAgo(Carbon $value = null)
     {
         return $value->diffForHumans();
     }
-
 }

@@ -6,6 +6,7 @@ fakeseed: dummy
 
 lint: dummy
 	phpmd app text phpmd.xml
+	phpcs -s app
 
 # Install NPM packages quietly.
 #setup-js: export NPM_CONFIG_PROGRESS = false

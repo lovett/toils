@@ -12,6 +12,7 @@
     <exclude name="Squiz.Arrays.ArrayDeclaration.CloseBraceNotAligned" />
     <exclude name="Squiz.Arrays.ArrayDeclaration.KeyNotAligned" />
     <exclude name="Squiz.Arrays.ArrayDeclaration.ValueNotAligned" />
+    <exclude name="Squiz.Arrays.ArrayDeclaration.DoubleArrowNotAligned" />
     <exclude name="Squiz.Commenting.ClosingDeclarationComment.Missing" />
     <exclude name="Squiz.Commenting.FileComment.Missing" />
     <exclude name="Squiz.Commenting.FunctionComment.ParamCommentFullStop" />
@@ -25,11 +26,15 @@
     <exclude name="Squiz.Strings.DoubleQuoteUsage.ContainsVar" />
     <exclude name="Squiz.WhiteSpace.FunctionClosingBraceSpace.SpacingBeforeClose" />
     <exclude name="Squiz.WhiteSpace.FunctionSpacing.After" />
+    <exclude name="Squiz.WhiteSpace.FunctionSpacing.AfterLast" />
     <exclude name="Squiz.WhiteSpace.FunctionSpacing.Before" />
     <exclude name="Squiz.WhiteSpace.ObjectOperatorSpacing.Before" />
     <exclude name="Squiz.WhiteSpace.MemberVarSpacing.Incorrect" />
     <exclude name="Squiz.Objects.ObjectInstantiation.NotAssigned" />
     <exclude name="Squiz.Formatting.OperatorBracket.MissingBrackets" />
+    <exclude name="Squiz.NamingConventions.ValidVariableName.NotCamelCaps" />
+    <exclude name="Squiz.PHP.DisallowComparisonAssignment.AssignedComparison" />
+    <exclude name="Squiz.PHP.DisallowInlineIf.Found" />
   </rule>
 
   <!-- use most of the zend standard -->
@@ -39,6 +44,7 @@
     <exclude name="PEAR.Functions.FunctionCallSignature.MultipleArguments" />
     <exclude name="Generic.Functions.OpeningFunctionBraceBsdAllman.BraceOnSameLine" />
     <exclude name="Generic.Files.LineLength.TooLong" />
+    <exclude name="Generic.Formatting.MultipleStatementAlignment.NotSame" />
     <exclude name="Zend.NamingConventions.ValidVariableName.PrivateNoUnderscore" />
     <exclude name="Zend.NamingConventions.ValidVariableName.ContainsNumbers" />
 
