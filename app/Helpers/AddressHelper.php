@@ -3,6 +3,8 @@
 namespace App\Helpers;
 
 use Exception;
+use App\User;
+use App\Client;
 
 /**
  * Helper functions for displaying addresses.
@@ -10,33 +12,79 @@ use Exception;
 class AddressHelper
 {
 
-    public static function userMailingAddress($record)
+
+    /**
+     * Display the mailing address for a user.
+     *
+     * @param User $user A user instance.
+     */
+    public static function userMailingAddress(User $user)
     {
-        $fields = ['displayName', 'address1', 'address2', 'city', 'locality', 'postalCode', ['Tel', 'phone'], 'email'];
-        return static::mailingAddress($record, $fields);
+        return static::mailingAddress($user, [
+            'displayName',
+            'address1',
+            'address2',
+            'city',
+            'locality',
+            'postalCode',
+            [
+                'Tel',
+                'phone',
+            ],
+            'email',
+        ]);
     }
 
-    public static function clientMailingAddress($record)
+
+    /**
+     * Display the mailing address for a client.
+     *
+     * @param Client $client A client instance.
+     */
+    public static function clientMailingAddress(Client $client)
     {
-        $fields = ['name', ['c/o', 'contactName'], 'address1', 'address2', 'city', 'locality', 'postalCode'];
-        return static::mailingAddress($record, $fields);
+        return static::mailingAddress($client, [
+            'name',
+            [
+                'c/o',
+                'contactName',
+            ],
+            'address1',
+            'address2',
+            'city',
+            'locality',
+            'postalCode',
+        ]);
     }
 
-    public static function clientContact($record)
+
+    /**
+     * Display the contact address for a client.
+     *
+     * @param Client $client A client instance.
+     */
+    public static function clientContact(Client $client)
     {
-        $fields = ['contactName', 'address1', 'address2', 'city', 'locality', 'postalCode'];
-        return static::mailingAddress($record, $fields);
+        return static::mailingAddress($client, [
+            'contactName',
+            'address1',
+            'address2',
+            'city',
+            'locality',
+            'postalCode',
+        ]);
     }
 
 
     /**
      * Display a mailing address, taking care to account for missing fields.
      *
-     * @param string $record An object containing address fields
+     * @param User|Client $record The data object.
+     * @param Array       $fields A list of properties to extract from the data object.
      *
      * @return string
      */
-    private static function mailingAddress($record, $fields=[])
+    private static function mailingAddress($record, array $fields = [])
     {
         $address = array_reduce($fields, function ($acc, $field) use ($record) {
             $prefix = '';
@@ -54,8 +102,8 @@ class AddressHelper
                 $suffix = ' ';
             }
 
-            if (!empty($record->$key)) {
-                $acc .= ltrim(sprintf("%s %s%s", $prefix, $record->$key, $suffix));
+            if (empty($record->$key) === false) {
+                $acc .= ltrim(sprintf('%s %s%s', $prefix, $record->$key, $suffix));
             }
             return $acc;
         }, '');
@@ -70,7 +118,7 @@ class AddressHelper
      *
      * @return string
      */
-    public static function phoneUrl($value)
+    public static function phoneUrl(string $value)
     {
         if (empty($value)) {
             return '';
@@ -78,24 +126,28 @@ class AddressHelper
 
         $plainValue = preg_replace('/[^0-9x\#*]/', null, $value);
 
-        $matchResult = preg_match("/(1)?(\d{3})?(\d{3})(\d{4})(.*)?/", $plainValue, $matches);
+        $matchResult = preg_match(
+            '/(1)?(\d{3})?(\d{3})(\d{4})(.*)?/',
+            $plainValue,
+            $matches
+        );
 
         if ($matchResult !== 1) {
             return $value;
         }
 
         $formattedValue = '';
-        if (!empty($matches[1])) {
+        if (empty($matches[1]) === false) {
             $formattedValue .= sprintf('+%s ', $matches[1]);
         }
 
-        if (!empty($matches[2])) {
+        if (empty($matches[2]) === false) {
             $formattedValue .= sprintf('(%s) ', $matches[2]);
         }
 
         $formattedValue .= sprintf('%s-%s ', $matches[3], $matches[4]);
 
-        if (!empty($matches[5])) {
+        if (empty($matches[5]) === false) {
             $formattedValue .= $matches[5];
         }
 
