@@ -1,3 +1,8 @@
+import FacetSearch from './components/FacetSearch.vue';
+import Autofill from './components/Autofill.vue';
+import AutofillHint from './components/AutofillHint.vue';
+import Pickable from './components/Pickable.vue';
+
 /**
  * The axios HTTP library automatically handles sending the Laravel
  * CSRF token as a header based on the value of the "XSRF" token cookie.
@@ -15,10 +20,10 @@ if (token) {
 
 window.Vue = require('vue');
 
-Vue.component('facet-search', require('./components/FacetSearch.vue'));
-Vue.component('autofill', require('./components/Autofill.vue'));
-Vue.component('autofill-hint', require('./components/AutofillHint.vue'));
-Vue.component('pickable', require('./components/Pickable.vue'));
+Vue.component('facet-search', FacetSearch);
+Vue.component('autofill', Autofill);
+Vue.component('autofill-hint', AutofillHint);
+Vue.component('pickable', Pickable);
 
 const app = new Vue({
     el: '#app'
