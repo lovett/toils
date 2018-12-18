@@ -9,29 +9,33 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * Handle Eloquent events related to Invoices.
+ */
 class InvoiceObserver
 {
+
+
     /**
      * Auto-generate an invoice number before creating an invoice
      *
+     * @param Invoice $invoice An invoice instance.
      */
     public function creating(Invoice $invoice)
     {
-        $currentMax = (int)Invoice::withTrashed()->max('number');
+        $currentMax = (int) Invoice::withTrashed()->max('number');
         $invoice->number = $currentMax + 1;
     }
+
 
     /**
      * Disassociate time entries from a deleted invoice
      *
-     * @param  Invoice  $invoice
-     * @return void
+     * @param Invoice $invoice An invoice instance.
      */
     public function deleted(Invoice $invoice)
     {
-        $affectedRows = Time::forInvoice($invoice)->update([
-            'invoice_id' => null,
-        ]);
+        $affectedRows = Time::forInvoice($invoice)->update(['invoice_id' => null]);
 
         $message = sprintf(
             'Released %d time entries from deleted invoice %s',
@@ -47,8 +51,7 @@ class InvoiceObserver
     /**
      * Set date paid if a receipt is present
      *
-     * @param Invoice $invoice
-     * @return void
+     * @param Invoice $invoice An invoice instance.
      */
     public function saving(Invoice $invoice)
     {
@@ -60,15 +63,12 @@ class InvoiceObserver
     /**
      * Associate time entries with an invoice
      *
-     * @param  Invoice  $invoice
-     * @return void
+     * @param Invoice $invoice An invoice instance.
      */
     public function saved(Invoice $invoice)
     {
         DB::transaction(function () use ($invoice) {
-            $detachedRows = Time::forInvoice($invoice)->update([
-                'invoice_id' => null,
-            ]);
+            $detachedRows = Time::forInvoice($invoice)->update(['invoice_id' => null]);
 
             $times = Time::whereBetween('start', [$invoice->start, $invoice->end]);
             $times->where('project_id', $invoice->project_id);
