@@ -16,6 +16,8 @@ use Illuminate\Http\Response;
  */
 class ProjectController extends Controller
 {
+
+
     /**
      * Set middleware and shared view values.
      */
@@ -126,7 +128,6 @@ class ProjectController extends Controller
             'project.show',
             [$project->id]
         );
-
     }
 
     /**
@@ -137,7 +138,7 @@ class ProjectController extends Controller
      *
      * @return Response
      */
-    public function show(Request $request, $id)
+    public function show(Request $request, int $id)
     {
         $fetchLimit = 5;
 
@@ -195,7 +196,7 @@ class ProjectController extends Controller
      *
      * @return Response
      */
-    public function edit(Request $request, $id)
+    public function edit(Request $request, int $id)
     {
         $project = Project::find($id);
 
@@ -223,7 +224,7 @@ class ProjectController extends Controller
      *
      * @return Response
      */
-    public function update(ProjectRequest $request, $id)
+    public function update(ProjectRequest $request, int $id)
     {
         $project = $request->user()->project($id)->firstOrFail();
 
@@ -247,7 +248,7 @@ class ProjectController extends Controller
      *
      * @return Response
      */
-    public function destroy(Request $request, $id)
+    public function destroy(Request $request, int $id)
     {
         $project = $request->user()->project($id)->firstOrFail();
 

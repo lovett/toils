@@ -9,8 +9,13 @@ use App\Http\Requests\InvoiceRequest;
 use App\Invoice;
 use Illuminate\Http\Request;
 
+/**
+ * Controller for managing invoices.
+ */
 class InvoiceController extends Controller
 {
+
+
     /**
      * Set middleware and shared view values.
      */
@@ -23,13 +28,12 @@ class InvoiceController extends Controller
     /**
      * Display a list of invoices.
      *
-     * @param Request $request The incoming request
+     * @param InvoiceRequest $request The incoming request
      *
      * @return Response
      */
     public function index(Request $request)
     {
-
         $query = $request->get('q');
 
         $baseQuery = $request->user()->invoices();
@@ -61,14 +65,14 @@ class InvoiceController extends Controller
     /**
      * Provide autocompletion candidates based on the past invoice for a project.
      *
-     * @param Request $request  The incoming request
-     * @param int     $id       The id of the project to base the candidates on.
+     * @param InvoiceRequest $request The incoming request
+     * @param int            $id      The id of the project to base the candidates on.
      *
      * @return Response A json response.
      */
-    public function suggestByProject(Request $request, $id = 0)
+    public function suggestByProject(Request $request, int $id = 0)
     {
-        $id = (int)$id;
+        $id = (int) $id;
 
         $project = $request->user()->project($id)->firstOrFail();
 
@@ -80,7 +84,7 @@ class InvoiceController extends Controller
     /**
      * Show the form for creating a new invoice.
      *
-     * @param Request $request The incoming request
+     * @param InvoiceRequest $request The incoming request
      *
      * @return Response
      */
@@ -97,7 +101,9 @@ class InvoiceController extends Controller
             $project = $request->user()->project($projectId)->with('client')->firstOrFail();
             $client = $project->client;
             $projects = $request->user()->projectsForMenu($client->getKey());
-        } else if ($clientId) {
+        }
+
+        if ($clientId) {
             $project = null;
             $client = $request->user()->client($clientId)->firstOrFail();
             $projects = $request->user()->projectsForMenu($client->getKey());
@@ -151,12 +157,12 @@ class InvoiceController extends Controller
     /**
      * Render an invoice as a PDF
      *
-     * @param Request $request The incoming request
-     * @param int $id an invoice primary key
+     * @param InvoiceRequest $request The incoming request
+     * @param int            $id      An invoice primary key
      *
      * @return Response
      */
-    public function show(Request $request, $id)
+    public function show(Request $request, int $id)
     {
         $invoice = $request->user()->invoice($id);
 
@@ -166,8 +172,6 @@ class InvoiceController extends Controller
             'client' => $invoice->client,
             'pageTitle' => $invoice->name,
         ];
-
-        //return view('invoice.show', $viewVars);
 
         $pdf = app()->make('dompdf.wrapper');
         $pdf->loadView('invoice.show', $viewVars);
@@ -179,12 +183,12 @@ class InvoiceController extends Controller
     /**
      * Show the form for editing an invoice.
      *
-     * @param Request $request The incoming request
-     * @param int     $id      an invoice primary key
+     * @param InvoiceRequest $request The incoming request
+     * @param int            $id      An invoice primary key
      *
      * @return Response
      */
-    public function edit(Request $request, $id)
+    public function edit(Request $request, int $id)
     {
         $invoice = $request->user()->invoice($id);
 
@@ -206,11 +210,11 @@ class InvoiceController extends Controller
      * Update an existing invoice.
      *
      * @param InvoiceRequest $request The incoming request
-     * @param int $id An invoice primary key
+     * @param int            $id      An invoice primary key
      *
      * @return Response
      */
-    public function update(InvoiceRequest $request, $id)
+    public function update(InvoiceRequest $request, int $id)
     {
         $invoice = $request->user()->invoice($id);
 
@@ -235,12 +239,12 @@ class InvoiceController extends Controller
      *
      * Invoices use soft deletion.
      *
-     * @param Request $request The incoming request
-     * @param int     $id      An invoice primary key
+     * @param InvoiceRequest $request The incoming request
+     * @param int            $id      An invoice primary key
      *
      * @return Response
      */
-    public function destroy(Request $request, $id)
+    public function destroy(Request $request, int $id)
     {
         $invoice = $request->user()->invoice($id);
 
@@ -251,9 +255,14 @@ class InvoiceController extends Controller
         return redirect()->route('invoice.index');
     }
 
+    /**
+     * Capture the receipt for a paid invoice into storage.
+     *
+     * @param InvoiceRequest $request The incoming request
+     */
     protected function storeReceipt(InvoiceRequest $request)
     {
-        if (!$request->hasFile('receipt')) {
+        if ($request->hasFile('receipt') === false) {
             return null;
         }
 
@@ -266,14 +275,12 @@ class InvoiceController extends Controller
      * Make a previously-uploaded receipt available for download
      *
      * @param InvoiceRequest $request The incoming request
-     * @param int $id An invoice primary key
+     * @param int            $id      An invoice primary key
      *
      * @return Response
-     *
      */
-    public function receipt(InvoiceRequest $request, $id)
+    public function receipt(InvoiceRequest $request, int $id)
     {
-
         $invoice = $request->user()->invoice($id);
 
         abort_unless($invoice->receipt, 404);

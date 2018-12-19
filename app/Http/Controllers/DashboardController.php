@@ -7,8 +7,13 @@ use Illuminate\Http\Response;
 use App\Project;
 use App\Time;
 
+/**
+ * Controller class for the logged-in homepage of the site.
+ */
 class DashboardController extends Controller
 {
+
+
     /**
      * Create a new controller instance.
      *
@@ -23,7 +28,7 @@ class DashboardController extends Controller
     /**
      * Show the application dashboard.
      *
-     * @return Response
+     * @param Request $request The incoming request
      */
     public function index(Request $request)
     {

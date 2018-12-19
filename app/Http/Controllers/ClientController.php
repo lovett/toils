@@ -8,7 +8,6 @@ use App\Time;
 use App\Estimate;
 use App\Helpers\MessagingHelper;
 use App\Http\Requests\ClientRequest;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 /**
@@ -16,6 +15,7 @@ use Illuminate\Http\Response;
  */
 class ClientController extends Controller
 {
+
 
     /**
      * Create a new controller instance.
@@ -31,11 +31,11 @@ class ClientController extends Controller
     /**
      * Display a list of clients.
      *
-     * @param Request $request The incoming request
+     * @param ClientRequest $request The incoming request
      *
      * @return Response
      */
-    public function index(Request $request)
+    public function index(ClientRequest $request)
     {
         $query = $request->get('q');
 
@@ -125,12 +125,12 @@ class ClientController extends Controller
      * A homepage for knowing everything about a client: its projects,
      * invoices, time entries, contact information.
      *
-     * @param Request $request The incoming request
-     * @param int $id A client primary key
+     * @param ClientRequest $request The incoming request
+     * @param int           $id      A client primary key
      *
      * @return Response
      */
-    public function show(Request $request, $id)
+    public function show(ClientRequest $request, int $id)
     {
         $fetchLimit = 5;
 
@@ -160,12 +160,12 @@ class ClientController extends Controller
     /**
      * Show the form for editing a client
      *
-     * @param Request $request The incoming request
-     * @param int $id A client primary key
+     * @param ClientRequest $request The incoming request
+     * @param int           $id      A client primary key
      *
      * @return Response
      */
-    public function edit(Request $request, $id)
+    public function edit(ClientRequest $request, int $id)
     {
         $client = $request->user()->clients()->findOrFail($id);
 
@@ -187,11 +187,11 @@ class ClientController extends Controller
      * Update an existing client
      *
      * @param ClientRequest $request The incoming request
-     * @param int $id A client primary key
+     * @param int           $id      A client primary key
      *
      * @return Response
      */
-    public function update(ClientRequest $request, $id)
+    public function update(ClientRequest $request, int $id)
     {
         $client = $request->user()->client($id);
 
@@ -208,14 +208,13 @@ class ClientController extends Controller
     /**
      * Delete a client
      *
-     * @param Request $request The incoming request
-     * @param int $id A client primary key
+     * @param ClientRequest $request The incoming request
+     * @param int           $id      A client primary key
      *
      * @return Response
      */
-    public function destroy(Request $request, $id)
+    public function destroy(ClientRequest $request, int $id)
     {
-
         $client = $request->user()->client($id);
 
         $client->delete();

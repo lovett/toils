@@ -7,6 +7,9 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
+/**
+ * Standard Laravel controller class
+ */
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
@@ -14,8 +17,8 @@ class Controller extends BaseController
     /**
      * Apply search terms to a query.
      *
-     * @param string|null $query The search terms provided by the request
-     * @param array $searchables A searchables array from a model
+     * @param string|null $query       The search terms provided by the request
+     * @param array       $searchables A searchables array from a model
      *
      * @return array
      */
@@ -32,7 +35,7 @@ class Controller extends BaseController
         $terms = array_fill_keys(array_values($searchables), []);
 
         // The first searchable field is used as the default, in case one
-        // isn't specified in the query
+        // isn't specified in the query.
         $field = current(array_values($searchables));
 
         $index = 0;
@@ -43,7 +46,7 @@ class Controller extends BaseController
 
                 if (array_key_exists($word, $searchables)) {
                     $field = $searchables[$word];
-                    $index = sizeof($terms[$field]);
+                    $index = count($terms[$field]);
                     continue;
                 }
             }
@@ -56,6 +59,5 @@ class Controller extends BaseController
         }
 
         return $terms;
-
     }
 }

@@ -14,6 +14,7 @@ use Illuminate\Http\Response;
 class EstimateController extends Controller
 {
 
+
     /**
      * Create a new controller instance.
      *
@@ -113,11 +114,11 @@ class EstimateController extends Controller
      * Display an estimate
      *
      * @param Request $request The incoming request
-     * @param int $id An Estimate primary key
+     * @param int     $id      An Estimate primary key
      *
      * @return Response
      */
-    public function show(Request $request, $id)
+    public function show(Request $request, int $id)
     {
         $estimate = $request->user()->estimates()->findOrFail($id);
 
@@ -133,11 +134,11 @@ class EstimateController extends Controller
      * Show the form for editing an estimate
      *
      * @param Request $request The incoming request
-     * @param int $id An Estimate primary key
+     * @param int     $id      An Estimate primary key
      *
      * @return Response
      */
-    public function edit(Request $request, $id)
+    public function edit(Request $request, int $id)
     {
         $estimate = $request->user()->estimate($id);
 
@@ -162,11 +163,11 @@ class EstimateController extends Controller
      * Update an existing estimate
      *
      * @param EstimateRequest $request The incoming request
-     * @param int $id An estimate primary key
+     * @param int             $id      An estimate primary key
      *
      * @return Response
      */
-    public function update(EstimateRequest $request, $id)
+    public function update(EstimateRequest $request, int $id)
     {
         $estimate = $request->user()->estimate($id);
 
@@ -181,13 +182,12 @@ class EstimateController extends Controller
      * Delete an estimate
      *
      * @param Request $request The incoming request
-     * @param int $id An Estimate primary key
+     * @param int     $id      An Estimate primary key
      *
      * @return Response
      */
-    public function destroy(Request $request, $id)
+    public function destroy(Request $request, int $id)
     {
-
         $estimate = $request->user()->estimate($id);
 
         $estimate->delete();

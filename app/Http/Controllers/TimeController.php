@@ -15,6 +15,8 @@ use Illuminate\Http\Response;
  */
 class TimeController extends Controller
 {
+
+
     /**
      * Create a new controller instance
      */
@@ -65,13 +67,13 @@ class TimeController extends Controller
      * Provide autocompletion candidates based on the past invoice for a time entry
      *
      * @param Request $request The incoming request
-     * @param int $id The id of the project to base the candidates on.
+     * @param int     $id      The id of the project to base the candidates on.
      *
      * @return Response A json response.
      */
-    public function suggestByProject(Request $request, $id)
+    public function suggestByProject(Request $request, int $id)
     {
-        $id = (int)$id;
+        $id = (int) $id;
         $time = $request->user()->timeByProject($id)->firstOrFail();
         return response()->json($time->suggestion);
     }
@@ -91,7 +93,7 @@ class TimeController extends Controller
             $projects = $request->user()->projectsForMenu($client->getKey());
         }
 
-        if (is_null($clientId)) {
+        if ($clientId === null) {
             $client = null;
             $projects = $request->user()->projectsForMenu();
         }
@@ -148,11 +150,11 @@ class TimeController extends Controller
      * Show the form for editing a time entry.
      *
      * @param Request $request The incoming request
-     * @param int $id A primary key
+     * @param int     $id      A primary key
      *
      * @return Response
      */
-    public function edit(Request $request, $id)
+    public function edit(Request $request, int $id)
     {
         $time = $request->user()->time()->with('tags')->findOrFail($id);
 
@@ -174,11 +176,11 @@ class TimeController extends Controller
      * Update an existing time entry.
      *
      * @param TimeRequest $request The incoming request
-     * @param int $id A time entry primary key
+     * @param int         $id      A time entry primary key
      *
      * @return Response
      */
-    public function update(TimeRequest $request, $id)
+    public function update(TimeRequest $request, int $id)
     {
         $time = $request->user()->time()->findOrFail($id);
 
@@ -202,9 +204,9 @@ class TimeController extends Controller
      * Time entries use soft deletion.
      *
      * @param Request $request The incoming request
-     * @param int $id A primary key
+     * @param int     $id      A primary key
      */
-    public function destroy(Request $request, $id)
+    public function destroy(Request $request, int $id)
     {
         $request->user()->time()->where('id', $id)->delete();
 
@@ -213,9 +215,13 @@ class TimeController extends Controller
         return redirect()->route('time.index');
     }
 
+    /**
+     * Close an open time entry.
+     *
+     * @param Request $request The incoming request
+     */
     public function finish(Request $request)
     {
-
         $id = $request->input('id', null);
         $time = $request->user()->time()->findOrFail($id);
 
