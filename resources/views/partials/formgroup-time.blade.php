@@ -1,4 +1,4 @@
-<div class="form-group row {{ $errors->has($fieldName) ? 'has-error' : '' }}">
+<div class="form-group row {{ $errors->has($name) ? 'is-invalid' : '' }}">
     @if ($label)
         {!! Form::label($name, $label, ['class' => 'col-sm-2 col-form-label text-right']) !!}
     @endif
@@ -14,8 +14,8 @@
             v-bind:suggested-value="suggested{{ ucfirst($fieldName) }}"
             v-bind:previous-value="previous{{ ucfirst($fieldName) }}"
             @endif
-            @if ($errors->has($fieldName))
-            error="{{ $errors->first($fieldName) }}"
+            @if ($errors->has($name))
+            error="{{ $errors->first($name) }}"
             @endif
         />
         @else
@@ -29,8 +29,8 @@
         />
         @endisset
 
-        @if ($errors->has($fieldName))
-            <div class="help-block">{{ $errors->first($fieldName)}}</div>
+        @if ($errors->has($name))
+            <div class="help-block">{{ $errors->first($name)}}</div>
         @endif
 
         @endisset
