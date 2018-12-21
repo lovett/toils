@@ -9,6 +9,9 @@
     <div class="container">
         <div class="card">
             <div class="card-body">
+
+                @include('partials.error-alert')
+
                 <autofill
                     inline-template
                     url="{{ route('time.suggestByProject') }}"

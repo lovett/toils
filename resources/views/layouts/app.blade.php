@@ -85,7 +85,6 @@
         </div>
     </nav>
 
-
     @if (Session::has('userMessage'))
         <div class="container">
             <div class="alert alert-{{ Session::get('userMessageType') }} alert-dismissible" role="alert">

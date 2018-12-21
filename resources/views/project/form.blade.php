@@ -9,6 +9,8 @@
         <div class="card">
             <div class="card-body">
 
+                @include('partials.error-alert')
+
                 {!! Form::model($model, ['route' => $submission_route, 'method' => $submission_method]) !!}
 
                 @include('partials.formgroup-standard', ['name' => 'name', 'label' => 'Name'])
