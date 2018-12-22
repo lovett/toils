@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 trait AsMenu
 {
 
+
     /**
      * Return a list of key-value pairs suitable for display in an HTML menu.
      *
@@ -17,7 +18,7 @@ trait AsMenu
      *
      * @return array
      */
-    protected function asMenu(Builder $query, $key = 'id', $value = 'name', $separator = ' ')
+    protected function asMenu(Builder $query, string $key = 'id', string $value = 'name', string $separator = ' ')
     {
         $items = $query->get()->reduce(
             function ($acc, $item) use ($key, $value, $separator) {

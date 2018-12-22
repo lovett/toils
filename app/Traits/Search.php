@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Builder;
 
 trait Search
 {
+
+
     /**
      * Apply a list of filters to an SQL query.
      *
@@ -24,7 +26,7 @@ trait Search
             $query->where(function ($query) use ($name, $values) {
                 foreach ($values as $value) {
                     if (is_numeric($value)) {
-                        $query->orWhere($name, '=', (int)$value);
+                        $query->orWhere($name, '=', (int) $value);
                     }
 
                     $wildValue = '%' . $value . '%';
