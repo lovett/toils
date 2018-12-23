@@ -51,19 +51,17 @@ class Invoice extends Model
 
     /**
      * Fields that can be used for filtering.
+     *
+     * @var array
      */
-    public static $filterables = [
-        'projectId',
-    ];
+    public static $filterables = ['projectId'];
 
     /**
      * When an invoice is updated, mark its project updated as well.
      *
      * @var array
      */
-    protected $touches = [
-        'project',
-    ];
+    protected $touches = ['project'];
 
     /**
      * The attributes that are mass assignable.
@@ -79,7 +77,7 @@ class Invoice extends Model
         'start',
         'end',
         'summary',
-        'receiptType'
+        'receiptType',
     ];
 
     /**
@@ -111,12 +109,12 @@ class Invoice extends Model
     /**
      * Query scope to restrict a listing to a specific project.
      *
-     * @param Builder $query An existing query.
-     * @param int $projectId The primary key of a project.
+     * @param Builder $query     An existing query.
+     * @param int     $projectId The primary key of a project.
      *
      * @return Builder;
      */
-    public function scopeProject($query, $projectId=0)
+    public function scopeProject(Builder $query, int $projectId = 0)
     {
         return $query->where('projects.id', '=', $projectId);
     }
@@ -128,7 +126,7 @@ class Invoice extends Model
      *
      * @return Builder;
      */
-    public function scopeUnpaid($query)
+    public function scopeUnpaid(Builder $query)
     {
         return $query->whereNull('paid');
     }
@@ -140,7 +138,7 @@ class Invoice extends Model
      *
      * @return Builder;
      */
-    public function scopePaid($query)
+    public function scopePaid(Builder $query)
     {
         return $query->whereNotNull('paid');
     }
@@ -150,11 +148,11 @@ class Invoice extends Model
      * Query scope to restrict by recentness
      *
      * @param Builder $query An existing query.
-     * @param int $limit If greater than zero, the max number of records to return.
+     * @param int     $limit If greater than zero, the max number of records to return.
      *
      * @return Builder;
      */
-    public function scopeNewest($query, $limit=0)
+    public function scopeNewest(Builder $query, int $limit = 0)
     {
         $query->orderBy('sent', 'DESC');
         if ($limit > 0) {
@@ -167,11 +165,12 @@ class Invoice extends Model
      * Master query for getting a list of records.
      *
      * @param Builder $builder The query to start with.
+     *
      * @return Relation;
      */
     public static function listing(Builder $builder)
     {
-        $joins = $builder->getQuery()->joins ?: [];
+        $joins = ($builder->getQuery()->joins) ?: [];
         $joinedTables = array_map(function ($join) {
             return $join->table;
         }, $joins);
@@ -193,7 +192,7 @@ class Invoice extends Model
             'clients.id'
         );
 
-        if (!in_array('projects', $joinedTables)) {
+        if (in_array('projects', $joinedTables) === false) {
             $builder = $builder->join('projects', 'times.project_id', '=', 'projects.id');
         }
 
@@ -209,9 +208,13 @@ class Invoice extends Model
         return $builder;
     }
 
-    public function __construct(array $attributes=[])
+    /**
+     * Set instance defaults.
+     *
+     * @param array $attributes The key-value array to populate.
+     */
+    public function __construct(array $attributes = [])
     {
-
         $now = new Carbon();
         $this->attributes = [
             'sent' => $now,
@@ -253,21 +256,24 @@ class Invoice extends Model
      *
      * @return Client The client associated with this invoice's project
      */
-    public function getClientAttribute() {
+    public function getClientAttribute()
+    {
         return $this->project->client;
     }
 
     /**
      * Custom attribute for treating payment date field as a boolean
      */
-    public function getIsPaidAttribute() {
+    public function getIsPaidAttribute()
+    {
         return $this->paid !== null;
     }
 
     /**
      * Custom attribute for calculating days remaining until due
      */
-    public function getDaysUntilDueAttribute() {
+    public function getDaysUntilDueAttribute()
+    {
         if ($this->isPaid) {
             return 0;
         }
@@ -276,7 +282,12 @@ class Invoice extends Model
         return $now->diffInDays($this->due, false);
     }
 
-    public function getNumberAttribute($value)
+    /**
+     * Custom attribute for presenting an invoice number as a 4-digit string.
+     *
+     * @param int $value The invoice number to be formatted.
+     */
+    public function getNumberAttribute(int $value)
     {
         return sprintf('%04d', $value);
     }
@@ -317,19 +328,23 @@ class Invoice extends Model
 
     /**
      * Set the date paid when the receipt is set
+     *
+     * @param object $value The receipt
      */
-    public function setReceiptAttribute($value)
+    public function setReceiptAttribute(object $value)
     {
         $this->attributes['receipt'] = $value;
-        $this->attributes['paid'] = ($value === null)? null : new Carbon();
+        $this->attributes['paid'] = ($value === null) ? null : new Carbon();
     }
 
     /**
      * Round the start attribute to the beginning of the day
+     *
+     * @param string $value A datetime string that can be parsed by Carbon.
      */
     public function setStartAttribute(string $value = null)
     {
-        if (!empty($value)) {
+        if (empty($value) === false) {
             $value = (new Carbon($value))->startOfDay();
         }
 
@@ -338,10 +353,12 @@ class Invoice extends Model
 
     /**
      * Round the end attribute to the end of the day
+     *
+     * @param string $value A datetime string that can be parsed by Carbon.
      */
     public function setEndAttribute(string $value = null)
     {
-        if (!empty($value)) {
+        if (empty($value) === false) {
             $value = (new Carbon($value))->endOfDay();
         }
 
@@ -364,5 +381,4 @@ class Invoice extends Model
         $trashPath = sprintf('trash/%s', $path);
         Storage::move($path, $trashPath);
     }
-
 }

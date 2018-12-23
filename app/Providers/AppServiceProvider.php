@@ -11,8 +11,13 @@ use App\Invoice;
 use App\Client;
 use App\Time;
 
+/**
+ * Standard Laravel provider class for application setup.
+ */
 class AppServiceProvider extends ServiceProvider
 {
+
+
     /**
      * Bootstrap any application services.
      *
@@ -27,7 +32,7 @@ class AppServiceProvider extends ServiceProvider
         Time::observe(TimeObserver::class);
 
         Blade::if('notempty', function ($value) {
-            return !empty($value);
+            return empty($value) === false;
         });
     }
 
@@ -38,6 +43,5 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
     }
 }

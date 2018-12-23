@@ -18,6 +18,11 @@ class Estimate extends Model
 {
     use SoftDeletes, Search;
 
+    /**
+     * Map of states an estimate can be assigned to a human-readable label.
+     *
+     * @var array
+     */
     public $statuses = [
         null => '',
         'waiting'  => 'Waiting',
@@ -34,9 +39,7 @@ class Estimate extends Model
      *
      * @var array
      */
-    public static $searchables = [
-        'name' => 'estimates.name',
-    ];
+    public static $searchables = ['name' => 'estimates.name'];
 
     /**
      * The attributes that are mass assignable.
@@ -60,9 +63,7 @@ class Estimate extends Model
      *
      * @var array
      */
-    protected $casts = [
-        'hours' => 'integer',
-    ];
+    protected $casts = ['hours' => 'integer'];
 
     /**
      * The attributes that should be mutated to dates.
@@ -80,17 +81,17 @@ class Estimate extends Model
     /**
      * Master query for getting a list of records.
      *
-     * @param Builder $query The query to start with
+     * @param Builder $builder The query to start with
      *
      * @return Relation
      */
     public static function listing(Builder $builder)
     {
-        $joins = $builder->getQuery()->joins ?: [];
+        $joins = ($builder->getQuery()->joins) ?: [];
 
         $builder->select('estimates.*');
 
-        if (!in_array('clients', $joins)) {
+        if (in_array('clients', $joins) === false) {
             $builder->leftJoin('clients', 'estimates.client_id', '=', 'clients.id');
         }
 
@@ -134,11 +135,11 @@ class Estimate extends Model
      * Query scope to restrict by recentness
      *
      * @param Builder $query An existing query.
-     * @param int $limit If greater than zero, the max number of records to return.
+     * @param int     $limit If greater than zero, the max number of records to return.
      *
      * @return Builder
      */
-    public function scopeNewest($query, $limit=0)
+    public function scopeNewest(Builder $query, int $limit = 0)
     {
         $query->orderBy('submitted', 'desc');
 
