@@ -24,9 +24,7 @@ class Project extends Model
      *
      * @var array
      */
-    public static $searchables = [
-        'name' => 'projects.name',
-    ];
+    public static $searchables = ['name' => 'projects.name'];
 
 
     /**
@@ -34,9 +32,7 @@ class Project extends Model
      *
      * @var array
      */
-     protected $touches = [
-         'client',
-     ];
+    protected $touches = ['client'];
 
     /**
      * The attributes that are mass-assignable.
@@ -91,7 +87,7 @@ class Project extends Model
      */
     public function getAllottedTotalHoursAttribute()
     {
-        if (is_null($this->allottedTotalMinutes)) {
+        if ($this->allottedTotalMinutes === null) {
             return null;
         }
 
@@ -103,8 +99,10 @@ class Project extends Model
      *
      * For occasions when it's more convenient to deal with hours
      * rather than minutes.
+     *
+     * @param float $value The number of hours to be converted to minutes
      */
-    public function setAllottedTotalHoursAttribute($value)
+    public function setAllottedTotalHoursAttribute(float $value)
     {
         $this->attributes['allottedTotalMinutes'] = round($value * 60);
     }
@@ -114,10 +112,12 @@ class Project extends Model
      *
      * Although the database stores minutes, sometimes it is more
      * convenient to use hours.
+     *
+     * @return float Total minutes expressed as hours to 2 decimal places.
      */
     public function getAllottedWeeklyHoursAttribute()
     {
-        if (is_null($this->allottedWeeklyMinutes)) {
+        if ($this->allottedWeeklyMinutes === null) {
             return null;
         }
 
@@ -129,8 +129,10 @@ class Project extends Model
      *
      * For occasions when it's more convenient to deal with hours
      * rather than minutes.
+     *
+     * @param float $value The number of hours to be converted to minutes
      */
-    public function setAllottedWeeklyHoursAttribute($value)
+    public function setAllottedWeeklyHoursAttribute(float $value)
     {
         $this->attributes['allottedWeeklyMinutes'] = round($value * 60);
     }
@@ -163,7 +165,7 @@ class Project extends Model
      */
     public function getTotalTimeRemainingAttribute()
     {
-        if (is_null($this->allottedTotalMinutes)) {
+        if ($this->allottedTotalMinutes === null) {
             return null;
         }
 
@@ -172,7 +174,6 @@ class Project extends Model
         $remaining = $this->allottedTotalMinutes - $totalTime;
 
         return $remaining;
-
     }
 
     /**
@@ -182,7 +183,7 @@ class Project extends Model
      */
     public function getWeeklyTimeRemainingAttribute()
     {
-        if (is_null($this->allottedWeeklyMinutes)) {
+        if ($this->allottedWeeklyMinutes === null) {
             return null;
         }
 
@@ -265,9 +266,9 @@ class Project extends Model
      *
      * @param Builder $query An existing query.
      *
-     * @return Builder;
+     * @return Builder
      */
-    public function scopeActive($query)
+    public function scopeActive(Builder $query)
     {
         return $query->where('active', true);
     }
@@ -277,9 +278,9 @@ class Project extends Model
      *
      * @param Builder $query An existing query.
      *
-     * @return Builder;
+     * @return Builder
      */
-    public function scopeInActive($query)
+    public function scopeInActive(Builder $query)
     {
         return $query->where('active', false);
     }
@@ -288,11 +289,11 @@ class Project extends Model
      * Query scope to restrict by recentness
      *
      * @param Builder $query An existing query.
-     * @param int $limit If greater than zero, the max number of records to return.
+     * @param int     $limit If greater than zero, the max number of records to return.
      *
      * @return Builder;
      */
-    public function scopeNewest($query, $limit=0)
+    public function scopeNewest(Builder $query, int $limit = 0)
     {
         $query->orderBy('updated_at', 'DESC');
         if ($limit > 0) {
@@ -300,11 +301,4 @@ class Project extends Model
         }
         return $query;
     }
-
-
-    public function scopeUnbilledTime($query)
-    {
-        $query->with('time');
-    }
-
 }

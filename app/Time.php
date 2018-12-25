@@ -41,9 +41,7 @@ class Time extends Model
      *
      * @var array
      */
-    protected $touches = [
-        'project',
-    ];
+    protected $touches = ['project'];
 
 
     /**
@@ -109,7 +107,7 @@ class Time extends Model
      */
     public static function listing(Builder $builder)
     {
-        $joins = $builder->getQuery()->joins ?: [];
+        $joins = ($builder->getQuery()->joins) ?: [];
         $joinedTables = array_map(function ($join) {
             return $join->table;
         }, $joins);
@@ -121,12 +119,12 @@ class Time extends Model
         $builder = $builder->addSelect('projects.id as projectId');
         $builder = $builder->addSelect('tags.name as tagName');
 
-        if (!in_array('projects', $joinedTables)) {
+        if (in_array('projects', $joinedTables) === false) {
             $builder = $builder->join('projects', 'times.project_id', '=', 'projects.id');
         }
 
         $builder = $builder->join('clients', 'projects.client_id', '=', 'clients.id');
-        $builder = $builder->leftJoin('taggables', function ($join)  {
+        $builder = $builder->leftJoin('taggables', function ($join) {
             $join = $join->on('times.id', '=', 'taggables.taggable_id');
             $join = $join->where('taggables.taggable_type', '=', 'App\Time');
             return $join;
@@ -143,14 +141,15 @@ class Time extends Model
     /**
      * Query scope to restrict to in-progress, unfinished records.
      *
-     * @param Builder $query An existing query.
+     * @param Builder  $query An existing query.
+     * @param int|null $limit Maximum number of records to return.
      */
-    public function scopeUnfinished($query, $limit=null)
+    public function scopeUnfinished(Builder $query, int $limit = null)
     {
         $query->where('minutes', 0);
         $query->orderBy('start', 'desc');
 
-        if (!is_null($limit)) {
+        if ($limit !== null) {
             $query->limit($limit);
         }
 
@@ -161,11 +160,10 @@ class Time extends Model
      * Query scope to restrict time entries to the current week
      *
      * @param Builder $query An existing query.
-     * @param int $limit If greater than zero, the max number of records to return.
      *
      * @return Builder
      */
-    public function scopeThisWeek($query)
+    public function scopeThisWeek(Builder $query)
     {
         $now = new Carbon();
         $query->where('start', '>=', $now->startOfWeek());
@@ -176,11 +174,11 @@ class Time extends Model
      * Query scope to restrict by recentness
      *
      * @param Builder $query An existing query.
-     * @param int $limit If greater than zero, the max number of records to return.
+     * @param int     $limit If greater than zero, the max number of records to return.
      *
      * @return Builder
      */
-    public function scopeNewest($query, $limit=0)
+    public function scopeNewest(Builder $query, int $limit = 0)
     {
         $query->orderBy('start', 'desc');
 
@@ -193,12 +191,12 @@ class Time extends Model
     /**
      * Query scope to filter by invoice
      *
-     * @param Builder $query An existing query
+     * @param Builder $query   An existing query
      * @param Invoice $invoice An invoice
      *
      * @return Builder
      */
-    public function scopeForInvoice($query, Invoice $invoice)
+    public function scopeForInvoice(Builder $query, Invoice $invoice)
     {
         $query->where('invoice_id', $invoice->id);
         return $query;
@@ -250,13 +248,13 @@ class Time extends Model
      *
      * @return integer;
      */
-    public function getMinutesAttribute($value=null)
+    public function getMinutesAttribute($value = null)
     {
         if (is_numeric($value) === false) {
             $value = 0;
         }
 
-        return (int)$value;
+        return (int) $value;
     }
 
     /**
@@ -278,6 +276,8 @@ class Time extends Model
     /**
      * Custom mutator to calculate minutes from end and start times.
      *
+     * @param Carbon $value An end date.
+     *
      * @return int|null;
      */
     public function setEndAttribute(Carbon $value = null)
@@ -286,7 +286,7 @@ class Time extends Model
             return nulll;
         }
 
-        if (is_null($value)) {
+        if ($value === null) {
             $this->attributes['minutes'] = 0;
             return null;
         }
@@ -319,20 +319,22 @@ class Time extends Model
     /**
      * Tally time by time interval with no gaps.
      *
-     * @param Project $project Project model instance
-     * @param User $user User model instance
-     * @param string $timeInterval Time scale for the tallies: week, month, or year
-     * @param int $intervalCount How many intervals to go back from present. If null, take everything.
+     * @param Project $project       Project model instance
+     * @param User    $user          User model instance
+     * @param string  $timeInterval  Time scale for the tallies: week, month, or year
+     * @param int     $intervalCount How many intervals to go back from present. If null, take everything.
+     *
+     * @throws InvalidArgumentException Unrecognized values for $timeInterval are rejected.
      *
      * @return array
      */
     public static function forProjectAndUserByInterval(
         Project $project,
         User $user,
-        $timeInterval = 'month',
-        $intervalCount = null
+        string $timeInterval = 'month',
+        int $intervalCount = null
     ) {
-        switch($timeInterval) {
+        switch ($timeInterval) {
             case 'week':
                 $diffMethod = 'diffInWeeks';
                 $sqlDateModifier = 'weekday 6';
@@ -340,6 +342,7 @@ class Time extends Model
                 $sqlDateSelector = '-7 day';
                 $intervalMultiplier = 7;
                 break;
+
             case 'month':
                 $diffMethod = 'diffInMonths';
                 $sqlDateModifier = 'start of month';
@@ -347,6 +350,7 @@ class Time extends Model
                 $sqlDateSelector = '-1 month';
                 $intervalMultiplier = 1;
                 break;
+
             case 'year':
                 $diffMethod = 'diffInYears';
                 $sqlDateModifier = 'start of year';
@@ -354,11 +358,12 @@ class Time extends Model
                 $sqlDateSelector = '-1 year';
                 $intervalMultiplier = 1;
                 break;
+
             default:
                 throw new InvalidArgumentException('invalid timeInterval');
         }
 
-        if (is_null($intervalCount)) {
+        if ($intervalCount === null) {
             $minStart = self::where('project_id', $project->getKey())
                       ->where('user_id', $user->getKey())
                       ->min('start');
@@ -410,6 +415,9 @@ class Time extends Model
         return $result;
     }
 
+    /**
+     * Associate a time entry with an invoice.
+     */
     public function attachInvoice()
     {
         DB::beginTransaction();
@@ -457,8 +465,9 @@ class Time extends Model
     /**
      * Round start time to nearest 5-minute interval
      *
+     * @param string|null $value The amount to be rounded.
      */
-    public function setStartAttribute($value=null)
+    public function setStartAttribute($value = null)
     {
         if (empty($value)) {
             return null;
@@ -472,8 +481,9 @@ class Time extends Model
     /**
      * Default start time to nearest 5-minute interval
      *
+     * @param string $value A Carbon-compatible datetime string
      */
-    public function getStartAttribute(string $value=null)
+    public function getStartAttribute(string $value = null)
     {
         if (empty($value)) {
             return null;
@@ -485,10 +495,12 @@ class Time extends Model
 
     /**
      * Round duration minutes to nearest 5-minute interval
+     *
+     * @param int|null $value The amount to be rounded.
      */
-    public function setMinutesAttribute(int $value=null)
+    public function setMinutesAttribute(int $value = null)
     {
-        if (is_null($value)) {
+        if ($value === null) {
             $this->attributes['minutes'] = 0;
             return;
         }
@@ -501,18 +513,26 @@ class Time extends Model
      */
     public function getTagListAttribute()
     {
-       return $this->tags->implode('name', ', ');
+        return $this->tags->implode('name', ', ');
     }
 
-    public function syncTagsFromList($tagList)
+    /**
+     * Set the tags associated with a time entry
+     *
+     * @param string $tagList A comma delimited list of tags
+     */
+    public function syncTagsFromList(string $tagList = '')
     {
         $tags = Tag::createFromList($tagList);
         $this->tags()->sync($tags);
     }
 
-    public function finish() {
+    /**
+     * Mark a time entry as finished using the current time as the end point.
+     */
+    public function finish()
+    {
         $this->end = new Carbon();
         $this->save();
     }
-
 }
