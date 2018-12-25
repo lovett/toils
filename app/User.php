@@ -7,6 +7,9 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Traits\AsMenu;
 
+/**
+ * Eloquent model for the user table.
+ */
 class User extends Authenticatable
 {
     use Notifiable, AsMenu;
@@ -72,8 +75,10 @@ class User extends Authenticatable
     /**
      * Single client associated with user
      *
+     * @param integer $id A user primary key
      */
-    public function client($id) {
+    public function client(int $id)
+    {
         return $this->clients()->where('id', $id);
     }
 
@@ -104,16 +109,20 @@ class User extends Authenticatable
     /**
      * Single project associated with the user
      *
+     * @param int $id A user primary key
      */
-    public function project($id) {
+    public function project(int $id)
+    {
         return $this->projects()->where('id', $id);
     }
 
     /**
      * Single estimate associated with the user
      *
+     * @param int $id A user primary key
      */
-    public function estimate($id) {
+    public function estimate(int $id)
+    {
         return $this->estimates()->where('estimates.id', $id)->firstOrFail();
     }
 
@@ -145,8 +154,11 @@ class User extends Authenticatable
 
     /**
      * Single invoice associated with the user
+     *
+     * @param integer $id A user primary key
      */
-    public function invoice($id) {
+    public function invoice(int $id)
+    {
         return $this->invoices()->where('invoices.id', $id)->with('project.client')->firstOrFail();
     }
 
@@ -160,7 +172,12 @@ class User extends Authenticatable
         return $this->hasMany('App\Time');
     }
 
-    public function timeByProject($id)
+    /**
+     * Time entries associated with a project visible to the current user.
+     *
+     * @param integer $id A project primary key
+     */
+    public function timeByProject(int $id)
     {
         return $this->time()->where('project_id', $id);
     }
@@ -180,9 +197,11 @@ class User extends Authenticatable
     /**
      * Return a menu-friendly list of the user's projects
      *
+     * @param int|null $clientId A client primary key
+     *
      * @return array
      */
-    public function projectsForMenu($clientId=null)
+    public function projectsForMenu(int $clientId = null)
     {
         $query = $this->projects()->with('client')->orderBy('name');
 
@@ -192,5 +211,4 @@ class User extends Authenticatable
 
         return $this->asMenu($query, 'id', ['name', 'client.name'], ' :: ');
     }
-
 }

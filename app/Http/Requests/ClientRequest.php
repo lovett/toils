@@ -35,17 +35,17 @@ class ClientRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'name' => 'required|max:255|unique:clients',
-        ];
+        return ['name' => 'required|max:255|unique:clients'];
     }
 
 
     /**
      * Unlike other application modules, this one doesn't do any
      * post-validation input manipulation.
+     *
+     * @param Validator $validator Laravel validator instance.
      */
-    protected function withValidator($validator)
+    protected function withValidator(Validator $validator)
     {
         $validator->after(function ($validator) {
             if ($validator->errors()->any()) {

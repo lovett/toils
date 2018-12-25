@@ -9,7 +9,6 @@ use App\Traits\StandardValidationMessages;
 /**
  * Validation logic for form submissions that modify invoice records.
  */
-
 class InvoiceRequest extends FormRequest
 {
     use StandardValidationMessages;
@@ -24,10 +23,10 @@ class InvoiceRequest extends FormRequest
         // Users can only modify invoices associated with projects they belong to.
         $id = $this->route('invoice');
 
-        if (!is_null($id)) {
+        if ($id !== null) {
             $invoice = $this->user()->invoice($id)->firstOrFail();
             $project = $this->user()->project($invoice->project_id)->firstOrFail();
-            return $invoice && $project;
+            return (bool) $project;
         }
 
         // Otherwise, a login is required for invoice creation.
@@ -57,12 +56,11 @@ class InvoiceRequest extends FormRequest
     /**
      * Manipulate the input after validation
      *
-     * @return void
+     * @param Validator $validator Laravel validator instance.
      */
-    public function withValidator($validator)
+    public function withValidator(Validator $validator)
     {
         $validator->after(function ($validator) {
-
             // Bail if errors have already been found.
             if ($validator->errors()->any()) {
                 return;
@@ -70,13 +68,11 @@ class InvoiceRequest extends FormRequest
 
             $fields = [];
 
-            $fields['project_id'] = (int)$this->input('project_id');
+            $fields['project_id'] = (int) $this->input('project_id');
 
-            $fields['amount'] = (float)$this->input('amount');
+            $fields['amount'] = (float) $this->input('amount');
 
             $this->merge($fields);
         });
-
     }
-
 }

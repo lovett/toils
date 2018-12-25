@@ -26,10 +26,8 @@ class TimeRequest extends FormRequest
         $id = $this->route('time');
 
         // Users can only modify their own entries.
-        if (!is_null($id)) {
-            $time = $this->user()->time()->findOrFail($id);
-
-            return $id && $time;
+        if ($id !== null) {
+            return (bool) $this->user()->time()->findOrFail($id);
         }
 
         // Otherwise, a login is required to create entries.
@@ -60,13 +58,13 @@ class TimeRequest extends FormRequest
      * Merge separate date and time fields and apply additional
      * validation logic.
      *
-     * @return void;
+     * @param Validator $validator Laravel validator instance.
+     *
+     * @return void
      */
-    public function withValidator($validator)
+    public function withValidator(Validator $validator)
     {
-
         $validator->after(function ($validator) {
-
             // Bail if errors have already been found.
             if ($validator->errors()->any()) {
                 return;
@@ -83,7 +81,7 @@ class TimeRequest extends FormRequest
             // field as a base. Roll forward by one day if start is
             // greater than end, implying the entry crosses the
             // midnight boundary.
-            if (!empty($this->input('endTime'))) {
+            if (empty($this->input('endTime')) === false) {
                 $fields['end'] = Carbon::createFromFormat(
                     'Y-m-d g:i A',
                     sprintf('%s %s', $this->input('start'), $this->input('endTime'))
@@ -97,14 +95,13 @@ class TimeRequest extends FormRequest
             // Catch typos involving valid datetime values but
             // otherwise produce a huge time interval. Such as a PM
             // time that was accidentally submitted as AM.
-            if (!is_null($fields['end']) && $fields['end']->diffInHours($fields['start']) > 12) {
+            if ($fields['end'] !== null && $fields['end']->diffInHours($fields['start']) > 12) {
                 $validator->errors()->add('end', 'This end date is over 12 hours from the start.');
             }
 
-            $fields['project_id'] = (int)$this->input('project_id');
+            $fields['project_id'] = (int) $this->input('project_id');
 
             $this->merge($fields);
         });
     }
-
 }

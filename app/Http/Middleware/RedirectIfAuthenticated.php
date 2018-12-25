@@ -4,18 +4,26 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use Closure;
 
+/**
+ * Standard Laravel middleware class.
+ */
 class RedirectIfAuthenticated
 {
+
+
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @param  string|null  $guard
+     * @param Request     $request The incoming request.
+     * @param Closure     $next    The next middleware handler.
+     * @param string|null $guard   Optional guard instance.
+     *
      * @return mixed
      */
-    public function handle($request, Closure $next, $guard = null)
+    public function handle(Request $request, Closure $next, string $guard = null)
     {
         if (Auth::guard($guard)->check()) {
             return redirect('/dashboard');

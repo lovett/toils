@@ -4,8 +4,12 @@ namespace App\Http\Middleware;
 
 use Illuminate\Foundation\Http\Middleware\TrimStrings as Middleware;
 
+/**
+ * Standard Laravel middleware class.
+ */
 class TrimStrings extends Middleware
 {
+
     /**
      * The names of the attributes that should not be trimmed.
      *
