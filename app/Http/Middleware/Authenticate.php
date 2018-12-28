@@ -19,7 +19,7 @@ class Authenticate extends Middleware
 
      * @return string
      */
-    protected function redirectTo(Request $request)
+    protected function redirectTo($request)  // phpcs:disable Squiz.Commenting.FunctionComment.TypeHintMissing
     {
         if ($request->expectsJson() === false) {
             return route('login');
