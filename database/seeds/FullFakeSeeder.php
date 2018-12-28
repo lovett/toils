@@ -13,7 +13,7 @@ use Illuminate\Support\Collection;
 /**
  * Populate the database with fake data.
  */
-class FakeSeeder extends Seeder
+class FullFakeSeeder extends Seeder
 {
     /**
      * Run the database seeds.

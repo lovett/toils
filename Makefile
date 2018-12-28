@@ -1,8 +1,17 @@
 .PHONY: dummy
 
-fakeseed: dummy
-	php artisan migrate:fresh
-	php artisan db:seed --class=FakeSeeder
+SQLITE_DB_NAME := toils.sqlite
+seed-user: dummy
+	rm -f $(SQLITE_DB_NAME)
+	touch $(SQLITE_DB_NAME)
+	php artisan migrate
+	php artisan db:seed --class=UserFakeSeeder
+
+seed-full: dummy
+	rm -f $(SQLITE_DB_NAME)
+	touch $(SQLITE_DB_NAME)
+	php artisan migrate
+	php artisan db:seed --class=FullFakeSeeder
 
 lint: dummy
 	phpmd app text phpmd.xml
