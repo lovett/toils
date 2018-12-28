@@ -1,3 +1,3 @@
 @if ($collection->isEmpty())
-    <p>{{ $message or "None" }}</p>
+    <p>{{ $message ?: "None." }}</p>
 @endif
