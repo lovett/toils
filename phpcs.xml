@@ -13,6 +13,7 @@
     <exclude name="Squiz.Arrays.ArrayDeclaration.KeyNotAligned" />
     <exclude name="Squiz.Arrays.ArrayDeclaration.ValueNotAligned" />
     <exclude name="Squiz.Arrays.ArrayDeclaration.DoubleArrowNotAligned" />
+    <exclude name="Squiz.Arrays.ArrayDeclaration.SingleLineNotAllowed" />
     <exclude name="Squiz.Commenting.ClosingDeclarationComment.Missing" />
     <exclude name="Squiz.Commenting.FileComment.Missing" />
     <exclude name="Squiz.Commenting.FunctionComment.ParamCommentFullStop" />
