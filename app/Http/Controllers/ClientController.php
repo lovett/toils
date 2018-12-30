@@ -127,7 +127,7 @@ class ClientController extends Controller
      * invoices, time entries, contact information.
      *
      * @param Request $request The incoming request
-     * @param int           $id      A client primary key
+     * @param int     $id      A client primary key
      *
      * @return Response
      */

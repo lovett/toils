@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Traits\StandardValidationMessages;
+use Illuminate\Validation\Validator;
 
 /**
  * Validation logic for form submissions that modify invoice records.

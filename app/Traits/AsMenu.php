@@ -18,7 +18,7 @@ trait AsMenu
      *
      * @return array
      */
-    protected function asMenu(Builder $query, string $key = 'id', string $value = 'name', string $separator = ' ')
+    protected function asMenu(Builder $query, string $key = 'id', $value = 'name', string $separator = ' ')
     {
         $items = $query->get()->reduce(
             function ($acc, $item) use ($key, $value, $separator) {
