@@ -9,6 +9,7 @@ use App\Estimate;
 use App\Helpers\MessagingHelper;
 use App\Http\Requests\ClientRequest;
 use Illuminate\Http\Response;
+use Illuminate\Http\Request;
 
 /**
  * Resource controller for clients
@@ -35,7 +36,7 @@ class ClientController extends Controller
      *
      * @return Response
      */
-    public function index(ClientRequest $request)
+    public function index(Request $request)
     {
         $query = $request->get('q');
 
@@ -125,12 +126,12 @@ class ClientController extends Controller
      * A homepage for knowing everything about a client: its projects,
      * invoices, time entries, contact information.
      *
-     * @param ClientRequest $request The incoming request
+     * @param Request $request The incoming request
      * @param int           $id      A client primary key
      *
      * @return Response
      */
-    public function show(ClientRequest $request, int $id)
+    public function show(Request $request, int $id)
     {
         $fetchLimit = 5;
 
