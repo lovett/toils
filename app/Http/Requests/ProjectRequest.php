@@ -22,10 +22,15 @@ class ProjectRequest extends FormRequest
      */
     public function authorize()
     {
-        // Users can only modify projects they are associated with.
         $id = $this->route('project');
-        $project = $this->user()->project($id)->firstOrFail();
-        return (bool) $project;
+
+        // Users can only modify projects they are associated with.
+        if ($id !== null) {
+            return (bool) $this->user()->project($id)->firstOrFail();
+        }
+
+        // Otherwise, a login is required to create projects.
+        return Auth::check();
     }
 
     /**
