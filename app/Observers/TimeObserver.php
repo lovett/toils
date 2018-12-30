@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Invoice;
 use App\Time;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
@@ -14,17 +15,35 @@ class TimeObserver
 
 
     /**
-     * Unbillable time cannot be attached to an invoice
+     * Pre-save checks for time entries
      *
-     * If a time entry is marked as unbillable, disassociate it from any invoice.
+     * Unbillable time cannot be attached to an invoice. If a time
+     * entry is marked as unbillable, disassociate it from any
+     * invoice.
      *
      * @param Time $time A Time instance.
      */
     public function saving(Time $time)
     {
-        // Laravel doesn't cast the original value like it does the current one.
         if ($time->billable === false) {
             $time->invoice_id = null;
+            return;
+        }
+
+        if ($time->finished === false) {
+            $time->invoice_id = null;
+            return;
+        }
+
+        $invoice = Invoice::where([
+            ['start', '<=', $time->start],
+            ['end', '>=', $time->end],
+            ['project_id', $time->project_id],
+        ])->first();
+
+        $time->invoice_id = null;
+        if ($invoice) {
+            $time->invoice_id = $invoice->id;
         }
     }
 }

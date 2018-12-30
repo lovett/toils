@@ -258,6 +258,16 @@ class Time extends Model
     }
 
     /**
+     * Custom access to determine whether an entry has an end date
+     *
+     * @return boolean
+     */
+    public function getFinishedAttribute()
+    {
+        return ($this->minutes > 0);
+    }
+
+    /**
      * Custom accessor to calculate end time from start and minutes.
      *
      * @return Carbon|null;
@@ -413,24 +423,6 @@ class Time extends Model
         );
 
         return $result;
-    }
-
-    /**
-     * Associate a time entry with an invoice.
-     */
-    public function attachInvoice()
-    {
-        DB::beginTransaction();
-
-        $this->invoice()->dissociate();
-
-        $invoice = Invoice::where('start', '>=', $this->start);
-        $invoice->where('end', '<=', $this->start);
-        $invoice->where('project_id', $this->project_id);
-
-        $this->invoice()->associate($invoice->first());
-
-        DB::commit();
     }
 
     /**
