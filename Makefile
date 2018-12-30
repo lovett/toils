@@ -1,6 +1,8 @@
 .PHONY: dummy
 
 SQLITE_DB_NAME := toils.sqlite
+TMUX_SESSION_NAME := toils
+
 seed-user: dummy
 	rm -f $(SQLITE_DB_NAME)
 	touch $(SQLITE_DB_NAME)
@@ -47,3 +49,19 @@ puc: dummy
 	git checkout master
 	git add package.json package-lock.json composer.json composer.lock
 	git commit -m "Upgrade npm and composer packages"
+
+workspace:
+# 0: Editor
+	tmux new-session -d -s "$(TMUX_SESSION_NAME)" bash
+	tmux send-keys -t "$(TMUX_SESSION_NAME)" "$(EDITOR) ." C-m
+
+# 1: Shell
+	tmux new-window -a -t "$(TMUX_SESSION_NAME)" bash
+
+# 2: Webpack
+	tmux new-window -a -t "$(TMUX_SESSION_NAME)" -n "webpack" "npm run watch"
+
+# 3: Dev server
+	tmux new-window -a -t "$(TMUX_SESSION_NAME)" -n "devserver" "php artisan serve --host 0.0.0.0 --port 8083"
+	tmux select-window -t "$(TMUX_SESSION_NAME)":0
+	tmux attach-session -t "$(TMUX_SESSION_NAME)"
