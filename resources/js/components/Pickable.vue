@@ -1,6 +1,8 @@
 <template>
     <div>
-        <input type="text" v-bind:name="name" v-model="value" class="form-control"/>
+        <input type="text" v-bind:name="name" v-model="value" v-bind:class="{'form-control': 1, 'is-invalid': error}" />
+
+        <div v-if="error" class="invalid-feedback" role="alert">{{ error }}</div>
 
         <autofill-hint
             v-on:set="setValue"
@@ -15,7 +17,6 @@
             </a>
         </div>
 
-        <div class="help-block">{{ error }}</div>
 
         <div class="shortcuts" v-bind:class="{hidden: !isOpen}">
             <div class="card bg-light">

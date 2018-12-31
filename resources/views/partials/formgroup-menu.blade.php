@@ -2,21 +2,24 @@
     @php($vchange='')
 @endif
 
-<div class="form-group row {{ $errors->has($name) ? 'has-error' : '' }}">
+@php($fieldClasses = ['form-control'])
+@if ($errors->has($name))
+    @php($fieldClasses[] = 'is-invalid')
+@endif
+
+@php($fieldContainerClasses = ['col-sm-10'])
+@if (empty($label))
+    @php($fieldContainerClasses[] = 'offset-sm-2')
+@endif
+
+<div class="form-group row">
     @if (!empty($label))
         {!! Form::label($name, $label, ['class' => 'col-sm-2 col-form-label text-right']) !!}
     @endif
 
-    @php($colClasses = ['col-sm-10'])
-    @if (empty($label))
-        @php($colClasses[] = 'offset-sm-2')
-    @endif
+    <div class="{{ implode(' ', $fieldContainerClasses) }}">
+        {!! Form::select($name, $items, $selectedItem, ['class' => $fieldClasses, 'ref' => 'autofillTrigger', 'v-on:change' => $vchange]) !!}
 
-    <div class="{{ implode(' ', $colClasses) }}">
-        {!! Form::select($name, $items, $selectedItem, ['class' => 'form-control', 'ref' => 'autofillTrigger', 'v-on:change' => $vchange]) !!}
-
-        @if ($errors->has($name))
-            <div class="help-block">{{ $errors->first($name)}}</div>
-        @endif
+        @include('partials.form-field-error')
     </div>
 </div>

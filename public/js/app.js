@@ -2151,6 +2151,7 @@ module.exports = {
 //
 //
 //
+//
 var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 
 module.exports = {
@@ -20901,7 +20902,7 @@ var render = function() {
             expression: "value"
           }
         ],
-        staticClass: "form-control",
+        class: { "form-control": 1, "is-invalid": _vm.error },
         attrs: { type: "text", name: _vm.name },
         domProps: { value: _vm.value },
         on: {
@@ -20913,6 +20914,14 @@ var render = function() {
           }
         }
       }),
+      _vm._v(" "),
+      _vm.error
+        ? _c(
+            "div",
+            { staticClass: "invalid-feedback", attrs: { role: "alert" } },
+            [_vm._v(_vm._s(_vm.error))]
+          )
+        : _vm._e(),
       _vm._v(" "),
       _c("autofill-hint", {
         attrs: { suggestion: _vm.suggestedValue, previous: _vm.previousValue },
@@ -20949,8 +20958,6 @@ var render = function() {
           [_vm._v("\n            more shortcuts\n        ")]
         )
       ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "help-block" }, [_vm._v(_vm._s(_vm.error))]),
       _vm._v(" "),
       _c("div", { staticClass: "shortcuts", class: { hidden: !_vm.isOpen } }, [
         _c("div", { staticClass: "card bg-light" }, [
@@ -33038,8 +33045,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /home/blovett/Sites/toils/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /home/blovett/Sites/toils/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/blovett/Sites/toils/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/blovett/Sites/toils/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

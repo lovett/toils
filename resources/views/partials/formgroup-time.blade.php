@@ -1,4 +1,9 @@
-<div class="form-group row {{ $errors->has($name) ? 'is-invalid' : '' }}">
+@php($fieldClasses = ['form-control'])
+@if ($errors->has($name))
+    @php($fieldClasses[] = 'is-invalid')
+@endif
+
+<div class="form-group row">
     @if ($label)
         {!! Form::label($name, $label, ['class' => 'col-sm-2 col-form-label text-right']) !!}
     @endif
@@ -19,7 +24,7 @@
             @endif
         />
         @else
-        {!! Form::text($fieldName, TimeHelper::time($model->$name), ['class' => 'form-control']) !!}
+        {!! Form::text($fieldName, TimeHelper::time($model->$name), ['class' => $fieldClasses]) !!}
 
         @isset($autofill)
         <autofill-hint
@@ -29,9 +34,7 @@
         />
         @endisset
 
-        @if ($errors->has($name))
-            <div class="help-block">{{ $errors->first($name)}}</div>
-        @endif
+        @include('partials.form-field-error')
 
         @endisset
 

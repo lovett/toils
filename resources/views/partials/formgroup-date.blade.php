@@ -1,4 +1,9 @@
-<div class="form-group row {{ $errors->has($name) ? 'has-error' : '' }}">
+@php($fieldClasses = ['form-control'])
+@if ($errors->has($name))
+    @php($fieldClasses[] = 'is-invalid')
+@endif
+
+<div class="form-group row">
     @if ($label)
         {!! Form::label($name, $label, ['class' => 'col-sm-2 col-form-label text-right']) !!}
     @endif
@@ -18,7 +23,8 @@
             @endif
         />
         @else
-        {!! Form::text($name, TimeHelper::date($model->$name), ['class' => 'form-control']) !!}
+        {!! Form::text($name, TimeHelper::date($model->$name), ['class' => $fieldClasses]) !!}
+
         @isset($autofill)
         <autofill-hint
             field-selector="INPUT[name={{ $name }}]"
@@ -26,11 +32,9 @@
             v-bind:previous="previous{{ ucfirst($name) }}"
         />
         @endisset
-        @if ($errors->has($name))
-            <div class="help-block">{{ $errors->first($name)}}</div>
-        @endif
+
+        @include('partials.form-field-error')
 
         @endisset
-
     </div>
 </div>
