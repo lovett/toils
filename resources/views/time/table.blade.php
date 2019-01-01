@@ -29,10 +29,10 @@
                     </a>
                 </td>
                 <td>
-                    {{ $time->start->format('g:i A') }}
+                    {{ TimeHelper::time($time->start) }}
                     →
                     @if ($time->end)
-                        {{ $time->end->format('g:i A') }}
+                        {{ TimeHelper::time($time->end) }}
                         <div class="small">{{ TimeHelper::hoursAndMinutes($time->minutes) }}</div>
                     @else
                         ?

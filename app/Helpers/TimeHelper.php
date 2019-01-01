@@ -3,9 +3,7 @@
 namespace App\Helpers;
 
 use Carbon\Carbon;
-use DatePeriod;
-use DateInterval;
-use DateTime;
+use Illuminate\Support\Facades\Cookie;
 
 /**
  * Helper functions for displaying time values.
@@ -79,7 +77,7 @@ class TimeHelper
             return '';
         }
 
-        return $value->format('M j Y');
+        return self::shiftTimezone($value)->format('M j Y');
     }
 
     /**
@@ -95,7 +93,24 @@ class TimeHelper
             return '';
         }
 
-        return $value->format(self::$dateFormat);
+        return self::shiftTimezone($value)->format(self::$dateFormat);
+    }
+
+    /**
+     * Convert a Carbon instance to another timezone
+     *
+     * @param Carbon      $value    The initial Carbon instance, most likely in UTC
+     * @param string|null $timezone The timezone to shift to, typically not specified.
+     *
+     * @return Carbon
+     */
+    public static function shiftTimezone(Carbon $value, string $timezone = null)
+    {
+        if ($timezone === null) {
+            $timezone = $timezone = Cookie::get('TIMEZONE', 'UTC');
+        }
+
+        return $value->setTimezone($timezone);
     }
 
     /**
@@ -103,7 +118,7 @@ class TimeHelper
      *
      * @param Carbon|null $value The value to format
      *
-     * @return strig
+     * @return string
      */
     public static function longDate(Carbon $value = null)
     {
@@ -111,7 +126,7 @@ class TimeHelper
             return '';
         }
 
-        return $value->format('F jS, Y');
+        return self::shiftTimezone($value)->format('F jS, Y');
     }
 
     /**
@@ -127,7 +142,7 @@ class TimeHelper
             return '';
         }
 
-        return $value->format('g:i A');
+        return self::shiftTimezone($value)->format('g:i A');
     }
 
     /**
@@ -168,6 +183,6 @@ class TimeHelper
      */
     public static function daysAgo(Carbon $value = null)
     {
-        return $value->diffForHumans();
+        return self::shiftTimezone($value)->diffForHumans();
     }
 }

@@ -70,22 +70,25 @@ class TimeRequest extends FormRequest
                 return;
             }
 
-            $fields = ['end' => null];
+            $fields = [];
 
             $fields['start'] = Carbon::createFromFormat(
                 'Y-m-d g:i A',
-                sprintf('%s %s', $this->input('start'), $this->input('startTime'))
-            );
+                sprintf('%s %s', $this->input('start'), $this->input('startTime')),
+                $this->cookie('TIMEZONE', 'UTC')
+            )->setTimezone('UTC');
 
             // Add hours and minutes to the end field, using the start
             // field as a base. Roll forward by one day if start is
             // greater than end, implying the entry crosses the
             // midnight boundary.
+            $fields['end'] = null;
             if (empty($this->input('endTime')) === false) {
                 $fields['end'] = Carbon::createFromFormat(
                     'Y-m-d g:i A',
-                    sprintf('%s %s', $this->input('start'), $this->input('endTime'))
-                );
+                    sprintf('%s %s', $this->input('start'), $this->input('endTime')),
+                    $this->cookie('TIMEZONE', 'UTC')
+                )->setTimezone('UTC');
 
                 if ($fields['start'] > $fields['end']) {
                     $fields['end'] = $fields['end']->addDay(1);

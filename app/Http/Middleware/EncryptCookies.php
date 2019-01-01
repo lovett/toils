@@ -15,5 +15,5 @@ class EncryptCookies extends Middleware
      *
      * @var array
      */
-    protected $except = [];
+    protected $except = ['TIMEZONE'];
 }

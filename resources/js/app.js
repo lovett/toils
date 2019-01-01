@@ -28,3 +28,8 @@ Vue.component('pickable', Pickable);
 const app = new Vue({
     el: '#app'
 });
+
+if (document.cookie.indexOf('TIMEZONE=') === -1) {
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    document.cookie = `TIMEZONE=${tz};`;
+}

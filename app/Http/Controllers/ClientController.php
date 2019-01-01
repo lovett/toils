@@ -161,12 +161,12 @@ class ClientController extends Controller
     /**
      * Show the form for editing a client
      *
-     * @param ClientRequest $request The incoming request
-     * @param int           $id      A client primary key
+     * @param Request $request The incoming request
+     * @param int     $id      A client primary key
      *
      * @return Response
      */
-    public function edit(ClientRequest $request, int $id)
+    public function edit(Request $request, int $id)
     {
         $client = $request->user()->clients()->findOrFail($id);
 

@@ -32720,6 +32720,11 @@ var app = new Vue({
   el: '#app'
 });
 
+if (document.cookie.indexOf('TIMEZONE=') === -1) {
+  var tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  document.cookie = "TIMEZONE=".concat(tz, ";");
+}
+
 /***/ }),
 
 /***/ "./resources/js/components/Autofill.vue":
