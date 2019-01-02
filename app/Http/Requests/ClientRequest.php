@@ -35,7 +35,8 @@ class ClientRequest extends FormRequest
      */
     public function rules()
     {
-        return ['name' => 'required|max:255|unique:clients'];
+        $clientId = (int) $this->route('client');
+        return ['name' => 'required|max:255|unique:clients,id,' . $clientId];
     }
 
 
