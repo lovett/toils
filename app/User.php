@@ -79,7 +79,7 @@ class User extends Authenticatable
      */
     public function client(int $id)
     {
-        return $this->clients()->where('id', $id);
+        return $this->clients()->where('id', $id)->firstOrFail();
     }
 
     /**
