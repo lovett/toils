@@ -3,6 +3,13 @@
     @php($fieldClasses[] = 'is-invalid')
 @endif
 
+@if ($fieldName && $errors->has($fieldName))
+    @php($fieldClasses[] = 'is-invalid')
+    @php($pickableError = $errors->first($fieldName))
+@else
+    @php($pickableError = null)
+@endif
+
 <div class="form-group row">
     @if ($label)
         {!! Form::label($name, $label, ['class' => 'col-sm-2 col-form-label text-right']) !!}
@@ -19,9 +26,7 @@
             v-bind:suggested-value="suggested{{ ucfirst($fieldName) }}"
             v-bind:previous-value="previous{{ ucfirst($fieldName) }}"
             @endif
-            @if ($errors->has($name))
-            error="{{ $errors->first($name) }}"
-            @endif
+            error="{{ $pickableError }}"
         />
         @else
         {!! Form::text($fieldName, TimeHelper::time($model->$name), ['class' => $fieldClasses]) !!}

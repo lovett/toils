@@ -16,6 +16,7 @@
                     <span class="input-group-text">{{ $inlineSuffix }}</span>
                 </div>
             @endif
+            @include('partials.form-field-error')
         </div>
         @if (isset($autofill))
             <autofill-hint
@@ -26,6 +27,5 @@
             </autofill-hint>
         @endif
 
-        @include('partials.form-field-error')
     </div>
 </div>
