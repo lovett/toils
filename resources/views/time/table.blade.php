@@ -2,8 +2,8 @@
 <table class="table">
     <thead>
         <tr>
-            <th width="20%">Date</th>
             <th width="20%">Time</th>
+            <th width="20%">Date</th>
             @unless(Route::is('project.show'))
                 <th width="20%">Project</th>
             @endunless
@@ -25,23 +25,27 @@
             <tr class="{{ $unfinishedClass }} {{ $billableClass }}">
                 <td>
                     <a href="{{ route('time.edit', $time) }}">
-                        {{ TimeHelper::date($time->start) }}
+                        {{ TimeHelper::time($time->start) }}
+                        →
+                        @if ($time->end)
+                            {{ TimeHelper::time($time->end) }}
+                        @else
+                            ?
+                        @endif
                     </a>
-                </td>
-                <td>
-                    {{ TimeHelper::time($time->start) }}
-                    →
+
                     @if ($time->end)
-                        {{ TimeHelper::time($time->end) }}
                         <div class="small">{{ TimeHelper::hoursAndMinutes($time->minutes) }}</div>
                     @else
-                        ?
-
                         {!! Form::model($time, ['route' => ['time.finish'], 'method' => 'POST']) !!}
                         {!! Form::hidden('id', $time->id) !!}
                         {!! Form::button('FINISH', ['type' => 'submit', 'class' => 'btn finish btn-info btn-sm']) !!}
                         {!! Form::close() !!}
-                    @endif
+                    @endunless
+                </td>
+                <td>
+                        {{ TimeHelper::date($time->start) }}
+                    </a>
                 </td>
 
                 @unless(Route::is('project.show'))
