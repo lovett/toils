@@ -107,7 +107,7 @@ class TimeHelper
     public static function shiftTimezone(Carbon $value, string $timezone = null)
     {
         if ($timezone === null) {
-            $timezone = $timezone = Cookie::get('TIMEZONE', 'UTC');
+            $timezone = Cookie::get('TIMEZONE', 'UTC');
         }
 
         return $value->setTimezone($timezone);

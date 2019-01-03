@@ -329,9 +329,9 @@ class Invoice extends Model
     /**
      * Set the date paid when the receipt is set
      *
-     * @param object $value The receipt
+     * @param string $value The receipt
      */
-    public function setReceiptAttribute(object $value)
+    public function setReceiptAttribute(string $value)
     {
         $this->attributes['receipt'] = $value;
         $this->attributes['paid'] = ($value === null) ? null : new Carbon();
