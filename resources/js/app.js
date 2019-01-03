@@ -1,7 +1,10 @@
+import Vue from 'vue'
+import BootstrapVue from 'bootstrap-vue'
 import FacetSearch from './components/FacetSearch.vue';
 import Autofill from './components/Autofill.vue';
 import AutofillHint from './components/AutofillHint.vue';
 import Pickable from './components/Pickable.vue';
+import bAlert from 'bootstrap-vue/es/components/alert/alert'
 
 /**
  * The axios HTTP library automatically handles sending the Laravel
@@ -24,6 +27,7 @@ Vue.component('facet-search', FacetSearch);
 Vue.component('autofill', Autofill);
 Vue.component('autofill-hint', AutofillHint);
 Vue.component('pickable', Pickable);
+Vue.component('b-alert', bAlert);
 
 const app = new Vue({
     el: '#app'

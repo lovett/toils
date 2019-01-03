@@ -12,6 +12,7 @@
 
     <!-- Styles -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}" />
+
 </head>
 <body>
     <svg class="d-none">
@@ -85,18 +86,16 @@
         </div>
     </nav>
 
-    @if (Session::has('userMessage'))
-        <div class="container">
-            <div class="alert alert-{{ Session::get('userMessageType') }} alert-dismissible" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                {{ Session::get('userMessage') }}
-            </div>
-        </div>
-    @endif
-
     <main id="app">
+
+        @if (Session::has('userMessage'))
+            <div class="container">
+                <b-alert show variant="{{ Session::get('userMessageType') }}" dismissible>
+                    {{ Session::get('userMessage') }}
+                </b-alert>
+            </div>
+        @endif
+
         @if (LinkHelper::showSubnav())
         <div class="container mb-4">
             <ul class="nav nav-tabs">

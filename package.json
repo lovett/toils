@@ -11,7 +11,7 @@
     },
     "devDependencies": {
         "axios": "0.18",
-        "bootstrap": "4.2.1",
+        "bootstrap-vue": "2.0.0-rc.11",
         "browser-sync": "2.26.3",
         "browser-sync-webpack-plugin": "2.2.2",
         "jquery": "3.3.1",
