@@ -1,16 +1,16 @@
-<table class="table">
+<table class="table mb-0">
     <thead>
         <tr>
             <th>Name</th>
+            <th>Fee</th>
+            <th>History</th>
             <th>Recipient</th>
 
             @unless(Route::is('client.show'))
                 <th>Client</th>
             @endunless
-            <th>Fee</th>
             <th>Hours</th>
             <th>Status</th>
-            <th class="text-right">Date</th>
         </tr>
     </thead>
     <tbody>
@@ -20,6 +20,23 @@
                     <a href="{{ route('estimate.edit', ['record' => $estimate]) }}">
                         {{ $estimate->name }}
                     </a>
+                </td>
+                <td>
+                    {{ CurrencyHelper::money($estimate->fee) }}
+                </td>
+                <td>
+                    @if ($estimate->closed)
+                        <p class="mb-0">closed {{ TimeHelper::date($estimate->closed) }}</p>
+                    @endif
+                    @if ($estimate->submitted)
+                        <p class="mb-0">submitted {{ TimeHelper::date($estimate->submitted) }}</p>
+                    @endif
+
+                    @if ($estimate->updated_at > $estimate->created_at)
+                        <p class="mb-0">updated {{ TimeHelper::date($estimate->updated_at) }} at {{ TimeHelper::time($estimate->updated_at) }}</p>
+                    @endif
+
+                    <p class="mb-0">created {{ TimeHelper::date($estimate->created_at) }} at {{ TimeHelper::time($estimate->created_at) }}</p>
                 </td>
                 <td>
                     {{ $estimate->recipient }}
@@ -36,21 +53,10 @@
                 </td>
                 @endunless
                 <td>
-                    {{ CurrencyHelper::money($estimate->fee) }}
-                </td>
-                <td>
                     {{ $estimate->hours }}
                 </td>
                 <td>
                     {{ $estimate->status }}
-                </td>
-
-                <td class="text-right">
-                    @if($estimate->closed)
-                        closed {{ TimeHelper::date($estimate->closed) }}
-                    @elseif($estimate->submitted)
-                        submitted {{ TimeHelper::date($estimate->submitted) }}
-                    @endif
                 </td>
             </tr>
         @endforeach
