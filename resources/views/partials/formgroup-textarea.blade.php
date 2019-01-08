@@ -9,7 +9,7 @@
     @endif
 
     <div class="col-sm-10 {{ $label ? '' : 'offset-sm-2' }}">
-        {!! Form::textarea($name, isset($model)? $model->$name : '', ['class' => $fieldClasses]) !!}
+        {!! Form::textarea($name, isset($model)? old($name, $model->$name) : '', ['class' => $fieldClasses]) !!}
 
         @include('partials.form-field-error')
 

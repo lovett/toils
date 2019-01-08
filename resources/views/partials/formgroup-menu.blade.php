@@ -18,7 +18,7 @@
     @endif
 
     <div class="{{ implode(' ', $fieldContainerClasses) }}">
-        {!! Form::select($name, $items, $selectedItem, ['class' => $fieldClasses, 'ref' => 'autofillTrigger', 'v-on:change' => $vchange]) !!}
+        {!! Form::select($name, $items, old($name, $selectedItem), ['class' => $fieldClasses, 'ref' => 'autofillTrigger', 'v-on:change' => $vchange]) !!}
 
         @include('partials.form-field-error')
     </div>

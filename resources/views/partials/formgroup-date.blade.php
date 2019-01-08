@@ -13,7 +13,7 @@
         <pickable
             name="{{ $name }}"
             groups="{{ implode($pickable, ',') }}"
-            initial-value="{{ TimeHelper::date($model->$name) }}"
+            initial-value="{{ old($name, TimeHelper::date($model->$name)) }}"
             @isset($autofill)
             v-bind:suggested-value="suggested{{ ucfirst($name) }}"
             v-bind:previous-value="previous{{ ucfirst($name) }}"
@@ -23,7 +23,7 @@
             @endif
         />
         @else
-        {!! Form::text($name, TimeHelper::date($model->$name), ['class' => $fieldClasses]) !!}
+        {!! Form::text($name, old($name, TimeHelper::date($model->$name)), ['class' => $fieldClasses]) !!}
 
         @isset($autofill)
         <autofill-hint

@@ -42,7 +42,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">$</span>
                                 </div>
-                                {!! Form::text('amount', $model->amount, ['class' => 'form-control']) !!}
+                                {!! Form::text('amount', old('amount', $model->amount), ['class' => 'form-control']) !!}
                             </div>
                             <autofill-hint target="INPUT[name=amount]" v-bind:value="suggestedAmount" v-bind:previous="previousAmount"></autofill-hint>
                         </div>

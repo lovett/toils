@@ -10,7 +10,7 @@
 
     <div class="col-sm-{{ isset($size)? $size : 10 }} {{ $label ? '' : 'offset-sm-2' }}">
         <div class="input-group">
-            {!! Form::text($name, isset($model)? $model->$name : '', ['class' => $fieldClasses]) !!}
+            {!! Form::text($name, isset($model)? old($name, $model->$name) : '', ['class' => $fieldClasses]) !!}
             @if (isset($inlineSuffix))
                 <div class="input-group-append">
                     <span class="input-group-text">{{ $inlineSuffix }}</span>
