@@ -53,7 +53,7 @@ class EstimateController extends Controller
 
         $viewVars = [
             'collection' => $estimates,
-            'emptyMessage' => 'There are no estimates.',
+            'collectionOf' => 'estimates',
             'pageTitle' => 'Estimate List',
             'query' => $query,
             'searchFields' => array_keys(Estimate::$searchables),

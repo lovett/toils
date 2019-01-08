@@ -55,7 +55,7 @@ class ProjectController extends Controller
 
         $viewVars = [
             'collection' => $projects,
-            'emptyMessage' => 'There are no projects.',
+            'collectionOf' => 'projects',
             'pageTitle' => 'Project List',
             'query' => $query,
             'searchFields' => array_keys(Project::$searchables),

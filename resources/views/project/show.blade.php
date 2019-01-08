@@ -65,25 +65,37 @@
 	        </div>
         </div>
 
-        <h2>Time</h2>
-        <p>{!! link_to_route('time.index', 'View all', ['q' => 'project:' . $project->name]) !!}</p>
-        @include('partials.empty-message', ['collection' => $time])
+        <div class="mb-5">
+            <h2>Time</h2>
 
-        @if ($time->isNotEmpty())
-            <div class="card mb-5">
-                @include('time.table', ['collection' => $time, 'project' => $project])
-            </div>
-        @endif
+            @unless ($time->isEmpty())
+            <p>{!! link_to_route('time.index', 'View all', ['q' => 'project:' . $project->name]) !!}</p>
+            @endunless
 
-        <h2>Invoices</h2>
-        <p>{!! link_to_route('invoice.index', 'View all', ['q' => 'project:' . $project->name]) !!}</p>
-        @include('partials.empty-message', ['collection' => $invoices])
+            @include('partials.empty-message', ['collection' => $time, 'collectionOf' => 'time entries'])
 
-        @if ($invoices->isNotEmpty())
-            <div class="card mb-5">
-                @include('invoice.table', ['collection' => $invoices])
-            </div>
-        @endif
+            @if ($time->isNotEmpty())
+                <div class="card">
+                    @include('time.table', ['collection' => $time, 'project' => $project])
+                </div>
+            @endif
+        </div>
+
+        <div class="mb-5">
+            <h2>Invoices</h2>
+
+            @unless ($invoices->isEmpty())
+                <p>{!! link_to_route('invoice.index', 'View all', ['q' => 'project:' . $project->name]) !!}</p>
+            @endunless
+
+            @include('partials.empty-message', ['collection' => $invoices, 'collectionOf' => 'invoices'])
+
+            @if ($invoices->isNotEmpty())
+                <div class="card mb-5">
+                    @include('invoice.table', ['collection' => $invoices])
+                </div>
+            @endif
+        </div>
 
     </div>
     @include('partials.timestamps-footer', ['record' => $project])

@@ -53,7 +53,7 @@ class InvoiceController extends Controller
 
         $viewVars = [
             'collection' => $invoices,
-            'emptyMessage' => 'There are no invoices.',
+            'collectionOf' => 'invoices',
             'pageTitle' => 'Invoices',
             'query' => $query,
             'searchFields' => array_keys(Invoice::$searchables),

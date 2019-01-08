@@ -57,7 +57,7 @@ class ClientController extends Controller
 
         $viewVars = [
             'collection' => $clients,
-            'emptyMessage' => 'There are no clients.',
+            'collectionOf' => 'clients',
             'pageTitle' => 'Client List',
             'query' => $query,
             'searchFields' => array_keys(Client::$searchables),

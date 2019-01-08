@@ -5,7 +5,7 @@
     @include('partials.search', ['route' => $module . '.index', 'query' => $query, 'fields' => $searchFields])
 
     <div class="container">
-        @include('partials.empty-message', ['collection' => $collection, 'message' => $emptyMessage])
+        @include('partials.empty-message')
 
         @if ($collection->isNotEmpty())
             <div class="card">

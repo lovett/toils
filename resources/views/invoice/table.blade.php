@@ -1,5 +1,5 @@
 @if ($collection->isNotEmpty())
-    <table class="table">
+    <table class="table mb-0">
         <thead>
             <tr>
                 <th>Number</th>

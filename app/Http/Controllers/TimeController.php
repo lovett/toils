@@ -54,6 +54,7 @@ class TimeController extends Controller
 
         $viewvars = [
             'collection' => $time,
+            'collectionOf' => 'time entries',
             'emptyMessage' => 'There are no time entries.',
             'pageTitle' => 'Time',
             'query' => $query,
