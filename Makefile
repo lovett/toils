@@ -20,18 +20,20 @@ lint: dummy
 	phpcs -s app
 
 # Install NPM packages quietly.
-#setup-js: export NPM_CONFIG_PROGRESS = false
-setup-js: dummy
+setup-js: export NPM_CONFIG_PROGRESS=false
+setup-js: export NO_UPDATE_NOTIFIER=1
+setup-js:
 	npm install
 
-# Install Composer packages quietly.
-setup-php: dummy
-	composer --no-interaction --no-ansi update
+# Install Composer packages quietly based on composer.lock
+setup-php:
+	composer --no-interaction --no-ansi --no-suggest install
 
 # Install all packages quietly.
 setup: setup-php setup-js
 
 # Check for out-of-date npm packages
+outdated-js: export NO_UPDATE_NOTIFIER=1
 outdated-js:
 	npm outdated || true
 
@@ -41,6 +43,18 @@ outdated-php:
 
 # Check for all out-of-date packages
 outdated: outdated-php outdated-js
+
+# Install newly updated npm packages.
+update-js: export NO_UPDATE_NOTIFIER=1
+update-js:
+	npm update
+
+# Install newly updated composer packages and update composer.lock
+update-php:
+	composer update
+
+# Update all packages quietly
+update: update-php update-js
 
 # Create a package upgrade commit.
 #
