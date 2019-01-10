@@ -102,5 +102,6 @@
 @endsection
 
 @section('subnav_supplemental')
-	<li class="nav-item">{!! link_to_route('time.create', 'Add Time', ['project' => $project->id], ['class' => 'nav-link']) !!}</li>
+	<li class="nav-item">{!! link_to_route('time.create', 'New time entry', ['project' => $project->id], ['class' => 'nav-link']) !!}</li>
+    <li class="nav-item">{!! link_to_route('invoice.create', 'New Invoice', ['project' => $project->id], ['class' => 'nav-link']) !!}</li>
 @endsection
