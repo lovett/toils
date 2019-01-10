@@ -31,7 +31,16 @@ class EstimateRequest extends FormRequest
      */
     public function rules()
     {
-        return [];
+        return [
+            'name' => 'required',
+            'submitted' => 'nullable|date_format:Y-m-d',
+            'status' => 'required',
+            'recipient' => 'nullable',
+            'client_id' => 'nullable|exists:clients,id',
+            'fee' => 'nullable|numeric',
+            'hours' => 'nullable|numeric',
+            'summary' => 'nullable',
+        ];
     }
 
     /**

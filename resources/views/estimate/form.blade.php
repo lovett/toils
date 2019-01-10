@@ -30,13 +30,24 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text">$</span>
                             </div>
-                            {!! Form::text('fee', $model->fee, ['class' => 'form-control']) !!}
+
+                            @php($fieldClasses = ['form-control'])
+                            @if ($errors->has('fee'))
+                                @php($fieldClasses[] = 'is-invalid')
+                            @endif
+                            {!! Form::text('fee', $model->fee, ['class' => $fieldClasses]) !!}
+                            @include('partials.form-field-error', ['name' => 'fee'])
                         </div>
                     </div>
 
                     {!! Form::label('hours', 'Hours', ['class' => 'col-sm-1 col-form-label']) !!}
-                    <div class="col-sm-2">
-                        {!! Form::text('hours', $model->hours, ['class' => 'form-control']) !!}
+                    <div class="col-sm-3">
+                        @php($fieldClasses = ['form-control'])
+                        @if ($errors->has('hours'))
+                            @php($fieldClasses[] = 'is-invalid')
+                        @endif
+                        {!! Form::text('hours', $model->hours, ['class' => $fieldClasses]) !!}
+                        @include('partials.form-field-error', ['name' => 'hours'])
                     </div>
                 </div>
 
