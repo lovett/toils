@@ -66,12 +66,11 @@ class CreateBaseSchema extends Migration
                 $table->increments('id');
                 $table->string('name', 100);
                 $table->date('submitted')->nullable();
-                $table->date('closed')->nullable();
-                $table->string('status', 50)->nullable();
+                $table->string('status', 50);
                 $table->string('recipient', 100)->nullable();
                 $table->integer('client_id')->unsigned()->nullable();
                 $table->integer('fee')->nullable();
-                $table->integer('hours')->unsigned()->default(0);
+                $table->integer('hours')->unsigned()->nullable();
                 $table->text('summary')->nullable();
                 $table->timestamps();
                 $table->softDeletes();

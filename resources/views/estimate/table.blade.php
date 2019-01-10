@@ -25,21 +25,18 @@
                     {{ CurrencyHelper::money($estimate->fee) }}
                 </td>
                 <td>
-                    @if ($estimate->closed)
-                        <p class="mb-0">closed {{ TimeHelper::date($estimate->closed) }}</p>
-                    @endif
-                    @if ($estimate->submitted)
-                        <p class="mb-0">submitted {{ TimeHelper::date($estimate->submitted) }}</p>
-                    @endif
-
                     @if ($estimate->updated_at > $estimate->created_at)
                         <p class="mb-0">updated {{ TimeHelper::date($estimate->updated_at) }} at {{ TimeHelper::time($estimate->updated_at) }}</p>
+                    @endif
+
+                    @if ($estimate->submitted)
+                        <p class="mb-0">submitted {{ TimeHelper::date($estimate->submitted) }}</p>
                     @endif
 
                     <p class="mb-0">created {{ TimeHelper::date($estimate->created_at) }} at {{ TimeHelper::time($estimate->created_at) }}</p>
                 </td>
                 <td>
-                    {{ $estimate->recipient }}
+                    {{ $estimate->recipient ?? 'None' }}
                 </td>
                 @unless(Route::is('client.show'))
                 <td>
@@ -48,12 +45,12 @@
                         {{ $estimate->clientName }}
                     </a>
                     @else
-                    none
+                    None
                     @endif
                 </td>
                 @endunless
                 <td>
-                    {{ $estimate->hours }}
+                    {{ $estimate->hours ?? '—' }}
                 </td>
                 <td>
                     {{ $estimate->status }}

@@ -24,7 +24,7 @@ class Estimate extends Model
      * @var array
      */
     public $statuses = [
-        null => '',
+        'draft' => 'Draft',
         'waiting'  => 'Waiting',
         'accepted' => 'Accepted',
         'declined' => 'Declined',
@@ -49,7 +49,6 @@ class Estimate extends Model
     protected $fillable = [
         'name',
         'submitted',
-        'closed',
         'recipient',
         'client_id',
         'fee',
@@ -71,7 +70,6 @@ class Estimate extends Model
      * @var array
      */
     protected $dates = [
-        'closed',
         'created_at',
         'deleted_at',
         'submitted',
