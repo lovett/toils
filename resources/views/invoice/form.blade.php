@@ -49,8 +49,13 @@
 
                         {!! Form::label('receipt', 'Receipt', ['class' => 'col-sm-1 col-form-label']) !!}
                         <div class="col-sm-3">
-                            {!! Form::file('receipt', ['id' => 'invoice-receipt', 'class' => 'custom-file-input']) !!}
+                            @php($fieldClasses = ['custom-file-input'])
+                            @if ($errors->has('receipt'))
+                                @php($fieldClasses[] = 'is-invalid')
+                            @endif
+                            {!! Form::file('receipt', ['id' => 'invoice-receipt', 'class' => $fieldClasses]) !!}
                             <label class="custom-file-label" for="invoice-receipt">Choose file</label>
+                            @include('partials.form-field-error', ['name' => 'receipt'])
                         </div>
 
                         @if ($model->receipt)
