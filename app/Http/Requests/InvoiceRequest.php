@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Traits\StandardValidationMessages;
 use Illuminate\Validation\Validator;
+use Carbon\Carbon;
 
 /**
  * Validation logic for form submissions that modify invoice records.
@@ -73,6 +74,18 @@ class InvoiceRequest extends FormRequest
             $fields['project_id'] = (int) $this->input('project_id');
 
             $fields['amount'] = (float) $this->input('amount');
+
+            $fields['start'] = Carbon::createFromFormat(
+                'Y-m-d g:i A',
+                sprintf('%s 12:00 AM', $this->input('start')),
+                $this->cookie('TIMEZONE', 'UTC')
+            )->setTimezone('UTC');
+
+            $fields['end'] = Carbon::createFromFormat(
+                'Y-m-d g:i A',
+                sprintf('%s 11:59 PM', $this->input('end')),
+                $this->cookie('TIMEZONE', 'UTC')
+            )->setTimezone('UTC');
 
             $this->merge($fields);
         });

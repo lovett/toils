@@ -86,6 +86,8 @@ class Invoice extends Model
      * @var array
      */
     protected $casts = [
+        'start' => 'datetime',
+        'end' => 'datetime',
         'amount' => 'float',
         'number' => 'integer',
     ];
@@ -335,34 +337,6 @@ class Invoice extends Model
     {
         $this->attributes['receipt'] = $value;
         $this->attributes['paid'] = ($value === null) ? null : new Carbon();
-    }
-
-    /**
-     * Round the start attribute to the beginning of the day
-     *
-     * @param string $value A datetime string that can be parsed by Carbon.
-     */
-    public function setStartAttribute(string $value = null)
-    {
-        if (empty($value) === false) {
-            $value = (new Carbon($value))->startOfDay();
-        }
-
-        $this->attributes['start'] = $value;
-    }
-
-    /**
-     * Round the end attribute to the end of the day
-     *
-     * @param string $value A datetime string that can be parsed by Carbon.
-     */
-    public function setEndAttribute(string $value = null)
-    {
-        if (empty($value) === false) {
-            $value = (new Carbon($value))->endOfDay();
-        }
-
-        $this->attributes['end'] = $value;
     }
 
     /**

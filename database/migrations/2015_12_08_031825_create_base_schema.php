@@ -100,8 +100,8 @@ class CreateBaseSchema extends Migration
                 $table->date('paid')->nullable();
                 $table->string('name', 75);
                 $table->integer('project_id')->unsigned();
-                $table->date('start')->nullable();
-                $table->date('end')->nullable();
+                $table->dateTime('start')->nullable();
+                $table->dateTime('end')->nullable();
                 $table->text('summary')->nullable();
                 $table->string('receipt', 40)->nullable();
                 $table->timestamps();
