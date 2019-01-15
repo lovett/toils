@@ -46,7 +46,6 @@
         },
         methods: {
             apply: function(facet) {
-                this.facetedQuery = this.facetedQuery.replace(`${facet}:`, '').trim();
                 if (this.facetedQuery.indexOf(':') === -1) {
                     this.facetedQuery = `${facet}:${this.facetedQuery}`;
                 } else {

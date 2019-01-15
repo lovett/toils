@@ -1969,8 +1969,6 @@ module.exports = {
   },
   methods: {
     apply: function apply(facet) {
-      this.facetedQuery = this.facetedQuery.replace("".concat(facet, ":"), '').trim();
-
       if (this.facetedQuery.indexOf(':') === -1) {
         this.facetedQuery = "".concat(facet, ":").concat(this.facetedQuery);
       } else {
