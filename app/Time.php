@@ -57,7 +57,8 @@ class Time extends Model
         'project' => 'projects.name',
         'summary' => 'times.summary',
         'date' => 'times.start',
-        'tag' => 'tags.name'
+        'tag' => 'tags.name',
+        'invoice' => 'invoices.number',
     ];
 
     /**
@@ -116,11 +117,16 @@ class Time extends Model
         $builder = $builder->addSelect('clients.id as clientId');
         $builder = $builder->addSelect('clients.name as clientName');
         $builder = $builder->addSelect('projects.name as projectName');
+        $builder = $builder->addSelect('invoices.number as invoiceNumber');
         $builder = $builder->addSelect('projects.id as projectId');
         $builder = $builder->addSelect('tags.name as tagName');
 
         if (in_array('projects', $joinedTables) === false) {
             $builder = $builder->join('projects', 'times.project_id', '=', 'projects.id');
+        }
+
+        if (in_array('invoices', $joinedTables) === false) {
+            $builder = $builder->join('invoices', 'times.invoice_id', '=', 'invoices.id');
         }
 
         $builder = $builder->join('clients', 'projects.client_id', '=', 'clients.id');

@@ -42,6 +42,7 @@ class Invoice extends Model
      * @var array
      */
     public static $searchables = [
+        'number' => 'invoices.number',
         'name' => 'invoices.name',
         'summary' => 'invoices.summary',
         'client' => 'clientName',
@@ -282,16 +283,6 @@ class Invoice extends Model
 
         $now = new Carbon();
         return $now->diffInDays($this->due, false);
-    }
-
-    /**
-     * Custom attribute for presenting an invoice number as a 4-digit string.
-     *
-     * @param int $value The invoice number to be formatted.
-     */
-    public function getNumberAttribute(int $value)
-    {
-        return sprintf('%04d', $value);
     }
 
     /**

@@ -47,7 +47,7 @@
                         {{ TimeHelper::readableShortDate($invoice->end) }}
                         <p class="small">
                             @if ($invoice->totalMinutes > 0)
-                                <a href="{{ route('time.index', ['q' => "invoice:{$invoice->id}"]) }}">{{ TimeHelper::hoursAndMinutes($invoice->totalMinutes) }}</a>
+                                <a href="{{ route('time.index', ['q' => "invoice:{$invoice->number}"]) }}">{{ TimeHelper::hoursAndMinutes($invoice->totalMinutes) }}</a>
                             @else
                                 0 hours
                             @endif

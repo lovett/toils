@@ -14,7 +14,7 @@
             @endunless
 
             @unless(Route::is('dashboard'))
-                <th>Status</th>
+                <th class="text-right">Invoice</th>
             @endunless
         </tr>
     </thead>
@@ -85,13 +85,15 @@
                 @endunless
 
                 @unless(Route::is('dashboard'))
-                <td class="text-center">
+                <td class="text-right">
                     @unless ($time->billable)
                         <svg class="icon inactive"><use xlink:href="#icon-blocked" /></svg>
                     @endunless
 
                     @if ($time->invoice_id)
-                        <svg class="icon active"><use xlink:href="#icon-checkmark" /></svg>
+                        <a href="{{ route('invoice.index', ['q' => "number:{$time->invoiceNumber}"]) }}">
+                            #{{ $time->invoiceNumber }}
+                        </a>
                     @endif
                 </td>
                 @endunless
