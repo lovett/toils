@@ -16,8 +16,11 @@
 		                    <dt>Client</dt>
 		                    <dd>{!! link_to_route('client.show', $project->client->name, ['client' => $project->client]) !!}</dd>
 
-		                    <dt>Total Time</dt>
-		                    <dd>{{ TimeHelper::hoursAndMinutes($totalTime) }}</dd>
+		                    <dt>Billable Time</dt>
+		                    <dd>{{ TimeHelper::hoursAndMinutes($billableMinutes) }}</dd>
+
+		                    <dt>Unillable Time</dt>
+		                    <dd>{{ TimeHelper::hoursAndMinutes($unbillableMinutes) }}</dd>
 
                             @if ($project->billable)
 		                        <dt>Taxes</dt>
@@ -32,7 +35,7 @@
                                 </dd>
 
 		                        <dt>Hourly Rate</dt>
-		                        <dd>{{ CurrencyHelper::hourlyRate($totalMoney, $totalTime) }}</dd>
+		                        <dd>{{ CurrencyHelper::hourlyRate($totalMoney, $totalMinutes) }}</dd>
 
                                 @if ($totalTimeRemaining)
                                     <dt>Time Remaining</dt>

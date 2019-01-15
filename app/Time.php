@@ -157,6 +157,28 @@ class Time extends Model
     }
 
     /**
+     * Query scope to restrict to billable entries.
+     *
+     * @param Builder $query An existing query.
+     */
+    public function scopeBillable(Builder $query)
+    {
+        $query->where('billable', true);
+        return $query;
+    }
+
+    /**
+     * Query scope to restrict to unbillable entries.
+     *
+     * @param Builder $query An existing query.
+     */
+    public function scopeUnbillable(Builder $query)
+    {
+        $query->where('billable', false);
+        return $query;
+    }
+
+    /**
      * Query scope to restrict time entries to the current week
      *
      * @param Builder $query An existing query.
