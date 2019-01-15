@@ -133,7 +133,9 @@ class User extends Authenticatable
      */
     public function invoices()
     {
-        $query = Invoice::leftJoin(
+        $query = Invoice::select('invoices.*');
+
+        $query->leftJoin(
             'projects',
             'projects.id',
             '=',
@@ -155,7 +157,7 @@ class User extends Authenticatable
     /**
      * Single invoice associated with the user
      *
-     * @param integer $id A user primary key
+     * @param integer $id An invoice primary key
      */
     public function invoice(int $id)
     {
