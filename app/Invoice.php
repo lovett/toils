@@ -214,11 +214,16 @@ class Invoice extends Model
     /**
      * Set instance defaults.
      *
+     * The start date defaults to 30 days in the past. The end date is
+     * 30 days in the future but adjusted upward to avoid falling on a
+     * weekend.
+     *
      * @param array $attributes The key-value array to populate.
      */
     public function __construct(array $attributes = [])
     {
         $now = new Carbon();
+
         $this->attributes = [
             'sent' => $now,
             'start' => $now->copy()->subDays(30),
@@ -226,6 +231,10 @@ class Invoice extends Model
             'due' => $now->copy()->addDays(30),
             'amount' => 0,
         ];
+
+        while ($this->due->isWeekend()) {
+            $this->due = $this->due->addDays(1);
+        }
 
         parent::__construct($attributes);
     }
