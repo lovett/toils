@@ -35,6 +35,10 @@ class TimeObserver
             return;
         }
 
+        if ($time->isDirty(['start', 'minutes', 'project_id']) === false) {
+            return;
+        }
+
         $invoice = Invoice::where([
             ['start', '<=', $time->start],
             ['end', '>=', $time->end],
