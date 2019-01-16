@@ -1858,6 +1858,7 @@ module.exports = {
             self[dataKey] = jsonGroup[jsonKey];
           });
         });
+      }).catch(function () {// Fail silently. Autofilling is a convenience rather than a necessity.
       });
     })
   }
