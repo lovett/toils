@@ -134,7 +134,7 @@ class TimeController extends Controller
         $time->project_id        = (int) $request->project_id;
         $time->estimatedDuration = (int) $request->estimatedDuration;
         $time->start             = $request->start;
-        $time->minutes           = $request->minutes;
+        $time->end               = $request->end;
         $time->summary           = $request->summary;
 
         $time->user()->associate($request->user());
