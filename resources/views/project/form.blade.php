@@ -13,20 +13,47 @@
 
                 {!! Form::model($model, ['route' => $submission_route, 'method' => $submission_method]) !!}
 
-                @include('partials.formgroup-standard', ['name' => 'name', 'label' => 'Name'])
+                @include('partials.formgroup-standard', [
+                    'name' => 'name',
+                    'label' => 'Name'
+                ])
 
-                @include('partials.formgroup-menu', ['name' => 'client_id', 'label' => 'Client', 'items' => $clients, 'selectedItem' => $model->client_id])
+                @include('partials.formgroup-menu', [
+                    'name' => 'client_id',
+                    'label' => 'Client',
+                    'items' => $clients,
+                    'selectedItem' => $model->client_id
+                ])
 
-                @include('partials.formgroup-standard', ['name' => 'allottedTotalHours', 'label' => 'Total Hours'])
+                @include('partials.formgroup-standard', [
+                    'name' => 'allottedTotalHours',
+                    'label' => 'Total Hours',
+                    'help' => 'The total number of hours allocated to the project.'
+                ])
 
-                @include('partials.formgroup-standard', ['name' => 'allottedWeeklyHours', 'label' => 'Weekly Hours'])
+                @include('partials.formgroup-standard', [
+                    'name' => 'allottedWeeklyHours',
+                    'label' => 'Weekly Hours',
+                    'help' => 'The number of hours allocated to the project per week.'
+                ])
 
+                @include('partials.formgroup-checkbox', [
+                    'name' => 'active',
+                    'label' => 'This project is active',
+                    'checked' => $model->active
+                ])
 
-                @include('partials.formgroup-checkbox', ['name' => 'active', 'label' => 'This project is active', 'checked' => $model->active])
+                @include('partials.formgroup-checkbox', [
+                    'name' => 'billable',
+                    'label' => 'This project is billable',
+                    'checked' => $model->billable
+                ])
 
-                @include('partials.formgroup-checkbox', ['name' => 'billable', 'label' => 'This project is billable', 'checked' => $model->billable])
-
-                @include('partials.formgroup-checkbox', ['name' => 'taxDeducted', 'label' => 'Tax will be deducted', 'checked' => $model->taxDeducted])
+                @include('partials.formgroup-checkbox', [
+                    'name' => 'taxDeducted',
+                    'label' => 'Tax will be deducted',
+                    'checked' => $model->taxDeducted
+                ])
 
                 @include('partials.save-button')
 
