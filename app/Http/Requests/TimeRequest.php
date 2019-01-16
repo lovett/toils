@@ -99,7 +99,7 @@ class TimeRequest extends FormRequest
             // otherwise produce a huge time interval. Such as a PM
             // time that was accidentally submitted as AM.
             if ($fields['end'] !== null && $fields['end']->diffInHours($fields['start']) > 12) {
-                $validator->errors()->add('end', 'This end date is over 12 hours from the start.');
+                $validator->errors()->add('endTime', 'This is a duration of over 12 hours.');
             }
 
             $fields['project_id'] = (int) $this->input('project_id');
