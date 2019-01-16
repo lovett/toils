@@ -126,7 +126,7 @@ class Time extends Model
         }
 
         if (in_array('invoices', $joinedTables) === false) {
-            $builder = $builder->join('invoices', 'times.invoice_id', '=', 'invoices.id');
+            $builder = $builder->leftJoin('invoices', 'times.invoice_id', '=', 'invoices.id');
         }
 
         $builder = $builder->join('clients', 'projects.client_id', '=', 'clients.id');
