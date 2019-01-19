@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\InvoiceRequest;
 use App\Invoice;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
+use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 /**
  * Controller for managing invoices.
@@ -30,7 +35,7 @@ class InvoiceController extends Controller
      *
      * @param InvoiceRequest $request The incoming request
      *
-     * @return Response
+     * @return View
      */
     public function index(Request $request)
     {
@@ -68,12 +73,10 @@ class InvoiceController extends Controller
      * @param InvoiceRequest $request The incoming request
      * @param int            $id      The id of the project to base the candidates on.
      *
-     * @return Response A json response.
+     * @return JsonResponse
      */
     public function suggestByProject(Request $request, int $id = 0)
     {
-        $id = (int) $id;
-
         $project = $request->user()->project($id)->firstOrFail();
 
         $invoice = $project->invoices()->newest(1)->firstOrFail();
@@ -86,7 +89,7 @@ class InvoiceController extends Controller
      *
      * @param InvoiceRequest $request The incoming request
      *
-     * @return Response
+     * @return View
      */
     public function create(Request $request)
     {
@@ -129,13 +132,13 @@ class InvoiceController extends Controller
      *
      * @param InvoiceRequest $request The incoming request
      *
-     * @return Response
+     * @return RedirectResponse
      */
     public function store(InvoiceRequest $request)
     {
         $invoice = new Invoice();
 
-        $projectId = $request->input('project_id', 0);
+        $projectId = $request->input('project_id');
 
         $project = $request->user()->projects()->findOrFail($projectId);
 
@@ -177,6 +180,7 @@ class InvoiceController extends Controller
         $pdf->loadView('invoice.show', $viewVars);
 
         $filename = sprintf('invoice_%s.pdf', $invoice->number);
+
         return $pdf->stream($filename);
     }
 
@@ -186,7 +190,7 @@ class InvoiceController extends Controller
      * @param InvoiceRequest $request The incoming request
      * @param int            $id      An invoice primary key
      *
-     * @return Response
+     * @return View
      */
     public function edit(Request $request, int $id)
     {
@@ -212,7 +216,7 @@ class InvoiceController extends Controller
      * @param InvoiceRequest $request The incoming request
      * @param int            $id      An invoice primary key
      *
-     * @return Response
+     * @return RedirectResponse
      */
     public function update(InvoiceRequest $request, int $id)
     {
@@ -242,7 +246,7 @@ class InvoiceController extends Controller
      * @param InvoiceRequest $request The incoming request
      * @param int            $id      An invoice primary key
      *
-     * @return Response
+     * @return RedirectResponse
      */
     public function destroy(Request $request, int $id)
     {
@@ -277,7 +281,7 @@ class InvoiceController extends Controller
      * @param InvoiceRequest $request The incoming request
      * @param int            $id      An invoice primary key
      *
-     * @return Response
+     * @return BinaryFileResponse
      */
     public function receipt(InvoiceRequest $request, int $id)
     {
@@ -289,7 +293,7 @@ class InvoiceController extends Controller
 
         $name = sprintf('receipt_%s.%s', $invoice->number, $extension);
 
-        return response()->file(
+        return response()->download(
             Storage::path($invoice->receipt),
             $name
         );

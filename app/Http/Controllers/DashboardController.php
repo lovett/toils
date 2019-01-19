@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Project;
 use App\Time;
+use Illuminate\View\View;
 
 /**
  * Controller class for the logged-in homepage of the site.
@@ -29,6 +30,8 @@ class DashboardController extends Controller
      * Show the application dashboard.
      *
      * @param Request $request The incoming request
+     *
+     * @return View
      */
     public function index(Request $request)
     {

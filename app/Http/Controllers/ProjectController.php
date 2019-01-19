@@ -9,7 +9,9 @@ use App\Http\Requests\ProjectRequest;
 use App\Project;
 use App\Time;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\View\View;
 
 /**
  * Resource controller for projects
@@ -32,7 +34,7 @@ class ProjectController extends Controller
      *
      * @param Request $request The incoming request
      *
-     * @return Response
+     * @return View
      */
     public function index(Request $request)
     {
@@ -69,7 +71,7 @@ class ProjectController extends Controller
      *
      * @param Request $request The incoming request
      *
-     * @return Response
+     * @return View
      */
     public function create(Request $request)
     {
@@ -110,14 +112,14 @@ class ProjectController extends Controller
     {
         $project = new Project();
 
-        $clientId = $request->input('client_id', 0);
+        $clientId = $request->input('client_id');
 
         $client = $request->user()->clients()->findOrFail($clientId);
 
         $project->name = $request->input('name');
-        $project->active = $request->input('active', 0);
-        $project->billable = $request->input('billable', 0);
-        $project->taxDeducted = $request->input('taxDeducted', 0);
+        $project->active = $request->input('active');
+        $project->billable = $request->input('billable');
+        $project->taxDeducted = $request->input('taxDeducted');
 
         $project->client()->associate($client);
         $project->save();
@@ -136,7 +138,7 @@ class ProjectController extends Controller
      * @param Request $request The incoming request
      * @param int     $id      A project primary key
      *
-     * @return Response
+     * @return View
      */
     public function show(Request $request, int $id)
     {
@@ -197,7 +199,7 @@ class ProjectController extends Controller
      * @param Request $request The incoming request
      * @param int     $id      A project primary key
      *
-     * @return Response
+     * @return View
      */
     public function edit(Request $request, int $id)
     {
@@ -225,7 +227,7 @@ class ProjectController extends Controller
      * @param ProjectRequest $request The incoming request
      * @param int            $id      A project primary key
      *
-     * @return Response
+     * @return RedirectResponse
      */
     public function update(ProjectRequest $request, int $id)
     {
@@ -249,7 +251,7 @@ class ProjectController extends Controller
      * @param Request $request The incoming request
      * @param int     $id      A project primary key
      *
-     * @return Response
+     * @return RedirectResponse
      */
     public function destroy(Request $request, int $id)
     {

@@ -124,7 +124,7 @@ class AddressHelper
             return '';
         }
 
-        $plainValue = preg_replace('/[^0-9x\#*]/', null, $value);
+        $plainValue = preg_replace('/[^0-9x\#*]/', '', $value);
 
         $matchResult = preg_match(
             '/(1)?(\d{3})?(\d{3})(\d{4})(.*)?/',

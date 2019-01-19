@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Traits\Search;
@@ -81,7 +82,7 @@ class Estimate extends Model
      *
      * @param Builder $builder The query to start with
      *
-     * @return Relation
+     * @return Builder
      */
     public static function listing(Builder $builder)
     {

@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Traits\Search;
 
 /**
@@ -113,7 +115,7 @@ class Project extends Model
      * Although the database stores minutes, sometimes it is more
      * convenient to use hours.
      *
-     * @return float Total minutes expressed as hours to 2 decimal places.
+     * @return float|null Total minutes expressed as hours to 2 decimal places.
      */
     public function getAllottedWeeklyHoursAttribute()
     {
@@ -234,7 +236,7 @@ class Project extends Model
     /**
      * Client associated with the project.
      *
-     * @return HasOne
+     * @return BelongsTo
      */
     public function client()
     {

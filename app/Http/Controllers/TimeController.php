@@ -8,7 +8,9 @@ use App\Tag;
 use App\Helpers\MessagingHelper;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
+use Illuminate\View\View;
 
 /**
  * Controller for managing time entries.
@@ -31,7 +33,7 @@ class TimeController extends Controller
      *
      * @param Request $request The incoming request
      *
-     * @return Response
+     * @return View
      */
     public function index(Request $request)
     {
@@ -70,11 +72,10 @@ class TimeController extends Controller
      * @param Request $request The incoming request
      * @param int     $id      The id of the project to base the candidates on.
      *
-     * @return Response A json response.
+     * @return JsonResponse
      */
     public function suggestByProject(Request $request, int $id)
     {
-        $id = (int) $id;
         $time = $request->user()->timeByProject($id)->firstOrFail();
         return response()->json($time->suggestion);
     }
@@ -84,18 +85,21 @@ class TimeController extends Controller
      *
      * @param Request $request The incoming request
      *
-     * @return response
+     * @return View
      */
     public function create(Request $request)
     {
+        $client = null;
+        $projects = null;
+
         $clientId = $request->input('client', null);
+
         if ($clientId) {
             $client = $request->user()->client($clientId)->firstOrFail();
             $projects = $request->user()->projectsForMenu($client->getKey());
         }
 
-        if ($clientId === null) {
-            $client = null;
+        if ($projects === null) {
             $projects = $request->user()->projectsForMenu();
         }
 
@@ -125,7 +129,7 @@ class TimeController extends Controller
      *
      * @param TimeRequest $request The incoming request
      *
-     * @return Response
+     * @return RedirectResponse
      */
     public function store(TimeRequest $request)
     {
@@ -153,7 +157,7 @@ class TimeController extends Controller
      * @param Request $request The incoming request
      * @param int     $id      A primary key
      *
-     * @return Response
+     * @return View
      */
     public function edit(Request $request, int $id)
     {
@@ -179,7 +183,7 @@ class TimeController extends Controller
      * @param TimeRequest $request The incoming request
      * @param int         $id      A time entry primary key
      *
-     * @return Response
+     * @return RedirectResponse
      */
     public function update(TimeRequest $request, int $id)
     {

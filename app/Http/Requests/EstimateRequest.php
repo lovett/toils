@@ -55,7 +55,7 @@ class EstimateRequest extends FormRequest
             ['active']
         )->each(
             function ($field) {
-                $value = $this->input($field, 0);
+                $value = $this->input($field);
                 $this->merge([$field => $value]);
             }
         );

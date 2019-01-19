@@ -67,12 +67,12 @@ class ProjectRequest extends FormRequest
             }
 
             $fields = [];
-            $fields['active'] = (bool) $this->input('active', false);
-            $fields['billable'] = (bool) $this->input('billable', false);
-            $fields['taxDeducted'] = (bool) $this->input('taxDeducted', false);
+            $fields['active'] = (bool) $this->input('active');
+            $fields['billable'] = (bool) $this->input('billable');
+            $fields['taxDeducted'] = (bool) $this->input('taxDeducted');
 
-            $fields['allottedTotalHours'] = $this->input('allottedTotalHours', null);
-            $fields['allottedWeeklyHours'] = $this->input('allottedWeeklyHours', null);
+            $fields['allottedTotalHours'] = $this->input('allottedTotalHours');
+            $fields['allottedWeeklyHours'] = $this->input('allottedWeeklyHours');
 
             if ($fields['allottedTotalHours'] !== null) {
                 $fields['allottedTotalHours'] = (float) $fields['allottedTotalHours'];

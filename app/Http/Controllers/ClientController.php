@@ -8,8 +8,9 @@ use App\Time;
 use App\Estimate;
 use App\Helpers\MessagingHelper;
 use App\Http\Requests\ClientRequest;
-use Illuminate\Http\Response;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 /**
  * Resource controller for clients
@@ -34,7 +35,7 @@ class ClientController extends Controller
      *
      * @param ClientRequest $request The incoming request
      *
-     * @return Response
+     * @return View
      */
     public function index(Request $request)
     {
@@ -69,7 +70,7 @@ class ClientController extends Controller
     /**
      * Show the form for creating a new client.
      *
-     * @return Response
+     * @return View
      */
     public function create()
     {
@@ -92,7 +93,7 @@ class ClientController extends Controller
      *
      * @param ClientRequest $request The incoming request
      *
-     * @return Response
+     * @return RedirectResponse
      */
     public function store(ClientRequest $request)
     {
@@ -129,7 +130,7 @@ class ClientController extends Controller
      * @param Request $request The incoming request
      * @param int     $id      A client primary key
      *
-     * @return Response
+     * @return View
      */
     public function show(Request $request, int $id)
     {
@@ -164,7 +165,7 @@ class ClientController extends Controller
      * @param Request $request The incoming request
      * @param int     $id      A client primary key
      *
-     * @return Response
+     * @return View
      */
     public function edit(Request $request, int $id)
     {
@@ -190,7 +191,7 @@ class ClientController extends Controller
      * @param ClientRequest $request The incoming request
      * @param int           $id      A client primary key
      *
-     * @return Response
+     * @return RedirectResponse
      */
     public function update(ClientRequest $request, int $id)
     {
@@ -212,7 +213,7 @@ class ClientController extends Controller
      * @param ClientRequest $request The incoming request
      * @param int           $id      A client primary key
      *
-     * @return Response
+     * @return RedirectResponse
      */
     public function destroy(ClientRequest $request, int $id)
     {

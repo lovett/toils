@@ -26,7 +26,7 @@ class CurrencyHelper
      * @param float $money   Total money.
      * @param int   $minutes Total time.
      *
-     * @return int Hourly money, rounded
+     * @return string Hourly money, rounded
      */
     public static function hourlyRate(float $money = 0, int $minutes = 0)
     {

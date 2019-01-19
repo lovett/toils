@@ -7,12 +7,15 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Carbon\Carbon;
 use App\Traits\Search;
 use App\Invoice;
 use stdClass;
 use App\Helpers\TimeHelper;
 use App\Tag;
+use InvalidArgumentException;
 
 /**
  * Eloquent model for the times table.
@@ -104,7 +107,7 @@ class Time extends Model
      *
      * @param Builder $builder The query to start with
      *
-     * @return Relation
+     * @return Builder
      */
     public static function listing(Builder $builder)
     {
@@ -234,7 +237,7 @@ class Time extends Model
     /**
      * User associated with the time entry.
      *
-     * @return HasOne
+     * @return BelongsTo
      */
     public function user()
     {
@@ -244,7 +247,7 @@ class Time extends Model
     /**
      * Project associated with the time entry.
      *
-     * @return HasOne
+     * @return BelongsTo
      */
     public function project()
     {
@@ -254,7 +257,7 @@ class Time extends Model
     /**
      * Invoice associated with the time entry.
      *
-     * @return HasOne
+     * @return BelongsTo
      */
     public function invoice()
     {
@@ -276,13 +279,13 @@ class Time extends Model
      *
      * @return integer;
      */
-    public function getMinutesAttribute($value = null)
+    public function getMinutesAttribute(int $value = null)
     {
         if (is_numeric($value) === false) {
             $value = 0;
         }
 
-        return (int) $value;
+        return $value;
     }
 
     /**
@@ -321,7 +324,7 @@ class Time extends Model
     public function setEndAttribute(Carbon $value = null)
     {
         if (empty($this->start)) {
-            return nulll;
+            return null;
         }
 
         if ($value === null) {
@@ -335,7 +338,7 @@ class Time extends Model
     /**
      * Custom accessor to calculate estimate accuracy as a percentage.
      *
-     * @return int|null A number between 0 and 100
+     * @return float|null A number between 0 and 100
      */
     public function getAccuracyAttribute()
     {
@@ -534,17 +537,6 @@ class Time extends Model
     public function getTagListAttribute()
     {
         return $this->tags->implode('name', ', ');
-    }
-
-    /**
-     * Set the tags associated with a time entry
-     *
-     * @param string $tagList A comma delimited list of tags
-     */
-    public function syncTagsFromList(string $tagList = '')
-    {
-        $tags = Tag::createFromList($tagList);
-        $this->tags()->sync($tags);
     }
 
     /**

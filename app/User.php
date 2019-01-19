@@ -5,6 +5,9 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Builder;
 use App\Traits\AsMenu;
 
 /**
@@ -101,7 +104,7 @@ class User extends Authenticatable
             'projects.client_id'
         );
 
-        $query->where('client_user.user_id', $this->getKey());
+        $query = $query->where('client_user.user_id', $this->getKey());
 
         return $query;
     }

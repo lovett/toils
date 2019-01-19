@@ -57,7 +57,7 @@ class TimeHelper
      * @param int $minutes   The number to be divided
      * @param int $precision How many decimal places
      *
-     * @return int
+     * @return float
      */
     public static function minutesToHours(int $minutes, int $precision = 2)
     {
@@ -148,12 +148,12 @@ class TimeHelper
     /**
      * Round the minutes of a time value to a given multiple.
      *
-     * @param Carbon|null $value    The value to format
-     * @param int         $multiple The nearest value to round to.
+     * @param Carbon $value    The value to format
+     * @param int    $multiple The nearest value to round to.
      *
      * @return string
      */
-    public static function roundToNearestMinuteMultiple(Carbon $value, int $multiple)
+    public static function roundToNearestMinuteMultiple(?Carbon $value, int $multiple)
     {
         $value->minute = self::roundToNearestMultiple($value->minute, $multiple);
         $value->second = 0;
@@ -171,7 +171,7 @@ class TimeHelper
      */
     public static function roundToNearestMultiple(int $value, int $multiple)
     {
-        return floor($value / $multiple) * $multiple;
+        return (int) floor($value / $multiple) * $multiple;
     }
 
     /**

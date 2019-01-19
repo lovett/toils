@@ -6,7 +6,8 @@ use App\Estimate;
 use App\Helpers\MessagingHelper;
 use App\Http\Requests\EstimateRequest;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 /**
  * Resource controller for estimates
@@ -31,7 +32,7 @@ class EstimateController extends Controller
      *
      * @param Request $request The incoming request
      *
-     * @return Response
+     * @return View
      */
     public function index(Request $request)
     {
@@ -67,7 +68,7 @@ class EstimateController extends Controller
      *
      * @param Request $request The incoming request
      *
-     * @return Response
+     * @return View
      */
     public function create(Request $request)
     {
@@ -94,7 +95,7 @@ class EstimateController extends Controller
      *
      * @param EstimateRequest $request The incoming request
      *
-     * @return Response
+     * @return RedirectResponse
      */
     public function store(EstimateRequest $request)
     {
@@ -116,7 +117,7 @@ class EstimateController extends Controller
      * @param Request $request The incoming request
      * @param int     $id      An Estimate primary key
      *
-     * @return Response
+     * @return View
      */
     public function show(Request $request, int $id)
     {
@@ -136,7 +137,7 @@ class EstimateController extends Controller
      * @param Request $request The incoming request
      * @param int     $id      An Estimate primary key
      *
-     * @return Response
+     * @return View
      */
     public function edit(Request $request, int $id)
     {
@@ -165,7 +166,7 @@ class EstimateController extends Controller
      * @param EstimateRequest $request The incoming request
      * @param int             $id      An estimate primary key
      *
-     * @return Response
+     * @return RedirectResponse
      */
     public function update(EstimateRequest $request, int $id)
     {
@@ -184,7 +185,7 @@ class EstimateController extends Controller
      * @param Request $request The incoming request
      * @param int     $id      An Estimate primary key
      *
-     * @return Response
+     * @return RedirectResponse
      */
     public function destroy(Request $request, int $id)
     {

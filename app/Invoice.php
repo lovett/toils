@@ -3,12 +3,15 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use App\Traits\Search;
 use App\Time;
 use App\Client;
@@ -139,7 +142,7 @@ class Invoice extends Model
      *
      * @param Builder $query An existing query.
      *
-     * @return Builder;
+     * @return QueryBuilder;
      */
     public function scopePaid(Builder $query)
     {
@@ -169,7 +172,7 @@ class Invoice extends Model
      *
      * @param Builder $builder The query to start with.
      *
-     * @return Relation;
+     * @return QueryBuilder;
      */
     public static function listing(Builder $builder)
     {
@@ -253,7 +256,7 @@ class Invoice extends Model
     /**
      * Project associated with the invoice.
      *
-     * @return HasOne
+     * @return BelongsTo
      */
     public function project()
     {
@@ -333,7 +336,7 @@ class Invoice extends Model
      *
      * @param string $value The receipt
      */
-    public function setReceiptAttribute(string $value)
+    public function setReceiptAttribute(?string $value = null)
     {
         $this->attributes['receipt'] = $value;
         $this->attributes['paid'] = ($value === null) ? null : new Carbon();
