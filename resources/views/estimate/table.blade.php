@@ -2,15 +2,15 @@
     <thead>
         <tr>
             <th>Name</th>
-            <th>Fee</th>
-            <th>History</th>
+            <th>Submitted</th>
             <th>Recipient</th>
 
             @unless(Route::is('client.show'))
                 <th>Client</th>
             @endunless
-            <th>Hours</th>
-            <th>Status</th>
+            <th class="text-right">Hours</th>
+            <th class="text-right">Fee</th>
+            <th class="text-right">Status</th>
         </tr>
     </thead>
     <tbody>
@@ -22,37 +22,29 @@
                     </a>
                 </td>
                 <td>
-                    {{ CurrencyHelper::money($estimate->fee) }}
+                    {{ TimeHelper::date($estimate->submitted) ?? '—' }}
                 </td>
                 <td>
-                    @if ($estimate->updated_at > $estimate->created_at)
-                        <p class="mb-0">updated {{ TimeHelper::date($estimate->updated_at) }} at {{ TimeHelper::time($estimate->updated_at) }}</p>
-                    @endif
-
-                    @if ($estimate->submitted)
-                        <p class="mb-0">submitted {{ TimeHelper::date($estimate->submitted) }}</p>
-                    @endif
-
-                    <p class="mb-0">created {{ TimeHelper::date($estimate->created_at) }} at {{ TimeHelper::time($estimate->created_at) }}</p>
-                </td>
-                <td>
-                    {{ $estimate->recipient ?? 'None' }}
+                    {{ $estimate->recipient ?? '—' }}
                 </td>
                 @unless(Route::is('client.show'))
                 <td>
                     @if ($estimate->clientId)
-                    <a href="{{ route('client.show', ['record' => $estimate->clientId]) }}">
-                        {{ $estimate->clientName }}
-                    </a>
+                        <a href="{{ route('client.show', ['record' => $estimate->clientId]) }}">
+                            {{ $estimate->clientName }}
+                        </a>
                     @else
-                    None
+                        —
                     @endif
                 </td>
                 @endunless
-                <td>
+                <td class="text-right">
                     {{ $estimate->hours ?? '—' }}
                 </td>
-                <td>
+                <td class="text-right">
+                    {{ CurrencyHelper::dollars($estimate->fee) }}
+                </td>
+                <td class="text-right">
                     {{ $estimate->status }}
                 </td>
             </tr>

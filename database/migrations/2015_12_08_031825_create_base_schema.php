@@ -72,6 +72,7 @@ class CreateBaseSchema extends Migration
                 $table->integer('fee')->nullable();
                 $table->integer('hours')->unsigned()->nullable();
                 $table->text('summary')->nullable();
+                $table->text('statement_of_work')->nullable();
                 $table->timestamps();
                 $table->softDeletes();
                 $table->foreign('client_id')->references('id')->on('clients');
@@ -115,7 +116,7 @@ class CreateBaseSchema extends Migration
             function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('user_id')->unsigned();
-                $table->integer('estimatedDuration')->unsigned();
+                $table->integer('estimatedDuration')->unsigned()->default(0);
                 $table->integer('project_id')->unsigned();
                 $table->integer('invoice_id')->nullable()->unsigned();
                 $table->dateTime('start')->nullable();

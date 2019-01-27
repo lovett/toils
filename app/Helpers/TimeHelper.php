@@ -71,7 +71,7 @@ class TimeHelper
      *
      * @return string
      */
-    public static function readableShortDate(Carbon $value = null)
+    public static function readableShortDate(?Carbon $value = null)
     {
         if ($value === null) {
             return '';
@@ -120,7 +120,7 @@ class TimeHelper
      *
      * @return string
      */
-    public static function longDate(Carbon $value = null)
+    public static function longDate(?Carbon $value = null)
     {
         if ($value === null) {
             return '';
@@ -136,7 +136,7 @@ class TimeHelper
      *
      * @return string
      */
-    public static function time(Carbon $value = null)
+    public static function time(?Carbon $value = null)
     {
         if ($value === null) {
             return '';
@@ -181,8 +181,12 @@ class TimeHelper
      *
      * @return string
      */
-    public static function daysAgo(Carbon $value = null)
+    public static function daysAgo(?Carbon $value = null)
     {
+        if ($value === null) {
+            return '';
+        }
+
         return self::shiftTimezone($value)->diffForHumans();
     }
 }

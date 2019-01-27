@@ -53,6 +53,8 @@
 
                 @include('partials.formgroup-textarea', ['name' => 'summary', 'label' => 'Summary'])
 
+                @include('partials.formgroup-textarea', ['name' => 'statement_of_work', 'label' => 'Statement of Work'])
+
 
                 @include('partials.save-button')
 

@@ -96,7 +96,7 @@ class Estimate extends Model
 
         $builder->selectRaw('clients.name as clientName');
         $builder->selectRaw('clients.id as clientId');
-        $builder->orderByRaw('LOWER(estimates.name) ASC');
+        $builder->orderByRaw('created_at DESC');
         return $builder;
     }
 

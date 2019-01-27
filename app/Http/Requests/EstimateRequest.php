@@ -40,6 +40,7 @@ class EstimateRequest extends FormRequest
             'fee' => 'nullable|numeric',
             'hours' => 'nullable|numeric',
             'summary' => 'nullable',
+            'statement_of_work' => 'nullable',
         ];
     }
 
