@@ -14,6 +14,8 @@
         @endif
     </div>
 
-    @include('partials.pagination', ['collection' => $collection])
+    <nav aria-label="Pagination" class="d-flex justify-content-center py-4">
+        {{ $collection->appends(['q' => $query])->links() }}
+    </nav>
 
 @endsection
