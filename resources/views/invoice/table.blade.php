@@ -6,12 +6,9 @@
                 @unless(Route::is('project.show'))
                     <th>Project</th>
                 @endunless
-                <th>Start</th>
-                <th>End</th>
+                <th width="275" >Dates</th>
                 <th class="text-right">Amount</th>
-                <th>Due</th>
-                <th>Status</th>
-                <th>Export</th>
+                <th width="150"  class="text-right">Status</th>
             </tr>
         </thead>
         <tbody>
@@ -24,6 +21,9 @@
                             {{ $invoice->name }}
                         </a>
                         <p class="small">#{{ $invoice->number }}</p>
+                        <a href="{{ route('invoice.show', $invoice) }}" target="_blank">
+                            <svg class="icon file-icon"><use xlink:href="#icon-file-pdf"></use></svg>
+                        </a>
                     </td>
                     @unless(Route::is('project.show'))
                     <td>
@@ -41,9 +41,7 @@
                     </td>
                     @endunless
                     <td>
-                        {{ TimeHelper::readableShortDate($invoice->start) }}
-                    </td>
-                    <td>
+                        {{ TimeHelper::readableShortDate($invoice->start) }} →
                         {{ TimeHelper::readableShortDate($invoice->end) }}
                         <p class="small">
                             @if ($invoice->totalMinutes > 0)
@@ -56,10 +54,7 @@
                     <td class="text-right">
                         {{ CurrencyHelper::money($invoice->amount) }}
                     </td>
-                    <td>
-                        {{ TimeHelper::readableShortDate($invoice->due) }}
-                    </td>
-                    <td>
+                    <td class="text-right">
                         @if ($invoice->isPaid && $invoice->receipt)
                             <svg class="icon"><use xlink:href="#icon-file-empty"></use></svg>
                             <a href="{{ route('invoice.receipt', $invoice->id) }}">
@@ -88,11 +83,6 @@
                                 <svg class="icon inactive"><use xlink:href="#icon-blocked"></use></svg>
                             </p>
                         @endif
-                    </td>
-                    <td>
-                        <a href="{{ route('invoice.show', $invoice) }}" target="_blank">
-                            <svg class="icon file-icon"><use xlink:href="#icon-file-pdf"></use></svg>
-                        </a>
                     </td>
                 </tr>
             @endforeach
