@@ -2,10 +2,9 @@
     <thead>
         <tr>
             <th>Name</th>
-            <th>Status</th>
             <th>Unbilled Time</th>
             <th>Client</th>
-            <th>Created</th>
+            <th class="text-right">Status</th>
         </tr>
     </thead>
     <tbody>
@@ -17,9 +16,6 @@
                     </a>
                 </td>
                 <td>
-                    @include('partials.active', ['value' => $project->active])
-                </td>
-                <td>
                     {{ TimeHelper::hoursAndMinutes($project->unbilledTime) }}
                 </td>
                 <td>
@@ -29,8 +25,8 @@
                         none
                     @endif
                 </td>
-                <td>
-                    {{ TimeHelper::readableShortDate($project->created_at) }}
+                <td class="text-right">
+                    @include('partials.active', ['value' => $project->active])
                 </td>
             </tr>
         @endforeach
