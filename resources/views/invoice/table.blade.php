@@ -26,19 +26,9 @@
                         </a>
                     </td>
                     @unless(Route::is('project.show'))
-                    <td>
-                        <div>
-                            <a href="{{ route('project.show', ['record' => $invoice->projectId]) }}">
-                                {{ $invoice->projectName }}
-                            </a>
-
-                            @if ($invoice->clientName)
-                            <p class="small">↳ <a href="{{ route('client.show', ['record' => $invoice->clientId]) }}">
-                                {{ $invoice->clientName }}
-                            </p>
-                            @endif
-                        </div>
-                    </td>
+                        <td>
+                            @include('partials.project-and-client', ['projectId' => $invoice->project_id, 'projectName' => $invoice->projectName, 'clientId' => $invoice->client_id, 'clientName' => $invoice->clientName])
+                        </td>
                     @endunless
                     <td>
                         {{ TimeHelper::readableShortDate($invoice->start) }} →
