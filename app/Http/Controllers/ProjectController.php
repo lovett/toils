@@ -47,7 +47,8 @@ class ProjectController extends Controller
         if ($query !== null) {
             $searchFields = $this->parseSearchQuery(
                 $query,
-                Project::$searchables
+                Project::$searchables,
+                Project::$searchAliases
             );
 
             $projects = Project::search($projects, $searchFields);

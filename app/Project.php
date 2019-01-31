@@ -26,7 +26,23 @@ class Project extends Model
      *
      * @var array
      */
-    public static $searchables = ['name' => 'projects.name'];
+    public static $searchables = [
+        'name' => 'projects.name',
+        'client' => 'clientName',
+        'status' => 'projects.active',
+    ];
+
+    /**
+     * Alternate values that should be mapped to incoming search keywords.
+     *
+     * @var array
+     */
+    public static $searchAliases = [
+        'projects.active' => [
+            'active' => true,
+            'inactive' => false,
+        ],
+    ];
 
 
     /**
@@ -207,7 +223,15 @@ class Project extends Model
     {
         $query->selectRaw(
             'projects.*,
+            clients.name as clientName,
             coalesce(sum(times.minutes), 0) as unbilledTime'
+        );
+
+        $query->leftJoin(
+            'clients',
+             function ($join) {
+                $join->on('projects.client_id', '=', 'clients.id');
+            }
         );
 
         $query->leftJoin(

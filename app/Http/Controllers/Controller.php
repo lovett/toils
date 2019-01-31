@@ -19,10 +19,11 @@ class Controller extends BaseController
      *
      * @param string|null $query       The search terms provided by the request
      * @param array       $searchables A searchables array from a model
+     * @param array       $aliases     Replacement values to map to incoming search terms
      *
      * @return array
      */
-    protected function parseSearchQuery($query = null, array $searchables = [])
+    protected function parseSearchQuery($query = null, array $searchables = [], array $aliases = [])
     {
         if (empty($query)) {
             return [];
@@ -54,6 +55,13 @@ class Controller extends BaseController
             if (empty($terms[$field][$index])) {
                 $terms[$field][$index] = '';
             }
+
+            if (array_key_exists($field, $aliases)
+                && array_key_exists($word, $aliases[$field])
+            ) {
+                $word = $aliases[$field][$word];
+            }
+
 
             $terms[$field][$index] = trim($terms[$field][$index] . ' ' . $word);
         }
