@@ -95,6 +95,7 @@ class Project extends Model
         'created_at',
         'deleted_at',
         'updated_at',
+        'lastActive',
     ];
 
     /**
@@ -224,12 +225,14 @@ class Project extends Model
         $query->selectRaw(
             'projects.*,
             clients.name as clientName,
-            coalesce(sum(times.minutes), 0) as unbilledTime'
+            sum(case when times.invoice_id is null then minutes else 0 end) as unbilledTime,
+            sum(case when times.invoice_id is null then 0 else minutes end) as billedTime,
+            coalesce(max(times.start), 0) as lastActive'
         );
 
         $query->leftJoin(
             'clients',
-             function ($join) {
+            function ($join) {
                 $join->on('projects.client_id', '=', 'clients.id');
             }
         );
@@ -238,7 +241,6 @@ class Project extends Model
             'times',
             function ($join) {
                 $join->on('times.project_id', '=', 'projects.id');
-                $join->whereNull('times.invoice_id');
             }
         );
 
