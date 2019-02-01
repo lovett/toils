@@ -296,7 +296,7 @@ class Project extends Model
      */
     public function scopeActive(Builder $query)
     {
-        return $query->where('active', true);
+        return $query->where('projects.active', true);
     }
 
     /**
@@ -308,7 +308,7 @@ class Project extends Model
      */
     public function scopeInActive(Builder $query)
     {
-        return $query->where('active', false);
+        return $query->where('projects.active', false);
     }
 
     /**
@@ -321,7 +321,7 @@ class Project extends Model
      */
     public function scopeNewest(Builder $query, int $limit = 0)
     {
-        $query->orderBy('updated_at', 'DESC');
+        $query->orderBy('projects.updated_at', 'DESC');
         if ($limit > 0) {
             $query->limit($limit);
         }
