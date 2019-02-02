@@ -21,11 +21,11 @@ class TimeHelper
     /**
      * Display an integer as an "x hours, y minutes" English phrase.
      *
-     * @param int $minutes The value to be displayed
+     * @param int|null $minutes The value to be displayed
      *
      * @return string
      */
-    public static function hoursAndMinutes(int $minutes)
+    public static function hoursAndMinutes(?int $minutes)
     {
         if ($minutes === 0) {
             return '0 minutes';
