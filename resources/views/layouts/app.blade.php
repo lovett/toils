@@ -68,7 +68,7 @@
                 {!! LinkHelper::primaryNavLink('dashboard', 'Dashboard')  !!}
                 {!! LinkHelper::primaryNavLink('time.index', 'Time') !!}
                 {!! LinkHelper::primaryNavLink('invoice.index', 'Invoices') !!}
-                {!! LinkHelper::primaryNavLink('project.index', 'Projects') !!}
+                {!! LinkHelper::projectIndexLink() !!}
                 {!! LinkHelper::primaryNavLink('client.index', 'Clients') !!}
                 {!! LinkHelper::primaryNavLink('estimate.index', 'Estimates') !!}
                 <li class="nav-item">

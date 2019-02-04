@@ -3,7 +3,7 @@
         <tr>
             <th>Name</th>
             <th>Last Time Entry</th>
-            <th>Billed Time</th>
+            <th>Billable Time</th>
             <th>Unbilled Time</th>
             <th class="text-right">Status</th>
         </tr>

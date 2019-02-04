@@ -116,7 +116,12 @@ class LinkHelper
         $liClass = 'nav-item';
         $linkClass = 'nav-link';
 
-        if (Request::routeIs($route)) {
+        if (array_key_exists('q', $params)) {
+            $searchQuery = Request::query('q');
+            if (strpos($searchQuery, $params['q']) !== false) {
+                $linkClass .= ' active';
+            }
+        } else if (Request::routeIs($route)) {
             $linkClass .= ' active';
         }
 
@@ -170,7 +175,14 @@ class LinkHelper
             return $links;
         }
 
-        $links[] = self::navLink("{$resource}.index", "{$capitalizedResource} List", []);
+        if ($resource === 'project') {
+            $links[] = self::projectIndexLink();
+            $links[] = self::inactiveProjectsLink();
+        }
+
+        if ($resource !== 'project') {
+            $links[] = self::navLink("{$resource}.index", "{$capitalizedResource} List", []);
+        }
 
         if (strpos($action, '@show') !== false || strpos($action, '@edit') !== false) {
             $links[] = self::navLink("{$resource}.show", "{$capitalizedResource} Overview", $params);
@@ -189,5 +201,29 @@ class LinkHelper
     {
         $routeSegments = explode('.', Route::currentRouteName());
         return $routeSegments[0];
+    }
+
+    /**
+     * The default list view of the project list is a preset search.
+     */
+    public static function projectIndexLink()
+    {
+        return self::navLink(
+            'project.index',
+            'Projects',
+            ['q' => 'status:active']
+        );
+    }
+
+    /**
+     * Secondary view of the project list limited to inactive projects.
+     */
+    public static function inactiveProjectsLink()
+    {
+        return self::navLink(
+            'project.index',
+            'Inactive Projects',
+            ['q' => 'status:inactive']
+        );
     }
 }
