@@ -68,8 +68,8 @@
                 {!! LinkHelper::primaryNavLink('dashboard', 'Dashboard')  !!}
                 {!! LinkHelper::primaryNavLink('time.index', 'Time') !!}
                 {!! LinkHelper::primaryNavLink('invoice.index', 'Invoices') !!}
-                {!! LinkHelper::projectIndexLink() !!}
-                {!! LinkHelper::primaryNavLink('client.index', 'Clients') !!}
+                {!! LinkHelper::projectsIndexLink() !!}
+                {!! LinkHelper::clientsIndexLink() !!}
                 {!! LinkHelper::primaryNavLink('estimate.index', 'Estimates') !!}
                 <li class="nav-item">
                     <a href="{{ route('logout') }}"

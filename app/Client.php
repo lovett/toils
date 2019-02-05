@@ -33,7 +33,18 @@ class Client extends Model
         'status' => 'clients.active',
         'locality' => 'clients.locality',
         'created' => 'clients.created_at',
-        'active' => 'clients.active',
+    ];
+
+    /**
+     * Alternate values that should be mapped to incoming search keywords.
+     *
+     * @var array
+     */
+    public static $searchAliases = [
+        'clients.active' => [
+            'active' => true,
+            'inactive' => false,
+        ],
     ];
 
     /**

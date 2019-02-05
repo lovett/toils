@@ -176,11 +176,16 @@ class LinkHelper
         }
 
         if ($resource === 'project') {
-            $links[] = self::projectIndexLink();
+            $links[] = self::projectsIndexLink();
             $links[] = self::inactiveProjectsLink();
         }
 
-        if ($resource !== 'project') {
+        if ($resource === 'client') {
+            $links[] = self::clientsIndexLink();
+            $links[] = self::inactiveClientsLink();
+        }
+
+        if (empty($links)) {
             $links[] = self::navLink("{$resource}.index", "{$capitalizedResource} List", []);
         }
 
@@ -206,11 +211,23 @@ class LinkHelper
     /**
      * The default list view of the project list is a preset search.
      */
-    public static function projectIndexLink()
+    public static function projectsIndexLink()
     {
         return self::navLink(
             'project.index',
             'Projects',
+            ['q' => 'status:active']
+        );
+    }
+
+    /**
+     * The default list view of the client list is a preset search.
+     */
+    public static function clientsIndexLink()
+    {
+        return self::navLink(
+            'client.index',
+            'Clients',
             ['q' => 'status:active']
         );
     }
@@ -223,6 +240,18 @@ class LinkHelper
         return self::navLink(
             'project.index',
             'Inactive Projects',
+            ['q' => 'status:inactive']
+        );
+    }
+
+    /**
+     * Secondary view of the client list limited to inactive projects.
+     */
+    public static function inactiveClientsLink()
+    {
+        return self::navLink(
+            'client.index',
+            'Inactive Clients',
             ['q' => 'status:inactive']
         );
     }

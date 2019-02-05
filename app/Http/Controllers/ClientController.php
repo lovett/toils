@@ -48,7 +48,8 @@ class ClientController extends Controller
         if ($query !== null) {
             $searchFields = $this->parseSearchQuery(
                 $query,
-                Client::$searchables
+                Client::$searchables,
+                Client::$searchAliases
             );
 
             $clients = Client::search($clients, $searchFields);

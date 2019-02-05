@@ -22,6 +22,7 @@
     <exclude name="Squiz.Commenting.FileComment.MissingPackageTag" />
     <exclude name="Squiz.Commenting.FunctionComment.InvalidReturn" />
     <exclude name="Squiz.Commenting.LongConditionClosingComment.Missing" />
+    <exclude name="Squiz.ControlStructures.ElseIfDeclaration.NotAllowed" />
     <exclude name="Squiz.ControlStructures.SwitchDeclaration.BreakIndent" />
     <exclude name="Squiz.Files.FileExtension.ClassFound" />
     <exclude name="Squiz.Operators.ComparisonOperatorUsage.ImplicitTrue" />
