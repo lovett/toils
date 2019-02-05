@@ -246,7 +246,9 @@ class Project extends Model
 
         $query->groupBy('projects.id');
 
-        return $query->with('client')->orderByRaw('LOWER(projects.name) ASC');
+        $query = $query->orderByRaw('LOWER(projects.name) ASC');
+
+        return $query->with('client');
     }
 
     /**

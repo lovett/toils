@@ -119,7 +119,7 @@ class Client extends Model
             }
         );
 
-        $builder = $builder->orderBy('clients.updated_at', 'DESC');
+        $builder = $builder->orderByRaw('LOWER(clients.name) ASC');
 
         $builder = $builder->groupBy('clients.id');
 
