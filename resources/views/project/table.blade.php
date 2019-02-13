@@ -18,7 +18,12 @@
                     {{ TimeHelper::date($project->lastActive) }}
                 </td>
                 <td>
-                    {{ TimeHelper::hoursAndMinutes($project->billedTime) }}
+                    @if($project->billable)
+                        {{ TimeHelper::hoursAndMinutes($project->billedTime) }}
+                    @else
+                        <svg class="icon inactive"><use xlink:href="#icon-blocked"></use></svg> unbillable
+                    @endif
+
                 </td>
                 <td>
                     {{ TimeHelper::hoursAndMinutes($project->unbilledTime) }}
