@@ -11,7 +11,7 @@
     },
     "devDependencies": {
         "axios": "0.18",
-        "bootstrap-vue": "2.0.0-rc.11",
+        "bootstrap-vue": "2.0.0-rc.12",
         "browser-sync": "2.26.3",
         "browser-sync-webpack-plugin": "2.2.2",
         "jquery": "3.3.1",
@@ -21,7 +21,7 @@
         "resolve-url-loader": "3.0.0",
         "sass": "1.17.0",
         "sass-loader": "7.1.0",
-        "vue": "2.6.4",
-        "vue-template-compiler": "2.6.4"
+        "vue": "2.6.6",
+        "vue-template-compiler": "2.6.6"
     }
 }
