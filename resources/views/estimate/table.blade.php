@@ -20,6 +20,9 @@
                     <a href="{{ route('estimate.edit', ['record' => $estimate]) }}">
                         {{ $estimate->name }}
                     </a>
+                    <a href="{{ route('estimate.show', $estimate) }}" target="_blank">
+                        <svg class="icon file-icon"><use xlink:href="#icon-file-pdf"></use></svg>
+                    </a>
                 </td>
                 <td>
                     {{ TimeHelper::date($estimate->submitted) ?? '—' }}

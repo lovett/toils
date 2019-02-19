@@ -126,7 +126,7 @@ class TimeHelper
             return '';
         }
 
-        return self::shiftTimezone($value)->format('F jS, Y');
+        return self::shiftTimezone($value)->format('F j, Y');
     }
 
     /**

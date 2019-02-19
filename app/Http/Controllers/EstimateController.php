@@ -8,6 +8,8 @@ use App\Http\Requests\EstimateRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
+use Illuminate\Support\Str;
+use Parsedown;
 
 /**
  * Resource controller for estimates
@@ -112,23 +114,37 @@ class EstimateController extends Controller
     }
 
     /**
-     * Display an estimate
+     * Render an estimate as a PDF
      *
-     * @param Request $request The incoming request
-     * @param int     $id      An Estimate primary key
+     * @param EstimateRequest $request The incoming request
+     * @param int             $id      An estimate primary key
      *
-     * @return View
+     * @return Response
      */
     public function show(Request $request, int $id)
     {
-        $estimate = $request->user()->estimates()->findOrFail($id);
+        $estimate = $request->user()->estimate($id);
+
+        $parser = new Parsedown();
+
+        $statementOfWork = $parser->text($estimate->statement_of_work);
 
         $viewVars = [
-            'model' => $estimate,
-            'pageTitle' => $estimate->name,
+            'user' => $request->user(),
+            'name' => $estimate->name,
+            'date' => $estimate->submitted,
+            'statementOfWork' => $statementOfWork,
         ];
 
-        return view('estimate.show', $viewVars);
+        $pdf = app()->make('dompdf.wrapper');
+        $pdf->loadView('estimate.show', $viewVars);
+
+        $filename = sprintf(
+            'estimate_%s.pdf',
+            Str::slug($estimate->name)
+        );
+
+        return $pdf->stream($filename);
     }
 
     /**
