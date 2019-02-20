@@ -99,12 +99,14 @@
                 </div>
             @endif
         </div>
-
     </div>
-    @include('partials.timestamps-footer', ['record' => $project])
 @endsection
 
 @section('subnav_supplemental')
-	<li class="nav-item">{!! link_to_route('time.create', 'New time entry', ['project' => $project->id], ['class' => 'nav-link']) !!}</li>
-    <li class="nav-item">{!! link_to_route('invoice.create', 'New Invoice', ['project' => $project->id], ['class' => 'nav-link']) !!}</li>
+	<li class="nav-item">
+        {!! link_to_route('time.create', 'New time entry', ['project' => $project->id], ['class' => 'nav-link']) !!}
+    </li>
+    <li class="nav-item">
+        {!! link_to_route('invoice.create', 'New Invoice', ['project' => $project->id], ['class' => 'nav-link']) !!}
+    </li>
 @endsection
