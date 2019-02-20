@@ -135,7 +135,15 @@ class Client extends Model
         $stats['paid'] = $this->invoices()->paid()->sum('amount');
         $stats['unpaid'] = $this->invoices()->unpaid()->sum('amount');
         $stats['total_money'] = $stats['paid'] + $stats['unpaid'];
-        $stats['age'] = Carbon::now()->diffForHumans($this->created_at, true);
+
+        $stats['start'] = null;
+        $stats['age'] = null;
+        $start = $this->times()->min('times.start');
+        if ($start) {
+            $stats['start'] = new Carbon($start);
+            $stats['age'] = Carbon::now()->diffForHumans($stats['start'], true);
+        }
+
         return $stats;
     }
 

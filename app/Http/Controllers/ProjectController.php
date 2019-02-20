@@ -151,7 +151,7 @@ class ProjectController extends Controller
 
         $numMonths = 6;
 
-        $timeByMonth = Time::forProjectAndUserByInterval(
+        $timeByMonth = Time::byInterval(
             $project,
             $request->user(),
             'month',

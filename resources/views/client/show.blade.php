@@ -5,48 +5,90 @@
         <h1>{{ $model->name }}</h1>
         <p>@include('partials.active', ['value' => $model->active])</p>
 
-        <div class="card mb-5">
-            <div class="card-body row">
-                <div class="col-sm-6 col-md-4">
-                    <dl>
-                        <dt>Unpaid invoices</dt>
-                        <dd>{{ CurrencyHelper::money($stats['unpaid']) }}</dd>
-                        <dt>Total money</dt>
-                        <dd>{{ CurrencyHelper::money($stats['total_money']) }}</dd>
-                        <dt>Age</dt>
-                        <dd>{{ $stats['age'] }}</dt>
+        <div class="row mb-5">
+	        <div class="col-sm-3">
+	            <div class="card">
+                    <div class="card-body">
+                        <dl>
+                            <dt>Unpaid invoices</dt>
+                            <dd>{{ CurrencyHelper::money($stats['unpaid']) }}</dd>
+                            <dt>Total money</dt>
+                            <dd>{{ CurrencyHelper::money($stats['total_money']) }}</dd>
+                            <dt>Start</dt>
+                            <dd>
+                                {{ TimeHelper::longDate($stats['start']) }}
+                                <p class="small">
+                                    {{ $stats['age'] }}
+                                </p>
+                            </dd>
+
+                            @if ($model->contactEmail)
+                                <dt>Email</dt>
+                                <dd>
+                                    <a href="mailto:{{ $model->contactEmail }}">{{ $model->contactEmail }}</a>
+                                </dd>
+                            @endif
+
+                            @if ($model->phone)
+                                <dt>Phone</dt>
+                                <dd>{!! AddressHelper::phoneUrl($model->phone) !!}</dd>
+                            @endif
+
+                            @if ($model->contactName)
+                                <dt>Address</dt>
+                                <dd><address>{{ AddressHelper::clientContact($model) }}</address></dd>
+                            @endif
+                        </dl>
+                    </div>
+                </div>
+            </div>
+	        <div class="col-sm-9">
+	            <div class="card">
+		            <div class="card-body">
+		                <h2 class="card-title">
+			                {{ TimeHelper::hoursAndMinutes($sliceTotal) }}
+                            in the past {{ $sliceRange }} {{ str_plural('month', $sliceRange) }}
+		                </h2>
+		                @foreach ($slice as $date => $totalMinutes)
+			                <p>
+			                    {{ $date }} - {{ TimeHelper::minutesToHours($totalMinutes) }}
+			                </p>
+		                @endforeach
+		            </div>
+	            </div>
+	        </div>
+        </div>
+        <div class="mb-5">
+            <h2>Projects</h2>
+
+            <div class="card mb-5">
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-2">
+                            @include('partials.active', ['value' => true])
+                        </dt>
+                        <dd class="col-3">
+                            <ul class="list-unstyled">
+                            @foreach ($model->projects->where('active', true) as $project)
+                                <li><a href="{{ route('project.show', ['project' => $project]) }}">{{ $project->name }}</a></li>
+                            @endforeach
+                            </ul>
+                        </dd>
+
+                        <dt class="col-2">
+                            @include('partials.active', ['value' => false])
+                        </dt>
+                        <dd class="col-3">
+                            <ul class="list-unstyled">
+                                @foreach ($model->projects->where('active', false) as $project)
+                                    <li><a href="{{ route('project.show', ['project' => $project]) }}">{{ $project->name }}</a></li>
+                                @endforeach
+                            </ul>
+                        </dd>
                     </dl>
                 </div>
-                <div class="col-sm-6 col-md-4">
-                    @if ($model->contactEmail)
-                        <p><a href="mailto:{{ $model->contactEmail }}">{{ $model->contactEmail }}</a></p>
-                    @endif
-
-                    @if ($model->phone)
-                        <p>{!! AddressHelper::phoneUrl($model->phone) !!}</p>
-                    @endif
-
-                    @if ($model->contactName)
-                        <address>{{ AddressHelper::clientContact($model) }}</address>
-                    @endif
-                </div>
-                <div class="col-sm-12 col-md-4">
-                    Active projects:
-                    <p>
-                        @foreach ($model->projects->where('active', true) as $project)
-                            <a href="{{ route('project.show', ['project' => $project]) }}">{{ $project->name }}</a>
-                        @endforeach
-                    </p>
-
-                    Inactive projects:
-                    <p>
-                        @foreach ($model->projects->where('active', false) as $project)
-                            <a href="{{ route('project.show', ['project' => $project]) }}">{{ $project->name }}</a>
-                        @endforeach
-                    </p>
 
 
-                </div>
             </div>
         </div>
 
@@ -98,8 +140,6 @@
             @endif
         </div>
     </div>
-
-    @include('partials.timestamps-footer', ['record' => $model])
 @endsection
 
 @section('subnav_supplemental')

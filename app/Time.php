@@ -360,17 +360,17 @@ class Time extends Model
     /**
      * Tally time by time interval with no gaps.
      *
-     * @param Project $project       Project model instance
-     * @param User    $user          User model instance
-     * @param string  $timeInterval  Time scale for the tallies: week, month, or year
-     * @param int     $intervalCount How many intervals to go back from present. If null, take everything.
+     * @param Model  $model         Project or client instance
+     * @param User   $user          User model instance
+     * @param string $timeInterval  Time scale for the tallies: week, month, or year
+     * @param int    $intervalCount How many intervals to go back from present. If null, take everything.
      *
      * @throws InvalidArgumentException Unrecognized values for $timeInterval are rejected.
      *
      * @return array
      */
-    public static function forProjectAndUserByInterval(
-        Project $project,
+    public static function byInterval(
+        Model $model,
         User $user,
         string $timeInterval = 'month',
         int $intervalCount = null
@@ -405,15 +405,33 @@ class Time extends Model
         }
 
         if ($intervalCount === null) {
-            $minStart = self::where('project_id', $project->getKey())
-                      ->where('user_id', $user->getKey())
-                      ->min('start');
+            if ($model instanceof Project) {
+                $minStart = self::where('project_id', $model->getKey())
+                          ->where('user_id', $user->getKey())
+                          ->min('start');
+            }
+
+            if ($model instanceof Client) {
+                $minStart = self::join('projects', 'times.project_id', '=', 'projects.id')
+                          ->join('clients', 'projects.client_id', '=', 'clients.id')
+                          ->where('clients.id', $model->getKey())
+                          ->where('user_id', $user->getKey())
+                          ->min('start');
+            }
 
             if (empty($minStart)) {
                 return [];
             }
 
             $intervalCount = Carbon::now()->$diffMethod(Carbon::parse($minStart));
+        }
+
+        if ($model instanceof Project) {
+            $modelWhere = 'WHERE project_id=:modelId';
+        }
+
+        if ($model instanceof Client) {
+            $modelWhere = 'WHERE project_id in (SELECT id FROM projects WHERE client_id=:modelId)';
         }
 
         $query = "
@@ -428,7 +446,7 @@ class Time extends Model
             tallies(dt, minutes) AS (
                 SELECT date(start, '{$sqlDateModifier}') AS dt, SUM(minutes)
                 FROM times
-                WHERE project_id=:projectId
+                {$modelWhere}
                 AND user_id=:userId
                 GROUP BY dt
             )
@@ -439,7 +457,7 @@ class Time extends Model
             $query,
             [
                 'range' => (abs($intervalCount) * $intervalMultiplier * -1) . ' ' . str_plural($sqlInterval),
-                'projectId' => $project->getKey(),
+                'modelId' => $model->getKey(),
                 'userId' => $user->getKey(),
             ]
         );

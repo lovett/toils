@@ -139,6 +139,15 @@ class ClientController extends Controller
 
         $client = $request->user()->clients()->with('projects')->findOrFail($id);
 
+        $numMonths = 6;
+
+        $timeByMonth = Time::byInterval(
+            $client,
+            $request->user(),
+            'month',
+            $numMonths
+        );
+
         $estimateBaseQuery = $client->estimates()->newest($fetchLimit)->getQuery();
         $estimates = Estimate::listing($estimateBaseQuery)->get();
 
@@ -148,11 +157,18 @@ class ClientController extends Controller
         $timeBaseQuery = $client->time()->newest($fetchLimit)->getQuery();
         $time = Time::listing($timeBaseQuery)->get();
 
+        $slice = array_slice($timeByMonth, 0, $numMonths);
+
+        $sliceTotal = array_sum($slice);
+
         $viewVars = [
             'model' => $client,
             'pageTitle' => $client->name,
             'invoices' => $invoices,
             'estimates' => $estimates,
+            'slice' => $slice,
+            'sliceTotal' => $sliceTotal,
+            'sliceRange' => $numMonths,
             'time' => $time,
             'stats' => $client->stats(),
         ];
