@@ -61,7 +61,8 @@
 
                         @if ($model->receipt)
                             <div class="col-sm-3 text-right">
-                                <a href="{{ route('invoice.receipt', $model->id) }}">view existing receipt</a>
+                                <svg class="icon active"><use xlink:href="#icon-coin-dollar"></use></svg>
+                                <a target="_blank" href="{{ route('invoice.receipt', $model->id) }}">view existing receipt</a>
                             </div>
                         @endif
                     </div>

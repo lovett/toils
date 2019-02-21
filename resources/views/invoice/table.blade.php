@@ -46,8 +46,8 @@
                     </td>
                     <td class="text-right">
                         @if ($invoice->isPaid && $invoice->receipt)
-                            <svg class="icon"><use xlink:href="#icon-file-empty"></use></svg>
-                            <a href="{{ route('invoice.receipt', $invoice->id) }}">
+                            <svg class="icon active"><use xlink:href="#icon-coin-dollar"></use></svg>
+                            <a target="_blank" href="{{ route('invoice.receipt', $invoice->id) }}">
                                 paid
                             </a>
                             <p class="small">

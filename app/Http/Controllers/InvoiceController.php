@@ -279,12 +279,12 @@ class InvoiceController extends Controller
     /**
      * Make a previously-uploaded receipt available for download
      *
-     * @param InvoiceRequest $request The incoming request
-     * @param int            $id      An invoice primary key
+     * @param Request $request The incoming request
+     * @param int     $id      An invoice primary key
      *
      * @return BinaryFileResponse
      */
-    public function receipt(InvoiceRequest $request, int $id)
+    public function receipt(Request $request, int $id)
     {
         $invoice = $request->user()->invoice($id);
 
@@ -294,9 +294,8 @@ class InvoiceController extends Controller
 
         $name = sprintf('receipt_%s.%s', $invoice->number, $extension);
 
-        return response()->download(
-            Storage::path($invoice->receipt),
-            $name
+        return response()->file(
+            Storage::path($invoice->receipt)
         );
     }
 }
