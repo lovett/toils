@@ -2,8 +2,12 @@
 
 @section('page_main')
     <div class="container">
-        <h1>{{ $model->name }}</h1>
-        <p>@include('partials.active', ['value' => $model->active])</p>
+        <div class="mb-4">
+            <h1>{{ $model->name }}</h1>
+            <ul class="list-group list-group-horizontal-sm">
+                <li class="list-group-item">@include('partials.active', ['value' => $model->active])</li>
+            </ul>
+        </div>
 
         <div class="row mb-5">
 	        <div class="col-sm-3">
@@ -77,6 +81,10 @@
                         </dt>
                         <dd class="col-3">
                             <ul class="list-unstyled">
+                                @if ($model->projects->where('active', true)->isEmpty())
+                                    <li>None</li>
+                                @endif
+
                             @foreach ($model->projects->where('active', true) as $project)
                                 <li><a href="{{ route('project.show', ['project' => $project]) }}">{{ $project->name }}</a></li>
                             @endforeach
@@ -86,8 +94,11 @@
                         <dt class="col-2">
                             @include('partials.active', ['value' => false])
                         </dt>
-                        <dd class="col-3">
+                        <dd class="col">
                             <ul class="list-unstyled">
+                                @if ($model->projects->where('active', false)->isEmpty())
+                                    <li>None</li>
+                                @endif
                                 @foreach ($model->projects->where('active', false) as $project)
                                     <li><a href="{{ route('project.show', ['project' => $project]) }}">{{ $project->name }}</a></li>
                                 @endforeach

@@ -2,8 +2,14 @@
 
 @section('page_main')
     <div class="container">
-        <h1>{{ $project->name }}</h1>
-        <p>@include('partials.active', ['value' => $project->active])</p>
+        <div class="mb-4">
+            <h1>{{ $project->name }}</h1>
+            <ul class="list-group list-group-horizontal-sm">
+                <li class="list-group-item">@include('partials.active', ['value' => $project->active])</li>
+                <li class="list-group-item">@include('partials.billable', ['value' => $project->billable])</li>
+                <li class="list-group-item">@include('partials.taxable', ['value' => $project->taxable])</li>
+            </ul>
+        </div>
 
         <div class="row mb-5">
 	        <div class="col-sm-3">
@@ -26,9 +32,6 @@
                                 @endif
                             </dd>
 
-                            <dt>Billable</dt>
-                            <dd>{{ $project->billableStatus }}</dd>
-
 		                    <dt>Client</dt>
 		                    <dd>{!! link_to_route('client.show', $project->client->name, ['client' => $project->client]) !!}</dd>
 
@@ -39,14 +42,11 @@
 		                    <dd>{{ TimeHelper::hoursAndMinutes($stats['unbillable_minutes']) }}</dd>
 
                             @if ($project->billable)
-		                        <dt>Taxes</dt>
-		                        <dd>{{ $project->taxStatus }}</dd>
-
 		                        <dt>Income</dt>
 		                        <dd>
-                                    {{ CurrencyHelper::money($stats['income']) }}
+                                    {{ CurrencyHelper::dollars($stats['income']) }}
                                     @if ($stats['unpaid'] > 0)
-                                        <small>plus {{ CurrencyHelper::money($stats['unpaid']) }} unpaid</small>
+                                        <p class="small">plus {{ CurrencyHelper::dollars($stats['unpaid']) }} unpaid</p>
                                     @endif
                                 </dd>
 

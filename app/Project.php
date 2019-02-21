@@ -157,27 +157,6 @@ class Project extends Model
         $this->attributes['allottedWeeklyMinutes'] = round($value * 60);
     }
 
-
-    /**
-     * Computed accessor for a human-readable version of taxDeducted boolean.
-     *
-     * @return string
-     */
-    public function getTaxStatusAttribute()
-    {
-        return ($this->taxDeducted) ? 'deducted' : 'not deducted';
-    }
-
-    /**
-     * Computed accessor for a Human-readable version of billable boolean.
-     *
-     * @return string
-     */
-    public function getBillableStatusAttribute()
-    {
-        return ($this->billable) ? 'yes' : 'no';
-    }
-
     /**
      * Computed accessor for how much billable time is left on the project
      *
