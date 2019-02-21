@@ -27,6 +27,12 @@ trait Search
                 foreach ($values as $value) {
                     if (is_numeric($value)) {
                         $query->orWhere($name, '=', (int) $value);
+                        continue;
+                    }
+
+                    if (is_bool($value)) {
+                        $query->orWhere($name, '=', $value);
+                        continue;
                     }
 
                     $wildValue = '%' . $value . '%';

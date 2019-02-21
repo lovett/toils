@@ -62,6 +62,10 @@ class Controller extends BaseController
                 $word = $aliases[$field][$word];
             }
 
+            if (is_bool($word)) {
+                $terms[$field][$index] = $word;
+                continue;
+            }
 
             $terms[$field][$index] = trim($terms[$field][$index] . ' ' . $word);
         }

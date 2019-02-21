@@ -107,7 +107,6 @@ class Client extends Model
             'projects',
             function ($join) {
                 $join->on('clients.id', '=', 'projects.client_id')
-                    ->where('projects.active', '=', 1)
                     ->whereNull('projects.deleted_at');
             }
         );
