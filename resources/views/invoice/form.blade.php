@@ -56,6 +56,7 @@
                             {!! Form::file('receipt', ['id' => 'invoice-receipt', 'class' => $fieldClasses]) !!}
                             <label class="custom-file-label" for="invoice-receipt">Choose file</label>
                             @include('partials.form-field-error', ['name' => 'receipt'])
+                            @include('partials.form-field-help', ['name' => 'receipt', 'help' => __('help.max_upload_size', ['size' => $maxFileSize])])
                         </div>
 
                         @if ($model->receipt)

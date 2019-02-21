@@ -28,6 +28,7 @@ class InvoiceController extends Controller
     {
         $this->middleware('auth');
         view()->share('module', 'invoice');
+        view()->share('maxFileSize', ini_get('upload_max_filesize'));
     }
 
     /**
