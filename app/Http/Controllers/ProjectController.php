@@ -160,15 +160,8 @@ class ProjectController extends Controller
 
         $time = $project->time()->newest($fetchLimit)->get();
 
-        $billableMinutes = $project->time()->billable()->sum('minutes');
-        $unbillableMinutes = $project->time()->unbillable()->sum('minutes');
-
         $invoiceBaseQuery = $project->invoices()->newest($fetchLimit)->getQuery();
         $invoices = Invoice::listing($invoiceBaseQuery)->get();
-
-        $totalMoney = $project->invoices()->paid()->sum('amount');
-
-        $totalUnpaidMoney = $project->invoices()->unpaid()->sum('amount');
 
         $slice = array_slice($timeByMonth, 0, $numMonths);
 
@@ -178,14 +171,10 @@ class ProjectController extends Controller
             'invoices' => $invoices,
             'project' => $project,
             'pageTitle' => $project->name,
-            'billableMinutes' => $billableMinutes,
-            'unbillableMinutes' => $unbillableMinutes,
-            'totalMinutes' => $billableMinutes + $unbillableMinutes,
-            'totalMoney' => $totalMoney,
-            'totalUnpaidMoney' => $totalUnpaidMoney,
             'slice' => $slice,
             'sliceTotal' => $sliceTotal,
             'sliceRange' => $numMonths,
+            'stats' => $project->stats(),
             'time' => $time,
             'totalTimeRemaining' => $project->totalTimeRemaining,
             'weeklyTimeRemaining' => $project->weeklyTimeRemaining,

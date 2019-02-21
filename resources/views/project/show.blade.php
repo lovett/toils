@@ -10,6 +10,22 @@
 	            <div class="card">
                     <div class="card-body">
 		                <dl>
+                            <dt>Active</dt>
+                            <dd>
+                                @if ($stats['end'])
+                                    for {{ $stats['duration'] }}
+                                    <p class="small">
+                                        <span class="text-nowrap">{{ TimeHelper::longDate($stats['start']) }}</span> to
+                                        <span class="text-nowrap">{{ TimeHelper::longDate($stats['end']) }}</span>
+                                    </p>
+                                @else
+                                    for {{ $stats['age'] }}
+                                    <p class="small">
+                                        since <span class="text-nowrap">{{ TimeHelper::longDate($stats['start']) }}</span>
+                                    </p>
+                                @endif
+                            </dd>
+
                             <dt>Billable</dt>
                             <dd>{{ $project->billableStatus }}</dd>
 
@@ -17,25 +33,25 @@
 		                    <dd>{!! link_to_route('client.show', $project->client->name, ['client' => $project->client]) !!}</dd>
 
 		                    <dt>Billable Time</dt>
-		                    <dd>{{ TimeHelper::hoursAndMinutes($billableMinutes) }}</dd>
+		                    <dd>{{ TimeHelper::hoursAndMinutes($stats['billable_minutes']) }}</dd>
 
-		                    <dt>Unillable Time</dt>
-		                    <dd>{{ TimeHelper::hoursAndMinutes($unbillableMinutes) }}</dd>
+		                    <dt>Unbillable Time</dt>
+		                    <dd>{{ TimeHelper::hoursAndMinutes($stats['unbillable_minutes']) }}</dd>
 
                             @if ($project->billable)
 		                        <dt>Taxes</dt>
 		                        <dd>{{ $project->taxStatus }}</dd>
 
-		                        <dt>Total Money</dt>
+		                        <dt>Income</dt>
 		                        <dd>
-                                    {{ CurrencyHelper::money($totalMoney) }}
-                                    @if ($totalUnpaidMoney > 0)
-                                        <small>plus {{ CurrencyHelper::money($totalUnpaidMoney) }} unpaid</small>
+                                    {{ CurrencyHelper::money($stats['income']) }}
+                                    @if ($stats['unpaid'] > 0)
+                                        <small>plus {{ CurrencyHelper::money($stats['unpaid']) }} unpaid</small>
                                     @endif
                                 </dd>
 
 		                        <dt>Hourly Rate</dt>
-		                        <dd>{{ CurrencyHelper::hourlyRate($totalMoney, $totalMinutes) }}</dd>
+		                        <dd>{{ CurrencyHelper::money($stats['hourly_rate']) }}</dd>
 
                                 @if ($totalTimeRemaining)
                                     <dt>Time Remaining</dt>

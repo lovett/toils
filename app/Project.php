@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Traits\Search;
+use Carbon\Carbon;
 
 /**
  * Eloquent model for the projects table.
@@ -249,6 +250,43 @@ class Project extends Model
         $query = $query->orderByRaw('LOWER(projects.name) ASC');
 
         return $query->with('client');
+    }
+
+    /**
+     * At-a-glance numbers that summarize a project in various ways.
+     */
+    public function stats()
+    {
+        $stats = [];
+        $stats['paid'] = $this->invoices()->paid()->sum('amount');
+        $stats['unpaid'] = $this->invoices()->unpaid()->sum('amount');
+        $stats['income'] = $stats['paid'] + $stats['unpaid'];
+
+        $stats['start'] = null;
+        $stats['end'] = null;
+        $stats['age'] = null;
+        $start = $this->time()->min('times.start');
+        if ($start) {
+            $stats['start'] = new Carbon($start);
+            $stats['age'] = Carbon::now()->diffForHumans($stats['start'], true);
+        }
+
+        if ((bool) $this->active === false) {
+            $end = $this->time()->max('times.start');
+            $stats['end'] = new Carbon($end);
+            $stats['duration'] = $stats['end']->diffForHumans($stats['start'], true);
+        }
+
+        $stats['billable_minutes'] = $this->time()->billable()->sum('minutes');
+        $stats['unbillable_minutes'] = $this->time()->unbillable()->sum('minutes');
+        $stats['total_minutes'] = $stats['billable_minutes'] + $stats['unbillable_minutes'];
+
+        $stats['hourly_rate'] = null;
+        if ($stats['total_minutes'] > 1) {
+            $stats['hourly_rate'] = round($stats['income'] / $stats['total_minutes'] * 60);
+        }
+
+        return $stats;
     }
 
     /**

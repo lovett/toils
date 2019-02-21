@@ -12,14 +12,22 @@
                         <dl>
                             <dt>Unpaid invoices</dt>
                             <dd>{{ CurrencyHelper::money($stats['unpaid']) }}</dd>
-                            <dt>Total money</dt>
-                            <dd>{{ CurrencyHelper::money($stats['total_money']) }}</dd>
-                            <dt>Start</dt>
+                            <dt>Income</dt>
+                            <dd>{{ CurrencyHelper::money($stats['income']) }}</dd>
+                            <dt>Active</dt>
                             <dd>
-                                {{ TimeHelper::longDate($stats['start']) }}
-                                <p class="small">
-                                    {{ $stats['age'] }}
-                                </p>
+                                @if ($stats['end'])
+                                    for {{ $stats['duration'] }}
+                                    <p class="small">
+                                        <span class="text-nowrap">{{ TimeHelper::longDate($stats['start']) }}</span> to
+                                        <span class="text-nowrap">{{ TimeHelper::longDate($stats['end']) }}</span>
+                                    </p>
+                                @else
+                                    for {{ $stats['age'] }}
+                                    <p class="small">
+                                        since <span class="text-nowrap">{{ TimeHelper::longDate($stats['start']) }}</span>
+                                    </p>
+                                @endif
                             </dd>
 
                             @if ($model->contactEmail)

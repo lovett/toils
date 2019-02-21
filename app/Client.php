@@ -133,14 +133,21 @@ class Client extends Model
         $stats = [];
         $stats['paid'] = $this->invoices()->paid()->sum('amount');
         $stats['unpaid'] = $this->invoices()->unpaid()->sum('amount');
-        $stats['total_money'] = $stats['paid'] + $stats['unpaid'];
+        $stats['income'] = $stats['paid'] + $stats['unpaid'];
 
         $stats['start'] = null;
+        $stats['end'] = null;
         $stats['age'] = null;
         $start = $this->times()->min('times.start');
         if ($start) {
             $stats['start'] = new Carbon($start);
             $stats['age'] = Carbon::now()->diffForHumans($stats['start'], true);
+        }
+
+        if ((bool) $this->active === false) {
+            $end = $this->times()->max('times.start');
+            $stats['end'] = new Carbon($end);
+            $stats['duration'] = $stats['end']->diffForHumans($stats['start'], true);
         }
 
         return $stats;
