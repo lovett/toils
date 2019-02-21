@@ -70,7 +70,7 @@
                             <p class="small">
                                 {{ abs($invoice->daysUntilDue) }}
                                 {{ str_plural('day', $invoice->daysUntilDue) }}
-                                <svg class="icon inactive"><use xlink:href="#icon-blocked"></use></svg>
+                                <svg class="icon inactive"><use xlink:href="#icon-alarm"></use></svg>
                             </p>
                         @endif
                     </td>
