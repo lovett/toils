@@ -11,17 +11,17 @@
     },
     "devDependencies": {
         "axios": "0.18",
-        "bootstrap-vue": "2.0.0-rc.12",
+        "bootstrap-vue": "2.0.0-rc.13",
         "browser-sync": "2.26.3",
         "browser-sync-webpack-plugin": "2.2.2",
         "jquery": "3.3.1",
         "laravel-mix": "4.0.14",
         "moment": "2.24.0",
         "popper.js": "1.14.7",
-        "resolve-url-loader": "3.0.0",
-        "sass": "1.17.0",
+        "resolve-url-loader": "3.0.1",
+        "sass": "1.17.1",
         "sass-loader": "7.1.0",
-        "vue": "2.6.6",
-        "vue-template-compiler": "2.6.6"
+        "vue": "2.6.7",
+        "vue-template-compiler": "2.6.7"
     }
 }
