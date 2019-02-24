@@ -248,7 +248,7 @@ class Invoice extends Model
      *
      * @return HasMany
      */
-    public function times()
+    public function time()
     {
         return $this->hasMany('App\Time');
     }

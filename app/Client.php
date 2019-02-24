@@ -138,29 +138,19 @@ class Client extends Model
         $stats['start'] = null;
         $stats['end'] = null;
         $stats['age'] = null;
-        $start = $this->times()->min('times.start');
+        $start = $this->time()->min('times.start');
         if ($start) {
             $stats['start'] = new Carbon($start);
             $stats['age'] = Carbon::now()->diffForHumans($stats['start'], true);
         }
 
         if ((bool) $this->active === false) {
-            $end = $this->times()->max('times.start');
+            $end = $this->time()->max('times.start');
             $stats['end'] = new Carbon($end);
             $stats['duration'] = $stats['end']->diffForHumans($stats['start'], true);
         }
 
         return $stats;
-    }
-
-    /**
-     * Time entries associated with the client.
-     *
-     * @return HasManyThrough
-     */
-    public function times()
-    {
-        return $this->hasManyThrough('App\Time', 'App\Project');
     }
 
     /**
