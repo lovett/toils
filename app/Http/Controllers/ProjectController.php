@@ -158,22 +158,35 @@ class ProjectController extends Controller
             $numMonths
         );
 
+        $numWeeks = 6;
+        $timeByWeek = Time::byInterval(
+            $project,
+            $request->user(),
+            'week',
+            $numWeeks
+        );
+
         $time = $project->time()->newest($fetchLimit)->get();
 
         $invoiceBaseQuery = $project->invoices()->newest($fetchLimit)->getQuery();
         $invoices = Invoice::listing($invoiceBaseQuery)->get();
 
-        $slice = array_slice($timeByMonth, 0, $numMonths);
+        $monthSlice = array_slice($timeByMonth, 0, $numMonths);
+        $weekSlice = array_slice($timeByWeek, 0, $numWeeks);
 
-        $sliceTotal = array_sum($slice);
+        $monthSliceTotal = array_sum($monthSlice);
+        $weekSliceTotal = array_sum($weekSlice);
 
         $viewVars = [
             'invoices' => $invoices,
             'project' => $project,
             'pageTitle' => $project->name,
-            'slice' => $slice,
-            'sliceTotal' => $sliceTotal,
-            'sliceRange' => $numMonths,
+            'monthSlice' => $monthSlice,
+            'monthSliceTotal' => $monthSliceTotal,
+            'weekSlice' => $weekSlice,
+            'weekSliceTotal' => $weekSliceTotal,
+            'monthSliceRange' => $numMonths,
+            'weekSliceRange' => $numWeeks,
             'stats' => $project->stats(),
             'time' => $time,
             'totalTimeRemaining' => $project->totalTimeRemaining,
