@@ -148,6 +148,14 @@ class ClientController extends Controller
             $numMonths
         );
 
+        $numWeeks = 6;
+        $timeByWeek = Time::byInterval(
+            $client,
+            $request->user(),
+            'week',
+            $numWeeks
+        );
+
         $estimateBaseQuery = $client->estimates()->newest($fetchLimit)->getQuery();
         $estimates = Estimate::listing($estimateBaseQuery)->get();
 
@@ -157,17 +165,23 @@ class ClientController extends Controller
         $timeBaseQuery = $client->time()->newest($fetchLimit)->getQuery();
         $time = Time::listing($timeBaseQuery)->get();
 
-        $slice = array_slice($timeByMonth, 0, $numMonths);
+        $monthSlice = array_slice($timeByMonth, 0, $numMonths);
+        $weekSlice = array_slice($timeByWeek, 0, $numWeeks);
 
-        $sliceTotal = array_sum($slice);
+        $monthSliceTotal = array_sum($monthSlice);
+        $weekSliceTotal = array_sum($weekSlice);
 
         $viewVars = [
             'model' => $client,
             'pageTitle' => $client->name,
             'invoices' => $invoices,
             'estimates' => $estimates,
-            'slice' => $slice,
-            'sliceTotal' => $sliceTotal,
+            'monthSlice' => $monthSlice,
+            'monthSliceTotal' => $monthSliceTotal,
+            'weekSlice' => $weekSlice,
+            'weekSliceTotal' => $weekSliceTotal,
+            'monthSliceRange' => $numMonths,
+            'weekSliceRange' => $numWeeks,
             'sliceRange' => $numMonths,
             'time' => $time,
             'stats' => $client->stats(),

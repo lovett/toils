@@ -58,10 +58,23 @@
 	            <div class="card">
 		            <div class="card-body">
 		                <h2 class="card-title">
-			                {{ TimeHelper::hoursAndMinutes($sliceTotal) }}
-                            in the past {{ $sliceRange }} {{ str_plural('month', $sliceRange) }}
+			                {{ TimeHelper::hoursAndMinutes($weekSliceTotal) }}
+                            in the past {{ $weekSliceRange }} {{ str_plural('week', $weekSliceRange) }}
 		                </h2>
-		                @foreach ($slice as $date => $totalMinutes)
+		                @foreach ($weekSlice as $date => $totalMinutes)
+			                <p>
+			                    {{ $date }} - {{ TimeHelper::minutesToHours($totalMinutes) }}
+			                </p>
+		                @endforeach
+		            </div>
+	            </div>
+	            <div class="card">
+		            <div class="card-body">
+		                <h2 class="card-title">
+			                {{ TimeHelper::hoursAndMinutes($monthSliceTotal) }}
+                            in the past {{ $monthSliceRange }} {{ str_plural('month', $monthSliceRange) }}
+		                </h2>
+		                @foreach ($monthSlice as $date => $totalMinutes)
 			                <p>
 			                    {{ $date }} - {{ TimeHelper::minutesToHours($totalMinutes) }}
 			                </p>
