@@ -29,6 +29,7 @@ class LinkHelper
     {
         $resource = static::firstRouteSegment();
         $linkedRoute = explode('.', $route);
+
         $liClass = 'nav-item';
         $linkClass = 'nav-link';
         if ($linkedRoute[0] === $resource) {
@@ -213,7 +214,7 @@ class LinkHelper
      */
     public static function projectsIndexLink()
     {
-        return self::navLink(
+        return self::primaryNavLink(
             'project.index',
             'Projects',
             ['q' => 'status:active']
@@ -225,7 +226,7 @@ class LinkHelper
      */
     public static function clientsIndexLink()
     {
-        return self::navLink(
+        return self::primaryNavLink(
             'client.index',
             'Clients',
             ['q' => 'status:active']

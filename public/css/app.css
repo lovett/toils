@@ -9342,3 +9342,18 @@ address {
 .unbillable td {
   background-color: #efefef;
 }
+
+.navbar {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.navbar .navbar-nav .nav-item {
+  padding: 0.25em 0;
+}
+.navbar .navbar-nav .nav-item.active {
+  color: #fff;
+  background-color: #007bff;
+}
+.navbar .navbar-nav .nav-item.active a {
+  color: currentColor;
+}
