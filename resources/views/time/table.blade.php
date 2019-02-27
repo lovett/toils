@@ -90,7 +90,7 @@
                         <svg class="icon inactive"><use xlink:href="#icon-blocked" /></svg>
                     @endunless
 
-                    @if ($time->invoice_id)
+                    @if ($time->invoiceNumber)
                         <a href="{{ route('invoice.index', ['q' => "number:{$time->invoiceNumber}"]) }}">
                             #{{ $time->invoiceNumber }}
                         </a>

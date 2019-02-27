@@ -233,7 +233,6 @@ class Time extends Model
         return $query;
     }
 
-
     /**
      * User associated with the time entry.
      *

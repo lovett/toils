@@ -166,7 +166,11 @@ class ProjectController extends Controller
             $numWeeks
         );
 
-        $time = $project->time()->newest($fetchLimit)->get();
+        $baseQuery = $request->user()->time()->getQuery();
+
+        $time = Time::listing($baseQuery)
+              ->where('times.project_id', $project->getKey())
+              ->newest($fetchLimit)->get();
 
         $invoiceBaseQuery = $project->invoices()->newest($fetchLimit)->getQuery();
         $invoices = Invoice::listing($invoiceBaseQuery)->get();
