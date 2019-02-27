@@ -112,15 +112,5 @@ address {
 
     .navbar-nav .nav-item {
         padding: .25em 0;
-
-        &.active {
-            color: #fff;
-            background-color: #007bff;
-
-
-            a {
-                color: currentColor;
-            }
-        }
     }
 }

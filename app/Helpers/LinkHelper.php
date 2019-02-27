@@ -33,7 +33,8 @@ class LinkHelper
         $liClass = 'nav-item';
         $linkClass = 'nav-link';
         if ($linkedRoute[0] === $resource) {
-            $liClass .= ' active';
+            $liClass .= ' bg-primary';
+            $linkClass .= ' text-light';
         }
 
         if (isset($attribs['class'])) {
