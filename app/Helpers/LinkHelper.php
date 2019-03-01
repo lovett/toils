@@ -60,7 +60,7 @@ class LinkHelper
      */
     public static function buttonLink(string $route, string $label, array $params = [], array $attribs = [])
     {
-        $class = 'btn btn-primary';
+        $class = 'btn btn-success';
 
         $attribs['class'] = $class;
         if (array_key_exists('class', $attribs)) {

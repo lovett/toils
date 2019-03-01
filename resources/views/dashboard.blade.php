@@ -3,27 +3,16 @@
 @section('page_main')
 <div class="container">
 
-    <div class="row mb-3">
-        <div class="col-md-10 offset-md-1">
-            <ul class="list-inline">
-                <li class="list-inline-item">{!! LinkHelper::smallButtonLink('project.create', 'New project') !!}</li>
-                <li class="list-inline-item">{!! LinkHelper::smallButtonLink('client.create', 'New client') !!}</li>
-                <li class="list-inline-item">{!! LinkHelper::smallButtonLink('estimate.create', 'New estimate') !!}</li>
-            </ul>
-        </div>
-    </div>
-
+    @if ($unfinishedTime->isNotEmpty())
     <div class="row mb-4">
         <div class="col-md-10 offset-md-1">
-
-            @if ($unfinishedTime->isNotEmpty())
-                <h2>In Progress</h2>
-                <div class="card">
-                    @include('time.table', ['collection' => $unfinishedTime])
-                </div>
-            @endif
+            <h2>In Progress</h2>
+            <div class="card">
+                @include('time.table', ['collection' => $unfinishedTime])
+            </div>
         </div>
     </div>
+    @endif
 
     <div class="row mb-4">
         <div class="col-md-10 offset-md-1">
@@ -51,5 +40,18 @@
 
         </div>
     </div>
+
+    <div class="row mb-4">
+        <div class="col-md-10 offset-md-1">
+            <h2>Actions</h2>
+            <ul class="list-inline">
+                <li class="list-inline-item">{!! LinkHelper::smallButtonLink('project.create', 'New project') !!}</li>
+                <li class="list-inline-item">{!! LinkHelper::smallButtonLink('client.create', 'New client') !!}</li>
+                <li class="list-inline-item">{!! LinkHelper::smallButtonLink('estimate.create', 'New estimate') !!}</li>
+            </ul>
+        </div>
+    </div>
+
+
 </div>
 @endsection
