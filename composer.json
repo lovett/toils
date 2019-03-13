@@ -18,9 +18,9 @@
         "barryvdh/laravel-dompdf": "0.8.4",
         "erusev/parsedown": "1.7.1",
         "fideloper/proxy": "4.1.0",
-        "laravel/framework": "5.7.27",
+        "laravel/framework": "5.8.4",
         "laravel/tinker": "1.0.8",
-        "laravelcollective/html": "5.7.1"
+        "laravelcollective/html": "5.8.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "3.2.3",
@@ -28,7 +28,7 @@
         "filp/whoops": "2.3.1",
         "fzaninotto/faker": "1.8.0",
         "mockery/mockery": "1.2.2",
-        "nunomaduro/collision": "2.1.1",
+        "nunomaduro/collision": "3.0.1",
         "nunomaduro/larastan": "0.3.15",
         "phpmd/phpmd": "2.6.0",
         "phpunit/phpunit": "7.5.6",
