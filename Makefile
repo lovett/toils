@@ -1,7 +1,7 @@
 .PHONY: dummy
 
 SQLITE_DB_NAME := toils.sqlite
-TMUX_SESSION_NAME := toils
+PROJECT_NAME := toils
 
 seed-user: dummy
 	rm -f $(SQLITE_DB_NAME)
@@ -30,7 +30,7 @@ setup-php:
 	composer --no-interaction --no-ansi --no-suggest install
 
 # Install all packages quietly.
-setup: setup-php setup-js
+setup: setup-php setup-js .env
 
 # Check for out-of-date npm packages
 outdated-js: export NO_UPDATE_NOTIFIER=1
@@ -66,16 +66,52 @@ puc: dummy
 
 workspace:
 # 0: Editor
-	tmux new-session -d -s "$(TMUX_SESSION_NAME)" bash
-	tmux send-keys -t "$(TMUX_SESSION_NAME)" "$(EDITOR) ." C-m
+	tmux new-session -d -s "$(PROJECT_NAME)" bash
+	tmux send-keys -t "$(PROJECT_NAME)" "$(EDITOR) ." C-m
 
 # 1: Shell
-	tmux new-window -a -t "$(TMUX_SESSION_NAME)" bash
+	tmux new-window -a -t "$(PROJECT_NAME)" bash
 
 # 2: Webpack
-	tmux new-window -a -t "$(TMUX_SESSION_NAME)" -n "webpack" "npm run watch"
+	tmux new-window -a -t "$(PROJECT_NAME)" -n "webpack" "npm run watch"
 
 # 3: Dev server
-	tmux new-window -a -t "$(TMUX_SESSION_NAME)" -n "devserver" "php artisan serve --host 0.0.0.0 --port 8083"
-	tmux select-window -t "$(TMUX_SESSION_NAME)":0
-	tmux attach-session -t "$(TMUX_SESSION_NAME)"
+	tmux new-window -a -t "$(PROJECT_NAME)" -n "devserver" "php artisan serve --host 0.0.0.0 --port 8083"
+	tmux select-window -t "$(PROJECT_NAME)":0
+	tmux attach-session -t "$(PROJECT_NAME)"
+
+# Launch a single-use container to run the site on port 8102
+#
+# A webserver on the container host should define a vhost for the site
+# and proxy requests into the container.
+server: .env
+	podman run \
+	--rm \
+	--name=$(PROJECT_NAME) \
+	--publish=127.0.0.1:8102:80 \
+	--volume="$(PWD):/srv/www" \
+	localhost/nginx-php
+
+# Build a production image for the application
+#
+# The script is wrapped by a call to buildah unshare because it
+# involves a mounting the filesystem of the container onto the
+# host. See the manpage for buildah-unshare for details.
+image: dummy
+	buildah unshare ./mkimage.sh
+
+testimage: image
+	podman run \
+	--rm \
+	--name=$(PROJECT_NAME) \
+	--publish=127.0.0.1:8102:80 \
+    --volume="$(PWD)/toils.sqlite:/srv/www/toils.sqlite" \
+	localhost/$(PROJECT_NAME)
+
+# Set up the application configuration file
+#
+# Most settings from the example file are usable as-is, but the
+# APP_KEY in particular needs special handling.
+.env:
+	cp .env.example .env
+	php artisan key:generate
