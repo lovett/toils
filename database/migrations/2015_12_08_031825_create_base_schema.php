@@ -54,6 +54,8 @@ class CreateBaseSchema extends Migration
                 $table->boolean('active')->default(true);
                 $table->boolean('billable')->default(true);
                 $table->boolean('taxDeducted')->default(false);
+                $table->unsignedInteger('allottedTotalMinutes')->nullable();
+                $table->unsignedInteger('allottedWeeklyMinutes')->nullable();
                 $table->timestamps();
                 $table->softDeletes();
                 $table->foreign('client_id')->references('id')->on('clients');
@@ -119,6 +121,7 @@ class CreateBaseSchema extends Migration
                 $table->integer('estimatedDuration')->unsigned()->default(0);
                 $table->integer('project_id')->unsigned();
                 $table->integer('invoice_id')->nullable()->unsigned();
+                $table->boolean('billable')->default(true);
                 $table->dateTime('start')->nullable();
                 $table->integer('minutes')->nullable()->unsigned();
                 $table->text('summary')->nullable();
@@ -129,6 +132,21 @@ class CreateBaseSchema extends Migration
                 $table->foreign('invoice_id')->references('id')->on('invoices');
             }
         );
+
+        Schema::create('tags', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name')->unique();
+        });
+
+        Schema::create('taggables', function (Blueprint $table) {
+            $table->integer('tag_id')->unsigned();
+
+            // Shorthand for {prefix}_id and {prefix}_type fields.
+            $table->morphs('taggable');
+
+            $table->index(['tag_id', 'taggable_id']);
+            $table->index('taggable_type');
+        });
     }
 
     /**
