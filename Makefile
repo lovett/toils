@@ -76,7 +76,7 @@ workspace:
 	tmux new-window -a -t "$(PROJECT_NAME)" -n "webpack" "npm run watch"
 
 # 3: Dev server
-	tmux new-window -a -t "$(PROJECT_NAME)" -n "devserver" "php artisan serve --host 0.0.0.0 --port 8083"
+	tmux new-window -a -t "$(PROJECT_NAME)" -n "devserver" "php artisan serve --host 0.0.0.0 --port 8102"
 	tmux select-window -t "$(PROJECT_NAME)":0
 	tmux attach-session -t "$(PROJECT_NAME)"
 
