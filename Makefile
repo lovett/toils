@@ -100,12 +100,12 @@ server: .env
 image: dummy
 	buildah unshare ./mkimage.sh
 
-testimage: image
+testimage: dummy
 	podman run \
 	--rm \
 	--name=$(PROJECT_NAME) \
 	--publish=127.0.0.1:8102:80 \
-    --volume="$(PWD)/toils.sqlite:/srv/www/toils.sqlite" \
+    --volume="$(PWD)/storage:/srv/www/storage" \
 	localhost/$(PROJECT_NAME)
 
 # Set up the application configuration file

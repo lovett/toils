@@ -2,9 +2,9 @@
 
 # Build a container image suitable for production use.
 #
-# This is where the source files for the application are brought onto
+# This is where the source files for the application are brought info
 # the container's filesystem. It's also where composer packages get
-# installed and where the application is optimzed for the production
+# installed and where the application is optimized for the production
 # environment.
 
 set -e -u
@@ -28,6 +28,9 @@ fi
 # Create a work container from the base image.
 WORK_CONTAINER=$(buildah from "localhost/$BASE_IMAGE")
 
+# Build frontend assets in production mode
+npm run production
+
 # Copy the application source files
 #
 # It's easier to do this in one shot with rsync than with buildah-copy.
@@ -42,12 +45,7 @@ rsync -av --cvs-exclude \
       --exclude=node_modules \
       --exclude=vendor \
       --exclude=bootstrap/cache/* \
-      --exclude=storage/app/public/* \
-      --exclude=storage/debugbar \
-      --exclude=storage/framework/cache \
-      --exclude=storage/framework/sessions \
-      --exclude=storage/framework/testing \
-      --exclude=storage/framework/views/* \
+      --exclude=storage/* \
       --exclude=tests \
       --exclude=phpcs.xml \
       --exclude=phpmd.xml \
@@ -55,41 +53,73 @@ rsync -av --cvs-exclude \
       --exclude=Makefile \
       --exclude=mkimage.sh \
       --exclude=server.php \
-      --exclude=toils.sqlite \
+      --exclude=*.sqlite \
       --exclude=webpack.mix.js \
       ./ "$MOUNT/$WEB_ROOT"
 
 cd "$MOUNT/$WEB_ROOT"
 
+# Composer will throw an error if this directory doesn't exist.
+mkdir -p storage/framework/views
+
+# Create a placeholder for the database.
+#
+# Otherwise composer throws an error about it not existing
+# during the "Generating optimized autoload files" step.
+touch "storage/toils.sqlite"
+
 # Install composer packages
 #
-# There is an implicit dependency on composer being available from the host.
-composer install \
-         --no-suggest \
-         --optimize-autoloader \
-         --no-dev \
-         --no-interaction \
-         --no-progress
+# This runs from inside the container to avoid an implicit
+# dependency on the host having composer installed.
+COMPOSER_ARGS="--no-dev --no-interaction --optimize-autoloader --no-suggest"
+buildah run "$WORK_CONTAINER" /bin/sh -c "cd /srv/www; composer install $COMPOSER_ARGS"
 
 # Create a Laravel env file
 #
 # This causes the Laravel app key to be regenerated ever time the
 # image is built.
-echo "APP_NAME=$APP_NAME" >> .env
-echo "APP_ENV=production" >> .env
-echo "APP_KEY=" >> .env
-echo "APP_DEBUG=false" >> .env
+cat <<EOF > .env
+APP_NAME=$APP_NAME
+APP_ENV=production
+APP_KEY=
+APP_DEBUG=false
+EOF
 php artisan key:generate
 
-buildah unmount "$WORK_CONTAINER"
-
-# Perform Laravel deployment optimizations
+# Perform pre-start tasks.
 #
-# This runs from inside the container so that the file paths remain
-# relative to the continaer.  If it ran from a filesystem mount,
-# artisan would see file paths relative to the host that would be
-# invalid when the application runs.
+# The entrypoint of the base image will check for the existince of
+# this file and run it prior to starting PHP-FPM and Nginx.
+#
+# Database migrations happen here so that they can be automatic.
+cat <<EOF > "$MOUNT/usr/local/sbin/pre-init.sh"
+#!/bin/sh
+
+cd "$WEB_ROOT"
+
+mkdir -p storage/app/public
+mkdir -p storage/framework/views
+mkdir -p storage/logs
+
+if [ ! -f storage/toils.sqlite ]; then
+   touch storage/toils.sqlite
+fi
+
+php artisan migrate --force --no-interaction
+EOF
+
+# Perform Laravel deployment optimizations.
+#
+# This runs from inside the container out of necessity. If it ran from
+# the host, artisan would see file paths relative to the host.
 buildah run "$WORK_CONTAINER" /bin/sh -c 'cd /srv/www; php artisan config:cache'
+
+# The database placeholder is no longer needed.
+rm "$MOUNT/$WEB_ROOT/storage/toils.sqlite"
+
+# Finished with direct access to the container filesystem.
+buildah unmount "$WORK_CONTAINER"
 
 # Save the working container as an image and discard the working
 # container.
