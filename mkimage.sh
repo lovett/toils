@@ -14,6 +14,11 @@ CONTAINER_NAME='toils'
 BASE_IMAGE='nginx-php'
 WEB_ROOT='/srv/www'
 
+if ! hash npm 2>/dev/null; then
+    echo "Cannot continue. Npm is not installed."
+    exit 1
+fi
+
 # Start from a clean slate by deleting any existing containers or images.
 if $(buildah images | grep --quiet "localhost/$CONTAINER_NAME"); then
     echo "Deleting previous $CONTAINER_NAME image..."
@@ -21,7 +26,7 @@ if $(buildah images | grep --quiet "localhost/$CONTAINER_NAME"); then
 fi
 
 if $(buildah containers -a | grep --quiet "$BASE_IMAGE-working-container"); then
-    echo "Deleting existing work container..."
+    echo "Deleting previous work container..."
     buildah rm "$BASE_IMAGE-working-container"
 fi
 
@@ -29,6 +34,8 @@ fi
 WORK_CONTAINER=$(buildah from "localhost/$BASE_IMAGE")
 
 # Build frontend assets in production mode
+#
+# This requires node and npm to be available on the build host.
 npm run production
 
 # Copy the application source files
@@ -41,12 +48,15 @@ rsync -av --cvs-exclude \
       --exclude=.ackrc \
       --exclude=.env \
       --exclude=.env.example \
+      --exclude=.gitattributes \
       --exclude=.gitignore \
       --exclude=node_modules \
       --exclude=vendor \
       --exclude=bootstrap/cache/* \
       --exclude=storage/* \
       --exclude=tests \
+      --exclude=package.json \
+      --exclude=package-lock.json \
       --exclude=phpcs.xml \
       --exclude=phpmd.xml \
       --exclude=phpunit.xml \
@@ -93,6 +103,12 @@ php artisan key:generate
 # this file and run it prior to starting PHP-FPM and Nginx.
 #
 # Database migrations happen here so that they can be automatic.
+#
+# The SQLite database is created if it does not already exist. This is
+# different from the placeholder file used elsewhere in the build
+# process. That file exists on the container filesytem and is
+# temporary. This one exists in the data volume mounted on
+# /srv/www/storage, and is permanent.
 cat <<EOF > "$MOUNT/usr/local/sbin/pre-init.sh"
 #!/bin/sh
 
@@ -116,6 +132,10 @@ EOF
 buildah run "$WORK_CONTAINER" /bin/sh -c 'cd /srv/www; php artisan config:cache'
 
 # The database placeholder is no longer needed.
+#
+# The storage directory is intended to be a mount point for a data
+# volume to allow for persistence, so this part of the container's
+# filesystem is otherwise unused.
 rm "$MOUNT/$WEB_ROOT/storage/toils.sqlite"
 
 # Finished with direct access to the container filesystem.
