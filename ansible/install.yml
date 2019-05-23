@@ -1,0 +1,34 @@
+---
+- hosts: toils
+  vars:
+    application_name: toils
+  tasks:
+    - name: Build production container image
+      local_action:
+        module: make
+        chdir: "{{ playbook_dir }}/../"
+        target: image
+
+    - name: Push container image to registry
+      local_action:
+        module: command
+        argv:
+          - buildah
+          - push
+          - "{{ application_name }}"
+          - "{{ container_registry }}/{{ application_name }}:latest"
+
+    - name: Install systemd service
+      become: true
+      template:
+        src: "templates/systemd-service.j2"
+        dest: "/etc/systemd/user/{{ application_name }}.service"
+
+    - name: Enable medley systemd service
+      systemd:
+        scope: user
+        daemon_reload: yes
+        enabled: yes
+        masked: no
+        name: "{{ application_name }}"
+        state: restarted

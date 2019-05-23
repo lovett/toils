@@ -2,6 +2,7 @@
 
 SQLITE_DB_NAME := toils.sqlite
 PROJECT_NAME := toils
+LOCAL_PORT := 8102
 
 seed-user: dummy
 	rm -f $(SQLITE_DB_NAME)
@@ -76,11 +77,11 @@ workspace:
 	tmux new-window -a -t "$(PROJECT_NAME)" -n "webpack" "npm run watch"
 
 # 3: Dev server
-	tmux new-window -a -t "$(PROJECT_NAME)" -n "devserver" "php artisan serve --host 0.0.0.0 --port 8102"
+	tmux new-window -a -t "$(PROJECT_NAME)" -n "devserver" "php artisan serve --host 0.0.0.0 --port $(LOCAL_PORT)"
 	tmux select-window -t "$(PROJECT_NAME)":0
 	tmux attach-session -t "$(PROJECT_NAME)"
 
-# Launch a single-use container to run the site on port 8102
+# Launch a single-use container to run the site.
 #
 # A webserver on the container host should define a vhost for the site
 # and proxy requests into the container.
@@ -88,7 +89,7 @@ server: .env
 	podman run \
 	--rm \
 	--name=$(PROJECT_NAME) \
-	--publish=127.0.0.1:8102:80 \
+	--publish=127.0.0.1:$(LOCAL_PORT):80 \
 	--volume="$(PWD):/srv/www" \
 	localhost/nginx-php
 
@@ -100,11 +101,11 @@ server: .env
 image: dummy
 	buildah unshare ./mkimage.sh
 
-testimage: dummy
+imagetest: dummy
 	podman run \
 	--rm \
 	--name=$(PROJECT_NAME) \
-	--publish=127.0.0.1:8102:80 \
+	--publish=127.0.0.1:$(LOCAL_PORT):80 \
     --volume="$(PWD)/storage:/srv/www/storage" \
 	localhost/$(PROJECT_NAME)
 
@@ -115,3 +116,8 @@ testimage: dummy
 .env:
 	cp .env.example .env
 	php artisan key:generate
+
+
+# Install the application on the production host via Ansible
+install:
+	ansible-playbook ansible/install.yml
