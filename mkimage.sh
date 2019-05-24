@@ -115,6 +115,7 @@ cat <<EOF > "$MOUNT/usr/local/sbin/pre-init.sh"
 cd "$WEB_ROOT"
 
 mkdir -p storage/app/public
+mkdir -p storage/fonts
 mkdir -p storage/framework/views
 mkdir -p storage/logs
 
