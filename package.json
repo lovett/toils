@@ -10,7 +10,7 @@
         "production": "NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
     },
     "devDependencies": {
-        "axios": "0.18",
+        "axios": "0.19",
         "bootstrap-vue": "2.0.0-rc.14",
         "browser-sync": "2.26.5",
         "browser-sync-webpack-plugin": "2.2.2",
