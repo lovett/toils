@@ -2,7 +2,7 @@
 
 SQLITE_DB_NAME := toils.sqlite
 PROJECT_NAME := toils
-LOCAL_PORT := 8102
+LOCAL_PORT := 8086
 
 seed-user: dummy
 	rm -f $(SQLITE_DB_NAME)
@@ -106,7 +106,8 @@ imagetest: dummy
 	--rm \
 	--name=$(PROJECT_NAME) \
 	--publish=127.0.0.1:$(LOCAL_PORT):80 \
-    --volume="$(PWD)/storage:/srv/www/storage" \
+	--volume="$(PWD)/storage:/srv/www/storage" \
+	--conmon /usr/lib/podman/bin/conmon \
 	localhost/$(PROJECT_NAME)
 
 # Set up the application configuration file
