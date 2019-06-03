@@ -144,7 +144,7 @@ class TimeController extends Controller
         $time->user()->associate($request->user());
         $time->save();
 
-        MessagingHelper::flashCreated('time entry');
+        MessagingHelper::flashCreated('the time entry');
 
         return redirect()->route(
             'time.index'
@@ -196,7 +196,7 @@ class TimeController extends Controller
             $request->input('tagList')
         );
 
-        MessagingHelper::flashUpdated('time entry');
+        MessagingHelper::flashUpdated('the time entry');
 
         return redirect()->route(
             'time.index'
@@ -215,7 +215,7 @@ class TimeController extends Controller
     {
         $request->user()->time()->where('id', $id)->delete();
 
-        MessagingHelper::flashDeleted('time entry');
+        MessagingHelper::flashDeleted('the time entry');
 
         return redirect()->route('time.index');
     }

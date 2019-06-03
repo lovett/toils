@@ -22,8 +22,8 @@ class MessagingHelper
      */
     public static function flashCreated(string $label = '')
     {
-        $resource = ucfirst(LinkHelper::firstRouteSegment());
-        Session::flash('userMessage', "{$resource} {$label} has been created.");
+        $label = ucfirst($label);
+        Session::flash('userMessage', "{$label} has been created.");
         Session::flash('userMessageType', 'success');
     }
 
@@ -35,8 +35,8 @@ class MessagingHelper
      */
     public static function flashUpdated(string $label = '')
     {
-        $resource = ucfirst(LinkHelper::firstRouteSegment());
-        Session::flash('userMessage', "{$resource} {$label} has been updated.");
+        $label = ucfirst($label);
+        Session::flash('userMessage', "{$label} has been updated.");
         Session::flash('userMessageType', 'success');
     }
 
@@ -48,8 +48,8 @@ class MessagingHelper
      */
     public static function flashDeleted(string $label = '')
     {
-        $resource = ucfirst(LinkHelper::firstRouteSegment());
-        Session::flash('userMessage', "{$resource} {$label} has been deleted.");
+        $label = ucfirst($label);
+        Session::flash('userMessage', "{$label} has been deleted.");
         Session::flash('userMessageType', 'success');
     }
 }

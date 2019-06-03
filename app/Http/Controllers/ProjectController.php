@@ -125,7 +125,7 @@ class ProjectController extends Controller
         $project->client()->associate($client);
         $project->save();
 
-        MessagingHelper::flashCreated($client->name);
+        MessagingHelper::flashCreated($project->name);
 
         return redirect()->route(
             'project.show',
