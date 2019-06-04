@@ -59,6 +59,7 @@ rsync -av --cvs-exclude \
       --exclude=.env.example \
       --exclude=.gitattributes \
       --exclude=.gitignore \
+      --exclude=ansible \
       --exclude=node_modules \
       --exclude=vendor \
       --exclude=bootstrap/cache/* \
@@ -93,6 +94,10 @@ touch "storage/toils.sqlite"
 # dependency on the host having composer installed.
 COMPOSER_ARGS="--no-dev --no-interaction --optimize-autoloader --no-suggest"
 buildah run "$WORK_CONTAINER" /bin/sh -c "cd /srv/www; composer install $COMPOSER_ARGS"
+
+# The composer file is no longer needed.
+rm "$MOUNT/$WEB_ROOT/composer.json"
+rm "$MOUNT/$WEB_ROOT/composer.lock"
 
 # Create a Laravel env file
 #
