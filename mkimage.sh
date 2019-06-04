@@ -9,6 +9,15 @@
 
 set -e -u
 
+# This script uses the buildah mount command as an unprivileged user,
+# so it needs to be wrapped by the buildah unshare command. See the
+# buildah-unshare command for details.
+#
+#
+if [[ $(ps -o args= -p $PPID) != "buildah-in-a-user-namespace unshare $0" ]]; then
+    exec buildah unshare $0
+fi
+
 APP_NAME='Toils'
 CONTAINER_NAME='toils'
 BASE_IMAGE='nginx-php'

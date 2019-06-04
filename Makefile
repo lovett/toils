@@ -99,7 +99,7 @@ server: .env
 # involves a mounting the filesystem of the container onto the
 # host. See the manpage for buildah-unshare for details.
 image: dummy
-	buildah unshare ./mkimage.sh
+	./mkimage.sh
 
 imagetest: dummy
 	podman run \
