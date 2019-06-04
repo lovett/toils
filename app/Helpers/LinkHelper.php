@@ -27,7 +27,9 @@ class LinkHelper
      */
     public static function primaryNavLink(string $route, string $label, array $params = [], array $attribs = [])
     {
-        $resource = static::firstRouteSegment();
+        $routeSegments = explode('.', Route::currentRouteName());
+        $resource = $routeSegments[0];
+
         $linkedRoute = explode('.', $route);
 
         $liClass = 'nav-item';
@@ -158,8 +160,8 @@ class LinkHelper
     /**
      * Generic navigation for CRUD-based operations
      *
-     * Infers standard links such as list, create, based on the current route
-     * and standard resource controller actions.
+     * Uses the curent route to determine the set of links displayed
+     * horizontally between the masthead and the page content.
      *
      * @return array
      */
@@ -168,7 +170,9 @@ class LinkHelper
         $action = Route::getCurrentRoute()->getActionName();
         $params = Route::getCurrentRoute()->parameters;
 
-        $resource = static::firstRouteSegment();
+        $routeSegments = explode('.', Route::currentRouteName());
+        $resource = $routeSegments[0];
+
         $capitalizedResource = ucfirst($resource);
 
         $links = [];
@@ -178,13 +182,31 @@ class LinkHelper
         }
 
         if ($resource === 'project') {
-            $links[] = self::projectsIndexLink();
-            $links[] = self::inactiveProjectsLink();
+            $links[] = self::navLink(
+                'project.index',
+                'Projects',
+                ['q' => 'status:active']
+            );
+
+            $links[] = self::navLink(
+                'project.index',
+                'Inactive Projects',
+                ['q' => 'status:inactive']
+            );
         }
 
         if ($resource === 'client') {
-            $links[] = self::clientsIndexLink();
-            $links[] = self::inactiveClientsLink();
+            $links[] = self::navLink(
+                'client.index',
+                'Clients',
+                ['q' => 'status:active']
+            );
+
+            $links[] = self::navLink(
+                'client.index',
+                'Inactive Clients',
+                ['q' => 'status:inactive']
+            );
         }
 
         if (empty($links)) {
@@ -199,62 +221,5 @@ class LinkHelper
         $links[] = self::navLink("{$resource}.create", "New {$capitalizedResource}", []);
 
         return $links;
-    }
-
-    /**
-     * Return the first segment of the current route.
-     */
-    public static function firstRouteSegment()
-    {
-        $routeSegments = explode('.', Route::currentRouteName());
-        return $routeSegments[0];
-    }
-
-    /**
-     * The default list view of the project list is a preset search.
-     */
-    public static function projectsIndexLink()
-    {
-        return self::primaryNavLink(
-            'project.index',
-            'Projects',
-            ['q' => 'status:active']
-        );
-    }
-
-    /**
-     * The default list view of the client list is a preset search.
-     */
-    public static function clientsIndexLink()
-    {
-        return self::primaryNavLink(
-            'client.index',
-            'Clients',
-            ['q' => 'status:active']
-        );
-    }
-
-    /**
-     * Secondary view of the project list limited to inactive projects.
-     */
-    public static function inactiveProjectsLink()
-    {
-        return self::navLink(
-            'project.index',
-            'Inactive Projects',
-            ['q' => 'status:inactive']
-        );
-    }
-
-    /**
-     * Secondary view of the client list limited to inactive projects.
-     */
-    public static function inactiveClientsLink()
-    {
-        return self::navLink(
-            'client.index',
-            'Inactive Clients',
-            ['q' => 'status:inactive']
-        );
     }
 }
