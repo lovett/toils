@@ -202,4 +202,17 @@ class Client extends Model
     {
         return $this->hasMany('App\Estimate');
     }
+
+    /**
+     * Query scope for narrowing to active clients
+     *
+     * @param Builder $query An existing query.
+     *
+     * @return Builder
+     */
+    public function scopeActive(Builder $query)
+    {
+        return $query->where('clients.active', true);
+    }
+
 }

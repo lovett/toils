@@ -188,19 +188,19 @@ class User extends Authenticatable
     }
 
     /**
-     * Return a menu-friendly list of the user's clients.
+     * Return a menu-friendly list of the user's active clients.
      *
      * @return array
      */
     public function clientsForMenu()
     {
-        $query = $this->clients()->orderBy('name')->getQuery();
+        $query = $this->clients()->active()->orderBy('name')->getQuery();
 
         return $this->asMenu($query);
     }
 
     /**
-     * Return a menu-friendly list of the user's projects
+     * Return a menu-friendly list of the user's active projects
      *
      * @param int|null $clientId A client primary key
      *
@@ -208,7 +208,7 @@ class User extends Authenticatable
      */
     public function projectsForMenu(int $clientId = null)
     {
-        $query = $this->projects()->with('client')->orderBy('name');
+        $query = $this->projects()->active()->with('client')->orderBy('name');
 
         if ($clientId) {
             $query->where('projects.client_id', $clientId);
