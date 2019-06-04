@@ -60,6 +60,7 @@ main dl dd {
     stroke-width: 0;
     stroke: currentColor;
     fill: currentColor;
+    margin-right: .5em;
 
     &.active {
         fill: forestgreen;
@@ -112,5 +113,36 @@ address {
 
     .navbar-nav .nav-item {
         padding: .25em 0;
+    }
+}
+
+.indent-for-hanging-icon {
+    column-break-inside: avoid;
+    break-inside: avoid;
+    margin-left: 1.75em;
+    text-indent: -1.75em;
+}
+
+ul.columnwise {
+    li {
+        padding-bottom: 1em;
+        line-height: 1.2;
+    }
+}
+
+@include media-breakpoint-up(md) {
+    ul.columnwise {
+        column-count: 2;
+
+        * {
+            column-break-inside: avoid;
+            break-inside: avoid;
+        }
+    }
+}
+
+@include media-breakpoint-up(xl) {
+    ul.columnwise {
+        column-count: 4;
     }
 }

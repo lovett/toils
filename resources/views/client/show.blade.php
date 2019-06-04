@@ -86,41 +86,28 @@
         <div class="mb-5">
             <h2>Projects</h2>
 
-            <div class="card mb-5">
+            <div class="card">
                 <div class="card-body">
-                    <dl class="row">
-                        <dt class="col-2">
-                            @include('partials.active', ['value' => true])
-                        </dt>
-                        <dd class="col-3">
-                            <ul class="list-unstyled">
-                                @if ($model->projects->where('active', true)->isEmpty())
-                                    <li>None</li>
-                                @endif
+                    <ul class="list-unstyled mb-0 columnwise">
+                        @if ($model->projects->isEmpty())
+                            <li>None</li>
+                        @endif
 
-                            @foreach ($model->projects->where('active', true) as $project)
-                                <li><a href="{{ route('project.show', ['project' => $project]) }}">{{ $project->name }}</a></li>
-                            @endforeach
-                            </ul>
-                        </dd>
+                        @foreach ($model->projects->where('active', true) as $project)
+                            <li class="indent-for-hanging-icon">
+                                <svg class="icon active"><use xlink:href="#icon-checkmark"></use></svg>
+                                <a href="{{ route('project.show', ['project' => $project]) }}">{{ $project->name }}</a>
+                            </li>
+                        @endforeach
 
-                        <dt class="col-2">
-                            @include('partials.active', ['value' => false])
-                        </dt>
-                        <dd class="col">
-                            <ul class="list-unstyled">
-                                @if ($model->projects->where('active', false)->isEmpty())
-                                    <li>None</li>
-                                @endif
-                                @foreach ($model->projects->where('active', false) as $project)
-                                    <li><a href="{{ route('project.show', ['project' => $project]) }}">{{ $project->name }}</a></li>
-                                @endforeach
-                            </ul>
-                        </dd>
-                    </dl>
+                        @foreach ($model->projects->where('active', false) as $project)
+                            <li class="indent-for-hanging-icon">
+                                <svg class="icon inactive"><use xlink:href="#icon-blocked"></use></svg>
+                                <a href="{{ route('project.show', ['project' => $project]) }}">{{ $project->name }}</a>
+                            </li>
+                        @endforeach
+                    </ul>
                 </div>
-
-
             </div>
         </div>
 
