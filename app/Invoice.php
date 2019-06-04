@@ -191,17 +191,16 @@ class Invoice extends Model
             'times.invoice_id'
         );
 
+        if (in_array('projects', $joinedTables) === false) {
+            $builder = $builder->join('projects', 'times.project_id', '=', 'projects.id');
+        }
+
         $builder = $builder->leftJoin(
             'clients',
             'projects.client_id',
             '=',
             'clients.id'
         );
-
-        if (in_array('projects', $joinedTables) === false) {
-            $builder = $builder->join('projects', 'times.project_id', '=', 'projects.id');
-        }
-
 
         $builder = $builder->addSelect('clients.id as client_id');
         $builder = $builder->addSelect('clients.name as clientName');
