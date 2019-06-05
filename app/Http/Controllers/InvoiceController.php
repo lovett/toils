@@ -290,10 +290,6 @@ class InvoiceController extends Controller
 
         abort_unless($invoice->receipt, 404);
 
-        $extension = pathinfo($invoice->receipt, PATHINFO_EXTENSION);
-
-        $name = sprintf('receipt_%s.%s', $invoice->number, $extension);
-
         return response()->file(
             Storage::path($invoice->receipt)
         );
