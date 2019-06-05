@@ -229,7 +229,7 @@ class ProjectController extends Controller
     }
 
     /**
-     * Update an existing project
+     * Save a modified project to the database.
      *
      * @param ProjectRequest $request The incoming request
      * @param int            $id      A project primary key

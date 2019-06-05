@@ -217,7 +217,7 @@ class ClientController extends Controller
     }
 
     /**
-     * Update an existing client
+     * Save a modified client to the database.
      *
      * @param ClientRequest $request The incoming request
      * @param int           $id      A client primary key

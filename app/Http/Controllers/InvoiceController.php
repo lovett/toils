@@ -212,7 +212,7 @@ class InvoiceController extends Controller
     }
 
     /**
-     * Update an existing invoice.
+     * Save a modified invoice to the database.
      *
      * @param InvoiceRequest $request The incoming request
      * @param int            $id      An invoice primary key

@@ -178,7 +178,7 @@ class TimeController extends Controller
     }
 
     /**
-     * Update an existing time entry.
+     * Save a modified time entry to the database.
      *
      * @param TimeRequest $request The incoming request
      * @param int         $id      A time entry primary key

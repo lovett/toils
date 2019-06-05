@@ -177,7 +177,7 @@ class EstimateController extends Controller
     }
 
     /**
-     * Update an existing estimate
+     * Save a modified estimate to the database.
      *
      * @param EstimateRequest $request The incoming request
      * @param int             $id      An estimate primary key
