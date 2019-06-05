@@ -102,6 +102,7 @@ image: dummy
 	./mkimage.sh
 
 imagetest: dummy
+	@-podman rm toils
 	podman run \
 	--rm \
 	--name=$(PROJECT_NAME) \
