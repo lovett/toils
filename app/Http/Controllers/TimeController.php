@@ -162,11 +162,12 @@ class TimeController extends Controller
     public function edit(Request $request, int $id)
     {
         $time = $request->user()->time()->with('tags')->findOrFail($id);
+        $projects = $request->user()->projectsForMenu(null, $time->project_id);
 
         $viewVars = [
             'pageTitle' => 'Edit Time Entry',
             'model' => $time,
-            'projects' => $request->user()->projectsForMenu(),
+            'projects' => $projects,
             'submission_route' => [
                 'time.update',
                 $time->id,

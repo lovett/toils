@@ -202,13 +202,14 @@ class User extends Authenticatable
     /**
      * Return a menu-friendly list of the user's active projects
      *
-     * @param int|null $clientId A client primary key
+     * @param int|null $clientId  A client primary key
+     * @param int|null $projectId A project primary key to include even if inactive.
      *
      * @return array
      */
-    public function projectsForMenu(int $clientId = null)
+    public function projectsForMenu(int $clientId = null, $projectId = null)
     {
-        $query = $this->projects()->active()->with('client')->orderBy('name');
+        $query = $this->projects()->active()->orWhere('id', $projectId)->with('client')->orderBy('name');
 
         if ($clientId) {
             $query->where('projects.client_id', $clientId);
