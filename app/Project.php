@@ -122,9 +122,13 @@ class Project extends Model
      *
      * @param float $value The number of hours to be converted to minutes
      */
-    public function setAllottedTotalHoursAttribute(float $value)
+    public function setAllottedTotalHoursAttribute(float $value = null)
     {
-        $this->attributes['allottedTotalMinutes'] = round($value * 60);
+        if ($value !== null) {
+            $value = round($value * 60);
+        }
+
+        $this->attributes['allottedTotalMinutes'] = $value;
     }
 
     /**
@@ -152,9 +156,13 @@ class Project extends Model
      *
      * @param float $value The number of hours to be converted to minutes
      */
-    public function setAllottedWeeklyHoursAttribute(float $value)
+    public function setAllottedWeeklyHoursAttribute(float $value = null)
     {
-        $this->attributes['allottedWeeklyMinutes'] = round($value * 60);
+        if ($value !== null) {
+            $value = round($value * 60);
+        }
+
+        $this->attributes['allottedWeeklyMinutes'] = $value;
     }
 
     /**
