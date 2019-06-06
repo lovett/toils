@@ -362,7 +362,7 @@ class Time extends Model
      * @param Model  $model         Project or client instance
      * @param User   $user          User model instance
      * @param string $timeInterval  Time scale for the tallies: week, month, or year
-     * @param int    $intervalCount How many intervals to go back from present. If null, take everything.
+     * @param int    $intervalCount How many intervals to go back from present.
      *
      * @throws InvalidArgumentException Unrecognized values for $timeInterval are rejected.
      *
@@ -372,62 +372,37 @@ class Time extends Model
         Model $model,
         User $user,
         string $timeInterval = 'month',
-        int $intervalCount = null
+        int $intervalCount = 6
     ) {
-        switch ($timeInterval) {
-            case 'week':
-                $diffMethod = 'diffInWeeks';
-                $sqlDateModifier = 'weekday 6';
-                $sqlInterval = 'day';
-                $sqlDateSelector = '-7 day';
-                $intervalMultiplier = 7;
-                break;
-
-            case 'month':
-                $diffMethod = 'diffInMonths';
-                $sqlDateModifier = 'start of month';
-                $sqlInterval = 'month';
-                $sqlDateSelector = '-1 month';
-                $intervalMultiplier = 1;
-                break;
-
-            case 'year':
-                $diffMethod = 'diffInYears';
-                $sqlDateModifier = 'start of year';
-                $sqlInterval = 'year';
-                $sqlDateSelector = '-1 year';
-                $intervalMultiplier = 1;
-                break;
-
-            default:
-                throw new InvalidArgumentException('invalid timeInterval');
+        if ($timeInterval === 'week') {
+            $diffMethod = 'diffInWeeks';
+            $sqlDateModifier = 'weekday 6';
+            $sqlInterval = 'day';
+            $sqlDateSelector = '-7 day';
+            $intervalMultiplier = 7;
         }
 
-        if ($intervalCount === null) {
-            if ($model instanceof Project) {
-                $minStart = self::where('project_id', $model->getKey())
-                          ->where('user_id', $user->getKey())
-                          ->min('start');
-            }
-
-            if ($model instanceof Client) {
-                $minStart = self::join('projects', 'times.project_id', '=', 'projects.id')
-                          ->join('clients', 'projects.client_id', '=', 'clients.id')
-                          ->where('clients.id', $model->getKey())
-                          ->where('user_id', $user->getKey())
-                          ->min('start');
-            }
-
-            if (empty($minStart)) {
-                return [];
-            }
-
-            $intervalCount = Carbon::now()->$diffMethod(Carbon::parse($minStart));
+        if ($timeInterval === 'month') {
+            $diffMethod = 'diffInMonths';
+            $sqlDateModifier = 'start of month';
+            $sqlInterval = 'month';
+            $sqlDateSelector = '-1 month';
+            $intervalMultiplier = 1;
         }
 
-        if ($model instanceof Project) {
-            $modelWhere = 'WHERE project_id=:modelId';
+        if ($timeInterval === 'year') {
+            $diffMethod = 'diffInYears';
+            $sqlDateModifier = 'start of year';
+            $sqlInterval = 'year';
+            $sqlDateSelector = '-1 year';
+            $intervalMultiplier = 1;
         }
+
+        if (isset($diffMethod) === false) {
+            throw new InvalidArgumentException('invalid timeInterval');
+        }
+
+        $modelWhere = 'WHERE project_id=:modelId';
 
         if ($model instanceof Client) {
             $modelWhere = 'WHERE project_id in (SELECT id FROM projects WHERE client_id=:modelId)';
@@ -461,14 +436,10 @@ class Time extends Model
             ]
         );
 
-        $result = collect($result)->reduce(
-            function ($accumulator, $item) {
-                $accumulator[$item->dt] = (int) $item->minutes;
-
-                return $accumulator;
-            },
-            []
-        );
+        $result = collect($result)->reduce(function ($accumulator, $item) {
+            $accumulator[$item->dt] = (int) $item->minutes;
+            return $accumulator;
+        }, []);
 
         return $result;
     }
