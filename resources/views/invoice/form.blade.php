@@ -71,7 +71,7 @@
 
                     @include('partials.formgroup-date', ['name' => 'due', 'label' => 'Due', 'autofill' => true, 'pickable' => ['month', 'day', 'year']])
 
-                    @include('partials.formgroup-date', ['name' => 'paid', 'label' => 'Paid', 'autofill' => false])
+                    @include('partials.formgroup-date', ['name' => 'paid', 'label' => 'Paid', 'autofill' => false, 'pickable' => ['relday', 'month', 'day', 'year']])
 
                     @include('partials.save-button')
 
