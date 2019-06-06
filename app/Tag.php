@@ -41,7 +41,7 @@ class Tag extends Model
      *
      * @return Tag[] $tags The tags that have been synced to the record.
      */
-    public static function syncFromList($record, string $delimitedList = null)
+    public static function syncFromList(object $record, string $delimitedList = null)
     {
         $delimitedList = strtolower($delimitedList);
         $delimitedList = trim($delimitedList);

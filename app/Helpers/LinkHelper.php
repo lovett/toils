@@ -125,7 +125,7 @@ class LinkHelper
             if (strpos($searchQuery, $params['q']) !== false) {
                 $linkClass .= ' active';
             }
-        } else if (Request::routeIs($route)) {
+        } elseif (Request::routeIs($route)) {
             $linkClass .= ' active';
         }
 

@@ -214,5 +214,4 @@ class Client extends Model
     {
         return $query->where('clients.active', true);
     }
-
 }
