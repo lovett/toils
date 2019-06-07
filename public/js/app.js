@@ -2114,43 +2114,6 @@ module.exports = {
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 
 module.exports = {
@@ -2223,9 +2186,6 @@ module.exports = {
     setValue: function setValue(value) {
       this.value = value;
     },
-    toggle: function toggle() {
-      this.isOpen = !this.isOpen;
-    },
     current: function current() {
       this.pickedDate = moment();
     },
@@ -2269,14 +2229,16 @@ module.exports = {
     relativeWeekStart: function relativeWeekStart(val) {
       this.pickedDate = moment().startOf('week').add(val * 7, 'days');
     },
-    relativeWeekEnd: function relativeWeekEnd(val) {
-      this.pickedDate = moment().endOf('week').add(val * 7, 'days');
-    },
     relativeMonthStart: function relativeMonthStart(val) {
       this.pickedDate = moment().startOf('month').add(val, 'months');
     },
     relativeMonthEnd: function relativeMonthEnd(val) {
       this.pickedDate = moment().endOf('month').add(val, 'months');
+    }
+  },
+  filters: {
+    monthName: function monthName(val) {
+      return moment(val, 'MM').format('MMM');
     }
   }
 };
@@ -22564,7 +22526,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.hidden[data-v-552d3ce6] {\n    display: none;\n}\n.actions[data-v-552d3ce6] {\n    font-size: .75em;\n    text-transform: uppercase;\n    padding: 1em 0;\n}\n.actions A[data-v-552d3ce6] {\n    margin-right: 1em;\n}\n.shortcuts[data-v-552d3ce6] {\n    position: relative;\n    margin-top: 1em;\n}\n.shortcuts strong[data-v-552d3ce6] {\n    display: block;\n}\n.shortcuts .close[data-v-552d3ce6] {\n    padding: .5em;\n}\n.shortcuts a[data-v-552d3ce6] {\n    display: inline-block;\n    margin-right: 1em;\n    padding: 0 .5em;\n    text-decoration: none;\n    transition: all .25s;\n}\n.shortcuts a[data-v-552d3ce6]:hover {\n    color: #fff;\n    background-color: #333;\n}\n.shortcuts .active[data-v-552d3ce6] {\n    background-color: #333;\n    color: white;\n}\n.shortcuts .pullup[data-v-552d3ce6] {\n    position: absolute;\n    top: .25em;\n    right: .25em;\n}\n.shortcuts .pullup a[data-v-552d3ce6] {\n    font-size: 0.85em;\n    margin: 0;\n}\n.shortcuts .pullup a[data-v-552d3ce6]:hover {\n    color: inherit;\n    background-color: inherit;\n    text-decoration: underline;\n}\n.shortcuts .well[data-v-552d3ce6] {\n    margin-bottom: 0;\n}\n", ""]);
+exports.push([module.i, "\n.form-control[data-v-552d3ce6] {\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n}\n.shortcuts[data-v-552d3ce6] {\n    position: relative;\n    font-size: .85em;\n}\n.card[data-v-552d3ce6] {\n    border-top: 0;\n    border-top-left-radius: 0;\n    border-top-right-radius: 0;\n}\n.card-body[data-v-552d3ce6] {\n    padding: 1em 1em 0 1em;\n}\n.shortcuts a[data-v-552d3ce6] {\n    display: inline-block;\n    margin-right: .75em;\n    padding: 0 .5em;\n    text-decoration: none;\n    transition: all .25s;\n}\n.shortcuts a[data-v-552d3ce6]:hover {\n    color: #fff;\n    background-color: #333;\n}\n.shortcuts .active[data-v-552d3ce6] {\n    background-color: #333;\n    color: white;\n}\n.shortcuts .pullup[data-v-552d3ce6] {\n    position: absolute;\n    top: .25em;\n    right: .25em;\n}\n.shortcuts .pullup a[data-v-552d3ce6] {\n    font-size: 0.85em;\n    margin: 0;\n}\n.shortcuts .pullup a[data-v-552d3ce6]:hover {\n    color: inherit;\n    background-color: inherit;\n    text-decoration: underline;\n}\n.shortcuts .well[data-v-552d3ce6] {\n    margin-bottom: 0;\n}\n", ""]);
 
 // exports
 
@@ -44127,68 +44089,40 @@ var render = function() {
         on: { set: _vm.setValue }
       }),
       _vm._v(" "),
-      _c("div", { staticClass: "actions" }, [
-        _c(
-          "a",
-          {
-            attrs: { href: "#" },
-            on: {
-              click: function($event) {
-                $event.preventDefault()
-                return _vm.current()
-              }
-            }
-          },
-          [_vm._v("now")]
-        ),
-        _vm._v(" "),
-        _c(
-          "a",
-          {
-            class: { hidden: _vm.isOpen },
-            attrs: { href: "#" },
-            on: {
-              click: function($event) {
-                $event.preventDefault()
-                return _vm.toggle($event)
-              }
-            }
-          },
-          [_vm._v("\n            more shortcuts\n        ")]
-        )
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "shortcuts", class: { hidden: !_vm.isOpen } }, [
+      _c("div", { staticClass: "shortcuts" }, [
         _c("div", { staticClass: "card bg-light" }, [
           _c("div", { staticClass: "card-body" }, [
-            _c("div", { staticClass: "pullup" }, [
-              _c(
-                "button",
-                {
-                  staticClass: "close",
-                  attrs: {
-                    type: "button",
-                    "data-dismiss": "alert",
-                    "aria-label": "Close"
-                  },
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      return _vm.toggle($event)
-                    }
-                  }
-                },
-                [
-                  _c("span", { attrs: { "aria-hidden": "true" } }, [
-                    _vm._v("×")
-                  ])
-                ]
-              )
-            ]),
-            _vm._v(" "),
-            _vm.pickableGroups.includes("relweek")
+            _vm.pickableGroups.includes("relday")
               ? _c("p", [
-                  _c("strong", [_vm._v("Relative Week")]),
+                  _c(
+                    "a",
+                    {
+                      class: { active: _vm.daysAgo == 0 },
+                      attrs: { href: "#" },
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          return _vm.relativeDay(0)
+                        }
+                      }
+                    },
+                    [_vm._v("Today")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "a",
+                    {
+                      class: { active: _vm.daysAgo == 1 },
+                      attrs: { href: "#" },
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          return _vm.relativeDay(-1)
+                        }
+                      }
+                    },
+                    [_vm._v("yesterday")]
+                  ),
                   _vm._v(" "),
                   _c(
                     "a",
@@ -44211,47 +44145,17 @@ var render = function() {
                       on: {
                         click: function($event) {
                           $event.preventDefault()
-                          return _vm.relativeWeekEnd(0)
-                        }
-                      }
-                    },
-                    [_vm._v("end of this week")]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "a",
-                    {
-                      attrs: { href: "#" },
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
                           return _vm.relativeWeekStart(-1)
                         }
                       }
                     },
                     [_vm._v("start of last week")]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "a",
-                    {
-                      attrs: { href: "#" },
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          return _vm.relativeWeekEnd(-1)
-                        }
-                      }
-                    },
-                    [_vm._v("end of last week")]
                   )
                 ])
               : _vm._e(),
             _vm._v(" "),
             _vm.pickableGroups.includes("relmonth")
               ? _c("p", [
-                  _c("strong", [_vm._v("Relative Month")]),
-                  _vm._v(" "),
                   _c(
                     "a",
                     {
@@ -44310,130 +44214,54 @@ var render = function() {
                 ])
               : _vm._e(),
             _vm._v(" "),
-            _vm.pickableGroups.includes("relday")
-              ? _c("p", [
-                  _c("strong", [_vm._v("Relative Day")]),
-                  _vm._v(" "),
-                  _c(
-                    "a",
-                    {
-                      class: { active: _vm.daysAgo == 0 },
-                      attrs: { href: "#" },
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          return _vm.relativeDay(0)
-                        }
-                      }
-                    },
-                    [_vm._v("today")]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "a",
-                    {
-                      class: { active: _vm.daysAgo == 1 },
-                      attrs: { href: "#" },
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          return _vm.relativeDay(-1)
-                        }
-                      }
-                    },
-                    [_vm._v("yesterday")]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "a",
-                    {
-                      class: { active: _vm.daysAgo == 2 },
-                      attrs: { href: "#" },
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          return _vm.relativeDay(-2)
-                        }
-                      }
-                    },
-                    [_vm._v("2 days ago")]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "a",
-                    {
-                      class: { active: _vm.daysAgo == 3 },
-                      attrs: { href: "#" },
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          return _vm.relativeDay(-3)
-                        }
-                      }
-                    },
-                    [_vm._v("3 days ago")]
-                  )
-                ])
-              : _vm._e(),
-            _vm._v(" "),
             _vm.pickableGroups.includes("month")
               ? _c(
                   "p",
-                  [
-                    _c("strong", [_vm._v("Month")]),
-                    _vm._v(" "),
-                    _vm._l(12, function(m) {
-                      return _c(
-                        "a",
-                        {
-                          class: { active: m == _vm.pickedDate.month() + 1 },
-                          attrs: { href: "#" },
-                          on: {
-                            click: function($event) {
-                              $event.preventDefault()
-                              return _vm.month(m)
-                            }
+                  _vm._l(12, function(m) {
+                    return _c(
+                      "a",
+                      {
+                        class: { active: m == _vm.pickedDate.month() + 1 },
+                        attrs: { href: "#" },
+                        on: {
+                          click: function($event) {
+                            $event.preventDefault()
+                            return _vm.month(m)
                           }
-                        },
-                        [_vm._v(_vm._s(m))]
-                      )
-                    })
-                  ],
-                  2
+                        }
+                      },
+                      [_vm._v(_vm._s(_vm._f("monthName")(m)))]
+                    )
+                  }),
+                  0
                 )
               : _vm._e(),
             _vm._v(" "),
             _vm.pickableGroups.includes("day")
               ? _c(
                   "p",
-                  [
-                    _c("strong", [_vm._v("Day")]),
-                    _vm._v(" "),
-                    _vm._l(31, function(d) {
-                      return _c(
-                        "a",
-                        {
-                          class: { active: d == _vm.pickedDate.date() },
-                          attrs: { href: "#" },
-                          on: {
-                            click: function($event) {
-                              $event.preventDefault()
-                              return _vm.day(d)
-                            }
+                  _vm._l(31, function(d) {
+                    return _c(
+                      "a",
+                      {
+                        class: { active: d == _vm.pickedDate.date() },
+                        attrs: { href: "#" },
+                        on: {
+                          click: function($event) {
+                            $event.preventDefault()
+                            return _vm.day(d)
                           }
-                        },
-                        [_vm._v(_vm._s(d))]
-                      )
-                    })
-                  ],
-                  2
+                        }
+                      },
+                      [_vm._v(_vm._s(d))]
+                    )
+                  }),
+                  0
                 )
               : _vm._e(),
             _vm._v(" "),
             _vm.pickableGroups.includes("year")
               ? _c("p", [
-                  _c("strong", [_vm._v("Year")]),
-                  _vm._v(" "),
                   _c(
                     "a",
                     {
@@ -44490,31 +44318,27 @@ var render = function() {
             _vm.pickableGroups.includes("time")
               ? _c(
                   "p",
-                  [
-                    _c("strong", [_vm._v("Hour")]),
-                    _vm._v(" "),
-                    _vm._l(12, function(h) {
-                      return _c(
-                        "a",
-                        {
-                          class: {
-                            active:
-                              _vm.pickedDate.hour() == h ||
-                              _vm.pickedDate.hour() - 12 == h
-                          },
-                          attrs: { href: "#" },
-                          on: {
-                            click: function($event) {
-                              $event.preventDefault()
-                              return _vm.hour(h)
-                            }
-                          }
+                  _vm._l(12, function(h) {
+                    return _c(
+                      "a",
+                      {
+                        class: {
+                          active:
+                            _vm.pickedDate.hour() == h ||
+                            _vm.pickedDate.hour() - 12 == h
                         },
-                        [_vm._v(_vm._s(h))]
-                      )
-                    })
-                  ],
-                  2
+                        attrs: { href: "#" },
+                        on: {
+                          click: function($event) {
+                            $event.preventDefault()
+                            return _vm.hour(h)
+                          }
+                        }
+                      },
+                      [_vm._v(_vm._s(h))]
+                    )
+                  }),
+                  0
                 )
               : _vm._e(),
             _vm._v(" "),
@@ -44522,8 +44346,6 @@ var render = function() {
               ? _c(
                   "p",
                   [
-                    _c("strong", [_vm._v("Minute")]),
-                    _vm._v(" "),
                     _c(
                       "a",
                       {
@@ -44569,8 +44391,6 @@ var render = function() {
             _vm._v(" "),
             _vm.pickableGroups.includes("time")
               ? _c("p", [
-                  _c("strong", [_vm._v("Time of Day")]),
-                  _vm._v(" "),
                   _c(
                     "a",
                     {
