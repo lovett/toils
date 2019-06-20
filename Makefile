@@ -94,10 +94,6 @@ server: .env
 	localhost/nginx-php
 
 # Build a production image for the application
-#
-# The script is wrapped by a call to buildah unshare because it
-# involves a mounting the filesystem of the container onto the
-# host. See the manpage for buildah-unshare for details.
 image: dummy
 	./mkimage.sh
 
