@@ -40,18 +40,5 @@
 
         </div>
     </div>
-
-    <div class="row mb-4">
-        <div class="col-md-10 offset-md-1">
-            <h2>Actions</h2>
-            <ul class="list-inline">
-                <li class="list-inline-item">{!! LinkHelper::smallButtonLink('project.create', 'New project') !!}</li>
-                <li class="list-inline-item">{!! LinkHelper::smallButtonLink('client.create', 'New client') !!}</li>
-                <li class="list-inline-item">{!! LinkHelper::smallButtonLink('estimate.create', 'New estimate') !!}</li>
-            </ul>
-        </div>
-    </div>
-
-
 </div>
 @endsection
