@@ -18,17 +18,26 @@
           - "{{ application_name }}"
           - "{{ container_registry }}/{{ application_name }}:latest"
 
+    - name: Pull new container image
+      command: /usr/bin/podman pull "{{ container_registry }}/{{ application_name }}:latest"
+
+    - name: Stop service
+      systemd:
+        scope: user
+        name: "{{ application_name }}"
+        state: stopped
+
     - name: Install systemd service
       become: true
       template:
         src: "templates/systemd-service.j2"
-        dest: "/etc/systemd/user/{{ application_name }}.service"
+        dest: ".config/systemd/user/{{ application_name }}.service"
 
-    - name: Enable medley systemd service
+    - name: Start systemd service
       systemd:
         scope: user
         daemon_reload: yes
         enabled: yes
         masked: no
         name: "{{ application_name }}"
-        state: restarted
+        state: started

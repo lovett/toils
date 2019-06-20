@@ -1,13 +1,11 @@
 [Unit]
 Description={{ application_name|capitalize }}
-After=network.target
 
 [Service]
-ExecStartPre=-/usr/bin/podman rm {{ application_name }}
-ExecStartPre=/usr/bin/podman pull {{ container_registry }}/{{ application_name }}:latest
 ExecStart=/usr/bin/podman run --rm --name {{ application_name }} -v {{ application_name }}_data:/srv/www/storage --publish 127.0.0.1:8102:80 {{ application_name }}
 
 ExecStop=/usr/bin/podman stop -t 10 {{ application_name }}
+
 KillMode=none
 
 [Install]
