@@ -82,6 +82,7 @@ class Invoice extends Model
         'end',
         'summary',
         'receiptType',
+        'abandonned',
     ];
 
     /**
@@ -110,6 +111,7 @@ class Invoice extends Model
         'sent',
         'start',
         'updated_at',
+        'abandonned',
     ];
 
     /**

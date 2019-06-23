@@ -15,7 +15,8 @@
             @foreach ($collection as $invoice)
                 @php($overdueClass = ($invoice->daysUntilDue < 0)? 'table-danger' : '')
                 @php($upcomingClass = ($invoice->daysUntilDue > 0)? 'table-warning' : '')
-                <tr class="{{ $overdueClass }} {{ $upcomingClass }}">
+                @php($abandonnedClass = ($invoice->abandonned)? 'table-dark' : '')
+                <tr class="{{ $overdueClass }} {{ $upcomingClass }} {{ $abandonnedClass }}">
                     <td>
                         <a href="{{ route('invoice.edit', $invoice) }}">
                             {{ $invoice->name }}
@@ -64,6 +65,11 @@
                                 {{ $invoice->daysUntilDue }}
                                 {{ str_plural('day', $invoice->daysUntilDue) }}
                                 <svg class="icon"><use xlink:href="#icon-clock"></use></svg>
+                            </p>
+                        @elseif ($invoice->abandonned)
+                            abandonned
+                            <p class="small">
+                                {{ TimeHelper::date($invoice->abandonned) }}
                             </p>
                         @else
                             overdue

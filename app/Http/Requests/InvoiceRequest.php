@@ -52,6 +52,7 @@ class InvoiceRequest extends FormRequest
             'sent' => 'nullable|date_format:Y-m-d',
             'due' => 'nullable|date_format:Y-m-d',
             'paid' => 'nullable|date_format:Y-m-d',
+            'abandonned' => 'nullable|date_format:Y-m-d',
             'receipt' => 'nullable|file|min:1|mimes:txt,pdf,jpeg,png',
         ];
     }
@@ -86,6 +87,30 @@ class InvoiceRequest extends FormRequest
                 sprintf('%s 11:59 PM', $this->input('end')),
                 $this->cookie('TIMEZONE', 'UTC')
             )->setTimezone('UTC');
+
+            if ($this->input('due')) {
+                $fields['due'] = Carbon::createFromFormat(
+                    'Y-m-d g:i A',
+                    sprintf('%s 12:00 AM', $this->input('due')),
+                    $this->cookie('TIMEZONE', 'UTC')
+                )->setTimezone('UTC');
+            }
+
+            if ($this->input('paid')) {
+                $fields['paid'] = Carbon::createFromFormat(
+                    'Y-m-d g:i A',
+                    sprintf('%s 12:00 AM', $this->input('paid')),
+                    $this->cookie('TIMEZONE', 'UTC')
+                )->setTimezone('UTC');
+            }
+
+            if ($this->input('abandonned')) {
+                $fields['abandonned'] = Carbon::createFromFormat(
+                    'Y-m-d g:i A',
+                    sprintf('%s 12:00 AM', $this->input('abandonned')),
+                    $this->cookie('TIMEZONE', 'UTC')
+                )->setTimezone('UTC');
+            }
 
             $this->merge($fields);
         });
