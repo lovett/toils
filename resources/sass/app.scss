@@ -107,15 +107,6 @@ address {
     }
 }
 
-.navbar {
-    padding-top: 0;
-    padding-bottom: 0;
-
-    .navbar-nav .nav-item {
-        padding: .25em 0;
-    }
-}
-
 .indent-for-hanging-icon {
     column-break-inside: avoid;
     break-inside: avoid;
@@ -130,6 +121,17 @@ ul.columnwise {
     }
 }
 
+.navbar-collapse {
+    margin-top: 1em;
+}
+
+.nav-item {
+    margin-left: -1rem;
+    margin-right: -1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
 @include media-breakpoint-up(md) {
     ul.columnwise {
         column-count: 2;
@@ -142,6 +144,21 @@ ul.columnwise {
 }
 
 @include media-breakpoint-up(xl) {
+    .navbar {
+        padding-top: 0;
+        padding-bottom: 0;
+
+        .navbar-collapse {
+            margin-top: 0;
+        }
+
+        .navbar-nav .nav-item {
+            padding: .25em 0;
+            margin-left: inherit;
+            margin-right: inherit;
+        }
+    }
+
     ul.columnwise {
         column-count: 4;
     }

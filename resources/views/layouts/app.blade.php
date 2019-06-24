@@ -58,17 +58,18 @@
             </symbol>
         </defs>
     </svg>
-    <nav class="navbar sticky-top navbar-expand-lg bg-white border-bottom mb-5">
+
+    <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-white border-bottom mb-4">
         <!-- Brand -->
         <a class="navbar-brand" href="{{ url('/') }}">
             {{ config('app.name') }}
         </a>
 
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-nav" aria-controls="main-nav" aria-expanded="false" aria-label="Toggle navigation" onclick="document.getElementById('main-nav').classList.toggle('collapse')">
+             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="app-navbar-collapse">
+        <div class="collapse navbar-collapse" id="main-nav">
             <ul class="navbar-nav ml-auto">
                 @guest
                 {!! LinkHelper::primaryNavLink('login', 'Login') !!}

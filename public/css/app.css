@@ -9344,14 +9344,6 @@ address {
   background-color: #efefef;
 }
 
-.navbar {
-  padding-top: 0;
-  padding-bottom: 0;
-}
-.navbar .navbar-nav .nav-item {
-  padding: 0.25em 0;
-}
-
 .indent-for-hanging-icon {
   column-break-inside: avoid;
   -webkit-column-break-inside: avoid;
@@ -9363,6 +9355,17 @@ address {
 ul.columnwise li {
   padding-bottom: 1em;
   line-height: 1.2;
+}
+
+.navbar-collapse {
+  margin-top: 1em;
+}
+
+.nav-item {
+  margin-left: -1rem;
+  margin-right: -1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 @media (min-width: 768px) {
@@ -9377,6 +9380,19 @@ ul.columnwise li {
   }
 }
 @media (min-width: 1200px) {
+  .navbar {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  .navbar .navbar-collapse {
+    margin-top: 0;
+  }
+  .navbar .navbar-nav .nav-item {
+    padding: 0.25em 0;
+    margin-left: inherit;
+    margin-right: inherit;
+  }
+
   ul.columnwise {
     -webkit-column-count: 4;
             column-count: 4;
