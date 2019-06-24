@@ -108,7 +108,7 @@
 
         @if (LinkHelper::showSubnav())
         <div class="container mb-4">
-            <ul class="nav nav-tabs">
+            <ul class="nav nav-tabs flex-column flex-lg-row">
                 @foreach (LinkHelper::getSubnav() as $link)
                     {!! $link !!}
                 @endforeach
