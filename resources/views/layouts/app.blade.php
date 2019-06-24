@@ -17,6 +17,10 @@
 <body>
     <svg class="d-none">
         <defs>
+            <symbol id="icon-bars" viewBox="0 0 24 28">
+                <title>bars</title>
+                <path d="M24 21v2c0 0.547-0.453 1-1 1h-22c-0.547 0-1-0.453-1-1v-2c0-0.547 0.453-1 1-1h22c0.547 0 1 0.453 1 1zM24 13v2c0 0.547-0.453 1-1 1h-22c-0.547 0-1-0.453-1-1v-2c0-0.547 0.453-1 1-1h22c0.547 0 1 0.453 1 1zM24 5v2c0 0.547-0.453 1-1 1h-22c-0.547 0-1-0.453-1-1v-2c0-0.547 0.453-1 1-1h22c0.547 0 1 0.453 1 1z"></path>
+            </symbol>
             <symbol id="icon-price-tag" viewBox="0 0 32 32">
             <title>price-tag</title>
             <path d="M30.5 0h-12c-0.825 0-1.977 0.477-2.561 1.061l-14.879 14.879c-0.583 0.583-0.583 1.538 0 2.121l12.879 12.879c0.583 0.583 1.538 0.583 2.121 0l14.879-14.879c0.583-0.583 1.061-1.736 1.061-2.561v-12c0-0.825-0.675-1.5-1.5-1.5zM23 12c-1.657 0-3-1.343-3-3s1.343-3 3-3 3 1.343 3 3-1.343 3-3 3z"></path>
@@ -60,13 +64,12 @@
     </svg>
 
     <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-white border-bottom mb-4">
-        <!-- Brand -->
         <a class="navbar-brand" href="{{ url('/') }}">
             {{ config('app.name') }}
         </a>
 
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-nav" aria-controls="main-nav" aria-expanded="false" aria-label="Toggle navigation" onclick="document.getElementById('main-nav').classList.toggle('collapse')">
-             <span class="navbar-toggler-icon"></span>
+        <button class="navbar-toggler" type="button" aria-controls="main-nav" aria-expanded="false" aria-label="Toggle navigation" onclick="document.getElementById('main-nav').classList.toggle('collapse')">
+            <svg class="icon"><use xlink:href="#icon-bars"></use></svg>
         </button>
 
         <div class="collapse navbar-collapse" id="main-nav">
