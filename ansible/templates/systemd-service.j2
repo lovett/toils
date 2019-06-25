@@ -2,7 +2,8 @@
 Description={{ application_name|capitalize }}
 
 [Service]
-ExecStart=/usr/bin/podman run --rm --name {{ application_name }} -v {{ application_name }}_data:/srv/www/storage --publish 127.0.0.1:8102:80 {{ application_name }}
+ExecStart=/usr/bin/podman run --rm --name {{ application_name }} --env MAIL_HOST={{ mail_host }} --env MAIL_USERNAME={{ mail_username }} --env MAIL_PASSWORD={{ mail_password }} --env MAIL_FROM_ADDRESS={{ mail_from_address }} --env MAIL_FROM_NAME={{ mail_from_name }} -v {{ application_name }}_data:/srv/www/storage --publish 127.0.0.1:8102:80 {{ application_name }}
+
 
 ExecStop=/usr/bin/podman stop -t 10 {{ application_name }}
 

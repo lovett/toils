@@ -123,6 +123,9 @@ php artisan key:generate
 # process. That file exists on the container filesytem and is
 # temporary. This one exists in the data volume mounted on
 # /srv/www/storage, and is permanent.
+#
+# The call to artisan config:cache happens here so that environment
+# variables are picked up when the container is started.
 cat <<EOF > "$MOUNT/usr/local/sbin/pre-init.sh"
 #!/bin/sh
 
@@ -138,13 +141,9 @@ if [ ! -f storage/toils.sqlite ]; then
 fi
 
 php artisan migrate --force --no-interaction
-EOF
+php artisan config:cache
 
-# Perform Laravel deployment optimizations.
-#
-# This runs from inside the container out of necessity. If it ran from
-# the host, artisan would see file paths relative to the host.
-buildah run "$WORK_CONTAINER" /bin/sh -c 'cd /srv/www; php artisan config:cache'
+EOF
 
 # The database placeholder is no longer needed.
 #
