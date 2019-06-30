@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use App\Traits\Search;
 use Carbon\Carbon;
+use Carbon\CarbonInterface;
 
 /**
  * Eloquent model for the clients table.
@@ -141,13 +142,19 @@ class Client extends Model
         $start = $this->time()->min('times.start');
         if ($start) {
             $stats['start'] = new Carbon($start);
-            $stats['age'] = Carbon::now()->diffForHumans($stats['start'], true);
+            $stats['age'] = Carbon::now()->diffForHumans(
+                $stats['start'],
+                CarbonInterface::DIFF_ABSOLUTE
+            );
         }
 
         if ((bool) $this->active === false) {
             $end = $this->time()->max('times.start');
             $stats['end'] = new Carbon($end);
-            $stats['duration'] = $stats['end']->diffForHumans($stats['start'], true);
+            $stats['duration'] = $stats['end']->diffForHumans(
+                $stats['start'],
+                CarbonInterface::DIFF_ABSOLUTE
+            );
         }
 
         return $stats;

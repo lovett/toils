@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Traits\Search;
 use Carbon\Carbon;
+use Carbon\CarbonInterface;
 
 /**
  * Eloquent model for the projects table.
@@ -255,13 +256,19 @@ class Project extends Model
         $start = $this->time()->min('times.start');
         if ($start) {
             $stats['start'] = new Carbon($start);
-            $stats['age'] = Carbon::now()->diffForHumans($stats['start'], true);
+            $stats['age'] = Carbon::now()->diffForHumans(
+                $stats['start'],
+                CarbonInterface::DIFF_ABSOLUTE
+            );
         }
 
         if ((bool) $this->active === false) {
             $end = $this->time()->max('times.start');
             $stats['end'] = new Carbon($end);
-            $stats['duration'] = $stats['end']->diffForHumans($stats['start'], true);
+            $stats['duration'] = $stats['end']->diffForHumans(
+                $stats['start'],
+                CarbonInterface::DIFF_ABSOLUTE
+            );
         }
 
         $stats['billable_minutes'] = $this->time()->billable()->sum('minutes');

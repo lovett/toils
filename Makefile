@@ -19,6 +19,7 @@ seed-full: dummy
 lint: dummy
 	phpmd app text phpmd.xml
 	phpcs -s app
+	php artisan code:analyse
 
 # Install NPM packages quietly.
 setup-js: export NPM_CONFIG_PROGRESS=false

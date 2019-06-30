@@ -396,10 +396,6 @@ class Time extends Model
             $intervalMultiplier = 1;
         }
 
-        if (isset($diffMethod) === false) {
-            throw new InvalidArgumentException('invalid timeInterval');
-        }
-
         $modelWhere = 'WHERE project_id=:modelId';
 
         if ($model instanceof Client) {

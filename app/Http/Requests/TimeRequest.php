@@ -91,7 +91,7 @@ class TimeRequest extends FormRequest
                 )->setTimezone('UTC');
 
                 if ($fields['start'] > $fields['end']) {
-                    $fields['end'] = $fields['end']->addDay(1);
+                    $fields['end'] = $fields['end']->addDay();
                 }
             }
 
