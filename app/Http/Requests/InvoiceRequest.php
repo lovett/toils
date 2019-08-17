@@ -88,6 +88,14 @@ class InvoiceRequest extends FormRequest
                 $this->cookie('TIMEZONE', 'UTC')
             )->setTimezone('UTC');
 
+            if ($this->input('sent')) {
+                $fields['sent'] = Carbon::createFromFormat(
+                    'Y-m-d g:i A',
+                    sprintf('%s 12:00 AM', $this->input('sent')),
+                    $this->cookie('TIMEZONE', 'UTC')
+                )->setTimezone('UTC');
+            }
+
             if ($this->input('due')) {
                 $fields['due'] = Carbon::createFromFormat(
                     'Y-m-d g:i A',
