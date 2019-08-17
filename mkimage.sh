@@ -2,7 +2,7 @@
 
 # Build a container image suitable for production use.
 #
-# This is where the source files for the application are brought info
+# This is where the source files for the application are brought into
 # the container's filesystem. It's also where composer packages get
 # installed and where the application is optimized for the production
 # environment.
@@ -11,9 +11,7 @@ set -e -u
 
 # This script uses the buildah mount command as an unprivileged user,
 # so it needs to be wrapped by the buildah unshare command. See the
-# buildah-unshare command for details.
-#
-#
+# buildah-unshare man page for details.
 if [[ $(ps -o args= -p $PPID) != "buildah-in-a-user-namespace unshare $0" ]]; then
     exec buildah unshare $0
 fi
