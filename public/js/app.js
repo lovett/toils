@@ -113,7 +113,6 @@ var buildURL = __webpack_require__(/*! ./../helpers/buildURL */ "./node_modules/
 var parseHeaders = __webpack_require__(/*! ./../helpers/parseHeaders */ "./node_modules/axios/lib/helpers/parseHeaders.js");
 var isURLSameOrigin = __webpack_require__(/*! ./../helpers/isURLSameOrigin */ "./node_modules/axios/lib/helpers/isURLSameOrigin.js");
 var createError = __webpack_require__(/*! ../core/createError */ "./node_modules/axios/lib/core/createError.js");
-var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(/*! ./../helpers/btoa */ "./node_modules/axios/lib/helpers/btoa.js");
 
 module.exports = function xhrAdapter(config) {
   return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -125,22 +124,6 @@ module.exports = function xhrAdapter(config) {
     }
 
     var request = new XMLHttpRequest();
-    var loadEvent = 'onreadystatechange';
-    var xDomain = false;
-
-    // For IE 8/9 CORS support
-    // Only supports POST and GET calls and doesn't returns the response headers.
-    // DON'T do this for testing b/c XMLHttpRequest is mocked, not XDomainRequest.
-    if ( true &&
-        typeof window !== 'undefined' &&
-        window.XDomainRequest && !('withCredentials' in request) &&
-        !isURLSameOrigin(config.url)) {
-      request = new window.XDomainRequest();
-      loadEvent = 'onload';
-      xDomain = true;
-      request.onprogress = function handleProgress() {};
-      request.ontimeout = function handleTimeout() {};
-    }
 
     // HTTP basic authentication
     if (config.auth) {
@@ -155,8 +138,8 @@ module.exports = function xhrAdapter(config) {
     request.timeout = config.timeout;
 
     // Listen for ready state
-    request[loadEvent] = function handleLoad() {
-      if (!request || (request.readyState !== 4 && !xDomain)) {
+    request.onreadystatechange = function handleLoad() {
+      if (!request || request.readyState !== 4) {
         return;
       }
 
@@ -173,15 +156,26 @@ module.exports = function xhrAdapter(config) {
       var responseData = !config.responseType || config.responseType === 'text' ? request.responseText : request.response;
       var response = {
         data: responseData,
-        // IE sends 1223 instead of 204 (https://github.com/axios/axios/issues/201)
-        status: request.status === 1223 ? 204 : request.status,
-        statusText: request.status === 1223 ? 'No Content' : request.statusText,
+        status: request.status,
+        statusText: request.statusText,
         headers: responseHeaders,
         config: config,
         request: request
       };
 
       settle(resolve, reject, response);
+
+      // Clean up request
+      request = null;
+    };
+
+    // Handle browser request cancellation (as opposed to a manual cancellation)
+    request.onabort = function handleAbort() {
+      if (!request) {
+        return;
+      }
+
+      reject(createError('Request aborted', config, 'ECONNABORTED', request));
 
       // Clean up request
       request = null;
@@ -214,8 +208,8 @@ module.exports = function xhrAdapter(config) {
 
       // Add xsrf header
       var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
-          cookies.read(config.xsrfCookieName) :
-          undefined;
+        cookies.read(config.xsrfCookieName) :
+        undefined;
 
       if (xsrfValue) {
         requestHeaders[config.xsrfHeaderName] = xsrfValue;
@@ -302,6 +296,7 @@ module.exports = function xhrAdapter(config) {
 var utils = __webpack_require__(/*! ./utils */ "./node_modules/axios/lib/utils.js");
 var bind = __webpack_require__(/*! ./helpers/bind */ "./node_modules/axios/lib/helpers/bind.js");
 var Axios = __webpack_require__(/*! ./core/Axios */ "./node_modules/axios/lib/core/Axios.js");
+var mergeConfig = __webpack_require__(/*! ./core/mergeConfig */ "./node_modules/axios/lib/core/mergeConfig.js");
 var defaults = __webpack_require__(/*! ./defaults */ "./node_modules/axios/lib/defaults.js");
 
 /**
@@ -331,7 +326,7 @@ axios.Axios = Axios;
 
 // Factory for creating new instances
 axios.create = function create(instanceConfig) {
-  return createInstance(utils.merge(defaults, instanceConfig));
+  return createInstance(mergeConfig(axios.defaults, instanceConfig));
 };
 
 // Expose Cancel & CancelToken
@@ -480,10 +475,11 @@ module.exports = function isCancel(value) {
 "use strict";
 
 
-var defaults = __webpack_require__(/*! ./../defaults */ "./node_modules/axios/lib/defaults.js");
 var utils = __webpack_require__(/*! ./../utils */ "./node_modules/axios/lib/utils.js");
+var buildURL = __webpack_require__(/*! ../helpers/buildURL */ "./node_modules/axios/lib/helpers/buildURL.js");
 var InterceptorManager = __webpack_require__(/*! ./InterceptorManager */ "./node_modules/axios/lib/core/InterceptorManager.js");
 var dispatchRequest = __webpack_require__(/*! ./dispatchRequest */ "./node_modules/axios/lib/core/dispatchRequest.js");
+var mergeConfig = __webpack_require__(/*! ./mergeConfig */ "./node_modules/axios/lib/core/mergeConfig.js");
 
 /**
  * Create a new instance of Axios
@@ -507,13 +503,14 @@ Axios.prototype.request = function request(config) {
   /*eslint no-param-reassign:0*/
   // Allow for axios('example/url'[, config]) a la fetch API
   if (typeof config === 'string') {
-    config = utils.merge({
-      url: arguments[0]
-    }, arguments[1]);
+    config = arguments[1] || {};
+    config.url = arguments[0];
+  } else {
+    config = config || {};
   }
 
-  config = utils.merge(defaults, {method: 'get'}, this.defaults, config);
-  config.method = config.method.toLowerCase();
+  config = mergeConfig(this.defaults, config);
+  config.method = config.method ? config.method.toLowerCase() : 'get';
 
   // Hook up interceptors middleware
   var chain = [dispatchRequest, undefined];
@@ -532,6 +529,11 @@ Axios.prototype.request = function request(config) {
   }
 
   return promise;
+};
+
+Axios.prototype.getUri = function getUri(config) {
+  config = mergeConfig(this.defaults, config);
+  return buildURL(config.url, config.params, config.paramsSerializer).replace(/^\?/, '');
 };
 
 // Provide aliases for supported request methods
@@ -778,9 +780,93 @@ module.exports = function enhanceError(error, config, code, request, response) {
   if (code) {
     error.code = code;
   }
+
   error.request = request;
   error.response = response;
+  error.isAxiosError = true;
+
+  error.toJSON = function() {
+    return {
+      // Standard
+      message: this.message,
+      name: this.name,
+      // Microsoft
+      description: this.description,
+      number: this.number,
+      // Mozilla
+      fileName: this.fileName,
+      lineNumber: this.lineNumber,
+      columnNumber: this.columnNumber,
+      stack: this.stack,
+      // Axios
+      config: this.config,
+      code: this.code
+    };
+  };
   return error;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/axios/lib/core/mergeConfig.js":
+/*!****************************************************!*\
+  !*** ./node_modules/axios/lib/core/mergeConfig.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(/*! ../utils */ "./node_modules/axios/lib/utils.js");
+
+/**
+ * Config-specific merge-function which creates a new config-object
+ * by merging two configuration objects together.
+ *
+ * @param {Object} config1
+ * @param {Object} config2
+ * @returns {Object} New object resulting from merging config2 to config1
+ */
+module.exports = function mergeConfig(config1, config2) {
+  // eslint-disable-next-line no-param-reassign
+  config2 = config2 || {};
+  var config = {};
+
+  utils.forEach(['url', 'method', 'params', 'data'], function valueFromConfig2(prop) {
+    if (typeof config2[prop] !== 'undefined') {
+      config[prop] = config2[prop];
+    }
+  });
+
+  utils.forEach(['headers', 'auth', 'proxy'], function mergeDeepProperties(prop) {
+    if (utils.isObject(config2[prop])) {
+      config[prop] = utils.deepMerge(config1[prop], config2[prop]);
+    } else if (typeof config2[prop] !== 'undefined') {
+      config[prop] = config2[prop];
+    } else if (utils.isObject(config1[prop])) {
+      config[prop] = utils.deepMerge(config1[prop]);
+    } else if (typeof config1[prop] !== 'undefined') {
+      config[prop] = config1[prop];
+    }
+  });
+
+  utils.forEach([
+    'baseURL', 'transformRequest', 'transformResponse', 'paramsSerializer',
+    'timeout', 'withCredentials', 'adapter', 'responseType', 'xsrfCookieName',
+    'xsrfHeaderName', 'onUploadProgress', 'onDownloadProgress', 'maxContentLength',
+    'validateStatus', 'maxRedirects', 'httpAgent', 'httpsAgent', 'cancelToken',
+    'socketPath'
+  ], function defaultToConfig2(prop) {
+    if (typeof config2[prop] !== 'undefined') {
+      config[prop] = config2[prop];
+    } else if (typeof config1[prop] !== 'undefined') {
+      config[prop] = config1[prop];
+    }
+  });
+
+  return config;
 };
 
 
@@ -807,8 +893,7 @@ var createError = __webpack_require__(/*! ./createError */ "./node_modules/axios
  */
 module.exports = function settle(resolve, reject, response) {
   var validateStatus = response.config.validateStatus;
-  // Note: status is not exposed by XDomainRequest
-  if (!response.status || !validateStatus || validateStatus(response.status)) {
+  if (!validateStatus || validateStatus(response.status)) {
     resolve(response);
   } else {
     reject(createError(
@@ -881,12 +966,13 @@ function setContentTypeIfUnset(headers, value) {
 
 function getDefaultAdapter() {
   var adapter;
-  if (typeof XMLHttpRequest !== 'undefined') {
-    // For browsers use XHR adapter
-    adapter = __webpack_require__(/*! ./adapters/xhr */ "./node_modules/axios/lib/adapters/xhr.js");
-  } else if (typeof process !== 'undefined') {
+  // Only Node.JS has a process variable that is of [[Class]] process
+  if (typeof process !== 'undefined' && Object.prototype.toString.call(process) === '[object process]') {
     // For node use HTTP adapter
     adapter = __webpack_require__(/*! ./adapters/http */ "./node_modules/axios/lib/adapters/xhr.js");
+  } else if (typeof XMLHttpRequest !== 'undefined') {
+    // For browsers use XHR adapter
+    adapter = __webpack_require__(/*! ./adapters/xhr */ "./node_modules/axios/lib/adapters/xhr.js");
   }
   return adapter;
 }
@@ -895,6 +981,7 @@ var defaults = {
   adapter: getDefaultAdapter(),
 
   transformRequest: [function transformRequest(data, headers) {
+    normalizeHeaderName(headers, 'Accept');
     normalizeHeaderName(headers, 'Content-Type');
     if (utils.isFormData(data) ||
       utils.isArrayBuffer(data) ||
@@ -988,54 +1075,6 @@ module.exports = function bind(fn, thisArg) {
 
 /***/ }),
 
-/***/ "./node_modules/axios/lib/helpers/btoa.js":
-/*!************************************************!*\
-  !*** ./node_modules/axios/lib/helpers/btoa.js ***!
-  \************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-// btoa polyfill for IE<10 courtesy https://github.com/davidchambers/Base64.js
-
-var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
-
-function E() {
-  this.message = 'String contains an invalid character';
-}
-E.prototype = new Error;
-E.prototype.code = 5;
-E.prototype.name = 'InvalidCharacterError';
-
-function btoa(input) {
-  var str = String(input);
-  var output = '';
-  for (
-    // initialize result and counter
-    var block, charCode, idx = 0, map = chars;
-    // if the next str index does not exist:
-    //   change the mapping table to "="
-    //   check if d has no fractional digits
-    str.charAt(idx | 0) || (map = '=', idx % 1);
-    // "8 - idx % 1 * 8" generates the sequence 2, 4, 6, 8
-    output += map.charAt(63 & block >> 8 - idx % 1 * 8)
-  ) {
-    charCode = str.charCodeAt(idx += 3 / 4);
-    if (charCode > 0xFF) {
-      throw new E();
-    }
-    block = block << 8 | charCode;
-  }
-  return output;
-}
-
-module.exports = btoa;
-
-
-/***/ }),
-
 /***/ "./node_modules/axios/lib/helpers/buildURL.js":
 /*!****************************************************!*\
   !*** ./node_modules/axios/lib/helpers/buildURL.js ***!
@@ -1105,6 +1144,11 @@ module.exports = function buildURL(url, params, paramsSerializer) {
   }
 
   if (serializedParams) {
+    var hashmarkIndex = url.indexOf('#');
+    if (hashmarkIndex !== -1) {
+      url = url.slice(0, hashmarkIndex);
+    }
+
     url += (url.indexOf('?') === -1 ? '?' : '&') + serializedParams;
   }
 
@@ -1156,50 +1200,50 @@ module.exports = (
   utils.isStandardBrowserEnv() ?
 
   // Standard browser envs support document.cookie
-  (function standardBrowserEnv() {
-    return {
-      write: function write(name, value, expires, path, domain, secure) {
-        var cookie = [];
-        cookie.push(name + '=' + encodeURIComponent(value));
+    (function standardBrowserEnv() {
+      return {
+        write: function write(name, value, expires, path, domain, secure) {
+          var cookie = [];
+          cookie.push(name + '=' + encodeURIComponent(value));
 
-        if (utils.isNumber(expires)) {
-          cookie.push('expires=' + new Date(expires).toGMTString());
+          if (utils.isNumber(expires)) {
+            cookie.push('expires=' + new Date(expires).toGMTString());
+          }
+
+          if (utils.isString(path)) {
+            cookie.push('path=' + path);
+          }
+
+          if (utils.isString(domain)) {
+            cookie.push('domain=' + domain);
+          }
+
+          if (secure === true) {
+            cookie.push('secure');
+          }
+
+          document.cookie = cookie.join('; ');
+        },
+
+        read: function read(name) {
+          var match = document.cookie.match(new RegExp('(^|;\\s*)(' + name + ')=([^;]*)'));
+          return (match ? decodeURIComponent(match[3]) : null);
+        },
+
+        remove: function remove(name) {
+          this.write(name, '', Date.now() - 86400000);
         }
-
-        if (utils.isString(path)) {
-          cookie.push('path=' + path);
-        }
-
-        if (utils.isString(domain)) {
-          cookie.push('domain=' + domain);
-        }
-
-        if (secure === true) {
-          cookie.push('secure');
-        }
-
-        document.cookie = cookie.join('; ');
-      },
-
-      read: function read(name) {
-        var match = document.cookie.match(new RegExp('(^|;\\s*)(' + name + ')=([^;]*)'));
-        return (match ? decodeURIComponent(match[3]) : null);
-      },
-
-      remove: function remove(name) {
-        this.write(name, '', Date.now() - 86400000);
-      }
-    };
-  })() :
+      };
+    })() :
 
   // Non standard browser env (web workers, react-native) lack needed support.
-  (function nonStandardBrowserEnv() {
-    return {
-      write: function write() {},
-      read: function read() { return null; },
-      remove: function remove() {}
-    };
-  })()
+    (function nonStandardBrowserEnv() {
+      return {
+        write: function write() {},
+        read: function read() { return null; },
+        remove: function remove() {}
+      };
+    })()
 );
 
 
@@ -1248,64 +1292,64 @@ module.exports = (
 
   // Standard browser envs have full support of the APIs needed to test
   // whether the request URL is of the same origin as current location.
-  (function standardBrowserEnv() {
-    var msie = /(msie|trident)/i.test(navigator.userAgent);
-    var urlParsingNode = document.createElement('a');
-    var originURL;
+    (function standardBrowserEnv() {
+      var msie = /(msie|trident)/i.test(navigator.userAgent);
+      var urlParsingNode = document.createElement('a');
+      var originURL;
 
-    /**
+      /**
     * Parse a URL to discover it's components
     *
     * @param {String} url The URL to be parsed
     * @returns {Object}
     */
-    function resolveURL(url) {
-      var href = url;
+      function resolveURL(url) {
+        var href = url;
 
-      if (msie) {
+        if (msie) {
         // IE needs attribute set twice to normalize properties
+          urlParsingNode.setAttribute('href', href);
+          href = urlParsingNode.href;
+        }
+
         urlParsingNode.setAttribute('href', href);
-        href = urlParsingNode.href;
+
+        // urlParsingNode provides the UrlUtils interface - http://url.spec.whatwg.org/#urlutils
+        return {
+          href: urlParsingNode.href,
+          protocol: urlParsingNode.protocol ? urlParsingNode.protocol.replace(/:$/, '') : '',
+          host: urlParsingNode.host,
+          search: urlParsingNode.search ? urlParsingNode.search.replace(/^\?/, '') : '',
+          hash: urlParsingNode.hash ? urlParsingNode.hash.replace(/^#/, '') : '',
+          hostname: urlParsingNode.hostname,
+          port: urlParsingNode.port,
+          pathname: (urlParsingNode.pathname.charAt(0) === '/') ?
+            urlParsingNode.pathname :
+            '/' + urlParsingNode.pathname
+        };
       }
 
-      urlParsingNode.setAttribute('href', href);
+      originURL = resolveURL(window.location.href);
 
-      // urlParsingNode provides the UrlUtils interface - http://url.spec.whatwg.org/#urlutils
-      return {
-        href: urlParsingNode.href,
-        protocol: urlParsingNode.protocol ? urlParsingNode.protocol.replace(/:$/, '') : '',
-        host: urlParsingNode.host,
-        search: urlParsingNode.search ? urlParsingNode.search.replace(/^\?/, '') : '',
-        hash: urlParsingNode.hash ? urlParsingNode.hash.replace(/^#/, '') : '',
-        hostname: urlParsingNode.hostname,
-        port: urlParsingNode.port,
-        pathname: (urlParsingNode.pathname.charAt(0) === '/') ?
-                  urlParsingNode.pathname :
-                  '/' + urlParsingNode.pathname
-      };
-    }
-
-    originURL = resolveURL(window.location.href);
-
-    /**
+      /**
     * Determine if a URL shares the same origin as the current location
     *
     * @param {String} requestURL The URL to test
     * @returns {boolean} True if URL shares the same origin, otherwise false
     */
-    return function isURLSameOrigin(requestURL) {
-      var parsed = (utils.isString(requestURL)) ? resolveURL(requestURL) : requestURL;
-      return (parsed.protocol === originURL.protocol &&
+      return function isURLSameOrigin(requestURL) {
+        var parsed = (utils.isString(requestURL)) ? resolveURL(requestURL) : requestURL;
+        return (parsed.protocol === originURL.protocol &&
             parsed.host === originURL.host);
-    };
-  })() :
+      };
+    })() :
 
   // Non standard browser envs (web workers, react-native) lack needed support.
-  (function nonStandardBrowserEnv() {
-    return function isURLSameOrigin() {
-      return true;
-    };
-  })()
+    (function nonStandardBrowserEnv() {
+      return function isURLSameOrigin() {
+        return true;
+      };
+    })()
 );
 
 
@@ -1626,9 +1670,13 @@ function trim(str) {
  *
  * react-native:
  *  navigator.product -> 'ReactNative'
+ * nativescript
+ *  navigator.product -> 'NativeScript' or 'NS'
  */
 function isStandardBrowserEnv() {
-  if (typeof navigator !== 'undefined' && navigator.product === 'ReactNative') {
+  if (typeof navigator !== 'undefined' && (navigator.product === 'ReactNative' ||
+                                           navigator.product === 'NativeScript' ||
+                                           navigator.product === 'NS')) {
     return false;
   }
   return (
@@ -1710,6 +1758,32 @@ function merge(/* obj1, obj2, obj3, ... */) {
 }
 
 /**
+ * Function equal to merge with the difference being that no reference
+ * to original objects is kept.
+ *
+ * @see merge
+ * @param {Object} obj1 Object to merge
+ * @returns {Object} Result of all merge properties
+ */
+function deepMerge(/* obj1, obj2, obj3, ... */) {
+  var result = {};
+  function assignValue(val, key) {
+    if (typeof result[key] === 'object' && typeof val === 'object') {
+      result[key] = deepMerge(result[key], val);
+    } else if (typeof val === 'object') {
+      result[key] = deepMerge({}, val);
+    } else {
+      result[key] = val;
+    }
+  }
+
+  for (var i = 0, l = arguments.length; i < l; i++) {
+    forEach(arguments[i], assignValue);
+  }
+  return result;
+}
+
+/**
  * Extends object a by mutably adding to it the properties of object b.
  *
  * @param {Object} a The object to be extended
@@ -1747,6 +1821,7 @@ module.exports = {
   isStandardBrowserEnv: isStandardBrowserEnv,
   forEach: forEach,
   merge: merge,
+  deepMerge: deepMerge,
   extend: extend,
   trim: trim
 };
@@ -1768,7 +1843,7 @@ module.exports = {
     // This can be useful when the form has been prepopulated server-side.
     autofetch: {
       type: Boolean,
-      default: false
+      "default": false
     },
     // Whether the component should be active.
     //
@@ -1776,7 +1851,7 @@ module.exports = {
     // functionality is desired for adds but not for edits.
     enabled: {
       type: Boolean,
-      default: true
+      "default": true
     },
     // A space-delimited list of field names participating in autofill.
     //
@@ -1785,7 +1860,7 @@ module.exports = {
     // created: previous and suggested.
     fields: {
       type: String,
-      default: ''
+      "default": ''
     },
     // The endpoint that will provide autofill values.
     url: {
@@ -1858,7 +1933,7 @@ module.exports = {
             self[dataKey] = jsonGroup[jsonKey];
           });
         });
-      }).catch(function () {// Fail silently. Autofilling is a convenience rather than a necessity.
+      })["catch"](function () {// Fail silently. Autofilling is a convenience rather than a necessity.
       });
     })
   }
@@ -1900,15 +1975,15 @@ module.exports = {
   props: {
     suggestion: {
       type: [String, Number],
-      default: ''
+      "default": ''
     },
     previous: {
       type: [String, Number],
-      default: ''
+      "default": ''
     },
     fieldSelector: {
       type: String,
-      default: ''
+      "default": ''
     }
   },
   data: function data() {
@@ -1967,11 +2042,11 @@ module.exports = {
   props: {
     facets: {
       type: String,
-      default: ''
+      "default": ''
     },
     query: {
       type: String,
-      default: ''
+      "default": ''
     }
   },
   data: function data() {
@@ -2136,23 +2211,23 @@ module.exports = {
   props: {
     format: {
       type: String,
-      default: 'YYYY-MM-DD'
+      "default": 'YYYY-MM-DD'
     },
     groups: {
       type: String,
-      default: ''
+      "default": ''
     },
     initialValue: {
       type: String,
-      default: ''
+      "default": ''
     },
     previousValue: {
       type: String,
-      default: ''
+      "default": ''
     },
     suggestedValue: {
       type: String,
-      default: ''
+      "default": ''
     },
     name: {
       type: String
@@ -3105,6 +3180,8 @@ var _default = {
       on: {
         click: function click(e) {
           // Ensure click on button HTML content is also disabled
+
+          /* istanbul ignore if: bug in JSDOM still emits click on inner element */
           if (props.disabled && e instanceof Event) {
             e.stopPropagation();
             e.preventDefault();
@@ -3645,6 +3722,100 @@ exports.default = _default;
 
 /***/ }),
 
+/***/ "./node_modules/bootstrap-vue/es/components/card/card-img-lazy.js":
+/*!************************************************************************!*\
+  !*** ./node_modules/bootstrap-vue/es/components/card/card-img-lazy.js ***!
+  \************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.default = exports.props = void 0;
+
+var _imgLazy = __webpack_require__(/*! ../image/img-lazy */ "./node_modules/bootstrap-vue/es/components/image/img-lazy.js");
+
+var _object = __webpack_require__(/*! ../../utils/object */ "./node_modules/bootstrap-vue/es/utils/object.js");
+
+var _vueFunctionalDataMerge = __webpack_require__(/*! vue-functional-data-merge */ "./node_modules/vue-functional-data-merge/dist/lib.esm.js");
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+// Copy of `<b-img-lazy>` props, and remove conflicting/non-applicable props
+// The `omit()` util creates a new object, so we can just pass the original props
+var lazyProps = (0, _object.omit)(_imgLazy.default.props, ['left', 'right', 'center', 'block', 'rounded', 'thumbnail', 'fluid', 'fluidGrow']);
+
+var props = _objectSpread({}, lazyProps, {
+  top: {
+    type: Boolean,
+    default: false
+  },
+  bottom: {
+    type: Boolean,
+    default: false
+  },
+  left: {
+    type: Boolean,
+    default: false
+  },
+  start: {
+    type: Boolean,
+    default: false // alias of 'left'
+
+  },
+  right: {
+    type: Boolean,
+    default: false
+  },
+  end: {
+    type: Boolean,
+    default: false // alias of 'right'
+
+  } // @vue/component
+
+});
+
+exports.props = props;
+var _default = {
+  name: 'BCardImgLazy',
+  functional: true,
+  props: props,
+  render: function render(h, _ref) {
+    var props = _ref.props,
+        data = _ref.data;
+    var baseClass = 'card-img';
+
+    if (props.top) {
+      baseClass += '-top';
+    } else if (props.right || props.end) {
+      baseClass += '-right';
+    } else if (props.bottom) {
+      baseClass += '-bottom';
+    } else if (props.left || props.start) {
+      baseClass += '-left';
+    } // False out the left/center/right props before passing to b-img-lazy
+
+
+    var lazyProps = _objectSpread({}, props, {
+      left: false,
+      right: false,
+      center: false
+    });
+
+    return h(_imgLazy.default, (0, _vueFunctionalDataMerge.mergeData)(data, {
+      class: [baseClass],
+      props: lazyProps
+    }));
+  }
+};
+exports.default = _default;
+
+/***/ }),
+
 /***/ "./node_modules/bootstrap-vue/es/components/card/card-img.js":
 /*!*******************************************************************!*\
   !*** ./node_modules/bootstrap-vue/es/components/card/card-img.js ***!
@@ -4026,6 +4197,8 @@ var _cardFooter = __webpack_require__(/*! ./card-footer */ "./node_modules/boots
 
 var _cardImg = __webpack_require__(/*! ./card-img */ "./node_modules/bootstrap-vue/es/components/card/card-img.js");
 
+var _cardImgLazy = __webpack_require__(/*! ./card-img-lazy */ "./node_modules/bootstrap-vue/es/components/card/card-img-lazy.js");
+
 var _cardText = __webpack_require__(/*! ./card-text */ "./node_modules/bootstrap-vue/es/components/card/card-text.js");
 
 var _cardGroup = __webpack_require__(/*! ./card-group */ "./node_modules/bootstrap-vue/es/components/card/card-group.js");
@@ -4040,6 +4213,7 @@ var components = {
   BCardSubTitle: _cardSubTitle.default,
   BCardFooter: _cardFooter.default,
   BCardImg: _cardImg.default,
+  BCardImgLazy: _cardImgLazy.default,
   BCardText: _cardText.default,
   BCardGroup: _cardGroup.default
 };
@@ -4081,8 +4255,7 @@ var _default2 = {
   },
   mixins: [_id.default],
   inject: {
-    carousel: {
-      from: 'carousel',
+    bvCarousel: {
       default: function _default() {
         return {
           // Explicitly disable touch if not a child of carousel
@@ -4156,16 +4329,16 @@ var _default2 = {
     },
     computedWidth: function computedWidth() {
       // Use local width, or try parent width
-      return this.imgWidth || this.carousel.imgWidth || null;
+      return this.imgWidth || this.bvCarousel.imgWidth || null;
     },
     computedHeight: function computedHeight() {
       // Use local height, or try parent height
-      return this.imgHeight || this.carousel.imgHeight || null;
+      return this.imgHeight || this.bvCarousel.imgHeight || null;
     }
   },
   render: function render(h) {
     var $slots = this.$slots;
-    var noDrag = !this.carousel.noTouch && _env.hasTouchSupport;
+    var noDrag = !this.bvCarousel.noTouch && _env.hasTouchSupport;
     var img = $slots.img;
 
     if (!img && (this.imgSrc || this.imgBlank)) {
@@ -4204,7 +4377,7 @@ var _default2 = {
     return h('div', {
       staticClass: 'carousel-item',
       style: {
-        background: this.background || this.carousel.background || null
+        background: this.background || this.bvCarousel.background || null
       },
       attrs: {
         id: this.safeId(),
@@ -4293,7 +4466,7 @@ var _default = {
   mixins: [_id.default],
   provide: function provide() {
     return {
-      carousel: this
+      bvCarousel: this
     };
   },
   props: {
@@ -5339,16 +5512,15 @@ exports.props = props;
 var _default = {
   name: 'BDropdownItemButton',
   inject: {
-    dropdown: {
-      from: 'dropdown',
+    bvDropdown: {
       default: null
     }
   },
   props: props,
   methods: {
     closeDropdown: function closeDropdown() {
-      if (this.dropdown) {
-        this.dropdown.hide(true);
+      if (this.bvDropdown) {
+        this.bvDropdown.hide(true);
       }
     },
     onClick: function onClick(evt) {
@@ -5396,16 +5568,15 @@ exports.props = props;
 var _default = {
   name: 'BDropdownItem',
   inject: {
-    dropdown: {
-      from: 'dropdown',
+    bvDropdown: {
       default: null
     }
   },
   props: props,
   methods: {
     closeDropdown: function closeDropdown() {
-      if (this.dropdown) {
-        this.dropdown.hide(true);
+      if (this.bvDropdown) {
+        this.bvDropdown.hide(true);
       }
     },
     onClick: function onClick(evt) {
@@ -5844,7 +6015,7 @@ var _default = {
   components: {
     BFormCheckbox: _formCheckbox.default
   },
-  mixins: [_id.default, _form.default, _formRadioCheckGroup.default, // includes render function
+  mixins: [_id.default, _form.default, _formRadioCheckGroup.default, // Includes render function
   _formOptions.default, _formSize.default, _formState.default],
   provide: function provide() {
     return {
@@ -5907,16 +6078,14 @@ var _looseEqual = __webpack_require__(/*! ../../utils/loose-equal */ "./node_mod
 var _looseIndexOf = __webpack_require__(/*! ../../utils/loose-index-of */ "./node_modules/bootstrap-vue/es/utils/loose-index-of.js");
 
 // @vue/component
-var _default2 = {
+var _default = {
   name: 'BFormCheckbox',
-  mixins: [_formRadioCheck.default, // includes shared render function
+  mixins: [_formRadioCheck.default, // Includes shared render function
   _id.default, _form.default, _formSize.default, _formState.default],
   inject: {
     bvGroup: {
       from: 'bvCheckGroup',
-      default: function _default() {
-        return this;
-      }
+      default: false
     }
   },
   props: {
@@ -5993,10 +6162,10 @@ var _default2 = {
         var idx = (0, _looseIndexOf.default)(localChecked, value);
 
         if (checked && idx < 0) {
-          // add value to array
+          // Add value to array
           localChecked = localChecked.concat(value);
         } else if (!checked && idx > -1) {
-          // remove value from array
+          // Remove value from array
           localChecked = localChecked.slice(0, idx).concat(localChecked.slice(idx + 1));
         }
       } else {
@@ -6027,7 +6196,7 @@ var _default2 = {
     }
   }
 };
-exports.default = _default2;
+exports.default = _default;
 
 /***/ }),
 
@@ -6090,8 +6259,6 @@ var _formCustom = __webpack_require__(/*! ../../mixins/form-custom */ "./node_mo
 
 var _array = __webpack_require__(/*! ../../utils/array */ "./node_modules/bootstrap-vue/es/utils/array.js");
 
-var _looseEqual = __webpack_require__(/*! ../../utils/loose-equal */ "./node_modules/bootstrap-vue/es/utils/loose-equal.js");
-
 // @vue/component
 var _default = {
   name: 'BFormFile',
@@ -6152,7 +6319,7 @@ var _default = {
       // Draging active
       if (this.dragging && this.dropPlaceholder) {
         return this.dropPlaceholder;
-      } // No file choosen
+      } // No file chosen
 
 
       if (!this.selectedFile || this.selectedFile.length === 0) {
@@ -6161,10 +6328,6 @@ var _default = {
 
 
       if (this.multiple) {
-        if (this.selectedFile.length === 1) {
-          return this.selectedFile[0].name;
-        }
-
         return this.selectedFile.map(function (file) {
           return file.name;
         }).join(', ');
@@ -6176,7 +6339,13 @@ var _default = {
   },
   watch: {
     selectedFile: function selectedFile(newVal, oldVal) {
-      if ((0, _looseEqual.default)(newVal, oldVal)) {
+      // The following test is needed when the file input is "reset" or the
+      // exact same file(s) are selected to prevent an infinite loop.
+      // When in `multiple` mode we need to check for two empty arrays or
+      // two arrays with identical files
+      if (newVal === oldVal || (0, _array.isArray)(newVal) && (0, _array.isArray)(oldVal) && newVal.length === oldVal.length && newVal.every(function (v, i) {
+        return v === oldVal[i];
+      })) {
         return;
       }
 
@@ -6194,9 +6363,9 @@ var _default = {
   },
   methods: {
     focusHandler: function focusHandler(evt) {
-      // Bootstrap v4.beta doesn't have focus styling for custom file input
-      // Firefox has a borked '[type=file]:focus ~ sibling' selector issue,
-      // So we add a 'focus' class to get around these "bugs"
+      // Bootstrap v4 doesn't have focus styling for custom file input
+      // Firefox has a '[type=file]:focus ~ sibling' selector issue,
+      // so we add a 'focus' class to get around these bugs
       if (this.plain || evt.type === 'focusout') {
         this.hasFocus = false;
       } else {
@@ -6206,10 +6375,10 @@ var _default = {
     },
     reset: function reset() {
       try {
-        // Wrapped in try in case IE < 11 craps out
+        // Wrapped in try in case IE 11 craps out
         this.$refs.input.value = '';
-      } catch (e) {} // IE < 11 doesn't support setting input.value to '' or null
-      // So we use this little extra hack to reset the value, just in case
+      } catch (e) {} // IE 11 doesn't support setting `input.value` to '' or null
+      // So we use this little extra hack to reset the value, just in case.
       // This also appears to work on modern browsers as well.
 
 
@@ -6227,6 +6396,7 @@ var _default = {
       var items = evt.dataTransfer && evt.dataTransfer.items;
 
       if (items && !this.noTraverse) {
+        /* istanbul ignore next: not supported in JSDOM */
         var queue = [];
 
         for (var i = 0; i < items.length; i++) {
@@ -6246,8 +6416,11 @@ var _default = {
 
       this.setFiles(evt.target.files || evt.dataTransfer.files);
     },
-    setFiles: function setFiles(files) {
+    setFiles: function setFiles() {
+      var files = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+
       if (!files) {
+        /* istanbul ignore next: this will probably not happen */
         this.selectedFile = null;
       } else if (this.multiple) {
         // Convert files to array
@@ -6261,7 +6434,7 @@ var _default = {
         this.selectedFile = filesArray;
       } else {
         // Return single file object
-        this.selectedFile = files[0];
+        this.selectedFile = files[0] || null;
       }
     },
     onReset: function onReset() {
@@ -6298,7 +6471,9 @@ var _default = {
         this.onFileChange(evt);
       }
     },
-    traverseFileTree: function traverseFileTree(item, path) {
+    traverseFileTree: function traverseFileTree(item, path)
+    /* istanbul ignore next: not supported in JSDOM */
+    {
       var _this2 = this;
 
       // Based on http://stackoverflow.com/questions/3590058
@@ -6942,10 +7117,8 @@ var _default = {
   name: 'BFormInput',
   mixins: [_id.default, _form.default, _formSize.default, _formState.default, _formText.default, _formSelection.default, _formValidity.default],
   props: {
-    value: {
-      type: [String, Number],
-      default: null
-    },
+    // value prop defined in form-text mixin
+    // value: { },
     type: {
       type: String,
       default: 'text',
@@ -6968,6 +7141,10 @@ var _default = {
     },
     step: {
       type: [String, Number],
+      default: null
+    },
+    list: {
+      type: String,
       default: null
     }
   },
@@ -7049,6 +7226,7 @@ var _default = {
         min: self.min,
         max: self.max,
         step: self.step,
+        list: self.localType !== 'password' ? self.list : null,
         'aria-required': self.required ? 'true' : null,
         'aria-invalid': self.computedAriaInvalid
       },
@@ -7130,7 +7308,7 @@ var _default = {
   components: {
     BFormRadio: _formRadio.default
   },
-  mixins: [_id.default, _form.default, _formRadioCheckGroup.default, // includes render function
+  mixins: [_id.default, _form.default, _formRadioCheckGroup.default, // Includes render function
   _formOptions.default, _formSize.default, _formState.default],
   provide: function provide() {
     return {
@@ -7184,16 +7362,14 @@ var _formRadioCheck = __webpack_require__(/*! ../../mixins/form-radio-check */ "
 var _looseEqual = __webpack_require__(/*! ../../utils/loose-equal */ "./node_modules/bootstrap-vue/es/utils/loose-equal.js");
 
 // @vue/component
-var _default2 = {
+var _default = {
   name: 'BFormRadio',
-  mixins: [_id.default, _formRadioCheck.default, // includes shared render function
+  mixins: [_id.default, _formRadioCheck.default, // Includes shared render function
   _form.default, _formSize.default, _formState.default],
   inject: {
     bvGroup: {
       from: 'bvRadioGroup',
-      default: function _default() {
-        return this;
-      }
+      default: false
     }
   },
   props: {
@@ -7208,6 +7384,7 @@ var _default2 = {
     is_Checked: function is_Checked() {
       return (0, _looseEqual.default)(this.value, this.computedLocalChecked);
     },
+    // Flags for form-radio-check mixin
     is_Radio: function is_Radio() {
       return true;
     },
@@ -7235,7 +7412,7 @@ var _default2 = {
     }
   }
 };
-exports.default = _default2;
+exports.default = _default;
 
 /***/ }),
 
@@ -7509,6 +7686,11 @@ var _default = {
       // Disable the resize handle of textarea
       type: Boolean,
       default: false
+    },
+    noAutoShrink: {
+      // When in auto resize mode, disable shrinking to content height
+      type: Boolean,
+      default: false
     }
   },
   data: function data() {
@@ -7518,42 +7700,49 @@ var _default = {
   },
   computed: {
     computedStyle: function computedStyle() {
-      return {
-        // setting noResize to true will disable the ability for the user to
-        // resize the textarea. We also disable when in auto resize mode
-        resize: !this.computedRows || this.noResize ? 'none' : null,
-        // The computed height for auto resize
-        height: this.computedHeight
+      var styles = {
+        // Setting `noResize` to true will disable the ability for the user to
+        // manually resize the textarea. We also disable when in auto resize mode
+        resize: !this.computedRows || this.noResize ? 'none' : null
       };
+
+      if (!this.computedRows) {
+        // The computed height for auto resize.
+        // We avoid setting the style to null, which can override user manual resize.
+        styles.height = this.computedHeight;
+      }
+
+      return styles;
     },
     computedMinRows: function computedMinRows() {
-      // Ensure rows is at least 2 and positive (2 is the native textarea value)
+      // Ensure rows is at least 2 and positive (2 is the native textarea value).
+      // A value of 1 can cause issues in some browsers, and most browsers only support
+      // 2 as the smallest value.
       return Math.max(parseInt(this.rows, 10) || 2, 2);
     },
     computedMaxRows: function computedMaxRows() {
       return Math.max(this.computedMinRows, parseInt(this.maxRows, 10) || 0);
     },
     computedRows: function computedRows() {
+      // This is used to set the attribute 'rows' on the textarea.
+      // If auto-resize is enabled, then we return null as we use CSS to control height.
       return this.computedMinRows === this.computedMaxRows ? this.computedMinRows : null;
     },
     computedHeight: function computedHeight()
     /* istanbul ignore next: can't test getComputedProperties */
     {
-      var el = this.$el;
-
-      if (this.isServer) {
+      // We compare `computedRows` and `localValue` to `true`, a value
+      // they both can't have at any time, to ensure reactivity
+      if (this.$isServer || this.dontResize || this.computedRows === true || this.localValue === true) {
         return null;
-      } // We compare this.localValue to null to ensure reactivity of content changes.
+      }
 
-
-      if (this.localValue === null || this.computedRows || this.dontResize || this.$isServer) {
-        return null;
-      } // Element must be visible (not hidden) and in document. *Must* be checked after above.
-
+      var el = this.$el; // Element must be visible (not hidden) and in document
+      // *Must* be checked after above checks
 
       if (!(0, _dom.isVisible)(el)) {
         return null;
-      } // Remember old height and reset it temporarily
+      } // Remember old height (includes `px` units) and reset it temporarily to `auto`
 
 
       var oldHeight = el.style.height;
@@ -7567,13 +7756,22 @@ var _default = {
 
       var offset = (parseFloat(computedStyle.borderTopWidth) || 0) + (parseFloat(computedStyle.borderBottomWidth) || 0) + (parseFloat(computedStyle.paddingTop) || 0) + (parseFloat(computedStyle.paddingBottom) || 0); // Calculate content height in "rows"
 
-      var contentRows = (el.scrollHeight - offset) / lineHeight; // Put the old height back (needed when new height is equal to old height!)
+      var contentRows = Math.max((el.scrollHeight - offset) / lineHeight, 2); // Calculate number of rows to display (limited within min/max rows)
 
-      el.style.height = oldHeight; // Calculate number of rows to display (limited within min/max rows)
+      var rows = Math.min(Math.max(contentRows, this.computedMinRows), this.computedMaxRows); // Calculate the required height of the textarea including border and padding (in pixels)
 
-      var rows = Math.min(Math.max(contentRows, this.computedMinRows), this.computedMaxRows); // Calulate the required height of the textarea including border and padding (in pixels)
+      var height = Math.max(Math.ceil(rows * lineHeight + offset), minHeight); // Place old height back on element, just in case this computed prop returns the same value
 
-      var height = Math.max(Math.ceil(rows * lineHeight + offset), minHeight); // return the new computed height in px units
+      el.style.height = oldHeight; // Value of previous height (without px units appended)
+
+      var oldHeightPx = parseFloat(oldHeight) || 0;
+
+      if (this.noAutoShrink && oldHeightPx > height) {
+        // Computed height remains the larger of oldHeight and new height
+        // When height is `sticky` (no-auto-shrink is true)
+        return oldHeight;
+      } // Return the new computed height in px units
+
 
       return "".concat(height, "px");
     }
@@ -10363,6 +10561,10 @@ var _default = {
       type: String,
       default: null
     },
+    headerCloseVariant: {
+      type: String,
+      default: null
+    },
     headerClass: {
       type: [String, Array],
       default: null
@@ -10543,7 +10745,7 @@ var _default = {
     modalOuterStyle: function modalOuterStyle() {
       return {
         // We only set these styles on the stacked modals (ones with next z-index > 0).
-        position: 'relative',
+        position: 'absolute',
         zIndex: this.zIndex
       };
     }
@@ -10567,7 +10769,8 @@ var _default = {
     this.listenOnRoot('bv::show::modal', this.showHandler);
     this.listenOnRoot('bv::modal::shown', this.shownHandler);
     this.listenOnRoot('bv::hide::modal', this.hideHandler);
-    this.listenOnRoot('bv::modal::hidden', this.hiddenHandler); // Listen for bv:modal::show events, and close ourselves if the opening modal not us
+    this.listenOnRoot('bv::modal::hidden', this.hiddenHandler);
+    this.listenOnRoot('bv::toggle::modal', this.toggleHandler); // Listen for bv:modal::show events, and close ourselves if the opening modal not us
 
     this.listenOnRoot('bv::modal::show', this.modalListener); // Initially show modal?
 
@@ -10694,6 +10897,18 @@ var _default = {
 
       this.is_visible = false;
       this.$emit('change', false);
+    },
+    // Public method to toggle modal visibility
+    toggle: function toggle(triggerEl) {
+      if (triggerEl) {
+        this.return_focus = triggerEl;
+      }
+
+      if (this.is_visible) {
+        this.hide('toggle');
+      } else {
+        this.show();
+      }
     },
     // Private method to finish showing modal
     doShow: function doShow() {
@@ -10869,7 +11084,12 @@ var _default = {
     },
     hideHandler: function hideHandler(id) {
       if (id === this.id) {
-        this.hide();
+        this.hide('event');
+      }
+    },
+    toggleHandler: function toggleHandler(id, triggerEl) {
+      if (id === this.id) {
+        this.toggle(triggerEl);
       }
     },
     shownHandler: function shownHandler() {
@@ -11076,7 +11296,7 @@ var _default = {
             props: {
               disabled: this.is_transitioning,
               ariaLabel: this.headerCloseLabel,
-              textVariant: this.headerTextVariant
+              textVariant: this.headerCloseVariant || this.headerTextVariant
             },
             on: {
               click: function click(evt) {
@@ -11227,7 +11447,7 @@ var _default = {
         attrs: {
           id: this.safeId('__BV_modal_backdrop_')
         }
-      });
+      }, [$slots['modal-backdrop']]);
     } // Tab trap to prevent page from scrolling to next element in tab index during enforce focus tab cycle
 
 
@@ -11473,26 +11693,47 @@ var _vueFunctionalDataMerge = __webpack_require__(/*! vue-functional-data-merge 
 
 var _link = __webpack_require__(/*! ../link/link */ "./node_modules/bootstrap-vue/es/components/link/link.js");
 
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 var props = (0, _link.propsFactory)(); // @vue/component
 
 exports.props = props;
-var _default = {
+var _default2 = {
   name: 'BNavItem',
   functional: true,
-  props: props,
+  props: _objectSpread({}, props, {
+    linkAttrs: {
+      type: Object,
+      default: function _default() {
+        return {};
+      }
+    },
+    linkClasses: {
+      type: [String, Object, Array],
+      default: null
+    }
+  }),
   render: function render(h, _ref) {
     var props = _ref.props,
         data = _ref.data,
+        listeners = _ref.listeners,
         children = _ref.children;
+    // We transfer the listeners to the link
+    delete data.on;
     return h('li', (0, _vueFunctionalDataMerge.mergeData)(data, {
       staticClass: 'nav-item'
     }), [h(_link.default, {
       staticClass: 'nav-link',
-      props: props
+      class: props.linkClasses,
+      attrs: props.linkAttrs,
+      props: props,
+      on: listeners
     }, children)]);
   }
 };
-exports.default = _default;
+exports.default = _default2;
 
 /***/ }),
 
@@ -11595,6 +11836,7 @@ var _default = {
         children = _ref.children;
 
     if (props.isNavBar) {
+      /* istanbul ignore next */
       (0, _warn.default)("b-nav: Prop 'is-nav-bar' is deprecated. Please use component '<b-navbar-nav>' instead.");
     }
 
@@ -12376,9 +12618,10 @@ var _html = __webpack_require__(/*! ../../utils/html */ "./node_modules/bootstra
 var _default2 = {
   name: 'BProgressBar',
   inject: {
-    progress: {
-      from: 'progress',
-      default: function _default() {
+    bvProgress: {
+      default: function _default()
+      /* istanbul ignore next */
+      {
         return {};
       }
     }
@@ -12395,7 +12638,7 @@ var _default2 = {
     labelHtml: {
       type: String
     },
-    // $parent prop values take precedence over the following props
+    // $parent (this.bvProgress) prop values may take precedence over the following props
     // Which is why they are defaulted to null
     max: {
       type: Number,
@@ -12441,31 +12684,31 @@ var _default2 = {
     },
     computedMax: function computedMax() {
       // Prefer our max over parent setting
-      return typeof this.max === 'number' ? this.max : this.progress.max || 100;
+      return typeof this.max === 'number' ? this.max : this.bvProgress.max || 100;
     },
     computedVariant: function computedVariant() {
       // Prefer our variant over parent setting
-      return this.variant || this.progress.variant;
+      return this.variant || this.bvProgress.variant;
     },
     computedPrecision: function computedPrecision() {
       // Prefer our precision over parent setting
-      return typeof this.precision === 'number' ? this.precision : this.progress.precision || 0;
+      return typeof this.precision === 'number' ? this.precision : this.bvProgress.precision || 0;
     },
     computedStriped: function computedStriped() {
       // Prefer our striped over parent setting
-      return typeof this.striped === 'boolean' ? this.striped : this.progress.striped || false;
+      return typeof this.striped === 'boolean' ? this.striped : this.bvProgress.striped || false;
     },
     computedAnimated: function computedAnimated() {
       // Prefer our animated over parent setting
-      return typeof this.animated === 'boolean' ? this.animated : this.progress.animated || false;
+      return typeof this.animated === 'boolean' ? this.animated : this.bvProgress.animated || false;
     },
     computedShowProgress: function computedShowProgress() {
       // Prefer our showProgress over parent setting
-      return typeof this.showProgress === 'boolean' ? this.showProgress : this.progress.showProgress || false;
+      return typeof this.showProgress === 'boolean' ? this.showProgress : this.bvProgress.showProgress || false;
     },
     computedShowValue: function computedShowValue() {
       // Prefer our showValue over parent setting
-      return typeof this.showValue === 'boolean' ? this.showValue : this.progress.showValue || false;
+      return typeof this.showValue === 'boolean' ? this.showValue : this.bvProgress.showValue || false;
     }
   },
   render: function render(h) {
@@ -12523,7 +12766,7 @@ var _default = {
   },
   provide: function provide() {
     return {
-      progress: this
+      bvProgress: this
     };
   },
   props: {
@@ -12768,9 +13011,13 @@ var _html = __webpack_require__(/*! ../../utils/html */ "./node_modules/bootstra
 
 var _dom = __webpack_require__(/*! ../../utils/dom */ "./node_modules/bootstrap-vue/es/utils/dom.js");
 
+var _toString = __webpack_require__(/*! ../../utils/to-string */ "./node_modules/bootstrap-vue/es/utils/to-string.js");
+
 var _id = __webpack_require__(/*! ../../mixins/id */ "./node_modules/bootstrap-vue/es/mixins/id.js");
 
 var _listenOnRoot = __webpack_require__(/*! ../../mixins/listen-on-root */ "./node_modules/bootstrap-vue/es/mixins/listen-on-root.js");
+
+var _normalizeSlot = __webpack_require__(/*! ../../mixins/normalize-slot */ "./node_modules/bootstrap-vue/es/mixins/normalize-slot.js");
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
 
@@ -12823,6 +13070,7 @@ function toString(v) {
 
 
 function recToString(row) {
+  /* istanbul ignore if */
   if (!(row instanceof Object)) {
     return '';
   }
@@ -12885,6 +13133,7 @@ var EVENT_FILTER = ['a', 'a *', // include content inside links
 // Avoids having the user need to use @click.stop on the form control
 
 function filterEvent(evt) {
+  /* istanbul ignore if */
   if (!evt || !evt.target) {
     return;
   }
@@ -12915,13 +13164,15 @@ function filterEvent(evt) {
 
 var _default2 = {
   name: 'BTable',
-  mixins: [_id.default, _listenOnRoot.default],
+  mixins: [_id.default, _listenOnRoot.default, _normalizeSlot.default],
   // Don't place ATTRS on root element automatically, as table could be wrapped in responsive div
   inheritAttrs: false,
   props: {
     items: {
       type: [Array, Function],
-      default: function _default() {
+      default: function _default()
+      /* istanbul ignore next */
+      {
         return [];
       }
     },
@@ -13325,6 +13576,8 @@ var _default2 = {
           f.label = typeof f.label === 'string' ? f.label : (0, _startcase.default)(f.key);
           return true;
         }
+        /* istanbul ignore next */
+
 
         return false;
       });
@@ -13359,6 +13612,8 @@ var _default2 = {
         return filterFn;
       } else if (typeof filter === 'function') {
         // Deprecate setting prop filter to a function
+
+        /* istanbul ignore next */
         return filter;
       } else {
         // no filterFunction, so signal to use internal filter function
@@ -13441,6 +13696,7 @@ var _default2 = {
     },
     sortDesc: function sortDesc(newVal, oldVal) {
       if (newVal === this.localSortDesc) {
+        /* istanbul ignore next */
         return;
       }
 
@@ -13947,7 +14203,11 @@ var _default2 = {
             // Check number of arguments provider function requested
             // Provider not using callback (didn't request second argument), so we clear
             // busy state as most likely there was an error in the provider function
+
+            /* istanbul ignore next */
             (0, _warn.default)("b-table provider function didn't request calback and did not return a promise or data");
+            /* istanbul ignore next */
+
             this.localBusy = false;
           }
         } catch (e)
@@ -13991,15 +14251,16 @@ var _default2 = {
     } // Build the colgroup
 
 
-    var colgroup = $slots['table-colgroup'] ? h('colgroup', {
-      key: 'colgroup'
-    }, $slots['table-colgroup']) : h(false); // Support scoped and unscoped slots when needed
+    var colgroup = h(false);
 
-    var normalizeSlot = function normalizeSlot(slotName) {
-      var slotScope = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-      var slot = $scoped[slotName] || $slots[slotName];
-      return typeof slot === 'function' ? slot(slotScope) : slot;
-    }; // factory function for thead and tfoot cells (th's)
+    if (this.hasNormalizedSlot('table-colgroup')) {
+      colgroup = h('colgroup', {
+        key: 'colgroup'
+      }, this.normalizeSlot('table-colgroup', {
+        columns: fields.length,
+        fields: fields
+      }));
+    } // factory function for thead and tfoot cells (th's)
 
 
     var makeHeadCells = function makeHeadCells() {
@@ -14045,14 +14306,15 @@ var _default2 = {
             }
           }
         };
-        var slot = isFoot && $scoped["FOOT_".concat(field.key)] ? $scoped["FOOT_".concat(field.key)] : $scoped["HEAD_".concat(field.key)];
+        var fieldScope = {
+          label: field.label,
+          column: field.key,
+          field: field
+        };
+        var slot = isFoot && _this6.hasNormalizedSlot("FOOT_".concat(field.key)) ? _this6.normalizeSlot("FOOT_".concat(field.key), fieldScope) : _this6.normalizeSlot("HEAD_".concat(field.key), fieldScope);
 
         if (slot) {
-          slot = [slot({
-            label: field.label,
-            column: field.key,
-            field: field
-          })];
+          slot = [slot];
         } else {
           data.domProps = (0, _html.htmlOrText)(field.labelHtml, field.label);
         }
@@ -14066,12 +14328,24 @@ var _default2 = {
 
     if (this.isStacked !== true) {
       // If in always stacked mode (this.isStacked === true), then we don't bother rendering the thead
+      var theadChildren = [];
+
+      if (this.hasNormalizedSlot('thead-top')) {
+        theadChildren.push(this.normalizeSlot('thead-top', {
+          columns: fields.length,
+          fields: fields
+        }));
+      } else {
+        theadChildren.push(h(false));
+      }
+
+      theadChildren.push(h('tr', {
+        class: this.theadTrClass
+      }, makeHeadCells(false)));
       thead = h('thead', {
         key: 'thead',
         class: this.headClasses
-      }, [h('tr', {
-        class: this.theadTrClass
-      }, makeHeadCells(false))]);
+      }, theadChildren);
     } // Build the tfoot
 
 
@@ -14091,12 +14365,12 @@ var _default2 = {
     var rows = []; // Add static Top Row slot (hidden in visibly stacked mode as we can't control the data-label)
     // If in always stacked mode, we don't bother rendering the row
 
-    if ($scoped['top-row'] && this.isStacked !== true) {
+    if (this.hasNormalizedSlot('top-row') && this.isStacked !== true) {
       rows.push(h('tr', {
         key: 'top-row',
         staticClass: 'b-table-top-row',
         class: [typeof this.tbodyTrClass === 'function' ? this.tbodyTrClass(null, 'row-top') : this.tbodyTrClass]
-      }, [$scoped['top-row']({
+      }, [this.normalizeSlot('top-row', {
         columns: fields.length,
         fields: fields
       })]));
@@ -14169,10 +14443,10 @@ var _default2 = {
           } else {
             if (_this6.isStacked) {
               // We wrap in a DIV to ensure rendered as a single cell when visually stacked!
-              childNodes = [h('div', formatted)];
+              childNodes = [h('div', (0, _toString.default)(formatted))];
             } else {
               // Non stacked
-              childNodes = formatted;
+              childNodes = (0, _toString.default)(formatted);
             }
           } // Render either a td or th cell
 
@@ -14184,13 +14458,17 @@ var _default2 = {
 
         if (_this6.currentPage && _this6.perPage && _this6.perPage > 0) {
           ariaRowIndex = String((_this6.currentPage - 1) * _this6.perPage + rowIndex + 1);
-        } // Create a unique key based on the record content, to ensure that sub components are
-        // re-rendered rather than re-used, which can cause issues. If a primary key is not provided
-        // we concatinate the row number and stringified record (in case there are duplicate records).
+        } // Create a unique :key to help ensure that sub components are re-rendered rather than
+        // re-used, which can cause issues. If a primary key is not provided we use the rendered
+        // rows index within the tbody.
         // See: https://github.com/bootstrap-vue/bootstrap-vue/issues/2410
 
 
-        var rowKey = _this6.primaryKey && typeof item[_this6.primaryKey] !== 'undefined' ? toString(item[_this6.primaryKey]) : "".concat(rowIndex, "__").concat(recToString(item)); // Assemble and add the row
+        var primaryKey = _this6.primaryKey;
+        var rowKey = primaryKey && item[primaryKey] !== undefined && item[primaryKey] !== null ? toString(item[primaryKey]) : String(rowIndex); // If primary key is provided, use it to generate a unique ID on each tbody > tr
+        // In the format of '{tableId}__row_{primaryKeyValue}'
+
+        var rowId = primaryKey && item[primaryKey] !== undefined && item[primaryKey] !== null ? _this6.safeId("_row_".concat(item[primaryKey])) : null; // Assemble and add the row
 
         rows.push(h('tr', {
           key: "__b-table-row-".concat(rowKey, "__"),
@@ -14199,7 +14477,9 @@ var _default2 = {
             'b-row-selected': rowSelected
           }, "".concat(_this6.dark ? 'bg' : 'table', "-").concat(_this6.selectedVariant), rowSelected && _this6.selectedVariant)],
           attrs: {
+            id: rowId,
             tabindex: hasRowClickHandler ? '0' : null,
+            'data-pk': rowId ? String(item[primaryKey]) : null,
             'aria-describedby': detailsId,
             'aria-owns': detailsId,
             'aria-rowindex': ariaRowIndex,
@@ -14294,7 +14574,7 @@ var _default2 = {
 
 
     if (this.showEmpty && (!items || items.length === 0) && !($slots['table-busy'] && this.computedBusy)) {
-      var empty = normalizeSlot(this.isFiltered ? 'emptyfiltered' : 'empty', {
+      var empty = this.normalizeSlot(this.isFiltered ? 'emptyfiltered' : 'empty', {
         emptyFilteredHtml: this.emptyFilteredHtml,
         emptyFilteredText: this.emptyFilteredText,
         emptyHtml: this.emptyHtml,
@@ -14335,15 +14615,15 @@ var _default2 = {
     // If in always stacked mode, we don't bother rendering the row
 
 
-    if ($scoped['bottom-row'] && this.isStacked !== true) {
+    if (this.hasNormalizedSlot('bottom-row') && this.isStacked !== true) {
       rows.push(h('tr', {
         key: '__b-table-bottom-row__',
         staticClass: 'b-table-bottom-row',
         class: [typeof this.tbodyTrClass === 'function' ? this.tbodyTrClass(null, 'row-bottom') : this.tbodyTrClass]
-      }, [$scoped['bottom-row']({
+      }, this.normalizeSlot('bottom-row', {
         columns: fields.length,
         fields: fields
-      })]));
+      })));
     } else {
       rows.push(h(false));
     } // Is tbody transition enabled
@@ -14448,15 +14728,17 @@ exports.default = void 0;
 
 var _id = __webpack_require__(/*! ../../mixins/id */ "./node_modules/bootstrap-vue/es/mixins/id.js");
 
+var _dom = __webpack_require__(/*! ../../utils/dom */ "./node_modules/bootstrap-vue/es/utils/dom.js");
+
 // @vue/component
 var _default2 = {
   name: 'BTab',
   mixins: [_id.default],
   inject: {
-    bTabs: {
+    bvTabs: {
       default: function _default() {
         return {
-          // Dont set a tab index if not rendered inside b-tabs
+          // Don't set a tab index if not rendered inside `<b-tabs>`
           noKeyNav: true
         };
       }
@@ -14522,16 +14804,16 @@ var _default2 = {
   },
   computed: {
     tabClasses: function tabClasses() {
-      return [this.bTabs.card && !this.noBody ? 'card-body' : '', this.show ? 'show' : '', this.computedFade ? 'fade' : '', this.disabled ? 'disabled' : '', this.localActive ? 'active' : ''];
+      return [this.bvTabs.card && !this.noBody ? 'card-body' : '', this.show ? 'show' : '', this.computedFade ? 'fade' : '', this.disabled ? 'disabled' : '', this.localActive ? 'active' : ''];
     },
     controlledBy: function controlledBy() {
       return this.buttonId || this.safeId('__BV_tab_button__');
     },
     computedFade: function computedFade() {
-      return this.bTabs.fade || false;
+      return this.bvTabs.fade || false;
     },
     computedLazy: function computedLazy() {
-      return this.bTabs.lazy || this.lazy;
+      return this.bvTabs.lazy || this.lazy;
     },
     _isTab: function _isTab() {
       // For parent sniffing of child
@@ -14559,9 +14841,9 @@ var _default2 = {
     },
     disabled: function disabled(newVal, oldVal) {
       if (newVal !== oldVal) {
-        if (newVal && this.localActive && this.bTabs.firstTab) {
+        if (newVal && this.localActive && this.bvTabs.firstTab) {
           this.localActive = false;
-          this.bTabs.firstTab();
+          this.bvTabs.firstTab();
         }
       }
     }
@@ -14573,48 +14855,37 @@ var _default2 = {
   updated: function updated() {
     // Force the tab button content to update (since slots are not reactive)
     // Only done if we have a title slot, as the title prop is reactive
-    if (this.$slots.title && this.bTabs.updateButton) {
-      this.bTabs.updateButton(this);
+    if (this.$slots.title && this.bvTabs.updateButton) {
+      this.bvTabs.updateButton(this);
     }
   },
   methods: {
     // Transition handlers
-    beforeEnter: function beforeEnter()
-    /* instanbul ignore next: difficult to test rAF in JSDOM */
-    {
+    beforeEnter: function beforeEnter() {
       var _this = this;
 
       // change opacity (add 'show' class) 1 frame after display
       // otherwise css transition won't happen
-      // TODO: Move raf method into utils/dom.js
-      var raf = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.msRequestAnimationFrame || window.oRequestAnimationFrame ||
-      /* istanbul ignore next */
-      function (cb) {
-        setTimeout(cb, 16);
-      };
-
-      raf(function () {
+      (0, _dom.requestAF)(function () {
         _this.show = true;
       });
     },
-    beforeLeave: function beforeLeave()
-    /* instanbul ignore next: difficult to test rAF in JSDOM */
-    {
+    beforeLeave: function beforeLeave() {
       // Remove the 'show' class
       this.show = false;
     },
     // Public methods
     activate: function activate() {
-      if (this.bTabs.activateTab && !this.disabled) {
-        return this.bTabs.activateTab(this);
+      if (this.bvTabs.activateTab && !this.disabled) {
+        return this.bvTabs.activateTab(this);
       } else {
         // Not inside a b-tabs component or tab is disabled
         return false;
       }
     },
     deactivate: function deactivate() {
-      if (this.bTabs.deactivateTab && this.localActive) {
-        return this.bTabs.deactivateTab(this);
+      if (this.bvTabs.deactivateTab && this.localActive) {
+        return this.bvTabs.deactivateTab(this);
       } else {
         // Not inside a b-tabs component or not active to begin with
         return false;
@@ -14626,14 +14897,17 @@ var _default2 = {
       ref: 'panel',
       staticClass: 'tab-pane',
       class: this.tabClasses,
-      directives: [{
+      directives: [// TODO: convert to style object in render
+      {
         name: 'show',
-        value: this.localActive
+        rawName: 'v-show',
+        value: this.localActive,
+        expression: 'localActive'
       }],
       attrs: {
         role: 'tabpanel',
         id: this.safeId(),
-        tabindex: this.localActive && !this.bTabs.noKeyNav ? '0' : null,
+        tabindex: this.localActive && !this.bvTabs.noKeyNav ? '0' : null,
         'aria-hidden': this.localActive ? 'false' : 'true',
         'aria-expanded': this.localActive ? 'true' : 'false',
         'aria-labelledby': this.controlledBy || null
@@ -14642,7 +14916,14 @@ var _default2 = {
     [this.localActive || !this.computedLazy ? this.$slots.default : h(false)]);
     return h('transition', {
       props: {
-        mode: 'out-in'
+        mode: 'out-in',
+        // Disable use of built-in transition classes
+        'enter-class': '',
+        'enter-active-class': '',
+        'enter-to-class': '',
+        'leave-class': '',
+        'leave-active-class': '',
+        'leave-to-class': ''
       },
       on: {
         beforeEnter: this.beforeEnter,
@@ -14679,13 +14960,28 @@ var _id = __webpack_require__(/*! ../../mixins/id */ "./node_modules/bootstrap-v
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 // Private Helper component
+// @vue/component
 var BTabButtonHelper = {
   name: 'BTabButtonHelper',
+  inject: {
+    bvTabs: {
+      default: function _default()
+      /* istanbul ignore next */
+      {
+        return {};
+      }
+    }
+  },
   props: {
     // Reference to the child b-tab instance
     tab: {
-      default: null,
-      required: true
+      default: null
+    },
+    tabs: {
+      type: Array,
+      default: function _default() {
+        return [];
+      }
     },
     id: {
       type: String,
@@ -14725,6 +15021,7 @@ var BTabButtonHelper = {
       }
 
       if (this.tab.disabled) {
+        /* istanbul ignore next */
         return;
       }
 
@@ -14734,11 +15031,11 @@ var BTabButtonHelper = {
 
       if (type === 'click') {
         stop();
-        this.$emit('click', evt); // Could call this.tab.activate() instead
+        this.$emit('click', evt);
       } else if (type === 'keydown' && !this.noKeyNav && key === _keyCodes.default.SPACE) {
-        // In keyNav mode, SAPCE press will also trigger a click/select
+        // In keynav mode, SPACE press will also trigger a click/select
         stop();
-        this.$emit('click', evt); // Could call this.tab.activate() instead
+        this.$emit('click', evt);
       } else if (type === 'keydown' && !this.noKeyNav) {
         // For keyboard navigation
         if (key === _keyCodes.default.UP || key === _keyCodes.default.LEFT || key === _keyCodes.default.HOME) {
@@ -14804,12 +15101,12 @@ function notDisabled(tab) {
 } // @vue/component
 
 
-var _default = {
+var _default2 = {
   name: 'BTabs',
   mixins: [_id.default],
   provide: function provide() {
     return {
-      bTabs: this
+      bvTabs: this
     };
   },
   props: {
@@ -14878,9 +15175,11 @@ var _default = {
     }
   },
   data: function data() {
+    var tabIdx = parseInt(this.value, 10);
+    tabIdx = isNaN(tabIdx) ? -1 : tabIdx;
     return {
       // Index of current tab
-      currentTab: parseInt(this.value, 10) || -1,
+      currentTab: tabIdx,
       // Array of direct child b-tab instances
       tabs: []
     };
@@ -14905,13 +15204,14 @@ var _default = {
         } else {
           tab.localActive = false;
         }
-      }); // update the v-model
+      }); // Update the v-model
 
       this.$emit('input', index);
     },
     value: function value(val, old) {
       if (val !== old) {
         val = parseInt(val, 10);
+        val = isNaN(val) ? -1 : val;
         old = parseInt(old, 10) || 0;
         var tabs = this.tabs;
 
@@ -14929,26 +15229,83 @@ var _default = {
     }
   },
   created: function created() {
-    // For SSR and to make sure only a single tab is shown on mount
-    this.updateTabs();
-  },
-  mounted: function mounted() {
-    // In case tabs have changed before mount
-    this.updateTabs(); // Observe Child changes so we can update list of tabs
+    var _this = this;
 
-    (0, _observeDom.default)(this.$refs.tabsContainer, this.updateTabs.bind(this), {
-      subtree: false
+    var tabIdx = parseInt(this.value, 10);
+    this.currentTab = isNaN(tabIdx) ? -1 : tabIdx; // Create private non-reactive prop
+
+    this._bvObserver = null; // For SSR and to make sure only a single tab is shown on mount
+    // We wrap this in a `$nextTick()` to ensure the child tabs have been created
+
+    this.$nextTick(function () {
+      _this.updateTabs();
     });
   },
+  mounted: function mounted() {
+    var _this2 = this;
+
+    this.$nextTick(function () {
+      // Call updateTabs jsut in case....
+      _this2.updateTabs(); // Observe Child changes so we can update list of tabs
+
+
+      _this2.setObserver(true);
+    });
+  },
+  deactivated: function deactivated()
+  /* istanbul ignore next */
+  {
+    this.setObserver(false);
+  },
+  activated: function activated()
+  /* istanbul ignore next */
+  {
+    var _this3 = this;
+
+    var tabIdx = parseInt(this.value, 10);
+    this.currentTab = isNaN(tabIdx) ? -1 : tabIdx;
+    this.$nextTick(function () {
+      _this3.updateTabs();
+
+      _this3.setObserver(true);
+    });
+  },
+  beforeDestroy: function beforeDestroy()
+  /* istanbul ignore next */
+  {
+    this.setObserver(false);
+  },
   methods: {
-    // Update list of b-tab children
-    updateTabs: function updateTabs() {
-      // Probe tabs
-      var tabs = (this.$slots.default || []).map(function (vnode) {
+    setObserver: function setObserver(on) {
+      if (on) {
+        // Make sure no existing observer running
+        this.setObserver(false); // Watch for changes to b-tab sub components
+
+        this._bvObserver = (0, _observeDom.default)(this.$refs.tabsContainer, this.updateTabs.bind(this), {
+          childList: true,
+          subtree: false,
+          attributes: true,
+          attributeFilter: ['style', 'class']
+        });
+      } else {
+        if (this._bvObserver && this._bvObserver.disconnect) {
+          this._bvObserver.disconnect();
+        }
+
+        this._bvObserver = null;
+      }
+    },
+    getTabs: function getTabs() {
+      return (this.$slots.default || []).map(function (vnode) {
         return vnode.componentInstance;
       }).filter(function (tab) {
         return tab && tab._isTab;
-      }); // Find *last* active non-disabled tab in current tabs
+      });
+    },
+    // Update list of b-tab children
+    updateTabs: function updateTabs() {
+      // Probe tabs
+      var tabs = this.getTabs(); // Find *last* active non-disabled tab in current tabs
       // We trust tab state over currentTab, in case tabs were added/removed/re-ordered
 
       var tabIndex = tabs.indexOf(tabs.slice().reverse().find(function (tab) {
@@ -14962,7 +15319,7 @@ var _default = {
           // Handle last tab being removed, so find the last non-disabled tab
           tabIndex = tabs.indexOf(tabs.slice().reverse().find(notDisabled));
         } else if (tabs[currentTab] && !tabs[currentTab].disabled) {
-          // current tab is not disabled
+          // Current tab is not disabled
           tabIndex = currentTab;
         }
       } // Else find *first* non-disabled tab in current tabs
@@ -14974,14 +15331,20 @@ var _default = {
 
 
       tabs.forEach(function (tab, idx) {
-        tab.localActive = idx === tabIndex && !tab.disabled;
-      }); // Update the array of tab children
+        // tab.localActive = idx === tabIndex && !tab.disabled
+        tab.localActive = false;
+      });
+
+      if (tabs[tabIndex]) {
+        tabs[tabIndex].localActive = true;
+      } // Update the array of tab children
+
 
       this.tabs = tabs; // Set the currentTab index (can be -1 if no non-disabled tabs)
 
       this.currentTab = tabIndex;
     },
-    // Find a button taht controls a tab, given the tab reference
+    // Find a button that controls a tab, given the tab reference
     // Returns the button vm instance
     getButtonForTab: function getButtonForTab(tab) {
       return (this.$refs.buttons || []).find(function (btn) {
@@ -15011,7 +15374,13 @@ var _default = {
         }
       }
 
-      this.$emit('input', this.currentTab);
+      if (!result) {
+        // Couldn't set tab, so ensure v-model is set to this.currentTab
+
+        /* istanbul ignore next: should rarely happen */
+        this.$emit('input', this.currentTab);
+      }
+
       return result;
     },
     // Deactivate a tab given a b-tab instance
@@ -15025,16 +15394,18 @@ var _default = {
         }).find(notDisabled));
       } else {
         // No tab specified
+
+        /* istanbull ignore next: should never happen */
         return false;
       }
     },
     // Focus a tab button given it's b-tab instance
     focusButton: function focusButton(tab) {
-      var _this = this;
+      var _this4 = this;
 
       // Wrap in nextTick to ensure DOM has completed rendering/updating before focusing
       this.$nextTick(function () {
-        var button = _this.getButtonForTab(tab);
+        var button = _this4.getButtonForTab(tab);
 
         if (button && button.focus) {
           button.focus();
@@ -15092,25 +15463,23 @@ var _default = {
     }
   },
   render: function render(h) {
-    var _this2 = this,
+    var _this5 = this,
         _ref;
 
     var tabs = this.tabs; // Currently active tab
 
     var activeTab = tabs.find(function (tab) {
       return tab.localActive && !tab.disabled;
-    }); // Tab button to allow focusing when no actgive tab found (keynav only)
+    }); // Tab button to allow focusing when no active tab found (keynav only)
 
     var fallbackTab = tabs.find(function (tab) {
       return !tab.disabled;
-    }); // For each b-tab found create the tab buttons
+    }); // For each <b-tab> found create the tab buttons
 
     var buttons = tabs.map(function (tab, index) {
-      var buttonId = tab.controlledBy || _this2.safeId("_BV_tab_".concat(index + 1, "_"));
-
       var tabIndex = null; // Ensure at least one tab button is focusable when keynav enabled (if possible)
 
-      if (!_this2.noKeyNav) {
+      if (!_this5.noKeyNav) {
         // Buttons are not in tab index unless active, or a fallback tab
         tabIndex = -1;
 
@@ -15121,32 +15490,34 @@ var _default = {
       }
 
       return h(BTabButtonHelper, {
-        key: tab._uid || buttonId || index,
+        key: tab._uid || index,
         ref: 'buttons',
         // Needed to make this.$refs.buttons an array
         refInFor: true,
         props: {
           tab: tab,
-          id: buttonId,
-          controls: _this2.safeId('_BV_tab_container_'),
+          tabs: tabs,
+          id: tab.controlledBy || (_this5.tab && _this5.tab.safeId ? _this5.tab.safeId("_BV_tab_button_") : null),
+          controls: _this5.tab && _this5.tab.safeId ? _this5.tab.safeId() : null,
           tabIndex: tabIndex,
           setSize: tabs.length,
           posInSet: index + 1,
-          noKeyNav: _this2.noKeyNav
+          noKeyNav: _this5.noKeyNav
         },
         on: {
           click: function click(evt) {
-            _this2.clickTab(tab, evt);
+            _this5.clickTab(tab, evt);
           },
-          first: _this2.firstTab,
-          prev: _this2.previousTab,
-          next: _this2.nextTab,
-          last: _this2.lastTab
+          first: _this5.firstTab,
+          prev: _this5.previousTab,
+          next: _this5.nextTab,
+          last: _this5.lastTab
         }
       });
     }); // Nav 'button' wrapper
 
     var navs = h('ul', {
+      ref: 'navs',
       class: ['nav', (_ref = {}, _defineProperty(_ref, "nav-".concat(this.navStyle), !this.noNavStyle), _defineProperty(_ref, "card-header-".concat(this.navStyle), this.card && !this.vertical), _defineProperty(_ref, 'card-header', this.card && this.vertical), _defineProperty(_ref, 'h-100', this.card && this.vertical), _defineProperty(_ref, 'flex-column', this.vertical), _defineProperty(_ref, 'border-bottom-0', this.vertical), _defineProperty(_ref, 'rounded-0', this.vertical), _defineProperty(_ref, "small", this.small), _ref), this.navClass],
       attrs: {
         role: 'tablist',
@@ -15154,17 +15525,16 @@ var _default = {
       }
     }, [buttons, this.$slots.tabs]);
     navs = h('div', {
+      key: 'bv-tabs-navs',
       class: [{
         'card-header': this.card && !this.vertical && !(this.end || this.bottom),
         'card-footer': this.card && !this.vertical && (this.end || this.bottom),
         'col-auto': this.vertical
       }, this.navWrapperClass]
     }, [navs]);
-    var empty;
+    var empty = h(false);
 
-    if (tabs && tabs.length) {
-      empty = h(false);
-    } else {
+    if (!tabs || tabs.length === 0) {
       empty = h('div', {
         key: 'empty-tab',
         class: ['tab-pane', 'active', {
@@ -15172,10 +15542,12 @@ var _default = {
         }]
       }, this.$slots.empty);
     } // Main content section
+    // TODO: This container should be a helper component
 
 
     var content = h('div', {
       ref: 'tabsContainer',
+      key: 'bv-tabs-container',
       staticClass: 'tab-content',
       class: [{
         col: this.vertical
@@ -15197,7 +15569,7 @@ var _default = {
     }, [this.end || this.bottom ? content : h(false), [navs], this.end || this.bottom ? h(false) : content]);
   }
 };
-exports.default = _default;
+exports.default = _default2;
 
 /***/ }),
 
@@ -16676,12 +17048,7 @@ var _plugins = __webpack_require__(/*! ./utils/plugins */ "./node_modules/bootst
 
 var VuePlugin = {
   install: function install(Vue) {
-    if (Vue._bootstrap_vue_installed) {
-      return;
-    }
-
-    Vue._bootstrap_vue_installed = true; // Register component plugins
-
+    // Register component plugins
     for (var plugin in componentPlugins) {
       Vue.use(componentPlugins[plugin]);
     } // Register directive plugins
@@ -16871,7 +17238,7 @@ var _default2 = {
   mixins: [_clickOut.default, _focusIn.default],
   provide: function provide() {
     return {
-      dropdown: this
+      bvDropdown: this
     };
   },
   props: {
@@ -17446,11 +17813,13 @@ var _default2 = {
         // Normalize flat-ish arrays to Array of Objects
         return options.map(function (option) {
           if (isObject(option)) {
+            var value = option[valueField];
+            var text = String(option[textField]);
             return {
-              value: option[valueField],
-              text: (0, _html.stripTags)(String(option[textField])),
+              value: typeof value === 'undefined' ? text : value,
+              text: (0, _html.stripTags)(text),
               html: option[htmlField],
-              disabled: option[disabledField] || false
+              disabled: Boolean(option[disabledField])
             };
           }
 
@@ -17471,9 +17840,9 @@ var _default2 = {
             var text = option[textField];
             return {
               value: typeof value === 'undefined' ? key : value,
-              text: typeof text === 'undefined' ? key : (0, _html.stripTags)(String(text)),
+              text: typeof text === 'undefined' ? (0, _html.stripTags)(String(key)) : (0, _html.stripTags)(String(text)),
               html: option[htmlField],
-              disabled: option[disabledField] || false
+              disabled: Boolean(option[disabledField])
             };
           }
 
@@ -17545,7 +17914,7 @@ var _default = {
       return !this.stacked;
     },
     groupName: function groupName() {
-      // checks/radios tied to the same model must have the sanme name,
+      // Checks/Radios tied to the same model must have the same name,
       // especially for ARIA accessibility.
       return this.name || this.safeId();
     },
@@ -17554,8 +17923,7 @@ var _default = {
         return ['btn-group-toggle', this.inline ? 'btn-group' : 'btn-group-vertical', this.size ? "btn-group-".concat(this.size) : '', this.validated ? "was-validated" : ''];
       }
 
-      return [// is this needed since children will pick up on size?
-      this.sizeFormClass, this.validated ? "was-validated" : ''];
+      return [this.validated ? "was-validated" : ''];
     },
     computedAriaInvalid: function computedAriaInvalid() {
       var ariaInvalid = this.ariaInvalid;
@@ -17586,10 +17954,11 @@ var _default = {
         props: {
           id: _this.safeId(uid),
           value: option.value,
-          disabled: option.disabled || null // Do we need to do these, since radio's will know they are inside here?
+          // Individual radios or checks can be disabled in a group
+          disabled: option.disabled || false // We don't need to include these, since the input's will know they are inside here
           // name: this.groupName,
           // form: this.form || null,
-          // required: Boolean(this.name && this.required),
+          // required: Boolean(this.name && this.required)
 
         }
       }, [h('span', {
@@ -17635,7 +18004,7 @@ var _default = {
     event: 'input'
   },
   props: {
-    value: {// value when checked
+    value: {// Value when checked
       // type: Object,
       // default: undefined
     },
@@ -17652,7 +18021,7 @@ var _default = {
       default: false
     },
     button: {
-      // only aplicable in standalone mode (non group)
+      // Only applicable in standalone mode (non group)
       type: Boolean,
       default: false
     },
@@ -17664,73 +18033,77 @@ var _default = {
   },
   data: function data() {
     return {
-      localChecked: this.bvGroup.checked,
-      hasFocus: false,
-      // Surrogate value when not a childe of group
-      buttons: false
+      localChecked: this.is_Group ? this.bvGroup.checked : this.checked,
+      hasFocus: false
     };
   },
   computed: {
     computedLocalChecked: {
       get: function get() {
-        return this.bvGroup.localChecked;
+        return this.is_Group ? this.bvGroup.localChecked : this.localChecked;
       },
       set: function set(val) {
-        this.bvGroup.localChecked = val;
+        if (this.is_Group) {
+          this.bvGroup.localChecked = val;
+        } else {
+          this.localChecked = val;
+        }
       }
     },
     is_Group: function is_Group() {
       // Is this check/radio a child of check-group or radio-group?
-      return this.bvGroup !== this;
+      return Boolean(this.bvGroup);
     },
     is_BtnMode: function is_BtnMode() {
       // Support button style in single input mode
       return this.is_Group ? this.bvGroup.buttons : this.button;
     },
     is_Plain: function is_Plain() {
-      return this.is_BtnMode ? false : this.bvGroup.plain;
+      return this.is_BtnMode ? false : this.is_Group ? this.bvGroup.plain : this.plain;
     },
     is_Custom: function is_Custom() {
-      return this.is_BtnMode ? false : !this.bvGroup.plain;
+      return this.is_BtnMode ? false : !this.is_Plain;
     },
     is_Switch: function is_Switch() {
       // Custom switch styling (checkboxes only)
       return this.is_BtnMode || this.is_Radio || this.is_Plain ? false : this.is_Group ? this.bvGroup.switches : this.switch;
     },
     is_Inline: function is_Inline() {
-      return this.bvGroup.inline;
+      return this.is_Group ? this.bvGroup.inline : this.inline;
     },
     is_Disabled: function is_Disabled() {
       // Child can be disabled while parent isn't, but is always disabled if group is
-      return this.bvGroup.disabled || this.disabled;
+      return this.is_Group ? this.bvGroup.disabled || this.disabled : this.disabled;
     },
     is_Required: function is_Required() {
       // Required only works when a name is provided for the input(s)
-      return Boolean(this.get_Name && this.bvGroup.required);
+      // Child can only be required when parent is
+      // Groups will always have a name (either user supplied or auto generated)
+      return Boolean(this.get_Name && (this.bvGroup.is_Group ? this.bvGroup.required : this.required));
     },
     get_Name: function get_Name() {
       // Group name preferred over local name
-      return this.bvGroup.groupName || this.name || null;
+      return (this.is_Group ? this.bvGroup.groupName : this.name) || null;
     },
     get_Form: function get_Form() {
-      return this.bvGroup.form || null;
+      return (this.is_Group ? this.bvGroup.form : this.form) || null;
     },
     get_Size: function get_Size() {
-      return this.bvGroup.size || '';
+      return (this.is_Group ? this.bvGroup.size : this.size) || '';
     },
     get_State: function get_State() {
-      // local state preferred over group state (except when null)
-      if (typeof this.computedState === 'boolean') {
-        return this.computedState;
-      } else if (typeof this.bvGroup.computedState === 'boolean') {
-        return this.bvGroup.computedState;
-      } else {
-        return null;
-      }
+      return this.is_Group ? this.bvGroup.computedState : this.computedState;
     },
     get_ButtonVariant: function get_ButtonVariant() {
       // Local variant preferred over group variant
-      return this.buttonVariant || this.bvGroup.buttonVariant || 'secondary';
+      if (this.buttonVariant) {
+        return this.buttonVariant;
+      } else if (this.is_Group && this.bvGroup.buttonVariant) {
+        return this.bvGroup.buttonVariant;
+      } // default variant
+
+
+      return 'secondary';
     },
     buttonClasses: function buttonClasses() {
       // Same for radio & check
@@ -17748,12 +18121,24 @@ var _default = {
   methods: {
     handleFocus: function handleFocus(evt) {
       // When in buttons mode, we need to add 'focus' class to label when input focused
+      // As it is the hidden input which has actual focus
       if (evt.target) {
         if (evt.type === 'focus') {
           this.hasFocus = true;
         } else if (evt.type === 'blur') {
           this.hasFocus = false;
         }
+      }
+    },
+    // Convenience methods for focusing the input
+    focus: function focus() {
+      if (!this.is_Disabled && this.$refs.input && this.$refs.input.focus) {
+        this.$refs.input.focus();
+      }
+    },
+    blur: function blur() {
+      if (!this.is_Disabled && this.$refs.input && this.$refs.input.blur) {
+        this.$refs.input.blur();
       }
     }
   },
@@ -17765,7 +18150,7 @@ var _default = {
     };
 
     if (this.is_BtnMode) {
-      // handlers for focus styling when in button mode
+      // Handlers for focus styling when in button mode
       on.focus = on.blur = this.handleFocus;
     }
 
@@ -17861,61 +18246,69 @@ exports.default = void 0;
 // @vue/component
 var _default = {
   computed: {
-    /* istanbul ignore next */
     selectionStart: {
       // Expose selectionStart for formatters, etc
       cache: false,
-      get: function get() {
+      get: function get()
+      /* istanbul ignore next */
+      {
         return this.$refs.input.selectionStart;
       },
-      set: function set(val) {
+      set: function set(val)
+      /* istanbul ignore next */
+      {
         this.$refs.input.selectionStart = val;
       }
     },
-
-    /* istanbul ignore next */
     selectionEnd: {
       // Expose selectionEnd for formatters, etc
       cache: false,
-      get: function get() {
+      get: function get()
+      /* istanbul ignore next */
+      {
         return this.$refs.input.selectionEnd;
       },
-      set: function set(val) {
+      set: function set(val)
+      /* istanbul ignore next */
+      {
         this.$refs.input.selectionEnd = val;
       }
     },
-
-    /* istanbul ignore next */
     selectionDirection: {
       // Expose selectionDirection for formatters, etc
       cache: false,
-      get: function get() {
+      get: function get()
+      /* istanbul ignore next */
+      {
         return this.$refs.input.selectionDirection;
       },
-      set: function set(val) {
+      set: function set(val)
+      /* istanbul ignore next */
+      {
         this.$refs.input.selectionDirection = val;
       }
     }
   },
   methods: {
+    select: function select()
     /* istanbul ignore next */
-    select: function select() {
+    {
       var _this$$refs$input;
 
       // For external handler that may want a select() method
       (_this$$refs$input = this.$refs.input).select.apply(_this$$refs$input, arguments);
     },
-
+    setSelectionRange: function setSelectionRange()
     /* istanbul ignore next */
-    setSelectionRange: function setSelectionRange() {
+    {
       var _this$$refs$input2;
 
       // For external handler that may want a setSelectionRange(a,b,c) method
       (_this$$refs$input2 = this.$refs.input).setSelectionRange.apply(_this$$refs$input2, arguments);
     },
-
+    setRangeText: function setRangeText()
     /* istanbul ignore next */
-    setRangeText: function setRangeText() {
+    {
       var _this$$refs$input3;
 
       // For external handler that may want a setRangeText(a,b,c) method
@@ -18042,7 +18435,7 @@ var _default = {
   },
   props: {
     value: {
-      type: String,
+      type: [String, Number],
       default: ''
     },
     ariaInvalid: {
@@ -18124,6 +18517,7 @@ var _default = {
     var value = this.stringifyValue(this.value);
 
     if (value !== this.localValue) {
+      /* istanbul ignore next */
       this.localValue = value;
     }
   },
@@ -18164,6 +18558,8 @@ var _default = {
     onInput: function onInput(evt) {
       // evt.target.composing is set by Vue
       // https://github.com/vuejs/vue/blob/dev/src/platforms/web/runtime/directives/model.js
+
+      /* istanbul ignore if: hard to test composition events */
       if (evt.target.composing) {
         return;
       }
@@ -18171,6 +18567,7 @@ var _default = {
       var formatted = this.getFormatted(evt.target.value, evt);
 
       if (formatted === false || evt.defaultPrevented) {
+        evt.preventDefault();
         return;
       }
 
@@ -18180,6 +18577,8 @@ var _default = {
     onChange: function onChange(evt) {
       // evt.target.composing is set by Vue
       // https://github.com/vuejs/vue/blob/dev/src/platforms/web/runtime/directives/model.js
+
+      /* istanbul ignore if: hard to test composition events */
       if (evt.target.composing) {
         return;
       }
@@ -18241,52 +18640,54 @@ exports.default = void 0;
 // @vue/component
 var _default = {
   computed: {
-    /* istanbul ignore next */
     validity: {
       // Expose validity property
       cache: false,
-      get: function get() {
+      get: function get()
+      /* istanbul ignore next */
+      {
         return this.$refs.input.validity;
       }
     },
-
-    /* istanbul ignore next */
     validationMessage: {
       // Expose validationMessage property
       cache: false,
-      get: function get() {
+      get: function get()
+      /* istanbul ignore next */
+      {
         return this.$refs.input.validationMessage;
       }
     },
-
-    /* istanbul ignore next */
     willValidate: {
       // Expose willValidate property
       cache: false,
-      get: function get() {
+      get: function get()
+      /* istanbul ignore next */
+      {
         return this.$refs.input.willValidate;
       }
     }
   },
   methods: {
+    setCustomValidity: function setCustomValidity()
     /* istanbul ignore next */
-    setCustomValidity: function setCustomValidity() {
+    {
       var _this$$refs$input;
 
       // For external handler that may want a setCustomValidity(...) method
       return (_this$$refs$input = this.$refs.input).setCustomValidity.apply(_this$$refs$input, arguments);
     },
-
+    checkValidity: function checkValidity()
     /* istanbul ignore next */
-    checkValidity: function checkValidity() {
+    {
       var _this$$refs$input2;
 
       // For external handler that may want a checkValidity(...) method
       return (_this$$refs$input2 = this.$refs.input).checkValidity.apply(_this$$refs$input2, arguments);
     },
-
+    reportValidity: function reportValidity()
     /* istanbul ignore next */
-    reportValidity: function reportValidity() {
+    {
       var _this$$refs$input3;
 
       // For external handler that may want a reportValidity(...) method
@@ -18489,6 +18890,42 @@ exports.default = _default;
 
 /***/ }),
 
+/***/ "./node_modules/bootstrap-vue/es/mixins/normalize-slot.js":
+/*!****************************************************************!*\
+  !*** ./node_modules/bootstrap-vue/es/mixins/normalize-slot.js ***!
+  \****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.default = void 0;
+
+var _normalizeSlot2 = __webpack_require__(/*! ../utils/normalize-slot */ "./node_modules/bootstrap-vue/es/utils/normalize-slot.js");
+
+var _array = __webpack_require__(/*! ../utils/array */ "./node_modules/bootstrap-vue/es/utils/array.js");
+
+var _default = {
+  methods: {
+    hasNormalizedSlot: function hasNormalizedSlot(name) {
+      // Returns true if the either a $scopedSlot or $slot exists with the specified name
+      return Boolean(this.$scopedSlots[name] || this.$slots[name]);
+    },
+    normalizeSlot: function normalizeSlot(name) {
+      var scope = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      // Returns an array of rendered vNodes if slot found.
+      // Returns undefined if not found.
+      var vNodes = (0, _normalizeSlot2.default)(name, scope, this.$scopedSlots, this.$slots);
+      return vNodes ? (0, _array.concat)(vNodes) : vNodes;
+    }
+  }
+};
+exports.default = _default;
+
+/***/ }),
+
 /***/ "./node_modules/bootstrap-vue/es/mixins/pagination.js":
 /*!************************************************************!*\
   !*** ./node_modules/bootstrap-vue/es/mixins/pagination.js ***!
@@ -18510,7 +18947,7 @@ var _keyCodes = __webpack_require__(/*! ../utils/key-codes */ "./node_modules/bo
 
 var _dom = __webpack_require__(/*! ../utils/dom */ "./node_modules/bootstrap-vue/es/utils/dom.js");
 
-var _html = __webpack_require__(/*! ../utils/html */ "./node_modules/bootstrap-vue/es/utils/html.js");
+var _toString = __webpack_require__(/*! ../utils/to-string */ "./node_modules/bootstrap-vue/es/utils/to-string.js");
 
 var _link = __webpack_require__(/*! ../components/link/link */ "./node_modules/bootstrap-vue/es/components/link/link.js");
 
@@ -18908,10 +19345,7 @@ var _default = {
 
     var makeEndBtn = function makeEndBtn(linkTo, ariaLabel, btnSlot, btnText, pageTest, key) {
       var button;
-      var domProps = btnSlot ? {} : {
-        textContent: btnText
-      };
-      var staticClass = 'page-item';
+      var btnContent = btnSlot || (0, _toString.default)(btnText) || h(false);
       var attrs = {
         role: 'none presentation',
         'aria-hidden': disabled ? 'true' : null
@@ -18921,17 +19355,16 @@ var _default = {
         button = h('li', {
           key: key,
           attrs: attrs,
-          staticClass: staticClass,
+          staticClass: 'page-item',
           class: ['disabled']
         }, [h('span', {
-          staticClass: 'page-link',
-          domProps: domProps
-        }, [btnSlot])]);
+          staticClass: 'page-link'
+        }, [btnContent])]);
       } else {
         button = h('li', {
           key: key,
           attrs: attrs,
-          staticClass: staticClass
+          staticClass: 'page-item'
         }, [h('b-link', {
           staticClass: 'page-link',
           props: _this6.linkProps(linkTo),
@@ -18947,9 +19380,7 @@ var _default = {
             },
             keydown: onSpaceKey
           }
-        }, [h('span', {
-          domProps: domProps
-        }, [btnSlot])])]);
+        }, [btnContent])]);
       }
 
       return button;
@@ -18959,30 +19390,24 @@ var _default = {
     var makeEllipsis = function makeEllipsis(isLast) {
       return h('li', {
         key: "elipsis-".concat(isLast ? 'last' : 'first'),
-        class: ['page-item', 'disabled', 'd-none', 'd-sm-flex'],
+        staticClass: 'page-item',
+        class: ['disabled', 'd-none', 'd-sm-flex'],
         attrs: {
           role: 'separator'
         }
-      }, [_this6.$slots['ellipsis-text'] || h('span', {
-        class: ['page-link'],
-        domProps: {
-          textContent: _this6.ellipsisText
-        }
-      })]);
+      }, [h('div', {
+        staticClass: 'page-link'
+      }, [_this6.$slots['ellipsis-text'] || (0, _toString.default)(_this6.ellipsisText) || h(false)])]);
     }; // Goto First Page button bookend
 
 
-    buttons.push(this.hideGotoEndButtons ? h(false) : makeEndBtn(1, this.labelFirstPage, this.$slots['first-text'], (0, _html.stripTags)(this.firstText), 1, 'bookend-goto-first')); // Goto Previous page button bookend
+    buttons.push(this.hideGotoEndButtons ? h(false) : makeEndBtn(1, this.labelFirstPage, this.$slots['first-text'], this.firstText, 1, 'bookend-goto-first')); // Goto Previous page button bookend
 
-    buttons.push(makeEndBtn(this.currentPage - 1, this.labelPrevPage, this.$slots['prev-text'], (0, _html.stripTags)(this.prevText), 1, 'bookend-goto-prev')); // First Ellipsis Bookend
+    buttons.push(makeEndBtn(this.currentPage - 1, this.labelPrevPage, this.$slots['prev-text'], this.prevText, 1, 'bookend-goto-prev')); // First Ellipsis Bookend
 
     buttons.push(showFirstDots ? makeEllipsis(false) : h(false)); // Individual Page links
 
     this.pageList.forEach(function (page) {
-      var inner;
-
-      var pageText = _this6.makePage(page.number);
-
       var active = isActivePage(page.number);
       var staticClass = 'page-link';
       var attrs = {
@@ -18996,28 +19421,17 @@ var _default = {
         // ARIA "roving tabindex" method
         tabindex: disabled ? null : active ? '0' : '-1'
       };
-
-      if (disabled) {
-        inner = h('span', {
-          key: "page-".concat(page.number, "-link-disabled"),
-          staticClass: staticClass,
-          attrs: attrs
-        }, pageText);
-      } else {
-        inner = h('b-link', {
-          key: "page-".concat(page.number, "-link"),
-          props: _this6.linkProps(page.number),
-          staticClass: staticClass,
-          attrs: attrs,
-          on: {
-            click: function click(evt) {
-              _this6.onClick(page.number, evt);
-            },
-            keydown: onSpaceKey
-          }
-        }, pageText);
-      }
-
+      var inner = h(disabled ? 'span' : "b-link", {
+        props: disabled ? {} : _this6.linkProps(page.number),
+        staticClass: staticClass,
+        attrs: attrs,
+        on: disabled ? {} : {
+          click: function click(evt) {
+            _this6.onClick(page.number, evt);
+          },
+          keydown: onSpaceKey
+        }
+      }, (0, _toString.default)(_this6.makePage(page.number)));
       buttons.push(h('li', {
         key: "page-".concat(page.number),
         staticClass: 'page-item',
@@ -19207,6 +19621,7 @@ var _default = {
   watch: {
     show: function show(_show, old) {
       if (_show === old) {
+        /* istanbul ignore next */
         return;
       }
 
@@ -19214,6 +19629,7 @@ var _default = {
     },
     disabled: function disabled(_disabled, old) {
       if (_disabled === old) {
+        /* istanbul ignore next */
         return;
       }
 
@@ -19264,7 +19680,7 @@ var _default = {
   updated: function updated() {
     // If content/props changes, etc
 
-    /* istanbul ignore if: can't test in JSDOM */
+    /* istanbul ignore next: can't test in JSDOM */
     if (this._toolpop) {
       this._toolpop.updateConfig(this.getConfig());
     }
@@ -19278,7 +19694,7 @@ var _default = {
   deactivated: function deactivated() {
     // Called when component is inside a <keep-alive> and component taken offline
 
-    /* istanbul ignore if: can't test in JSDOM */
+    /* istanbul ignore next: can't test in JSDOM */
     if (this._toolpop) {
       this.setObservers(false);
 
@@ -19336,19 +19752,19 @@ var _default = {
       }
     },
     onDisable: function onDisable() {
-      /* istanbul ignore if: can't test in JSDOM */
+      /* istanbul ignore next: can't test in JSDOM */
       if (this._toolpop) {
         this._toolpop.disable();
       }
     },
     onEnable: function onEnable() {
-      /* istanbul ignore if: can't test in JSDOM */
+      /* istanbul ignore next: can't test in JSDOM */
       if (this._toolpop) {
         this._toolpop.enable();
       }
     },
     updatePosition: function updatePosition() {
-      /* istanbul ignore if: can't test in JSDOM */
+      /* istanbul ignore next: can't test in JSDOM */
       if (this._toolpop) {
         // Instruct popper to reposition popover if necessary
         this._toolpop.update();
@@ -19666,6 +20082,7 @@ function () {
 
     // Start by emulating native Event constructor.
     if (!type) {
+      /* istanbul ignore next */
       throw new TypeError("Failed to construct '".concat(this.constructor.name, "'. 1 argument required, ").concat(arguments.length, " given."));
     } // Assign defaults first, the eventInit,
     // and the type last so it can't be overwritten.
@@ -19786,7 +20203,7 @@ function copyProps(props) {
 
 
 exports.__esModule = true;
-exports.position = exports.offset = exports.getCS = exports.getBCR = exports.hasAttr = exports.getAttr = exports.removeAttr = exports.setAttr = exports.hasClass = exports.removeClass = exports.addClass = exports.getById = exports.contains = exports.closest = exports.matches = exports.select = exports.selectAll = exports.reflow = exports.isDisabled = exports.isVisible = exports.isElement = exports.eventOff = exports.eventOn = void 0;
+exports.requestAF = exports.position = exports.offset = exports.getCS = exports.getBCR = exports.hasAttr = exports.getAttr = exports.removeAttr = exports.setAttr = exports.hasClass = exports.removeClass = exports.addClass = exports.getById = exports.contains = exports.closest = exports.matches = exports.select = exports.selectAll = exports.reflow = exports.isDisabled = exports.isVisible = exports.isElement = exports.eventOff = exports.eventOn = void 0;
 
 var _array = __webpack_require__(/*! ./array */ "./node_modules/bootstrap-vue/es/utils/array.js");
 
@@ -19857,27 +20274,33 @@ var isElement = function isElement(el) {
 
 exports.isElement = isElement;
 
-var isVisible = function isVisible(el) {
-  /* istanbul ignore next: getBoundingClientRect not avaiable in JSDOM */
-  return isElement(el) && document.body.contains(el) && el.getBoundingClientRect().height > 0 && el.getBoundingClientRect().width > 0;
+var isVisible = function isVisible(el)
+/* istanbul ignore next: getBoundingClientRect() doesn't work in JSDOM */
+{
+  if (!isElement(el) || !contains(document.body, el)) {
+    return false;
+  }
+
+  var bcr = getBCR(el);
+  return bcr && bcr.height > 0 && bcr.width > 0;
 }; // Determine if an element is disabled
 
 
 exports.isVisible = isVisible;
 
 var isDisabled = function isDisabled(el) {
-  return !isElement(el) || el.disabled || el.classList.contains('disabled') || Boolean(el.getAttribute('disabled'));
+  return !isElement(el) || el.disabled || hasClass(el, 'disabled') || Boolean(getAttr(el, 'disabled'));
 }; // Cause/wait-for an element to reflow it's content (adjusting it's height/width)
 
 
 exports.isDisabled = isDisabled;
 
 var reflow = function reflow(el) {
-  // requsting an elements offsetHight will trigger a reflow of the element content
+  // Requesting an elements offsetHight will trigger a reflow of the element content
 
-  /* istanbul ignore next: reflow doesnt happen in JSDOM */
+  /* istanbul ignore next: reflow doesn't happen in JSDOM */
   return isElement(el) && el.offsetHeight;
-}; // Select all elements matching selector. Returns [] if none found
+}; // Select all elements matching selector. Returns `[]` if none found
 
 
 exports.reflow = reflow;
@@ -19888,7 +20311,7 @@ var selectAll = function selectAll(selector, root) {
   }
 
   return (0, _array.from)(root.querySelectorAll(selector));
-}; // Select a single element, returns null if not found
+}; // Select a single element, returns `null` if not found
 
 
 exports.selectAll = selectAll;
@@ -19927,7 +20350,7 @@ var matches = function matches(el, selector) {
   };
 
   return Matches.call(el, selector);
-}; // Finds closest element matching selector. Returns null if not found
+}; // Finds closest element matching selector. Returns `null` if not found
 
 
 exports.matches = matches;
@@ -19939,13 +20362,13 @@ var closest = function closest(selector, root) {
   // Since we dont support IE < 10, we can use the "Matches" version of the polyfill for speed
   // Prefer native implementation over polyfill function
 
+
+  var Closest = Element.prototype.closest || function (sel)
   /* istanbul ignore next */
-
-
-  var Closest = Element.prototype.closest || function (sel) {
+  {
     var element = this;
 
-    if (!document.documentElement.contains(element)) {
+    if (!contains(document.documentElement, element)) {
       return null;
     }
 
@@ -19961,7 +20384,7 @@ var closest = function closest(selector, root) {
     return null;
   };
 
-  var el = Closest.call(root, selector); // Emulate jQuery closest and return null if match is the passed in element (root)
+  var el = Closest.call(root, selector); // Emulate jQuery closest and return `null` if match is the passed in element (root)
 
   return el === root ? null : el;
 }; // Returns true if the parent element contains the child element
@@ -19988,7 +20411,10 @@ var getById = function getById(id) {
 exports.getById = getById;
 
 var addClass = function addClass(el, className) {
-  if (className && isElement(el)) {
+  // We are checking for `el.classList` existence here since IE 11
+  // returns `undefined` for some elements (e.g. SVG elements)
+  // See https://github.com/bootstrap-vue/bootstrap-vue/issues/2713
+  if (className && isElement(el) && el.classList) {
     el.classList.add(className);
   }
 }; // Remove a class from an element
@@ -19997,7 +20423,10 @@ var addClass = function addClass(el, className) {
 exports.addClass = addClass;
 
 var removeClass = function removeClass(el, className) {
-  if (className && isElement(el)) {
+  // We are checking for `el.classList` existence here since IE 11
+  // returns `undefined` for some elements (e.g. SVG elements)
+  // See https://github.com/bootstrap-vue/bootstrap-vue/issues/2713
+  if (className && isElement(el) && el.classList) {
     el.classList.remove(className);
   }
 }; // Test if an element has a class
@@ -20006,7 +20435,10 @@ var removeClass = function removeClass(el, className) {
 exports.removeClass = removeClass;
 
 var hasClass = function hasClass(el, className) {
-  if (className && isElement(el)) {
+  // We are checking for `el.classList` existence here since IE 11
+  // returns `undefined` for some elements (e.g. SVG elements)
+  // See https://github.com/bootstrap-vue/bootstrap-vue/issues/2713
+  if (className && isElement(el) && el.classList) {
     return el.classList.contains(className);
   }
 
@@ -20029,7 +20461,7 @@ var removeAttr = function removeAttr(el, attr) {
   if (attr && isElement(el)) {
     el.removeAttribute(attr);
   }
-}; // Get an attribute value from an element (returns null if not found)
+}; // Get an attribute value from an element (returns `null` if not found)
 
 
 exports.removeAttr = removeAttr;
@@ -20040,7 +20472,8 @@ var getAttr = function getAttr(el, attr) {
   }
 
   return null;
-}; // Determine if an attribute exists on an element (returns true or false, or null if element not found)
+}; // Determine if an attribute exists on an element (returns `true`
+// or `false`, or `null` if element not found)
 
 
 exports.getAttr = getAttr;
@@ -20051,74 +20484,79 @@ var hasAttr = function hasAttr(el, attr) {
   }
 
   return null;
-}; // Return the Bounding Client Rec of an element. Retruns null if not an element
-
-/* istanbul ignore next: getBoundingClientRect() doesnt work in JSDOM */
+}; // Return the Bounding Client Rect of an element. Returns `null` if not an element
 
 
 exports.hasAttr = hasAttr;
 
 var getBCR = function getBCR(el) {
+  /* istanbul ignore next: getBoundingClientRect() doesn't work in JSDOM */
   return isElement(el) ? el.getBoundingClientRect() : null;
 }; // Get computed style object for an element
-
-/* istanbul ignore next: getComputedStyle() doesnt work in JSDOM */
 
 
 exports.getBCR = getBCR;
 
 var getCS = function getCS(el) {
+  /* istanbul ignore next: getComputedStyle() doesn't work in JSDOM */
   return isElement(el) ? window.getComputedStyle(el) : {};
-}; // Return an element's offset wrt document element
+}; // Return an element's offset with respect to document element
 // https://j11y.io/jquery/#v=git&fn=jQuery.fn.offset
-
-/* istanbul ignore next: getBoundingClientRect(), getClientRects() doesnt work in JSDOM */
 
 
 exports.getCS = getCS;
 
-var offset = function offset(el) {
-  if (isElement(el)) {
-    if (!el.getClientRects().length) {
-      return {
-        top: 0,
-        left: 0
-      };
-    }
+var offset = function offset(el)
+/* istanbul ignore next: getBoundingClientRect(), getClientRects() doesn't work in JSDOM */
+{
+  var _offset = {
+    top: 0,
+    left: 0
+  };
 
-    var bcr = getBCR(el);
-    var win = el.ownerDocument.defaultView;
-    return {
-      top: bcr.top + win.pageYOffset,
-      left: bcr.left + win.pageXOffset
-    };
+  if (!isElement(el) || el.getClientRects().length === 0) {
+    return _offset;
   }
-}; // Return an element's offset wrt to it's offsetParent
-// https://j11y.io/jquery/#v=git&fn=jQuery.fn.position
 
-/* istanbul ignore next: getBoundingClientRect(), getClientRects() doesnt work in JSDOM */
+  var bcr = getBCR(el);
+
+  if (bcr) {
+    var win = el.ownerDocument.defaultView;
+    _offset.top = bcr.top + win.pageYOffset;
+    _offset.left = bcr.left + win.pageXOffset;
+  }
+
+  return _offset;
+}; // Return an element's offset with respect to to it's offsetParent
+// https://j11y.io/jquery/#v=git&fn=jQuery.fn.position
 
 
 exports.offset = offset;
 
-var position = function position(el) {
+var position = function position(el)
+/* istanbul ignore next: getBoundingClientRect() doesn't work in JSDOM */
+{
+  var _offset = {
+    top: 0,
+    left: 0
+  };
+
   if (!isElement(el)) {
-    return;
+    return _offset;
   }
 
   var parentOffset = {
     top: 0,
     left: 0
   };
-  var offsetSelf;
-  var offsetParent;
+  var elStyles = getCS(el);
 
-  if (getCS(el).position === 'fixed') {
-    offsetSelf = getBCR(el);
+  if (elStyles.position === 'fixed') {
+    _offset = getBCR(el) || _offset;
   } else {
-    offsetSelf = offset(el);
+    _offset = offset(el);
     var doc = el.ownerDocument;
-    offsetParent = el.offsetParent || doc.documentElement;
+    var offsetParent = el.offsetParent || doc.documentElement;
 
     while (offsetParent && (offsetParent === doc.body || offsetParent === doc.documentElement) && getCS(offsetParent).position === 'static') {
       offsetParent = offsetParent.parentNode;
@@ -20126,18 +20564,38 @@ var position = function position(el) {
 
     if (offsetParent && offsetParent !== el && offsetParent.nodeType === Node.ELEMENT_NODE) {
       parentOffset = offset(offsetParent);
-      parentOffset.top += parseFloat(getCS(offsetParent).borderTopWidth);
-      parentOffset.left += parseFloat(getCS(offsetParent).borderLeftWidth);
+      var offsetParentStyles = getCS(offsetParent);
+      parentOffset.top += parseFloat(offsetParentStyles.borderTopWidth);
+      parentOffset.left += parseFloat(offsetParentStyles.borderLeftWidth);
     }
   }
 
   return {
-    top: offsetSelf.top - parentOffset.top - parseFloat(getCS(el).marginTop),
-    left: offsetSelf.left - parentOffset.left - parseFloat(getCS(el).marginLeft)
+    top: _offset.top - parentOffset.top - parseFloat(elStyles.marginTop),
+    left: _offset.left - parentOffset.left - parseFloat(elStyles.marginLeft)
   };
-};
+}; // requestAnimationFrame convenience method
+// We don't have a version for cancelAnimationFrame, but we don't call it anywhere
+
 
 exports.position = position;
+
+var requestAF = function requestAF(cb) {
+  var w = _env.inBrowser ? window : {};
+
+  var rAF = w.requestAnimationFrame || w.webkitRequestAnimationFrame || w.mozRequestAnimationFrame || w.msRequestAnimationFrame || w.oRequestAnimationFrame || function (cb) {
+    // Fallback, but not a true polyfill.
+    // But all browsers we support (other than Opera Mini) support rAF
+    // without a polyfill.
+
+    /* istanbul ignore next */
+    return setTimeout(cb, 16);
+  };
+
+  return rAF(cb);
+};
+
+exports.requestAF = requestAF;
 
 /***/ }),
 
@@ -20176,35 +20634,52 @@ exports.hasPointerEvent = hasPointerEvent;
 
 
 exports.__esModule = true;
-exports.default = get;
+exports.default = void 0;
+
+var _array = __webpack_require__(/*! ./array */ "./node_modules/bootstrap-vue/es/utils/array.js");
+
+var _object = __webpack_require__(/*! ./object */ "./node_modules/bootstrap-vue/es/utils/object.js");
 
 /**
- * Get property defined by dot notation in string.
+ * Get property defined by dot/array notation in string.
  *
- * Copyright (C) 2014 (UNLICENSE)
- * @author Dmitry Yv <https://github.com/dy>
+ * @link https://gist.github.com/jeneg/9767afdcca45601ea44930ea03e0febf#gistcomment-1935901
  *
- * @param  {Object} holder   Target object where to look property up
- * @param  {string} propName Dot notation, like 'this.a.b.c'
- * @return {*}          A property value
+ * @param {Object} obj
+ * @param {string|Array} path
+ * @param {*} defaultValue (optional)
+ * @return {*}
  */
-function get(holder, propName) {
-  if (propName === undefined) {
-    return holder;
-  }
+var _default = function _default(obj, path) {
+  var defaultValue = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+  // Handle aray of path values
+  path = (0, _array.isArray)(path) ? path.join('.') : path; // If no path or no object passed
 
-  var propParts = (propName + '').split('.');
-  var result = holder;
-  var lastPropName;
+  if (!path || !(0, _object.isObject)(obj)) {
+    return defaultValue;
+  } // Handle edge case where user has dot(s) in top-level item field key
+  // See https://github.com/bootstrap-vue/bootstrap-vue/issues/2762
 
-  while ((lastPropName = propParts.shift()) !== undefined && // Fix for https://github.com/bootstrap-vue/bootstrap-vue/issues/2623
-  result !== undefined && result !== null) {
-    if (result[lastPropName] === undefined) return undefined;
-    result = result[lastPropName];
-  }
 
-  return result;
-}
+  if (obj[path] !== undefined) {
+    return obj[path];
+  } // Handle string array notation (numeric indices only)
+
+
+  path = String(path).replace(/\[(\d+)]/g, '.$1');
+  var steps = path.split('.').filter(Boolean); // Handle case where someone pases a string of only dots
+
+  if (steps.length === 0) {
+    return defaultValue;
+  } // Traverse path in object to find result
+
+
+  return steps.every(function (step) {
+    return (obj = obj[step]) !== undefined;
+  }) ? obj : defaultValue;
+};
+
+exports.default = _default;
 
 /***/ }),
 
@@ -20225,7 +20700,7 @@ var stripTagsRegex = /(<([^>]+)>)/gi;
 
 function stripTags() {
   var text = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
-  return text.replace(stripTagsRegex, '');
+  return String(text).replace(stripTagsRegex, '');
 }
 
 function htmlOrText(innerHTML, textContent) {
@@ -20317,25 +20792,8 @@ var _array = __webpack_require__(/*! ./array */ "./node_modules/bootstrap-vue/es
 
 var _object = __webpack_require__(/*! ./object */ "./node_modules/bootstrap-vue/es/utils/object.js");
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
 function isDate(obj) {
   return obj instanceof Date;
-}
-
-function isFile(obj) {
-  return obj instanceof File;
-}
-/**
- * Quick object check - this is primarily used to tell
- * Objects from primitive values when we know the value
- * is a JSON-compliant type.
- * Note object could be a complex type like array, date, etc.
- */
-
-
-function isObject(obj) {
-  return obj !== null && _typeof(obj) === 'object';
 }
 /**
  * Check if two values are loosely equal - that is,
@@ -20349,35 +20807,28 @@ function looseEqual(a, b) {
     return true;
   }
 
-  if (_typeof(a) !== _typeof(b)) {
-    return false;
+  var aValidType = isDate(a);
+  var bValidType = isDate(b);
+
+  if (aValidType || bValidType) {
+    return aValidType && bValidType ? a.getTime() === b.getTime() : false;
   }
 
-  var validTypesCount = [isDate(a), isDate(b)].filter(Boolean).length;
+  aValidType = (0, _array.isArray)(a);
+  bValidType = (0, _array.isArray)(b);
 
-  if (validTypesCount > 0) {
-    return validTypesCount === 2 ? a.getTime() === b.getTime() : false;
-  }
-
-  validTypesCount = [isFile(a), isFile(b)].filter(Boolean).length;
-
-  if (validTypesCount > 0) {
-    return validTypesCount === 2 ? a === b : false;
-  }
-
-  validTypesCount = [(0, _array.isArray)(a), (0, _array.isArray)(b)].filter(Boolean).length;
-
-  if (validTypesCount > 0) {
-    return validTypesCount === 2 ? a.length === b.length && a.every(function (e, i) {
+  if (aValidType || bValidType) {
+    return aValidType && bValidType ? a.length === b.length && a.every(function (e, i) {
       return looseEqual(e, b[i]);
     }) : false;
   }
 
-  validTypesCount = [isObject(a), isObject(b)].filter(Boolean).length;
+  aValidType = (0, _object.isObject)(a);
+  bValidType = (0, _object.isObject)(b);
 
-  if (validTypesCount > 0) {
+  if (aValidType || bValidType) {
     /* istanbul ignore if: this if will probably never be called */
-    if (validTypesCount === 1) {
+    if (!aValidType || !bValidType) {
       return false;
     }
 
@@ -20388,22 +20839,17 @@ function looseEqual(a, b) {
       return false;
     }
 
-    if (aKeysCount === 0 && bKeysCount === 0) {
-      return String(a) === String(b);
-    } // Using for loop over `Object.keys()` here since some class
-    // keys are not handled correctly otherwise
-
-
     for (var key in a) {
-      if ([a.hasOwnProperty(key), b.hasOwnProperty(key)].filter(Boolean).length === 1 || !looseEqual(a[key], b[key])) {
+      var aHasKey = a.hasOwnProperty(key);
+      var bHasKey = b.hasOwnProperty(key);
+
+      if (aHasKey && !bHasKey || !aHasKey && bHasKey || !looseEqual(a[key], b[key])) {
         return false;
       }
     }
-
-    return true;
   }
 
-  return false;
+  return String(a) === String(b);
 }
 
 var _default = looseEqual;
@@ -20456,10 +20902,7 @@ exports.default = lowerFirst;
  * @param {string} str
  */
 function lowerFirst(str) {
-  if (typeof str !== 'string') {
-    str = String(str);
-  }
-
+  str = String(str);
   return str.charAt(0).toLowerCase() + str.slice(1);
 }
 
@@ -20490,6 +20933,38 @@ function memoize(fn) {
 
 /***/ }),
 
+/***/ "./node_modules/bootstrap-vue/es/utils/normalize-slot.js":
+/*!***************************************************************!*\
+  !*** ./node_modules/bootstrap-vue/es/utils/normalize-slot.js ***!
+  \***************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.default = normalizeSlot;
+
+/**
+ * Returns vNodes for named slot either scoped or unscoped
+ *
+ * @param {String} name
+ * @param {String} scope
+ * @param {Object} scopedSlots
+ * @param {Object} slots
+ * @returns {Array|undefined} vNodes
+ */
+function normalizeSlot(name) {
+  var scope = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var $scopedSlots = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+  var $slots = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
+  var slot = $scopedSlots[name] || $slots[name];
+  return typeof slot === 'function' ? slot(scope) : slot;
+}
+
+/***/ }),
+
 /***/ "./node_modules/bootstrap-vue/es/utils/object.js":
 /*!*******************************************************!*\
   !*** ./node_modules/bootstrap-vue/es/utils/object.js ***!
@@ -20501,8 +20976,13 @@ function memoize(fn) {
 
 
 exports.__esModule = true;
-exports.readonlyDescriptor = readonlyDescriptor;
-exports.is = exports.isFrozen = exports.create = exports.getPrototypeOf = exports.getOwnPropertySymbols = exports.getOwnPropertyDescriptor = exports.freeze = exports.defineProperty = exports.defineProperties = exports.keys = exports.getOwnPropertyNames = exports.assign = void 0;
+exports.readonlyDescriptor = exports.omit = exports.isPlainObject = exports.isObject = exports.is = exports.isFrozen = exports.create = exports.getPrototypeOf = exports.getOwnPropertySymbols = exports.getOwnPropertyDescriptor = exports.freeze = exports.defineProperty = exports.defineProperties = exports.keys = exports.getOwnPropertyNames = exports.assign = void 0;
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 /**
  * Aliasing Object[method] allows the minifier to shorten methods to a single character variable,
@@ -20583,15 +21063,52 @@ exports.create = create;
 var isFrozen = Object.isFrozen;
 exports.isFrozen = isFrozen;
 var is = Object.is;
+/**
+ * Quick object check - this is primarily used to tell
+ * Objects from primitive values when we know the value
+ * is a JSON-compliant type.
+ * Note object could be a complex type like array, date, etc.
+ */
+
 exports.is = is;
 
-function readonlyDescriptor() {
+var isObject = function isObject(obj) {
+  return obj !== null && _typeof(obj) === 'object';
+};
+/**
+ * Strict object type check. Only returns true
+ * for plain JavaScript objects.
+ */
+
+
+exports.isObject = isObject;
+
+var isPlainObject = function isPlainObject(obj) {
+  return Object.prototype.toString.call(obj) === '[object Object]';
+}; // @link https://gist.github.com/bisubus/2da8af7e801ffd813fab7ac221aa7afc
+
+
+exports.isPlainObject = isPlainObject;
+
+var omit = function omit(obj, props) {
+  return Object.keys(obj).filter(function (key) {
+    return props.indexOf(key) === -1;
+  }).reduce(function (result, key) {
+    return _objectSpread({}, result, _defineProperty({}, key, obj[key]));
+  }, {});
+};
+
+exports.omit = omit;
+
+var readonlyDescriptor = function readonlyDescriptor() {
   return {
     enumerable: true,
     configurable: false,
     writable: false
   };
-}
+};
+
+exports.readonlyDescriptor = readonlyDescriptor;
 
 /***/ }),
 
@@ -20755,24 +21272,16 @@ exports.registerDirectives = registerDirectives;
 exports.vueUse = vueUse;
 
 /**
- * Register a component plugin as being loaded. returns true if component plugin already registered
+ * Load a component.
  * @param {object} Vue
  * @param {string} Component name
  * @param {object} Component definition
  */
 function registerComponent(Vue, name, def) {
-  Vue._bootstrap_vue_components_ = Vue._bootstrap_vue_components_ || {};
-  var loaded = Vue._bootstrap_vue_components_[name];
-
-  if (!loaded && def && name) {
-    Vue._bootstrap_vue_components_[name] = true;
-    Vue.component(name, def);
-  }
-
-  return loaded;
+  Vue.component(name, def);
 }
 /**
- * Register a group of components as being loaded.
+ * Load a group of components.
  * @param {object} Vue
  * @param {object} Object of component definitions
  */
@@ -20784,7 +21293,7 @@ function registerComponents(Vue, components) {
   }
 }
 /**
- * Register a directive as being loaded. returns true if directive plugin already registered
+ * Load a directive.
  * @param {object} Vue
  * @param {string} Directive name
  * @param {object} Directive definition
@@ -20792,18 +21301,10 @@ function registerComponents(Vue, components) {
 
 
 function registerDirective(Vue, name, def) {
-  Vue._bootstrap_vue_directives_ = Vue._bootstrap_vue_directives_ || {};
-  var loaded = Vue._bootstrap_vue_directives_[name];
-
-  if (!loaded && def && name) {
-    Vue._bootstrap_vue_directives_[name] = true;
-    Vue.directive(name, def);
-  }
-
-  return loaded;
+  Vue.directive(name, def);
 }
 /**
- * Register a group of directives as being loaded.
+ * Load a group of directives.
  * @param {object} Vue
  * @param {object} Object of directive definitions
  */
@@ -20821,6 +21322,7 @@ function registerDirectives(Vue, directives) {
 
 
 function vueUse(VuePlugin) {
+  /* istanbul ignore next */
   if (typeof window !== 'undefined' && window.Vue) {
     window.Vue.use(VuePlugin);
   }
@@ -21268,6 +21770,35 @@ var unbindTargets = function unbindTargets(vnode, binding, listenTypes) {
 
 exports.unbindTargets = unbindTargets;
 var _default = bindTargets;
+exports.default = _default;
+
+/***/ }),
+
+/***/ "./node_modules/bootstrap-vue/es/utils/to-string.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/bootstrap-vue/es/utils/to-string.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.default = void 0;
+
+var _array = __webpack_require__(/*! ./array */ "./node_modules/bootstrap-vue/es/utils/array.js");
+
+var _object = __webpack_require__(/*! ./object */ "./node_modules/bootstrap-vue/es/utils/object.js");
+
+/**
+ * Convert a value to a string that can be rendered.
+ */
+var _default = function _default(val) {
+  var spaces = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 2;
+  return val === null || val === undefined ? '' : (0, _array.isArray)(val) || (0, _object.isPlainObject)(val) && val.toString === Object.prototype.toString ? JSON.stringify(val, null, spaces) : String(val);
+};
+
 exports.default = _default;
 
 /***/ }),
@@ -22561,7 +23092,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.form-control[data-v-552d3ce6] {\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n}\n.shortcuts[data-v-552d3ce6] {\n    position: relative;\n    font-size: .85em;\n}\n.card[data-v-552d3ce6] {\n    border-top: 0;\n    border-top-left-radius: 0;\n    border-top-right-radius: 0;\n}\n.card-body[data-v-552d3ce6] {\n    padding: 1em 1em 0 1em;\n}\n.shortcuts a[data-v-552d3ce6] {\n    display: inline-block;\n    margin-right: .75em;\n    padding: 0 .5em;\n    text-decoration: none;\n    transition: all .25s;\n}\n.shortcuts a[data-v-552d3ce6]:hover {\n    color: #fff;\n    background-color: #333;\n}\n.shortcuts .active[data-v-552d3ce6] {\n    background-color: #333;\n    color: white;\n}\n.shortcuts .pullup[data-v-552d3ce6] {\n    position: absolute;\n    top: .25em;\n    right: .25em;\n}\n.shortcuts .pullup a[data-v-552d3ce6] {\n    font-size: 0.85em;\n    margin: 0;\n}\n.shortcuts .pullup a[data-v-552d3ce6]:hover {\n    color: inherit;\n    background-color: inherit;\n    text-decoration: underline;\n}\n.shortcuts .well[data-v-552d3ce6] {\n    margin-bottom: 0;\n}\n", ""]);
+exports.push([module.i, "\n.form-control[data-v-552d3ce6] {\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n}\n.shortcuts[data-v-552d3ce6] {\n    position: relative;\n    font-size: .85em;\n}\n.card[data-v-552d3ce6] {\n    border-top: 0;\n    border-top-left-radius: 0;\n    border-top-right-radius: 0;\n}\n.card-body[data-v-552d3ce6] {\n    padding: 1em 1em 0 1em;\n}\n.shortcuts a[data-v-552d3ce6] {\n    display: inline-block;\n    margin-right: .75em;\n    padding: 0 .5em;\n    text-decoration: none;\n    -webkit-transition: all .25s;\n    transition: all .25s;\n}\n.shortcuts a[data-v-552d3ce6]:hover {\n    color: #fff;\n    background-color: #333;\n}\n.shortcuts .active[data-v-552d3ce6] {\n    background-color: #333;\n    color: white;\n}\n.shortcuts .pullup[data-v-552d3ce6] {\n    position: absolute;\n    top: .25em;\n    right: .25em;\n}\n.shortcuts .pullup a[data-v-552d3ce6] {\n    font-size: 0.85em;\n    margin: 0;\n}\n.shortcuts .pullup a[data-v-552d3ce6]:hover {\n    color: inherit;\n    background-color: inherit;\n    text-decoration: underline;\n}\n.shortcuts .well[data-v-552d3ce6] {\n    margin-bottom: 0;\n}\n", ""]);
 
 // exports
 
@@ -22669,19 +23200,9 @@ function toComment(sourceMap) {
  * @license  MIT
  */
 
-// The _isBuffer check is for Safari 5-7 support, because it's missing
-// Object.prototype.constructor. Remove this eventually
-module.exports = function (obj) {
-  return obj != null && (isBuffer(obj) || isSlowBuffer(obj) || !!obj._isBuffer)
-}
-
-function isBuffer (obj) {
-  return !!obj.constructor && typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
-}
-
-// For Node v0.10 support. Remove this eventually.
-function isSlowBuffer (obj) {
-  return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
+module.exports = function isBuffer (obj) {
+  return obj != null && obj.constructor != null &&
+    typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
 }
 
 
@@ -22957,13 +23478,12 @@ function webpackContext(req) {
 	return __webpack_require__(id);
 }
 function webpackContextResolve(req) {
-	var id = map[req];
-	if(!(id + 1)) { // check for number or string
+	if(!__webpack_require__.o(map, req)) {
 		var e = new Error("Cannot find module '" + req + "'");
 		e.code = 'MODULE_NOT_FOUND';
 		throw e;
 	}
-	return id;
+	return map[req];
 }
 webpackContext.keys = function webpackContextKeys() {
 	return Object.keys(map);
@@ -40304,7 +40824,7 @@ webpackContext.id = "./node_modules/moment/locale sync recursive ^\\.\\/.*$";
 __webpack_require__.r(__webpack_exports__);
 /* WEBPACK VAR INJECTION */(function(global) {/**!
  * @fileOverview Kickass library to create and place poppers near their reference elements.
- * @version 1.14.7
+ * @version 1.15.0
  * @license
  * Copyright (c) 2016 Federico Zivolo and contributors
  *
@@ -41908,7 +42428,14 @@ function flip(data, options) {
 
     // flip the variation if required
     var isVertical = ['top', 'bottom'].indexOf(placement) !== -1;
-    var flippedVariation = !!options.flipVariations && (isVertical && variation === 'start' && overflowsLeft || isVertical && variation === 'end' && overflowsRight || !isVertical && variation === 'start' && overflowsTop || !isVertical && variation === 'end' && overflowsBottom);
+
+    // flips variation if reference element overflows boundaries
+    var flippedVariationByRef = !!options.flipVariations && (isVertical && variation === 'start' && overflowsLeft || isVertical && variation === 'end' && overflowsRight || !isVertical && variation === 'start' && overflowsTop || !isVertical && variation === 'end' && overflowsBottom);
+
+    // flips variation if popper content overflows boundaries
+    var flippedVariationByContent = !!options.flipVariationsByContent && (isVertical && variation === 'start' && overflowsRight || isVertical && variation === 'end' && overflowsLeft || !isVertical && variation === 'start' && overflowsBottom || !isVertical && variation === 'end' && overflowsTop);
+
+    var flippedVariation = flippedVariationByRef || flippedVariationByContent;
 
     if (overlapsRef || overflowsBoundaries || flippedVariation) {
       // this boolean to detect any flip loop
@@ -42515,7 +43042,23 @@ var modifiers = {
      * The popper will never be placed outside of the defined boundaries
      * (except if `keepTogether` is enabled)
      */
-    boundariesElement: 'viewport'
+    boundariesElement: 'viewport',
+    /**
+     * @prop {Boolean} flipVariations=false
+     * The popper will switch placement variation between `-start` and `-end` when
+     * the reference element overlaps its boundaries.
+     *
+     * The original placement should have a set variation.
+     */
+    flipVariations: false,
+    /**
+     * @prop {Boolean} flipVariationsByContent=false
+     * The popper will switch placement variation between `-start` and `-end` when
+     * the popper element overlaps its reference boundaries.
+     *
+     * The original placement should have a set variation.
+     */
+    flipVariationsByContent: false
   },
 
   /**
@@ -42732,8 +43275,8 @@ var Popper = function () {
   /**
    * Creates a new Popper.js instance.
    * @class Popper
-   * @param {HTMLElement|referenceObject} reference - The reference element used to position the popper
-   * @param {HTMLElement} popper - The HTML element used as the popper
+   * @param {Element|referenceObject} reference - The reference element used to position the popper
+   * @param {Element} popper - The HTML / XML element used as the popper
    * @param {Object} options - Your custom options to override the ones defined in [Defaults](#defaults)
    * @return {Object} instance - The generated Popper.js instance
    */
@@ -44618,7 +45161,7 @@ function normalizeComponent (
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(global, setImmediate) {/*!
- * Vue.js v2.6.8
+ * Vue.js v2.6.9
  * (c) 2014-2019 Evan You
  * Released under the MIT License.
  */
@@ -46476,10 +47019,11 @@ function invokeWithErrorHandling (
   var res;
   try {
     res = args ? handler.apply(context, args) : handler.call(context);
-    if (res && !res._isVue && isPromise(res)) {
+    if (res && !res._isVue && isPromise(res) && !res._handled) {
+      res.catch(function (e) { return handleError(e, vm, info + " (Promise/async)"); });
       // issue #9511
-      // reassign to res to avoid catch triggering multiple times when nested calls
-      res = res.catch(function (e) { return handleError(e, vm, info + " (Promise/async)"); });
+      // avoid catch triggering multiple times when nested calls
+      res._handled = true;
     }
   } catch (e) {
     handleError(e, vm, info);
@@ -47163,6 +47707,7 @@ function normalizeScopedSlots (
 ) {
   var res;
   var isStable = slots ? !!slots.$stable : true;
+  var hasNormalSlots = Object.keys(normalSlots).length > 0;
   var key = slots && slots.$key;
   if (!slots) {
     res = {};
@@ -47174,7 +47719,8 @@ function normalizeScopedSlots (
     prevSlots &&
     prevSlots !== emptyObject &&
     key === prevSlots.$key &&
-    Object.keys(normalSlots).length === 0
+    !hasNormalSlots &&
+    !prevSlots.$hasNormal
   ) {
     // fast path 2: stable scoped slots w/ no normal slots to proxy,
     // only need to normalize once
@@ -47200,6 +47746,7 @@ function normalizeScopedSlots (
   }
   def(res, '$stable', isStable);
   def(res, '$key', key);
+  def(res, '$hasNormal', hasNormalSlots);
   return res
 }
 
@@ -47209,8 +47756,10 @@ function normalizeScopedSlot(normalSlots, key, fn) {
     res = res && typeof res === 'object' && !Array.isArray(res)
       ? [res] // single vnode
       : normalizeChildren(res);
-    return res && res.length === 0
-      ? undefined
+    return res && (
+      res.length === 0 ||
+      (res.length === 1 && res[0].isComment) // #9658
+    ) ? undefined
       : res
   };
   // this is a slot using the new v-slot syntax without scope. although it is
@@ -47390,12 +47939,13 @@ function bindObjectProps (
             : data.attrs || (data.attrs = {});
         }
         var camelizedKey = camelize(key);
-        if (!(key in hash) && !(camelizedKey in hash)) {
+        var hyphenatedKey = hyphenate(key);
+        if (!(camelizedKey in hash) && !(hyphenatedKey in hash)) {
           hash[key] = value[key];
 
           if (isSync) {
             var on = data.on || (data.on = {});
-            on[("update:" + camelizedKey)] = function ($event) {
+            on[("update:" + key)] = function ($event) {
               value[key] = $event;
             };
           }
@@ -48230,7 +48780,7 @@ function resolveAsyncComponent (
   }
 
   var owner = currentRenderingInstance;
-  if (isDef(factory.owners) && factory.owners.indexOf(owner) === -1) {
+  if (owner && isDef(factory.owners) && factory.owners.indexOf(owner) === -1) {
     // already pending
     factory.owners.push(owner);
   }
@@ -48239,7 +48789,7 @@ function resolveAsyncComponent (
     return factory.loadingComp
   }
 
-  if (!isDef(factory.owners)) {
+  if (owner && !isDef(factory.owners)) {
     var owners = factory.owners = [owner];
     var sync = true
 
@@ -48854,10 +49404,15 @@ var getNow = Date.now;
 // timestamp can either be hi-res (relative to page load) or low-res
 // (relative to UNIX epoch), so in order to compare time we have to use the
 // same timestamp type when saving the flush timestamp.
-if (inBrowser && getNow() > document.createEvent('Event').timeStamp) {
-  // if the low-res timestamp which is bigger than the event timestamp
-  // (which is evaluated AFTER) it means the event is using a hi-res timestamp,
-  // and we need to use the hi-res version for event listeners as well.
+if (
+  inBrowser &&
+  window.performance &&
+  typeof performance.now === 'function' &&
+  document.createEvent('Event').timeStamp <= performance.now()
+) {
+  // if the event timestamp is bigger than the hi-res timestamp
+  // (which is evaluated AFTER) it means the event is using a lo-res timestamp,
+  // and we need to use the lo-res version for event listeners as well.
   getNow = function () { return performance.now(); };
 }
 
@@ -50023,7 +50578,7 @@ Object.defineProperty(Vue, 'FunctionalRenderContext', {
   value: FunctionalRenderContext
 });
 
-Vue.version = '2.6.8';
+Vue.version = '2.6.9';
 
 /*  */
 
@@ -52115,8 +52670,10 @@ function add$1 (
         e.target === e.currentTarget ||
         // event is fired after handler attachment
         e.timeStamp >= attachedTimestamp ||
-        // #9462 bail for iOS 9 bug: event.timeStamp is 0 after history.pushState
-        e.timeStamp === 0 ||
+        // bail for environments that have buggy event.timeStamp implementations
+        // #9462 iOS 9 bug: event.timeStamp is 0 after history.pushState
+        // #9681 QtWebEngine event.timeStamp is negative value
+        e.timeStamp <= 0 ||
         // #9448 bail if event is fired in another document in a multi-page
         // electron/nw.js app, since event.timeStamp will be using a different
         // starting reference
@@ -52734,8 +53291,8 @@ function enter (vnode, toggleDisplay) {
   var context = activeInstance;
   var transitionNode = activeInstance.$vnode;
   while (transitionNode && transitionNode.parent) {
-    transitionNode = transitionNode.parent;
     context = transitionNode.context;
+    transitionNode = transitionNode.parent;
   }
 
   var isAppear = !context._isMounted || !vnode.isRootInsert;
@@ -54442,7 +54999,7 @@ function parse (
         text = preserveWhitespace ? ' ' : '';
       }
       if (text) {
-        if (whitespaceOption === 'condense') {
+        if (!inPre && whitespaceOption === 'condense') {
           // condense consecutive whitespaces into single space
           text = text.replace(whitespaceRE$1, ' ');
         }
