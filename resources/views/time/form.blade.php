@@ -16,7 +16,7 @@
                 <autofill
                     inline-template
                     url="{{ route('time.suggestByProject') }}"
-                    fields="estimatedDuration start summary"
+                    fields="estimatedDuration start"
                     v-bind:autofetch="{{ ($model->project_id > 0)? 'true' : 'false' }}"
                     v-bind:enabled="{{ Route::is('time.edit') ? 'false' : 'true' }}"
                 >
@@ -36,7 +36,7 @@
                     @include('partials.formgroup-time', ['name' => 'start', 'fieldName' => 'startTime', 'label' => 'Start', 'pickable' => ['time']])
                     @include('partials.formgroup-time', ['name' => 'end', 'fieldName' => 'endTime', 'label' => 'End', 'pickable' => ['time']])
 
-                    @include('partials.formgroup-textarea', ['name' => 'summary', 'label' => 'Summary', 'autofill' => true])
+                    @include('partials.formgroup-textarea', ['name' => 'summary', 'label' => 'Summary'])
 
                     @include('partials.formgroup-standard', ['name' => 'tagList', 'label' => 'Tags'])
 
