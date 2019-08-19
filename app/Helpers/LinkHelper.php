@@ -148,11 +148,17 @@ class LinkHelper
      * Uses the length of the current route to decide whether standard
      * CRUD-oriented navigation should be displayed.
      *
+     * Routes related to password management are manually excluded.
+     *
      * @return boolean
      */
     public static function showSubnav()
     {
         $routeSegments = explode('.', Route::currentRouteName());
+
+        if ($routeSegments[0] === 'password') {
+            return false;
+        }
 
         return count($routeSegments) > 1;
     }

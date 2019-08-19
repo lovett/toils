@@ -27,5 +27,6 @@ class ResetPasswordController extends Controller
     public function __construct()
     {
         $this->middleware('guest');
+        view()->share('pageTitle', 'Reset Password');
     }
 }

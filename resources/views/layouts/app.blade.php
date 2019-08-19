@@ -76,7 +76,7 @@
             <ul class="navbar-nav ml-auto">
                 @guest
                 {!! LinkHelper::primaryNavLink('login', 'Login') !!}
-                {!! LinkHelper::primaryNavLink('register', 'Registration') !!}
+                {!! LinkHelper::primaryNavLink('register', 'Register') !!}
                     @else
                 {!! LinkHelper::primaryNavLink('dashboard', 'Dashboard')  !!}
                 {!! LinkHelper::primaryNavLink('time.index', 'Time') !!}
