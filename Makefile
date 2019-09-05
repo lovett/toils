@@ -82,32 +82,6 @@ workspace:
 	tmux select-window -t "$(PROJECT_NAME)":0
 	tmux attach-session -t "$(PROJECT_NAME)"
 
-# Launch a single-use container to run the site.
-#
-# A webserver on the container host should define a vhost for the site
-# and proxy requests into the container.
-server: .env
-	podman run \
-	--rm \
-	--name=$(PROJECT_NAME) \
-	--publish=127.0.0.1:$(LOCAL_PORT):80 \
-	--volume="$(PWD):/srv/www" \
-	localhost/nginx-php
-
-# Build a production image for the application
-image: dummy
-	./mkimage.sh
-
-imagetest: dummy
-	@-podman rm toils
-	podman run \
-	--rm \
-	--name=$(PROJECT_NAME) \
-	--publish=127.0.0.1:$(LOCAL_PORT):80 \
-	--volume="$(PWD)/storage:/srv/www/storage" \
-	--conmon /usr/lib/podman/bin/conmon \
-	localhost/$(PROJECT_NAME)
-
 # Set up the application configuration file
 #
 # Most settings from the example file are usable as-is, but the
@@ -120,3 +94,60 @@ imagetest: dummy
 # Install the application on the production host via Ansible
 install:
 	ansible-playbook ansible/install.yml
+
+
+# Build the application in preparation for a production deployment
+build:
+	rsync -av --cvs-exclude \
+	--delete \
+	--delete-excluded \
+	--exclude=.ackrc \
+	--exclude=.env \
+	--exclude=.env.example \
+	--exclude=.gitattributes \
+	--exclude=.gitignore \
+	--exclude=ansible \
+	--exclude=node_modules \
+	--exclude=vendor \
+	--exclude=bootstrap/cache/* \
+	--exclude=storage/* \
+	--exclude=tests \
+	--exclude=package.json \
+	--exclude=package-lock.json \
+	--exclude=phpcs.xml \
+	--exclude=phpmd.xml \
+	--exclude=phpunit.xml \
+	--exclude=Makefile \
+	--exclude=mkimage.sh \
+	--exclude=server.php \
+	--exclude=*.sqlite \
+	--exclude=webpack.mix.js \
+	--exclude=*.qcow2 \
+	./ build
+
+# Build a QEMU virtual machine to run the application in production mode
+build-image: build
+	rm -f toils.qcow2
+	virt-builder debian-10 \
+		--format qcow2 \
+		-o toils.qcow2 \
+		--size 6G \
+		--hostname toils.local \
+		--root-password password:toils \
+		--run-command 'sed -i "s/ens2/ens3/" /etc/network/interfaces' \
+		--run-command 'mkdir -p /var/www' \
+		--run-command 'mkdir -p /etc/nginx/sites-enabled' \
+		--run-command 'mkdir -p /etc/php/7.3/fpm/pool.d' \
+		--copy-in resources/qemu/toils-vhost.conf:/etc/nginx/sites-enabled \
+		--copy-in resources/qemu/toils-pool.conf:/etc/php/7.3/fpm/pool.d \
+		--uninstall 'man-db' \
+		--firstboot resources/qemu/toils-firstboot.sh
+		virt-copy-in -a toils.qcow2 build /var/www
+
+# Run the QEMU virtual machine locally
+run-image:
+	qemu-system-x86_64 -m 512M \
+		-accel kvm \
+		-nic user,hostfwd=tcp::$(LOCAL_PORT)-:80,hostfwd=tcp::2222-:22
+		-nographic \
+		toils.qcow2
