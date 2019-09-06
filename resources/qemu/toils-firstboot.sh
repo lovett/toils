@@ -1,23 +1,27 @@
 #!/bin/sh
 
 # This script runs from inside the QEMU virtual machine the first time
-# it is run.
+# it is booted.
 #
-# It configures the system to run PHP-FPM and Nginx, and finishes
-# installation of the application.
+# It sets up PHP-FPM and Nginx by installing system
+# packages. Configuration files were populated when the image was
+# created.
 #
-# At the time this script runs, the virtual machine OS is mostly
-# pristine. Packages haven't been installed before now to avoid
-# networking complications when virt-builder runs, and to simplify the
-# virt-builder command. Although the application files have been
-# copied into the VM filesystem, composer packages haven't been
-# installed yet.
+# Application setup also happens here: installing composer pakcages
+# installed and performing Laravel-specific optimizations.
+#
+# When this script runs, the OS is pristine. Deferring setup like this
+# makes things a little easier for virt-builder and avoids some
+# complexity around getting the network connection working.
 #
 # After this script runs the application should be viewable in a
 # browser.
 
-mv /var/www/build /var/www/toils
+# Decrease boot time by skipping kernel selection.
+sed -i 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=0/' /etc/default/grub
+update-grub
 
+# Package installation
 apt-get install -y \
         composer \
         nginx-light \
@@ -31,33 +35,15 @@ apt-get install -y \
 
 rm -f /etc/php/7.3/fpm/pool.d/www.conf
 rm -f /etc/nginx/sites-enabled/default
-rm -rf /var/www/html
+rm -rf /var/www
+ln -s /mnt/toils-app /var/www
 
 systemctl restart php7.3-fpm nginx
 
-cd /var/www/toils
-touch toils.sqlite
+cd /mnt/toils-storage
+chown -R www-data:www-data $(ls | grep -v lost)
 
-mkdir -p storage/app/public
-mkdir -p storage/fonts
-mkdir -p storage/framework/views
-mkdir -p storage/logs
-
-if [ ! -f storage/toils.sqlite ]; then
-   touch storage/toils.sqlite
-fi
-
-export COMPOSER_HOME=/var/www/toils
-composer install --no-dev --no-interaction --optimize-autoloader --no-suggest
-
-cat <<EOF > .env
-APP_ENV=production
-APP_KEY=
-APP_DEBUG=false
-EOF
-
-php artisan key:generate
+cd /mnt/toils-app
 php artisan migrate --force --no-interaction
 php artisan config:cache
-
-chown -R www-data:www-data .
+chown -R www-data:www-data $(ls | grep -v lost)

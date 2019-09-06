@@ -110,7 +110,7 @@ build:
 	--exclude=node_modules \
 	--exclude=vendor \
 	--exclude=bootstrap/cache/* \
-	--exclude=storage/* \
+	--exclude=storage \
 	--exclude=tests \
 	--exclude=package.json \
 	--exclude=package-lock.json \
@@ -124,30 +124,76 @@ build:
 	--exclude=webpack.mix.js \
 	--exclude=*.qcow2 \
 	./ build
+	mkdir -p build/storage/framework/views
+	touch build/storage/$(SQLITE_DB_NAME)
+	cd build && composer install \
+		--no-dev \
+		--no-suggest \
+		--quiet \
+		--no-interaction \
+		--optimize-autoloader \
+		--classmap-authoritative
+	cd build && echo 'APP_KEY=' > .env
+	cd build && php artisan key:generate
+	cd build && rm -rf storage
+	cd build && ln -sf /mnt/toils-storage storage
+
 
 # Build a QEMU virtual machine to run the application in production mode
-build-image: build
-	rm -f toils.qcow2
+image: toils-app.qcow2 toils-storage.qcow2 toils-os.qcow2
+
+# Build a QEMU image for the OS.
+toils-os.qcow2:
 	virt-builder debian-10 \
 		--format qcow2 \
-		-o toils.qcow2 \
+		-o toils-os.qcow2 \
 		--size 6G \
 		--hostname toils.local \
 		--root-password password:toils \
+		--append-line /etc/fstab:'LABEL=toils-app /mnt/toils-app ext4 defaults 0 0' \
+		--append-line /etc/fstab:'LABEL=toils-storage /mnt/toils-storage ext4 defaults 0 0' \
 		--run-command 'sed -i "s/ens2/ens3/" /etc/network/interfaces' \
-		--run-command 'mkdir -p /var/www' \
 		--run-command 'mkdir -p /etc/nginx/sites-enabled' \
 		--run-command 'mkdir -p /etc/php/7.3/fpm/pool.d' \
+		--run-command 'mkdir /mnt/toils-app' \
+		--run-command 'mkdir /mnt/toils-storage' \
 		--copy-in resources/qemu/toils-vhost.conf:/etc/nginx/sites-enabled \
 		--copy-in resources/qemu/toils-pool.conf:/etc/php/7.3/fpm/pool.d \
-		--uninstall 'man-db' \
+		--uninstall man-db,git,python2,geoip-database,iso-codes \
+		--run-command 'apt autoremove -y' \
 		--firstboot resources/qemu/toils-firstboot.sh
-		virt-copy-in -a toils.qcow2 build /var/www
+
+# Build a QEMU image separate from the OS image for the application files.
+# The extra 10M prevents the image from running out of space.
+toils-app.qcow2: build
+	virt-make-fs --format=qcow2 --size=+10M --type=ext4 --label=toils-app build toils-app.qcow2
+
+# Build a QEMU image separate from the OS image to store volatile data.
+toils-storage.qcow2:
+	qemu-img create -f qcow2 toils-storage.qcow2 50G
+	guestfish add toils-storage.qcow2 : \
+		run : \
+		mkfs ext4 /dev/sda : \
+		set-label /dev/sda toils-storage : \
+		mount /dev/sda / : \
+		mkdir-p /app/public : \
+		mkdir-p /framework/views : \
+		mkdir /fonts : \
+		mkdir /logs : \
+		touch /$(SQLITE_DB_NAME)
 
 # Run the QEMU virtual machine locally
 run-image:
 	qemu-system-x86_64 -m 512M \
 		-accel kvm \
-		-nic user,hostfwd=tcp::$(LOCAL_PORT)-:80,hostfwd=tcp::2222-:22
+		-nic user,hostfwd=tcp::$(LOCAL_PORT)-:80,hostfwd=tcp::2222-:22 \
 		-nographic \
-		toils.qcow2
+		-hda toils-os.qcow2 \
+		-hdb toils-app.qcow2 \
+		-hdc toils-storage.qcow2
+
+clean:
+	rm -f toils-os.qcow2
+	rm -f toils-app.qcow2
+	rm -f toils-storage.qcow2
+	rm -rf build
