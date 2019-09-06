@@ -33,6 +33,7 @@ apt-get install -y \
         php-sqlite3 \
         php-tokenizer
 
+
 rm -f /etc/php/7.3/fpm/pool.d/www.conf
 rm -f /etc/nginx/sites-enabled/default
 rm -rf /var/www
@@ -40,10 +41,5 @@ ln -s /mnt/toils-app /var/www
 
 systemctl restart php7.3-fpm nginx
 
-cd /mnt/toils-storage
-chown -R www-data:www-data $(ls | grep -v lost)
-
-cd /mnt/toils-app
-php artisan migrate --force --no-interaction
-php artisan config:cache
-chown -R www-data:www-data $(ls | grep -v lost)
+systemctl enable toils.service
+systemctl start toils.service

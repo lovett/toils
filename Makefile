@@ -133,14 +133,16 @@ build:
 		--no-interaction \
 		--optimize-autoloader \
 		--classmap-authoritative
-	cd build && echo 'APP_KEY=' > .env
+	echo 'APP_KEY=' > build/.env
 	cd build && php artisan key:generate
-	cd build && rm -rf storage
+	cd build && php artisan config:cache
+	sed -i 's|$(PWD)/build|/mnt/toils-app|' build/bootstrap/cache/config.php
+	rm -rf build/storage
 	cd build && ln -sf /mnt/toils-storage storage
 
 
 # Build a QEMU virtual machine to run the application in production mode
-image: toils-app.qcow2 toils-storage.qcow2 toils-os.qcow2
+image: toils-app.img toils-storage.qcow2 toils-os.qcow2
 
 # Build a QEMU image for the OS.
 toils-os.qcow2:
@@ -150,7 +152,7 @@ toils-os.qcow2:
 		--size 6G \
 		--hostname toils.local \
 		--root-password password:toils \
-		--append-line /etc/fstab:'LABEL=toils-app /mnt/toils-app ext4 defaults 0 0' \
+		--append-line /etc/fstab:'LABEL=toils-app /mnt/toils-app ext4 defaults,ro 0 0' \
 		--append-line /etc/fstab:'LABEL=toils-storage /mnt/toils-storage ext4 defaults 0 0' \
 		--run-command 'sed -i "s/ens2/ens3/" /etc/network/interfaces' \
 		--run-command 'mkdir -p /etc/nginx/sites-enabled' \
@@ -159,14 +161,16 @@ toils-os.qcow2:
 		--run-command 'mkdir /mnt/toils-storage' \
 		--copy-in resources/qemu/toils-vhost.conf:/etc/nginx/sites-enabled \
 		--copy-in resources/qemu/toils-pool.conf:/etc/php/7.3/fpm/pool.d \
+		--copy-in resources/qemu/toils-everyboot.sh:/usr/local/sbin \
+		--copy-in resources/qemu/toils.service:/etc/systemd/system \
 		--uninstall man-db,git,python2,geoip-database,iso-codes \
 		--run-command 'apt autoremove -y' \
 		--firstboot resources/qemu/toils-firstboot.sh
 
 # Build a QEMU image separate from the OS image for the application files.
-# The extra 10M prevents the image from running out of space.
-toils-app.qcow2: build
-	virt-make-fs --format=qcow2 --size=+10M --type=ext4 --label=toils-app build toils-app.qcow2
+# Without the extra 10M, the image runs out of space.
+toils-app.img: build
+	virt-make-fs --format=raw --size=+10M --type=ext4 --label=toils-app build toils-app.img
 
 # Build a QEMU image separate from the OS image to store volatile data.
 toils-storage.qcow2:
@@ -189,11 +193,11 @@ run-image:
 		-nic user,hostfwd=tcp::$(LOCAL_PORT)-:80,hostfwd=tcp::2222-:22 \
 		-nographic \
 		-hda toils-os.qcow2 \
-		-hdb toils-app.qcow2 \
+		-hdb toils-app.img \
 		-hdc toils-storage.qcow2
 
 clean:
 	rm -f toils-os.qcow2
-	rm -f toils-app.qcow2
+	rm -f toils-app.img
 	rm -f toils-storage.qcow2
 	rm -rf build
