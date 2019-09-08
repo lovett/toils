@@ -18,6 +18,11 @@
 sed -i 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=0/' /etc/default/grub
 update-grub
 
+# Fix a disparity with the network device name.
+NETWORK_INTERFACE=$(find /sys/class/net -name ens* -exec basename {} \;)
+sed -i "s/ens2/$NETWORK_INTERFACE/" /etc/network/interfaces
+ifup $NETWORK_INTERFACE
+
 # Package installation
 apt-get install -y \
         composer \
@@ -43,3 +48,17 @@ systemctl restart php7.3-fpm nginx
 
 systemctl enable toils-setup.service
 systemctl start toils-setup.service
+
+apt purge -y \
+    apt-listchanges \
+    debian-faq \
+    doc-debian \
+    geoip-database \
+    git \
+    iso-codes \
+    krb5-locales \
+    openssh-client \
+    openssh-server \
+    python2
+
+apt autoremove -y

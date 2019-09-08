@@ -155,7 +155,6 @@ toils-os.qcow2:
 		--root-password password:toils \
 		--append-line /etc/fstab:'LABEL=toils-app /mnt/toils-app ext4 defaults,noatime,noexec 0 0' \
 		--append-line /etc/fstab:'LABEL=toils-storage /mnt/toils-storage ext4 defaults,noatime,noexec 0 0' \
-		--run-command 'sed -i "s/ens2/ens3/" /etc/network/interfaces' \
 		--run-command 'mkdir -p /etc/nginx/sites-enabled' \
 		--run-command 'mkdir -p /etc/php/7.3/fpm/pool.d' \
 		--run-command 'mkdir /mnt/toils-app' \
@@ -164,7 +163,7 @@ toils-os.qcow2:
 		--copy-in resources/qemu/toils-pool.conf:/etc/php/7.3/fpm/pool.d \
 		--copy-in resources/qemu/toils-setup.sh:/usr/local/sbin \
 		--copy-in resources/qemu/toils-setup.service:/etc/systemd/system \
-		--uninstall man-db,git,python2,geoip-database,iso-codes \
+		--uninstall man-db \
 		--run-command 'apt autoremove -y' \
 		--firstboot resources/qemu/toils-firstboot.sh
 
@@ -191,11 +190,13 @@ toils-storage.qcow2:
 testrun:
 	qemu-system-x86_64 -m 256M \
 		-accel kvm \
-		-nic user,hostfwd=tcp::$(LOCAL_PORT)-:80,hostfwd=tcp::2222-:22 \
+		-nic user,hostfwd=tcp::$(LOCAL_PORT)-:80 \
 		-nographic \
 		-drive file=toils-os.qcow2,index=0,media=disk,format=qcow2 \
 		-drive file=toils-app.img,index=1,media=disk,format=raw \
 		-drive file=toils-storage.qcow2,index=2,media=disk,format=qcow2
+
+shrink:
 	qemu-img convert -O qcow2 toils-storage.qcow2 toils-storage-shrunk.qcow2
 	mv toils-storage-shrunk.qcow2 toils-storage.qcow2
 
