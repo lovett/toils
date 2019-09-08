@@ -188,14 +188,14 @@ toils-storage.qcow2:
 		touch /$(SQLITE_DB_NAME)
 
 # Run the QEMU virtual machine locally
-run-image:
+testrun:
 	qemu-system-x86_64 -m 256M \
 		-accel kvm \
 		-nic user,hostfwd=tcp::$(LOCAL_PORT)-:80,hostfwd=tcp::2222-:22 \
 		-nographic \
-		-hda toils-os.qcow2 \
-		-hdb toils-app.img \
-		-hdc toils-storage.qcow2
+		-drive file=toils-os.qcow2,index=0,media=disk,format=qcow2 \
+		-drive file=toils-app.img,index=1,media=disk,format=raw \
+		-drive file=toils-storage.qcow2,index=2,media=disk,format=qcow2
 
 clean:
 	rm -f toils-os.qcow2
