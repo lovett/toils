@@ -98,7 +98,7 @@ install:
 
 # Build the application in preparation for a production deployment
 build:
-	rsync -av --cvs-exclude \
+	rsync -a --cvs-exclude \
 	--delete \
 	--delete-excluded \
 	--exclude=.ackrc \
@@ -135,6 +135,7 @@ build:
 		--classmap-authoritative
 	echo 'APP_KEY=' > build/.env
 	cd build && php artisan key:generate
+	cat $(HOME)/Documents/secrets/toils >> build/.env
 	cd build && php artisan config:cache
 	sed -i 's|$(PWD)/build|/mnt/toils-app|' build/bootstrap/cache/config.php
 	rm -rf build/storage
