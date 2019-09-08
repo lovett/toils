@@ -98,6 +98,7 @@ install:
 
 # Build the application in preparation for a production deployment
 build:
+	npm run production
 	rsync -a --cvs-exclude \
 	--delete \
 	--delete-excluded \
@@ -140,6 +141,7 @@ build:
 	sed -i 's|$(PWD)/build|/mnt/toils-app|' build/bootstrap/cache/config.php
 	rm -rf build/storage
 	cd build && ln -sf /mnt/toils-storage storage
+	git checkout public/css/app.css public/js/app.js
 
 
 # Build a QEMU virtual machine to run the application in production mode
