@@ -1,14 +1,11 @@
 #!/bin/sh
 
-# This script runs from inside the QEMU virtual machine the first time
-# it is booted.
+# This script runs as root from inside the QEMU virtual machine the
+# first time it is booted.
 #
 # It sets up PHP-FPM and Nginx by installing system
-# packages. Configuration files were populated when the image was
-# created.
-#
-# Application setup also happens here: installing composer pakcages
-# installed and performing Laravel-specific optimizations.
+# packages. Configuration files will have already been populated when
+# the image was created.
 #
 # When this script runs, the OS is pristine. Deferring setup like this
 # makes things a little easier for virt-builder and avoids some
