@@ -153,8 +153,8 @@ toils-os.qcow2:
 		--size 6G \
 		--hostname toils.local \
 		--root-password password:toils \
-		--append-line /etc/fstab:'LABEL=toils-app /mnt/toils-app ext4 defaults,ro 0 0' \
-		--append-line /etc/fstab:'LABEL=toils-storage /mnt/toils-storage ext4 defaults 0 0' \
+		--append-line /etc/fstab:'LABEL=toils-app /mnt/toils-app ext4 defaults,noatime,noexec 0 0' \
+		--append-line /etc/fstab:'LABEL=toils-storage /mnt/toils-storage ext4 defaults,noatime,noexec 0 0' \
 		--run-command 'sed -i "s/ens2/ens3/" /etc/network/interfaces' \
 		--run-command 'mkdir -p /etc/nginx/sites-enabled' \
 		--run-command 'mkdir -p /etc/php/7.3/fpm/pool.d' \
