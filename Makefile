@@ -196,6 +196,8 @@ testrun:
 		-drive file=toils-os.qcow2,index=0,media=disk,format=qcow2 \
 		-drive file=toils-app.img,index=1,media=disk,format=raw \
 		-drive file=toils-storage.qcow2,index=2,media=disk,format=qcow2
+	qemu-img convert -O qcow2 toils-storage.qcow2 toils-storage-shrunk.qcow2
+	mv toils-storage-shrunk.qcow2 toils-storage.qcow2
 
 clean:
 	rm -f toils-os.qcow2
