@@ -2,42 +2,58 @@
 - hosts: toils
   vars:
     application_name: toils
+    image_dir: /srv/qemu
   tasks:
-    - name: Build production container image
-      local_action:
-        module: make
-        chdir: "{{ playbook_dir }}/../"
-        target: image
+    - name: Create directory to store VM images
+      become: yes
+      file:
+        path: "{{ image_dir }}"
+        state: directory
+        mode: "0700"
 
-    - name: Push container image to registry
-      local_action:
-        module: command
-        argv:
-          - buildah
-          - push
-          - "{{ application_name }}"
-          - "{{ container_registry }}/{{ application_name }}:latest"
+    - name: OS and Storage images
+      become: yes
+      copy:
+        src: "{{ item }}"
+        dest: "{{ image_dir }}/"
+        mode: "0700"
+        force: no
+        setype: virt_image_t
+      with_items:
+        - "../toils-os.qcow2"
+        - "../toils-storage.qcow2"
 
-    - name: Pull new container image
-      command: /usr/bin/podman pull "{{ container_registry }}/{{ application_name }}:latest"
+    - name: App image
+      become: yes
+      copy:
+        src: "../toils-app.img"
+        dest: "{{ image_dir }}"
+        mode: "0700"
+        backup: yes
 
-    - name: Stop service
-      systemd:
-        scope: user
-        name: "{{ application_name }}"
-        state: stopped
-
-    - name: Install systemd service
-      become: true
+    - name: Systemd service
+      become: yes
       template:
         src: "templates/systemd-service.j2"
-        dest: ".config/systemd/user/{{ application_name }}.service"
+        dest: "/etc/systemd/system/toils.service"
 
     - name: Start systemd service
+      become: yes
       systemd:
-        scope: user
         daemon_reload: yes
         enabled: yes
         masked: no
         name: "{{ application_name }}"
         state: started
+
+    # - name: Build production container image
+    #   local_action:
+    #     module: make
+    #     chdir: "{{ playbook_dir }}/../"
+    #     target: image
+
+    # - name: Stop service
+    #   systemd:
+    #     scope: user
+    #     name: "{{ application_name }}"
+    #     state: stopped

@@ -39,7 +39,10 @@ rm -f /etc/nginx/sites-enabled/default
 rm -rf /var/www
 ln -s /mnt/toils-app /var/www
 
+chown www-data:www-data /mnt/toils-app
+chown www-data:www-data /mnt/toils-storage
+
 systemctl restart php7.3-fpm nginx
 
-systemctl enable toils.service
-systemctl start toils.service
+systemctl enable toils-setup.service
+systemctl start toils-setup.service

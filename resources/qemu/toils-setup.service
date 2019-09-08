@@ -1,0 +1,9 @@
+[Unit]
+Description=Toils Setup
+
+[Service]
+Type=simple
+ExecStart=/usr/local/sbin/toils-setup.sh
+
+[Install]
+WantedBy=multi-user.target

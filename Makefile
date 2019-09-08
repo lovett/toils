@@ -161,8 +161,8 @@ toils-os.qcow2:
 		--run-command 'mkdir /mnt/toils-storage' \
 		--copy-in resources/qemu/toils-vhost.conf:/etc/nginx/sites-enabled \
 		--copy-in resources/qemu/toils-pool.conf:/etc/php/7.3/fpm/pool.d \
-		--copy-in resources/qemu/toils-everyboot.sh:/usr/local/sbin \
-		--copy-in resources/qemu/toils.service:/etc/systemd/system \
+		--copy-in resources/qemu/toils-setup.sh:/usr/local/sbin \
+		--copy-in resources/qemu/toils-setup.service:/etc/systemd/system \
 		--uninstall man-db,git,python2,geoip-database,iso-codes \
 		--run-command 'apt autoremove -y' \
 		--firstboot resources/qemu/toils-firstboot.sh

@@ -1,9 +1,11 @@
 [Unit]
-Description=Toils Setup
+Description=Toils QEMU VM
 
 [Service]
-Type=simple
-ExecStart=/usr/local/sbin/toils-everyboot.sh
+ExecStart=/usr/bin/qemu-system-x86_64 -name toils -nographic
+ExecStop=/bin/sh -c ${haltcmd}
+TimeoutStopSec=30
+KillMode=none
 
 [Install]
 WantedBy=multi-user.target
