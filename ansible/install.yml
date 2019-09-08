@@ -30,6 +30,7 @@
         dest: "{{ image_dir }}"
         mode: "0700"
         backup: yes
+        setype: virt_image_t
 
     - name: Systemd service
       become: yes
