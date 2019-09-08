@@ -2,7 +2,7 @@
 Description={{ application_name|capitalize }}
 
 [Service]
-ExecStart=/usr/bin/qemu-system-x86_64 -m 512M -enable-kvm -nic user,hostfwd=tcp:127.0.0.1:8186-:80 -hda {{ image_dir }}/toils-os.qcow2 -hdb {{ image_dir }}/toils-app.img -hdc {{ image_dir }}/toils-storage.qcow2  -nographic -monitor telnet:localhost:8286,server,nowait,nodelay
+ExecStart=/usr/bin/qemu-system-x86_64 -m 256M -enable-kvm -nic user,hostfwd=tcp:127.0.0.1:8186-:80 -hda {{ image_dir }}/toils-os.qcow2 -hdb {{ image_dir }}/toils-app.img -hdc {{ image_dir }}/toils-storage.qcow2  -nographic -monitor telnet:localhost:8286,server,nowait,nodelay
 ExecStop=/bin/sh -c "echo 'system_powerdown' | /usr/bin/nc localhost 8286"
 TimeoutStopSec=30
 KillMode=none

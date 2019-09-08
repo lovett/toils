@@ -189,7 +189,7 @@ toils-storage.qcow2:
 
 # Run the QEMU virtual machine locally
 run-image:
-	qemu-system-x86_64 -m 512M \
+	qemu-system-x86_64 -m 256M \
 		-accel kvm \
 		-nic user,hostfwd=tcp::$(LOCAL_PORT)-:80,hostfwd=tcp::2222-:22 \
 		-nographic \
