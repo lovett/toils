@@ -20,6 +20,13 @@ class Estimate extends Model
     use SoftDeletes, Search;
 
     /**
+     * Default values for newly-created instances.
+     *
+     * @var array
+     */
+    protected $attributes = [];
+
+    /**
      * Map of states an estimate can be assigned to a human-readable label.
      *
      * @var array
@@ -98,6 +105,16 @@ class Estimate extends Model
         $builder->selectRaw('clients.id as clientId');
         $builder->orderByRaw('created_at DESC');
         return $builder;
+    }
+
+    /**
+     * Set instance defaults.
+     *
+     * @param array $attributes The key-value array to populate.
+     */
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
     }
 
     /**

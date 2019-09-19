@@ -2,6 +2,7 @@
 ._*
 .\#*
 \#*
+.ac-php-conf.json
 /build
 /node_modules
 /public/hot

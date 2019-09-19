@@ -226,21 +226,24 @@ class Invoice extends Model
      */
     public function __construct(array $attributes = [])
     {
+        parent::__construct($attributes);
+
         $now = new Carbon();
 
-        $this->attributes = [
-            'sent' => $now,
-            'start' => $now->copy()->subDays(30),
-            'end' => $now,
-            'due' => $now->copy()->addDays(30),
-            'amount' => 0,
-        ];
+        $this->attributes = array_merge(
+            $this->attributes,
+            [
+                'sent' => $now,
+                'start' => $now->copy()->subDays(30),
+                'end' => $now,
+                'due' => $now->copy()->addDays(30),
+                'amount' => 0,
+            ],
+        );
 
         while ($this->due->isWeekend()) {
             $this->due = $this->due->addDays(1);
         }
-
-        parent::__construct($attributes);
     }
 
 

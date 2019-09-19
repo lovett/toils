@@ -21,6 +21,13 @@ class Project extends Model
     use SoftDeletes, Search;
 
     /**
+     * Default values for newly-created instances.
+     *
+     * @var array
+     */
+    protected $attributes = [];
+
+    /**
      * Fields that can be used for searching.
      *
      * Keys are field aliases suitable for use in UI.
@@ -99,6 +106,16 @@ class Project extends Model
         'updated_at',
         'lastActive',
     ];
+
+    /**
+     * Set instance defaults.
+     *
+     * @param array $attributes The key-value array to populate.
+     */
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+    }
 
     /**
      * Custom accessor for allottedTotalMinutes specified in hours

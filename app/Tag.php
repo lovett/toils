@@ -11,6 +11,13 @@ class Tag extends Model
 {
 
     /**
+     * Default values for newly-created instances.
+     *
+     * @var array
+     */
+    protected $attributes = [];
+
+    /**
      * This model does not have created_at and updated_at fields.
      *
      * @var boolean
@@ -23,6 +30,16 @@ class Tag extends Model
      * @var array
      */
     protected $fillable = ['name'];
+
+    /**
+     * Set instance defaults.
+     *
+     * @param array $attributes The key-value array to populate.
+     */
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+    }
 
     /**
      * Time entries associated with a tag.

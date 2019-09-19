@@ -29,10 +29,7 @@ class Time extends Model
      *
      * @var array
      */
-    protected $attributes = [
-        'minutes' => 0,
-        'billable' => true,
-    ];
+    protected $attributes = [];
 
     /**
      * When a time entry is updated, mark its project as updated as well.
@@ -145,6 +142,27 @@ class Time extends Model
         $builder = $builder->groupBy('times.id');
 
         return $builder;
+    }
+
+    /**
+     * Set instance defaults.
+     *
+     * @param array $attributes The key-value array to populate.
+     */
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        $now = new Carbon();
+
+        $this->attributes = array_merge(
+            $this->attributes,
+            [
+                'start' => $now,
+                'minutes' => 0,
+                'billable' => true,
+            ]
+        );
     }
 
     /**

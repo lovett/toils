@@ -18,6 +18,13 @@ class User extends Authenticatable
     use Notifiable, AsMenu;
 
     /**
+     * Default values for newly-created instances.
+     *
+     * @var array
+     */
+    protected $attributes = [];
+
+    /**
      * The database table used by the model.
      *
      * @var string
@@ -54,6 +61,16 @@ class User extends Authenticatable
         'created_at',
         'updated_at',
     ];
+
+    /**
+     * Set instance defaults.
+     *
+     * @param array $attributes The key-value array to populate.
+     */
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+    }
 
     /**
      * Clients associated with the user.

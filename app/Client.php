@@ -22,6 +22,13 @@ class Client extends Model
     use SoftDeletes, Search;
 
     /**
+     * Default values for newly-created instances.
+     *
+     * @var array
+     */
+    protected $attributes = [];
+
+    /**
      * Fields that can be used for searching.
      *
      * Keys are field aliases suitable for use in UI.
@@ -124,6 +131,16 @@ class Client extends Model
         $builder = $builder->groupBy('clients.id');
 
         return $builder;
+    }
+
+    /**
+     * Set instance defaults.
+     *
+     * @param array $attributes The key-value array to populate.
+     */
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
     }
 
     /**
