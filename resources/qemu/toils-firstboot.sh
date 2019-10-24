@@ -24,7 +24,10 @@ sed -i "s/ens2/$NETWORK_INTERFACE/" /etc/network/interfaces
 ifup $NETWORK_INTERFACE
 
 # Package installation
-apt-get install -y \
+apt update -q -y
+apt upgrade -q -y
+
+apt-get install -y --auto-remove \
         composer \
         nginx-light \
         php-bcmath \
