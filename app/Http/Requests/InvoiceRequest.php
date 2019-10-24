@@ -48,7 +48,7 @@ class InvoiceRequest extends FormRequest
             'end' => 'required|date_format:Y-m-d',
             'name' => 'required',
             'summary' => 'required',
-            'amount' => 'integer',
+            'amount' => 'numeric|min:1',
             'sent' => 'nullable|date_format:Y-m-d',
             'due' => 'nullable|date_format:Y-m-d',
             'paid' => 'nullable|date_format:Y-m-d',
@@ -122,5 +122,17 @@ class InvoiceRequest extends FormRequest
 
             $this->merge($fields);
         });
+    }
+
+    /**
+     * Customize validation error messages.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        $messages = parent::messages();
+        $messages['amount.min'] = 'The amount due is missing.';
+        return $messages;
     }
 }

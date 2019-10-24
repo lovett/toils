@@ -37,12 +37,17 @@
 
                     <div class="form-group row">
                         {!! Form::label('amount', 'Amount', ['class' => 'col-sm-2 col-form-label text-right']) !!}
+                        @php($fieldClasses = ['form-control'])
+                        @if ($errors->has('amount'))
+                            @php($fieldClasses[] = 'is-invalid')
+                        @endif
                         <div class="col-sm-3">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">$</span>
                                 </div>
-                                {!! Form::text('amount', old('amount', $model->amount), ['class' => 'form-control']) !!}
+                                {!! Form::text('amount', old('amount', $model->amount), ['class' => $fieldClasses]) !!}
+                                @include('partials.form-field-error', ['name' => 'amount'])
                             </div>
                             <autofill-hint target="INPUT[name=amount]" v-bind:value="suggestedAmount" v-bind:previous="previousAmount"></autofill-hint>
                         </div>
