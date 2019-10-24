@@ -9287,7 +9287,7 @@ main dl dd {
 }
 
 .icon {
-  vertical-align: middle;
+  vertical-align: text-top;
   display: inline-block;
   width: 1em;
   height: 1em;
@@ -9295,6 +9295,10 @@ main dl dd {
   stroke: currentColor;
   fill: currentColor;
   margin-right: 0.5em;
+}
+.icon.after-text {
+  margin-right: 0;
+  margin-left: 0.25em;
 }
 .icon.active {
   fill: forestgreen;

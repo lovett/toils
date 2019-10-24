@@ -46,25 +46,24 @@
                         {{ CurrencyHelper::money($invoice->amount) }}
                     </td>
                     <td class="text-right">
-                        @if ($invoice->isPaid && $invoice->receipt)
-                            <svg class="icon active"><use xlink:href="#icon-coin-dollar"></use></svg>
+                        @if ($invoice->isPaid)
+                            @if ($invoice->receipt)
                             <a target="_blank" href="{{ route('invoice.receipt', $invoice->id) }}">
                                 paid
                             </a>
+                            @else
+                            paid
+                            @endif
+                            <svg class="icon active after-text"><use xlink:href="#icon-coin-dollar"></use></svg>
                             <p class="small">
                                 on {{ TimeHelper::date($invoice->paid) }}
                             </p>
-                        @elseif ($invoice->isPaid)
-                            paid
-                            <p class="small">
-                                {{ TimeHelper::date($invoice->paid) }}
-                            </p>
                         @elseif ($invoice->daysUntilDue > 0)
                             waiting
+                            <svg class="icon after-text"><use xlink:href="#icon-clock"></use></svg>
                             <p class="small">
                                 {{ $invoice->daysUntilDue }}
                                 {{ str_plural('day', $invoice->daysUntilDue) }}
-                                <svg class="icon"><use xlink:href="#icon-clock"></use></svg>
                             </p>
                         @elseif ($invoice->abandonned)
                             abandonned
@@ -73,10 +72,10 @@
                             </p>
                         @else
                             overdue
+                            <svg class="icon inactive after-text"><use xlink:href="#icon-alarm"></use></svg>
                             <p class="small">
                                 {{ abs($invoice->daysUntilDue) }}
                                 {{ str_plural('day', $invoice->daysUntilDue) }}
-                                <svg class="icon inactive"><use xlink:href="#icon-alarm"></use></svg>
                             </p>
                         @endif
                     </td>
