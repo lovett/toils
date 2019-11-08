@@ -3,7 +3,6 @@
 use Faker\Generator as Faker;
 use Carbon\Carbon;
 
-
 $factory->define(App\Invoice::class, function (Faker $faker) {
     $randomTime = Carbon::createFromDate(
         null,

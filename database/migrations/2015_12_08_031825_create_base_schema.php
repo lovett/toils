@@ -1,5 +1,7 @@
 <?php
 
+// phpcs:disable Squiz.Commenting.ClassComment.Missing
+
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
@@ -8,6 +10,8 @@ use Illuminate\Database\Migrations\Migration;
  */
 class CreateBaseSchema extends Migration
 {
+
+
     /**
      * Create the base application schema.
      *

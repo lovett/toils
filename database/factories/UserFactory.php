@@ -1,5 +1,7 @@
 <?php
 
+// phpcs:disable Squiz.Commenting
+
 use Faker\Generator as Faker;
 
 /*

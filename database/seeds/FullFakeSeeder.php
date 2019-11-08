@@ -9,12 +9,13 @@ use App\User;
 use App\Invoice;
 use Illuminate\Support\Collection;
 
-
 /**
  * Populate the database with fake data.
  */
 class FullFakeSeeder extends Seeder
 {
+
+
     /**
      * Run the database seeds.
      *

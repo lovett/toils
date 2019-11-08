@@ -9,7 +9,6 @@ use App\User;
 use App\Invoice;
 use Illuminate\Support\Collection;
 
-
 /**
  * Populate the database with a single fake user and no other data.
  *
@@ -17,6 +16,8 @@ use Illuminate\Support\Collection;
  */
 class UserFakeSeeder extends Seeder
 {
+
+
     /**
      * Run the database seeds.
      *

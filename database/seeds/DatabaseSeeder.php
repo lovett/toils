@@ -1,9 +1,13 @@
 <?php
 
+// phpcs:disable Squiz.Commenting.ClassComment.Missing
+
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
+
+
     /**
      * Seed the application's database.
      *

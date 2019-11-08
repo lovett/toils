@@ -1,5 +1,8 @@
 <?php
 
+// phpcs:disable Squiz.Commenting
+// phpcs:disable Generic.Commenting
+
 /**
  * Laravel - A PHP Framework For Web Artisans
  *

@@ -12,12 +12,12 @@ Route::get('/dashboard', [
 
 Route::get('invoice/suggestions/project/{projectId?}', [
     'as' => 'invoice.suggestByProject',
-    'uses' => 'InvoiceController@suggestByProject'
+    'uses' => 'InvoiceController@suggestByProject',
 ]);
 
 Route::get('invoice/{invoiceId}/receipt', [
     'as' => 'invoice.receipt',
-    'uses' => 'InvoiceController@receipt'
+    'uses' => 'InvoiceController@receipt',
 ]);
 
 Route::resource('invoice', 'InvoiceController');
@@ -25,7 +25,7 @@ Route::resource('invoice', 'InvoiceController');
 
 Route::get('time/suggestions/project/{projectId?}', [
     'as' => 'time.suggestByProject',
-    'uses' => 'TimeController@suggestByProject'
+    'uses' => 'TimeController@suggestByProject',
 ]);
 
 Route::post('time/finish', [
