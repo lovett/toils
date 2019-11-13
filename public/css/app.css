@@ -9286,6 +9286,11 @@ main dl dd {
   margin-bottom: 1em;
 }
 
+.custom-file-label {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
 .icon {
   vertical-align: text-top;
   display: inline-block;

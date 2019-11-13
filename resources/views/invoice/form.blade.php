@@ -51,25 +51,52 @@
                             </div>
                             <autofill-hint target="INPUT[name=amount]" v-bind:value="suggestedAmount" v-bind:previous="previousAmount"></autofill-hint>
                         </div>
+                    </div>
 
-                        {!! Form::label('receipt', 'Receipt', ['class' => 'col-sm-1 col-form-label']) !!}
-                        <div class="col-sm-3">
-                            @php($fieldClasses = ['custom-file-input'])
-                            @if ($errors->has('receipt'))
-                                @php($fieldClasses[] = 'is-invalid')
-                            @endif
-                            {!! Form::file('receipt', ['id' => 'invoice-receipt', 'class' => $fieldClasses]) !!}
-                            <label class="custom-file-label" for="invoice-receipt">Choose file</label>
+                    <div class="form-group row">
+                        {!! Form::label('receipt', 'Receipt', ['class' => 'col-sm-2 col-form-label text-right']) !!}
+                        @if ($model->receipt)
+                            <div class="col-sm-2">
+                                <div class="py-2 d-flex align-items-center">
+
+                                    @php ($extension = pathinfo(strtolower($model->receipt), PATHINFO_EXTENSION))
+
+                                    @if ($extension == "pdf")
+                                        <svg class="icon file-icon"><use xlink:href="#icon-file-pdf"></use></svg>
+                                    @endif
+
+                                    @if (in_array($extension, ["png", "jpg"]))
+                                        <svg class="icon file-icon"><use xlink:href="#icon-file-picture"></use></svg>
+                                    @endif
+
+                                    <a class="flex-fill" target="_blank" href="{{ route('invoice.receipt', $model->id) }}">view</a>
+                                </div>
+                            </div>
+                        @endif
+
+                        @php($size="col-sm-9")
+                        @if ($model->receipt)
+                            @php($size="col-sm-8")
+                        @endif
+                        <div class="{{ $size }}">
+                            <div>
+                                @php($fieldClass = '')
+                                @if ($errors->has('receipt'))
+                                    @php($fieldClass .= 'is-invalid')
+                                @endif
+                                <b-form-file
+                                    v-model="file"
+                                    placeholder="Choose a file or drop it here..."
+                                    drop-placeholder="Drop file here..."
+                                    id="invoice-receipt"
+                                name="receipt"
+                                    class="{{ $fieldClass }}"
+                                ></b-form-file>
+                            </div>
+
                             @include('partials.form-field-error', ['name' => 'receipt'])
                             @include('partials.form-field-help', ['name' => 'receipt', 'help' => __('help.max_upload_size', ['size' => $maxFileSize])])
                         </div>
-
-                        @if ($model->receipt)
-                            <div class="col-sm-3 text-right">
-                                <svg class="icon active"><use xlink:href="#icon-coin-dollar"></use></svg>
-                                <a target="_blank" href="{{ route('invoice.receipt', $model->id) }}">view existing receipt</a>
-                            </div>
-                        @endif
                     </div>
 
                     @include('partials.formgroup-date', ['name' => 'sent', 'label' => 'Sent', 'pickable' => ['relday', 'month', 'day', 'year']])

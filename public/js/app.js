@@ -2656,6 +2656,612 @@ exports.default = _default2;
 
 /***/ }),
 
+/***/ "./node_modules/bootstrap-vue/es/components/form-file/form-file.js":
+/*!*************************************************************************!*\
+  !*** ./node_modules/bootstrap-vue/es/components/form-file/form-file.js ***!
+  \*************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.default = exports.BFormFile = void 0;
+
+var _vue = _interopRequireDefault(__webpack_require__(/*! ../../utils/vue */ "./node_modules/bootstrap-vue/es/utils/vue.js"));
+
+var _array = __webpack_require__(/*! ../../utils/array */ "./node_modules/bootstrap-vue/es/utils/array.js");
+
+var _config = __webpack_require__(/*! ../../utils/config */ "./node_modules/bootstrap-vue/es/utils/config.js");
+
+var _inspect = __webpack_require__(/*! ../../utils/inspect */ "./node_modules/bootstrap-vue/es/utils/inspect.js");
+
+var _formCustom = _interopRequireDefault(__webpack_require__(/*! ../../mixins/form-custom */ "./node_modules/bootstrap-vue/es/mixins/form-custom.js"));
+
+var _form = _interopRequireDefault(__webpack_require__(/*! ../../mixins/form */ "./node_modules/bootstrap-vue/es/mixins/form.js"));
+
+var _formState = _interopRequireDefault(__webpack_require__(/*! ../../mixins/form-state */ "./node_modules/bootstrap-vue/es/mixins/form-state.js"));
+
+var _id = _interopRequireDefault(__webpack_require__(/*! ../../mixins/id */ "./node_modules/bootstrap-vue/es/mixins/id.js"));
+
+var _normalizeSlot = _interopRequireDefault(__webpack_require__(/*! ../../mixins/normalize-slot */ "./node_modules/bootstrap-vue/es/mixins/normalize-slot.js"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var NAME = 'BFormFile'; // @vue/component
+
+var BFormFile =
+/*#__PURE__*/
+_vue.default.extend({
+  name: NAME,
+  mixins: [_id.default, _form.default, _formState.default, _formCustom.default, _normalizeSlot.default],
+  model: {
+    prop: 'value',
+    event: 'input'
+  },
+  props: {
+    value: {
+      // type: Object,
+      default: null
+    },
+    accept: {
+      type: String,
+      default: ''
+    },
+    // Instruct input to capture from camera
+    capture: {
+      type: Boolean,
+      default: false
+    },
+    placeholder: {
+      type: String,
+      default: function _default() {
+        return (0, _config.getComponentConfig)(NAME, 'placeholder');
+      }
+    },
+    browseText: {
+      type: String,
+      default: function _default() {
+        return (0, _config.getComponentConfig)(NAME, 'browseText');
+      }
+    },
+    dropPlaceholder: {
+      type: String,
+      default: function _default() {
+        return (0, _config.getComponentConfig)(NAME, 'dropPlaceholder');
+      }
+    },
+    multiple: {
+      type: Boolean,
+      default: false
+    },
+    directory: {
+      type: Boolean,
+      default: false
+    },
+    noTraverse: {
+      type: Boolean,
+      default: false
+    },
+    noDrop: {
+      type: Boolean,
+      default: false
+    },
+    fileNameFormatter: {
+      type: Function,
+      default: null
+    }
+  },
+  data: function data() {
+    return {
+      selectedFile: null,
+      dragging: false,
+      hasFocus: false
+    };
+  },
+  computed: {
+    selectLabel: function selectLabel() {
+      // Draging active
+      if (this.dragging && this.dropPlaceholder) {
+        return this.dropPlaceholder;
+      } // No file chosen
+
+
+      if (!this.selectedFile || this.selectedFile.length === 0) {
+        return this.placeholder;
+      } // Convert selectedFile to an array (if not already one)
+
+
+      var files = (0, _array.concat)(this.selectedFile).filter(Boolean);
+
+      if (this.hasNormalizedSlot('file-name')) {
+        // There is a slot for formatting the files/names
+        return [this.normalizeSlot('file-name', {
+          files: files,
+          names: files.map(function (f) {
+            return f.name;
+          })
+        })];
+      } else {
+        // Use the user supplied formatter, or the built in one.
+        return (0, _inspect.isFunction)(this.fileNameFormatter) ? String(this.fileNameFormatter(files)) : files.map(function (file) {
+          return file.name;
+        }).join(', ');
+      }
+    }
+  },
+  watch: {
+    selectedFile: function selectedFile(newVal, oldVal) {
+      // The following test is needed when the file input is "reset" or the
+      // exact same file(s) are selected to prevent an infinite loop.
+      // When in `multiple` mode we need to check for two empty arrays or
+      // two arrays with identical files
+      if (newVal === oldVal || (0, _array.isArray)(newVal) && (0, _array.isArray)(oldVal) && newVal.length === oldVal.length && newVal.every(function (v, i) {
+        return v === oldVal[i];
+      })) {
+        return;
+      }
+
+      if (!newVal && this.multiple) {
+        this.$emit('input', []);
+      } else {
+        this.$emit('input', newVal);
+      }
+    },
+    value: function value(newVal) {
+      if (!newVal || (0, _array.isArray)(newVal) && newVal.length === 0) {
+        this.reset();
+      }
+    }
+  },
+  methods: {
+    focusHandler: function focusHandler(evt) {
+      // Bootstrap v4 doesn't have focus styling for custom file input
+      // Firefox has a '[type=file]:focus ~ sibling' selector issue,
+      // so we add a 'focus' class to get around these bugs
+      if (this.plain || evt.type === 'focusout') {
+        this.hasFocus = false;
+      } else {
+        // Add focus styling for custom file input
+        this.hasFocus = true;
+      }
+    },
+    reset: function reset() {
+      try {
+        // Wrapped in try in case IE 11 craps out
+        this.$refs.input.value = '';
+      } catch (e) {} // IE 11 doesn't support setting `input.value` to '' or null
+      // So we use this little extra hack to reset the value, just in case.
+      // This also appears to work on modern browsers as well.
+
+
+      this.$refs.input.type = '';
+      this.$refs.input.type = 'file';
+      this.selectedFile = this.multiple ? [] : null;
+    },
+    onFileChange: function onFileChange(evt) {
+      var _this = this;
+
+      // Always emit original event
+      this.$emit('change', evt); // Check if special `items` prop is available on event (drop mode)
+      // Can be disabled by setting no-traverse
+
+      var items = evt.dataTransfer && evt.dataTransfer.items;
+      /* istanbul ignore next: not supported in JSDOM */
+
+      if (items && !this.noTraverse) {
+        var queue = [];
+
+        for (var i = 0; i < items.length; i++) {
+          var item = items[i].webkitGetAsEntry();
+
+          if (item) {
+            queue.push(this.traverseFileTree(item));
+          }
+        }
+
+        Promise.all(queue).then(function (filesArr) {
+          _this.setFiles((0, _array.from)(filesArr));
+        });
+        return;
+      } // Normal handling
+
+
+      this.setFiles(evt.target.files || evt.dataTransfer.files);
+    },
+    setFiles: function setFiles() {
+      var files = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+
+      if (!files) {
+        /* istanbul ignore next: this will probably not happen */
+        this.selectedFile = null;
+      } else if (this.multiple) {
+        // Convert files to array
+        var filesArray = [];
+
+        for (var i = 0; i < files.length; i++) {
+          filesArray.push(files[i]);
+        } // Return file(s) as array
+
+
+        this.selectedFile = filesArray;
+      } else {
+        // Return single file object
+        this.selectedFile = files[0] || null;
+      }
+    },
+    onReset: function onReset() {
+      // Triggered when the parent form (if any) is reset
+      this.selectedFile = this.multiple ? [] : null;
+    },
+    onDragover: function onDragover(evt)
+    /* istanbul ignore next: difficult to test in JSDOM */
+    {
+      evt.preventDefault();
+      evt.stopPropagation();
+
+      if (this.noDrop || !this.custom) {
+        return;
+      }
+
+      this.dragging = true;
+      evt.dataTransfer.dropEffect = 'copy';
+    },
+    onDragleave: function onDragleave(evt)
+    /* istanbul ignore next: difficult to test in JSDOM */
+    {
+      evt.preventDefault();
+      evt.stopPropagation();
+      this.dragging = false;
+    },
+    onDrop: function onDrop(evt)
+    /* istanbul ignore next: difficult to test in JSDOM */
+    {
+      evt.preventDefault();
+      evt.stopPropagation();
+
+      if (this.noDrop) {
+        return;
+      }
+
+      this.dragging = false;
+
+      if (evt.dataTransfer.files && evt.dataTransfer.files.length > 0) {
+        this.onFileChange(evt);
+      }
+    },
+    traverseFileTree: function traverseFileTree(item, path)
+    /* istanbul ignore next: not supported in JSDOM */
+    {
+      var _this2 = this;
+
+      // Based on http://stackoverflow.com/questions/3590058
+      return new Promise(function (resolve) {
+        path = path || '';
+
+        if (item.isFile) {
+          // Get file
+          item.file(function (file) {
+            file.$path = path; // Inject $path to file obj
+
+            resolve(file);
+          });
+        } else if (item.isDirectory) {
+          // Get folder contents
+          item.createReader().readEntries(function (entries) {
+            var queue = [];
+
+            for (var i = 0; i < entries.length; i++) {
+              queue.push(_this2.traverseFileTree(entries[i], path + item.name + '/'));
+            }
+
+            Promise.all(queue).then(function (filesArr) {
+              resolve((0, _array.from)(filesArr));
+            });
+          });
+        }
+      });
+    }
+  },
+  render: function render(h) {
+    // Form Input
+    var input = h('input', {
+      ref: 'input',
+      class: [{
+        'form-control-file': this.plain,
+        'custom-file-input': this.custom,
+        focus: this.custom && this.hasFocus
+      }, this.stateClass],
+      attrs: {
+        type: 'file',
+        id: this.safeId(),
+        name: this.name,
+        disabled: this.disabled,
+        required: this.required,
+        form: this.form || null,
+        capture: this.capture || null,
+        accept: this.accept || null,
+        multiple: this.multiple,
+        webkitdirectory: this.directory,
+        'aria-required': this.required ? 'true' : null
+      },
+      on: {
+        change: this.onFileChange,
+        focusin: this.focusHandler,
+        focusout: this.focusHandler,
+        reset: this.onReset
+      }
+    });
+
+    if (this.plain) {
+      return input;
+    } // Overlay Labels
+
+
+    var label = h('label', {
+      staticClass: 'custom-file-label',
+      class: [this.dragging ? 'dragging' : null],
+      attrs: {
+        for: this.safeId(),
+        'data-browse': this.browseText || null
+      }
+    }, this.selectLabel); // Return rendered custom file input
+
+    return h('div', {
+      staticClass: 'custom-file b-form-file',
+      class: this.stateClass,
+      attrs: {
+        id: this.safeId('_BV_file_outer_')
+      },
+      on: {
+        dragover: this.onDragover,
+        dragleave: this.onDragleave,
+        drop: this.onDrop
+      }
+    }, [input, label]);
+  }
+});
+
+exports.BFormFile = BFormFile;
+var _default2 = BFormFile;
+exports.default = _default2;
+
+/***/ }),
+
+/***/ "./node_modules/bootstrap-vue/es/mixins/form-custom.js":
+/*!*************************************************************!*\
+  !*** ./node_modules/bootstrap-vue/es/mixins/form-custom.js ***!
+  \*************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.default = void 0;
+// @vue/component
+var _default = {
+  props: {
+    plain: {
+      type: Boolean,
+      default: false
+    }
+  },
+  computed: {
+    custom: function custom() {
+      return !this.plain;
+    }
+  }
+};
+exports.default = _default;
+
+/***/ }),
+
+/***/ "./node_modules/bootstrap-vue/es/mixins/form-state.js":
+/*!************************************************************!*\
+  !*** ./node_modules/bootstrap-vue/es/mixins/form-state.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.default = void 0;
+
+/* Form control contextual state class computation
+ *
+ * Returned class is either 'is-valid' or 'is-invalid' based on the 'state' prop
+ * state can be one of five values:
+ *  - true or 'valid' for is-valid
+ *  - false or 'invalid' for is-invalid
+ *  - null (or empty string) for no contextual state
+ */
+// @vue/component
+var _default = {
+  props: {
+    state: {
+      // true/'valid', false/'invalid', '',null
+      // The order must be String first, then Boolean!
+      type: [String, Boolean],
+      default: null
+    }
+  },
+  computed: {
+    computedState: function computedState() {
+      var state = this.state;
+
+      if (state === '') {
+        return null;
+      } else if (state === true || state === 'valid') {
+        return true;
+      } else if (state === false || state === 'invalid') {
+        return false;
+      }
+
+      return null;
+    },
+    stateClass: function stateClass() {
+      var state = this.computedState;
+
+      if (state === true) {
+        return 'is-valid';
+      } else if (state === false) {
+        return 'is-invalid';
+      }
+
+      return null;
+    }
+  }
+};
+exports.default = _default;
+
+/***/ }),
+
+/***/ "./node_modules/bootstrap-vue/es/mixins/form.js":
+/*!******************************************************!*\
+  !*** ./node_modules/bootstrap-vue/es/mixins/form.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.default = void 0;
+
+var _dom = __webpack_require__(/*! ../utils/dom */ "./node_modules/bootstrap-vue/es/utils/dom.js");
+
+var SELECTOR = 'input, textarea, select'; // @vue/component
+
+var _default = {
+  props: {
+    name: {
+      type: String // default: undefined
+
+    },
+    id: {
+      type: String // default: undefined
+
+    },
+    disabled: {
+      type: Boolean
+    },
+    required: {
+      type: Boolean,
+      default: false
+    },
+    form: {
+      type: String,
+      default: null
+    },
+    autofocus: {
+      type: Boolean,
+      default: false
+    }
+  },
+  mounted: function mounted() {
+    this.handleAutofocus();
+  },
+  activated: function activated()
+  /* istanbul ignore next */
+  {
+    this.handleAutofocus();
+  },
+  methods: {
+    handleAutofocus: function handleAutofocus() {
+      var _this = this;
+
+      this.$nextTick(function () {
+        (0, _dom.requestAF)(function () {
+          var el = _this.$el;
+
+          if (_this.autofocus && (0, _dom.isVisible)(el)) {
+            if (!(0, _dom.matches)(el, SELECTOR)) {
+              el = (0, _dom.select)(SELECTOR, el);
+            }
+
+            el && el.focus && el.focus();
+          }
+        });
+      });
+    }
+  }
+};
+exports.default = _default;
+
+/***/ }),
+
+/***/ "./node_modules/bootstrap-vue/es/mixins/id.js":
+/*!****************************************************!*\
+  !*** ./node_modules/bootstrap-vue/es/mixins/id.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports.__esModule = true;
+exports.default = void 0;
+
+/*
+ * SSR Safe Client Side ID attribute generation
+ * id's can only be generated client side, after mount.
+ * this._uid is not synched between server and client.
+ */
+// @vue/component
+var _default = {
+  props: {
+    id: {
+      type: String,
+      default: null
+    }
+  },
+  data: function data() {
+    return {
+      localId_: null
+    };
+  },
+  computed: {
+    safeId: function safeId() {
+      // Computed property that returns a dynamic function for creating the ID.
+      // Reacts to changes in both .id and .localId_ And regens a new function
+      var id = this.id || this.localId_; // We return a function that accepts an optional suffix string
+      // So this computed prop looks and works like a method!!!
+      // But benefits from Vue's Computed prop caching
+
+      var fn = function fn(suffix) {
+        if (!id) {
+          return null;
+        }
+
+        suffix = String(suffix || '').replace(/\s+/g, '_');
+        return suffix ? id + '_' + suffix : id;
+      };
+
+      return fn;
+    }
+  },
+  mounted: function mounted() {
+    var _this = this;
+
+    // mounted only occurs client side
+    this.$nextTick(function () {
+      // Update dom with auto ID after dom loaded to prevent
+      // SSR hydration errors.
+      _this.localId_ = "__BVID__".concat(_this._uid);
+    });
+  }
+};
+exports.default = _default;
+
+/***/ }),
+
 /***/ "./node_modules/bootstrap-vue/es/mixins/normalize-slot.js":
 /*!****************************************************************!*\
   !*** ./node_modules/bootstrap-vue/es/mixins/normalize-slot.js ***!
@@ -23375,7 +23981,7 @@ var VBTooltip = {
 /*!*************************************************!*\
   !*** ./node_modules/bootstrap-vue/esm/index.js ***!
   \*************************************************/
-/*! exports provided: BVConfigPlugin, BVConfig, BootstrapVue, install, setConfig, default, componentsPlugin, BVModalPlugin, BVToastPlugin, AlertPlugin, BAlert, BadgePlugin, BBadge, BreadcrumbPlugin, BBreadcrumb, BBreadcrumbItem, ButtonPlugin, BButton, BButtonClose, ButtonGroupPlugin, BButtonGroup, ButtonToolbarPlugin, BButtonToolbar, CardPlugin, BCard, BCardBody, BCardFooter, BCardGroup, BCardHeader, BCardImg, BCardImgLazy, BCardSubTitle, BCardText, BCardTitle, CarouselPlugin, BCarousel, BCarouselSlide, CollapsePlugin, BCollapse, DropdownPlugin, BDropdown, BDropdownItem, BDropdownItemButton, BDropdownDivider, BDropdownForm, BDropdownGroup, BDropdownHeader, BDropdownText, EmbedPlugin, BEmbed, FormPlugin, BForm, BFormDatalist, BFormText, BFormInvalidFeedback, BFormValidFeedback, FormCheckboxPlugin, BFormCheckbox, BFormCheckboxGroup, FormFilePlugin, BFormFile, FormGroupPlugin, BFormGroup, FormInputPlugin, BFormInput, FormRadioPlugin, BFormRadio, BFormRadioGroup, FormSelectPlugin, BFormSelect, FormTextareaPlugin, BFormTextarea, ImagePlugin, BImg, BImgLazy, InputGroupPlugin, BInputGroup, BInputGroupAddon, BInputGroupAppend, BInputGroupPrepend, BInputGroupText, JumbotronPlugin, BJumbotron, LayoutPlugin, BContainer, BRow, BCol, BFormRow, LinkPlugin, BLink, ListGroupPlugin, BListGroup, BListGroupItem, MediaPlugin, BMedia, BMediaAside, BMediaBody, ModalPlugin, BModal, NavPlugin, BNav, BNavForm, BNavItem, BNavItemDropdown, BNavText, NavbarPlugin, BNavbar, BNavbarBrand, BNavbarNav, BNavbarToggle, PaginationPlugin, BPagination, PaginationNavPlugin, BPaginationNav, PopoverPlugin, BPopover, ProgressPlugin, BProgress, BProgressBar, SpinnerPlugin, BSpinner, TablePlugin, BTable, BTableLite, TabsPlugin, BTabs, BTab, ToastPlugin, BToast, BToaster, TooltipPlugin, BTooltip, directivesPlugin, VBModalPlugin, VBModal, VBPopoverPlugin, VBPopover, VBScrollspyPlugin, VBScrollspy, VBTogglePlugin, VBToggle, VBTooltipPlugin, VBTooltip */
+/*! exports provided: componentsPlugin, BVModalPlugin, BVToastPlugin, AlertPlugin, BAlert, BadgePlugin, BBadge, BreadcrumbPlugin, BBreadcrumb, BBreadcrumbItem, ButtonPlugin, BButton, BButtonClose, ButtonGroupPlugin, BButtonGroup, ButtonToolbarPlugin, BButtonToolbar, CardPlugin, BCard, BCardBody, BCardFooter, BCardGroup, BCardHeader, BCardImg, BCardImgLazy, BCardSubTitle, BCardText, BCardTitle, CarouselPlugin, BCarousel, BCarouselSlide, CollapsePlugin, BCollapse, DropdownPlugin, BDropdown, BDropdownItem, BDropdownItemButton, BDropdownDivider, BDropdownForm, BDropdownGroup, BDropdownHeader, BDropdownText, EmbedPlugin, BEmbed, FormPlugin, BForm, BFormDatalist, BFormText, BFormInvalidFeedback, BFormValidFeedback, FormCheckboxPlugin, BFormCheckbox, BFormCheckboxGroup, FormFilePlugin, BFormFile, FormGroupPlugin, BFormGroup, FormInputPlugin, BFormInput, FormRadioPlugin, BFormRadio, BFormRadioGroup, FormSelectPlugin, BFormSelect, FormTextareaPlugin, BFormTextarea, ImagePlugin, BImg, BImgLazy, InputGroupPlugin, BInputGroup, BInputGroupAddon, BInputGroupAppend, BInputGroupPrepend, BInputGroupText, JumbotronPlugin, BJumbotron, LayoutPlugin, BContainer, BRow, BCol, BFormRow, LinkPlugin, BLink, ListGroupPlugin, BListGroup, BListGroupItem, MediaPlugin, BMedia, BMediaAside, BMediaBody, ModalPlugin, BModal, NavPlugin, BNav, BNavForm, BNavItem, BNavItemDropdown, BNavText, NavbarPlugin, BNavbar, BNavbarBrand, BNavbarNav, BNavbarToggle, PaginationPlugin, BPagination, PaginationNavPlugin, BPaginationNav, PopoverPlugin, BPopover, ProgressPlugin, BProgress, BProgressBar, SpinnerPlugin, BSpinner, TablePlugin, BTable, BTableLite, TabsPlugin, BTabs, BTab, ToastPlugin, BToast, BToaster, TooltipPlugin, BTooltip, directivesPlugin, VBModalPlugin, VBModal, VBPopoverPlugin, VBPopover, VBScrollspyPlugin, VBScrollspy, VBTogglePlugin, VBToggle, VBTooltipPlugin, VBTooltip, BVConfigPlugin, BVConfig, BootstrapVue, install, setConfig, default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -66938,6 +67544,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Pickable_vue__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/Pickable.vue */ "./resources/js/components/Pickable.vue");
 /* harmony import */ var bootstrap_vue_es_components_alert_alert__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! bootstrap-vue/es/components/alert/alert */ "./node_modules/bootstrap-vue/es/components/alert/alert.js");
 /* harmony import */ var bootstrap_vue_es_components_alert_alert__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(bootstrap_vue_es_components_alert_alert__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var bootstrap_vue_es_components_form_file_form_file__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! bootstrap-vue/es/components/form-file/form-file */ "./node_modules/bootstrap-vue/es/components/form-file/form-file.js");
+/* harmony import */ var bootstrap_vue_es_components_form_file_form_file__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(bootstrap_vue_es_components_form_file_form_file__WEBPACK_IMPORTED_MODULE_7__);
+
 
 
 
@@ -66966,6 +67575,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('autofill', _components_Aut
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('autofill-hint', _components_AutofillHint_vue__WEBPACK_IMPORTED_MODULE_4__["default"]);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('pickable', _components_Pickable_vue__WEBPACK_IMPORTED_MODULE_5__["default"]);
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('b-alert', bootstrap_vue_es_components_alert_alert__WEBPACK_IMPORTED_MODULE_6___default.a);
+vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('b-form-file', bootstrap_vue_es_components_form_file_form_file__WEBPACK_IMPORTED_MODULE_7___default.a);
 var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
   el: '#app'
 });

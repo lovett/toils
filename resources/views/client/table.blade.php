@@ -13,9 +13,7 @@
         @foreach ($collection as $client)
             <tr>
                 <td>
-                    <a href="{{ route('client.show', ['record' => $client]) }}">
-                        {{ $client->name }}
-                    </a>
+                    {{ link_to_route('client.show', $client->name, ['client' => $client->id]) }}
                 </td>
                 <td>
                     {{ $client->projectCount }}
