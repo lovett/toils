@@ -170,8 +170,7 @@ class LinkHelper
         }
 
         if (strpos($action, '@show') !== false || strpos($action, '@edit') !== false) {
-            $links[] = self::navLink("{$resource}.show", "{$capitalizedResource} Overview", $params);
-            $links[] = self::navLink("{$resource}.edit", "Edit {$capitalizedResource}", $params);
+            $links[] = self::navLink("{$resource}.show", "{$capitalizedResource} Overview", $params, ['class' => 'active']);
         }
 
         $links[] = self::navLink("{$resource}.create", "New {$capitalizedResource}", []);

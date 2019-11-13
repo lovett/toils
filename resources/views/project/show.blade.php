@@ -5,9 +5,18 @@
         <div class="mb-4">
             <h1>{{ $project->name }}</h1>
             <ul class="list-group list-group-horizontal-sm">
-                <li class="list-group-item">@include('partials.active', ['value' => $project->active])</li>
-                <li class="list-group-item">@include('partials.billable', ['value' => $project->billable])</li>
-                <li class="list-group-item">@include('partials.taxable', ['value' => $project->taxable])</li>
+                <li class="list-group-item">
+                    @include('partials.active', ['value' => $project->active])
+                </li>
+                <li class="list-group-item">
+                    @include('partials.billable', ['value' => $project->billable])
+                </li>
+                <li class="list-group-item">
+                    @include('partials.taxable', ['value' => $project->taxable])
+                </li>
+                <li class="list-group-item">
+                    @include('partials.edit', ['value' => 'edit', 'route' => 'project.edit', 'parameters' => ['project' => $project->id]])
+                </li>
             </ul>
         </div>
 

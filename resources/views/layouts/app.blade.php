@@ -60,6 +60,10 @@
                 <title>library</title>
                 <path d="M0 6l10-6 10 6v2h-20v-2zM0 18h20v2h-20v-2zM2 16h16v2h-16v-2zM2 8h4v8h-4v-8zM8 8h4v8h-4v-8zM14 8h4v8h-4v-8z"></path>
             </symbol>
+            <symbol id="icon-pencil" viewBox="0 0 32 32">
+                <title>pencil</title>
+                <path d="M12 20l4-2 14-14-2-2-14 14-2 4zM9.041 27.097c-0.989-2.085-2.052-3.149-4.137-4.137l3.097-8.525 4-2.435 12-12h-6l-12 12-6 20 20-6 12-12v-6l-12 12-2.435 4z"></path>
+            </symbol>
         </defs>
     </svg>
 

@@ -5,7 +5,12 @@
         <div class="mb-4">
             <h1>{{ $model->name }}</h1>
             <ul class="list-group list-group-horizontal-sm">
-                <li class="list-group-item">@include('partials.active', ['value' => $model->active])</li>
+                <li class="list-group-item">
+                    @include('partials.active', ['value' => $model->active])
+                </li>
+                <li class="list-group-item">
+                    @include('partials.edit', ['value' => 'edit', 'route' => 'client.edit', 'parameters' => ['client' => $model->id]])
+                </li>
             </ul>
         </div>
 
