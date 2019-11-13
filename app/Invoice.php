@@ -162,7 +162,7 @@ class Invoice extends Model
      */
     public function scopeNewest(Builder $query, int $limit = 0)
     {
-        $query->orderBy('sent', 'DESC');
+        $query->orderBy('end', 'DESC');
         if ($limit > 0) {
             $query->limit($limit);
         }
