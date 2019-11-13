@@ -53,42 +53,6 @@ class LinkHelper
     }
 
     /**
-     * Render a link as a button.
-     *
-     * @param string $route   The route to link to
-     * @param string $label   The text of the link
-     * @param array  $params  Querystring parameters to include with the link
-     * @param array  $attribs Additional attributes for the link tag
-     */
-    public static function buttonLink(string $route, string $label, array $params = [], array $attribs = [])
-    {
-        $class = 'btn btn-success';
-
-        $attribs['class'] = $class;
-        if (array_key_exists('class', $attribs)) {
-            $attribs['class'] = $class . ' ' . $attribs['class'];
-        }
-
-        return link_to_route($route, $label, $params, $attribs);
-    }
-
-
-    /**
-     * Render a link as a small button.
-     *
-     * @param string $route   The route to link to
-     * @param string $label   The text of the link
-     * @param array  $params  Querystring parameters to include with the link
-     * @param array  $attribs Additional attributes for the link tag
-     */
-    public static function smallButtonLink(string $route, string $label, array $params = [], array $attribs = [])
-    {
-        $attribs['class'] = 'btn-sm';
-        return static::buttonLink($route, $label, $params, $attribs);
-    }
-
-
-    /**
      * Render a non-primary navigation link with awareness of current route
      *
      * If the route matches the current route, the link is displayed
