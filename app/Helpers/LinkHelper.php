@@ -87,20 +87,6 @@ class LinkHelper
         return static::buttonLink($route, $label, $params, $attribs);
     }
 
-    /**
-     * Render a link within a card
-     *
-     * @param string $route   The route to link to
-     * @param string $label   The text of the link
-     * @param array  $params  Querystring parameters to include with the link
-     * @param array  $attribs Additional attributes for the link tag
-     */
-    public static function cardLink(string $route, string $label, array $params = [], array $attribs = [])
-    {
-        $attribs['class'] = 'card-link';
-        return link_to_route($route, $label, $params, $attribs);
-    }
-
 
     /**
      * Render a non-primary navigation link with awareness of current route

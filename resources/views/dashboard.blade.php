@@ -28,8 +28,12 @@
                             <p>{{ TimeHelper::hoursAndMinutes($project->unbilledTime) }}</p>
 
                             <div>
-                                {!! LinkHelper::cardLink('time.create', 'time', ['project' => $project->id]) !!}
-                                {!! LinkHelper::cardLink('invoice.create', 'invoice', ['project' => $project->id]) !!}
+                                <a href="{{ route('time.create', ['project' => $project->id]) }}">
+                                    time
+                                </a>
+                                <a href="{{ route('invoice.create', ['project' => $project->id]) }}">
+                                    invoice
+                                </a>
                             </div>
                         </div>
 
