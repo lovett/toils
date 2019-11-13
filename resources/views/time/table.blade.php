@@ -50,9 +50,9 @@
 
                 @unless(Route::is('project.show'))
                     <td>
-                        {!! link_to_route('project.show', $time->project->name, ['id' => $time->project->id]) !!}
+                        {!! link_to_route('project.show', $time->project->name, ['project' => $time->project->id]) !!}
                         <p class="small">↳
-                            {!! link_to_route('client.show', $time->clientName, ['id' => $time->clientId]) !!}
+                            {!! link_to_route('client.show', $time->clientName, ['client' => $time->clientId]) !!}
                         </p>
                 </td>
                 @endunless

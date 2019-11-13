@@ -24,7 +24,9 @@
                 <div class="col-md-6 col-lg-4 card-group">
                     <div class="card mb-3">
                         <div class="card-body d-flex flex-column">
-                            <h5 class="card-title flex-fill">{!! link_to_route('project.show', $project->name, ['id' => $project->id]) !!}</h5>
+                            <h5 class="card-title flex-fill">
+                                {!! link_to_route('project.show', $project->name, ['project' => $project->id]) !!}
+                            </h5>
                             <p>{{ TimeHelper::hoursAndMinutes($project->unbilledTime) }}</p>
 
                             <div>
