@@ -116,53 +116,41 @@
             </div>
         </div>
 
-        <div class="mb-5">
-            <h2>Time</h2>
+        @unless ($time->isEmpty())
+            <div class="mb-5">
+                <h2>Time</h2>
 
-            @unless ($time->isEmpty())
                 <p>{!! link_to_route('time.index', 'View all', ['q' => 'client:' . $model->name]) !!}</p>
-            @endif
 
-            @include('partials.empty-message', ['collection' => $time, 'collectionOf' => 'time entries'])
-
-            @if ($time->isNotEmpty())
                 <div class="card mb-5">
                     @include('time.table', ['collection' => $time])
                 </div>
-            @endif
-        </div>
+            </div>
+        @endunless
 
-        <div class="mb-5">
-            <h2>Invoices</h2>
+        @unless ($invoices->isEmpty())
+            <div class="mb-5">
+                <h2>Invoices</h2>
 
-            @unless ($invoices->isEmpty())
                 <p>{!! link_to_route('invoice.index', 'View all', ['q' => 'client:' . $model->name]) !!}</p>
-            @endunless
 
-            @include('partials.empty-message', ['collection' => $invoices, 'collectionOf' => 'invoices'])
-
-            @if ($invoices->isNotEmpty())
                 <div class="card pb-0">
                     @include('invoice.table', ['collection' => $invoices])
                 </div>
-            @endif
-        </div>
+            </div>
+        @endif
 
-        <div class="mb-5">
-            <h2>Estimates</h2>
+        @unless ($estimates->isEmpty())
+            <div class="mb-5">
+                <h2>Estimates</h2>
 
-            @unless ($time->isEmpty())
                 <p>{!! link_to_route('estimate.index', 'View all', ['q' => 'client:' . $model->name]) !!}</p>
-            @endunless
 
-            @include('partials.empty-message', ['collection' => $estimates, 'collectionOf' => 'estimates'])
-
-            @if ($estimates->isNotEmpty())
                 <div class="card mb-5">
                     @include('estimate.table', ['collection' => $estimates])
                 </div>
-            @endif
-        </div>
+            </div>
+        @endunless
     </div>
 @endsection
 

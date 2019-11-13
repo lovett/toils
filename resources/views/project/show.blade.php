@@ -106,37 +106,29 @@
 	        </div>
         </div>
 
-        <div class="mb-5">
-            <h2>Time</h2>
+        @unless ($time->isEmpty())
+            <div class="mb-5">
+                <h2>Time</h2>
 
-            @unless ($time->isEmpty())
-            <p>{!! link_to_route('time.index', 'View all', ['q' => 'project:' . $project->name]) !!}</p>
-            @endunless
+                <p>{!! link_to_route('time.index', 'View all', ['q' => 'project:' . $project->name]) !!}</p>
 
-            @include('partials.empty-message', ['collection' => $time, 'collectionOf' => 'time entries'])
-
-            @if ($time->isNotEmpty())
                 <div class="card">
                     @include('time.table', ['collection' => $time, 'project' => $project])
                 </div>
-            @endif
-        </div>
+            </div>
+        @endunless
 
-        <div class="mb-5">
-            <h2>Invoices</h2>
+        @unless ($invoices->isEmpty())
+            <div class="mb-5">
+                <h2>Invoices</h2>
 
-            @unless ($invoices->isEmpty())
                 <p>{!! link_to_route('invoice.index', 'View all', ['q' => 'project:' . $project->name]) !!}</p>
-            @endunless
 
-            @include('partials.empty-message', ['collection' => $invoices, 'collectionOf' => 'invoices'])
-
-            @if ($invoices->isNotEmpty())
                 <div class="card mb-5">
                     @include('invoice.table', ['collection' => $invoices])
                 </div>
-            @endif
-        </div>
+            </div>
+        @endunless
     </div>
 @endsection
 
