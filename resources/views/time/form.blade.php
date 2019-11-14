@@ -31,10 +31,11 @@
 
                     @include('partials.formgroup-standard', ['name' => 'estimatedDuration', 'label' => 'Time Estimate', 'inlineSuffix' => 'minutes', 'size' => 2, 'autofill' => true])
 
-                    @include('partials.formgroup-date', ['name' => 'start', 'label' => 'Date', 'autofill' => true, 'pickable' => ['relday', 'month', 'day', 'year']])
+                    @include('partials.formgroup-date', ['name' => 'start', 'label' => 'Date', 'autofill' => true, 'pickable' => ['relday']])
 
-                    @include('partials.formgroup-time', ['name' => 'start', 'fieldName' => 'startTime', 'label' => 'Start', 'pickable' => ['time']])
-                    @include('partials.formgroup-time', ['name' => 'end', 'fieldName' => 'endTime', 'label' => 'End', 'pickable' => ['time']])
+                    @include('partials.formgroup-time', ['name' => 'start', 'fieldName' => 'startTime', 'label' => 'Start', 'pickable' => ['reltime', 'time']])
+
+                    @include('partials.formgroup-time', ['name' => 'end', 'fieldName' => 'endTime', 'label' => 'End', 'pickable' => ['reltime', 'time']])
 
                     @include('partials.formgroup-textarea', ['name' => 'summary', 'label' => 'Summary'])
 

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <input type="text" v-bind:name="name" v-model="value" v-bind:class="{'form-control': 1, 'is-invalid': error}" />
+        <input v-bind:type="inputType" v-bind:name="name" v-model="value" v-bind:class="{'form-control': 1, 'is-invalid': error}" />
 
         <div v-if="error" class="invalid-feedback" role="alert">{{ error }}</div>
 
@@ -11,53 +11,66 @@
         />
 
         <div class="shortcuts">
-            <div class="card bg-light">
-                <div class="card-body">
-                    <p v-if="pickableGroups.includes('relday')">
-                        <a v-bind:class="{active: daysAgo == 0}" @click.prevent="relativeDay(0)" href="#">Today</a>
-                        <a v-bind:class="{active: daysAgo == 1}" @click.prevent="relativeDay(-1)" href="#">yesterday</a>
-                        <a @click.prevent="relativeWeekStart(0)" href="#">start of this week</a>
-                        <a @click.prevent="relativeWeekStart(-1)" href="#">start of last week</a>
-                    </p>
+            <p v-if="pickableGroups.includes('reltime')">
+                <a @click.prevent="relativeTime(0)" href="#">Now</a>
+                <a @click.prevent="relativeTime(-1)" href="#">-1 hour</a>
+                <a @click.prevent="relativeTime(1)" href="#">+1 hour</a>
+            </p>
 
-                    <p v-if="pickableGroups.includes('relmonth')">
-                        <a @click.prevent="relativeMonthStart(0)" href="#">start of this month</a>
-                        <a @click.prevent="relativeMonthEnd(0)" href="#">end of this month</a>
-                        <a @click.prevent="relativeMonthStart(-1)" href="#">start of last month</a>
-                        <a @click.prevent="relativeMonthEnd(-1)" href="#">end of last month</a>
-                    </p>
+            <p v-if="pickableGroups.includes('relday')">
+                <a @click.prevent="relativeDay(0)" href="#">Today</a>
+                <a @click.prevent="relativeDay(-1)" href="#">-1 day</a>
+                <a @click.prevent="relativeDay(1)" href="#">+1 day</a>
+                <a v-if="inputType == 'text'" @click.prevent="useDateInput()" href="#">date picker</a>
+            </p>
+
+            <p v-if="pickableGroups.includes('relmonth-start')">
+                <a @click.prevent="relativeDay(0)" href="#">Today</a>
+                <a @click.prevent="relativeMonthStart(0)" href="#">start of month</a>
+                <a @click.prevent="relativeMonthStart(-1)" href="#">start of last month</a>
+                <a @click.prevent="relativeWeekStart(0)" href="#">start of week</a>
+                <a @click.prevent="relativeWeekStart(-1)" href="#">start of last week</a>
+                <a v-if="inputType == 'text'" @click.prevent="useDateInput()" href="#" >date picker</a>
+            </p>
+
+            <p v-if="pickableGroups.includes('relmonth-end')">
+                <a @click.prevent="relativeDay(0)" href="#">Today</a>
+                <a @click.prevent="relativeMonthEnd(0)" href="#">end of month</a>
+                <a @click.prevent="relativeMonthEnd(-1)" href="#">end of last month</a>
+                <a @click.prevent="relativeWeekEnd(0)" href="#">end of week</a>
+                <a @click.prevent="relativeWeekEnd(-1)" href="#">end of last week</a>
+                <a @click.prevent="useDateInput()" href="#">date picker</a>
+            </p>
 
 
-                    <p v-if="pickableGroups.includes('month')">
-                        <a v-bind:class="{active: m == pickedDate.month() + 1}" v-for="m in 12" @click.prevent="month(m)" href="#">{{ m | monthName }}</a>
-                    </p>
+            <p v-if="pickableGroups.includes('month')">
+                <a v-for="m in 12" @click.prevent="month(m)" href="#">{{ m | monthName }}</a>
+            </p>
 
-                    <p v-if="pickableGroups.includes('day')">
-                        <a v-bind:class="{active: d == pickedDate.date()}" v-for="d in 31" @click.prevent="day(d)" href="#">{{ d }}</a>
-                    </p>
+            <p v-if="pickableGroups.includes('day')">
+                <a v-for="d in 31" @click.prevent="day(d)" href="#">{{ d }}</a>
+            </p>
 
-                    <p v-if="pickableGroups.includes('year')">
-                        <a v-bind:class="{active: pickedDate.year() == lastYear.year()}" @click.prevent="year(lastYear.year())" href="#">{{ lastYear.year() }}</a>
-                        <a v-bind:class="{active: pickedDate.year() == now.year()}" @click.prevent="year(now.year())" href="#">{{ now.year() }}</a>
-                        <a v-bind:class="{active: pickedDate.year() == nextYear.year()}" @click.prevent="year(nextYear.year())" href="#">{{ nextYear.year() }}</a>
-                    </p>
+            <p v-if="pickableGroups.includes('year')">
+                <a @click.prevent="year(lastYear.year())" href="#">{{ lastYear.year() }}</a>
+                <a @click.prevent="year(now.year())" href="#">{{ now.year() }}</a>
+                <a @click.prevent="year(nextYear.year())" href="#">{{ nextYear.year() }}</a>
+            </p>
 
-                    <p v-if="pickableGroups.includes('time')">
-                        <a v-bind:class="{active: pickedDate.hour() == h || pickedDate.hour() - 12 == h}" v-for="h in 12" @click.prevent="hour(h)" href="#">{{ h }}</a>
-                    </p>
+            <p v-if="pickableGroups.includes('time')">
+                <a v-for="h in 12" @click.prevent="hour(h)" href="#">{{ h }}</a>
+            </p>
 
-                    <p v-if="pickableGroups.includes('time')">
-                        <a @click.prevent="minute(0)" href="#">00</a>
-                        <a v-bind:class="{active: pickedDate.minute() == m}" v-for="m in 59" v-if="m % 5 === 0" @click.prevent="minute(m)" href="#">
-                            {{ (m < 10) ? '0' + m : m }}
-                        </a>
-                    </p>
-                    <p v-if="pickableGroups.includes('time')">
-                        <a v-bind:class="{active: pickedDate.hour() < 12}" @click.prevent="meridiem('AM')" href="#">AM</a>
-                        <a v-bind:class="{active: pickedDate.hour() > 11}" @click.prevent="meridiem('PM')" href="#">PM</a>
-                    </p>
-                </div>
-            </div>
+            <p v-if="pickableGroups.includes('time')">
+                <a @click.prevent="minute(0)" href="#">00</a>
+                <a v-for="m in 59" v-if="m % 5 === 0" @click.prevent="minute(m)" href="#">
+                    {{ (m < 10) ? '0' + m : m }}
+                </a>
+            </p>
+            <p v-if="pickableGroups.includes('time')">
+                <a @click.prevent="meridiem('AM')" href="#">AM</a>
+                <a @click.prevent="meridiem('PM')" href="#">PM</a>
+            </p>
         </div>
     </div>
 </template>
@@ -71,22 +84,13 @@
     .shortcuts {
         position: relative;
         font-size: .85em;
-    }
-
-    .card {
-        border-top: 0;
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
-    }
-
-    .card-body {
-        padding: 1em 1em 0 1em;
+        padding-top: .5em;
     }
 
     .shortcuts a {
         display: inline-block;
         margin-right: .75em;
-        padding: 0 .5em;
+        padding: 0 .25em;
         text-decoration: none;
         transition: all .25s;
     }
@@ -99,27 +103,6 @@
     .shortcuts .active {
         background-color: #333;
         color: white;
-    }
-
-    .shortcuts .pullup {
-        position: absolute;
-        top: .25em;
-        right: .25em;
-    }
-
-    .shortcuts .pullup a {
-        font-size: 0.85em;
-        margin: 0;
-    }
-
-    .shortcuts .pullup a:hover {
-        color: inherit;
-        background-color: inherit;
-        text-decoration: underline;
-    }
-
-    .shortcuts .well {
-        margin-bottom: 0;
     }
 </style>
 <script>
@@ -172,12 +155,14 @@
             return {
                 isOpen: false,
                 now: moment(),
+                pristine: true,
                 lastYear: moment().subtract(1, 'year'),
                 nextYear: moment().add(1, 'year'),
                 pickableGroups: groupList,
                 pickedDate: initial,
                 daysAgo: moment().diff(initial, 'days'),
-                value: value
+                value: value,
+                inputType: 'text'
             };
         },
 
@@ -239,25 +224,55 @@
                 }
             },
 
+            relativeTime: function (val) {
+                let base = moment();
+                if (val !== 0) {
+                    base = moment(this.pickedDate);
+                }
+
+                this.pickedDate = base.add(val, 'hours');
+                this.pristine = false;
+            },
+
             relativeDay: function (val) {
-                this.pickedDate = moment().add(val, 'days');
+                let base = moment();
+                if (val !== 0) {
+                    base = moment(this.pickedDate);
+                }
+
+                this.pickedDate = base.add(val, 'days');
+                this.pristine = false;
             },
 
             relativeYear: function (val) {
                 this.pickedDate = moment().add(val, 'years');
-            },
-
-            relativeWeekStart: function (val) {
-                this.pickedDate = moment().startOf('week').add(val * 7, 'days');
+                this.pristine = false;
             },
 
             relativeMonthStart: function (val) {
                 this.pickedDate = moment().startOf('month').add(val, 'months');
+                this.pristine = false;
             },
 
             relativeMonthEnd: function (val) {
                 this.pickedDate = moment().endOf('month').add(val, 'months');
+                this.pristine = false;
+            },
+
+            relativeWeekStart: function (val) {
+                this.pickedDate = moment().startOf('week').add(val, 'weeks');
+                this.pristine = false;
+            },
+
+            relativeWeekEnd: function (val) {
+                this.pickedDate = moment().endOf('week').add(val, 'weeks');
+                this.pristine = false;
+            },
+
+            useDateInput: function() {
+                this.inputType = 'date';
             }
+
         },
 
         filters: {

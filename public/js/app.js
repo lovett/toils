@@ -2188,23 +2188,6 @@ module.exports = {
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 var moment = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
 
 module.exports = {
@@ -2252,12 +2235,14 @@ module.exports = {
     return {
       isOpen: false,
       now: moment(),
+      pristine: true,
       lastYear: moment().subtract(1, 'year'),
       nextYear: moment().add(1, 'year'),
       pickableGroups: groupList,
       pickedDate: initial,
       daysAgo: moment().diff(initial, 'days'),
-      value: value
+      value: value,
+      inputType: 'text'
     };
   },
   watch: {
@@ -2311,20 +2296,48 @@ module.exports = {
         this.pickedDate = moment(this.pickedDate).hour(pickedHour - 12);
       }
     },
+    relativeTime: function relativeTime(val) {
+      var base = moment();
+
+      if (val !== 0) {
+        base = moment(this.pickedDate);
+      }
+
+      this.pickedDate = base.add(val, 'hours');
+      this.pristine = false;
+    },
     relativeDay: function relativeDay(val) {
-      this.pickedDate = moment().add(val, 'days');
+      var base = moment();
+
+      if (val !== 0) {
+        base = moment(this.pickedDate);
+      }
+
+      this.pickedDate = base.add(val, 'days');
+      this.pristine = false;
     },
     relativeYear: function relativeYear(val) {
       this.pickedDate = moment().add(val, 'years');
-    },
-    relativeWeekStart: function relativeWeekStart(val) {
-      this.pickedDate = moment().startOf('week').add(val * 7, 'days');
+      this.pristine = false;
     },
     relativeMonthStart: function relativeMonthStart(val) {
       this.pickedDate = moment().startOf('month').add(val, 'months');
+      this.pristine = false;
     },
     relativeMonthEnd: function relativeMonthEnd(val) {
       this.pickedDate = moment().endOf('month').add(val, 'months');
+      this.pristine = false;
+    },
+    relativeWeekStart: function relativeWeekStart(val) {
+      this.pickedDate = moment().startOf('week').add(val, 'weeks');
+      this.pristine = false;
+    },
+    relativeWeekEnd: function relativeWeekEnd(val) {
+      this.pickedDate = moment().endOf('week').add(val, 'weeks');
+      this.pristine = false;
+    },
+    useDateInput: function useDateInput() {
+      this.inputType = 'date';
     }
   },
   filters: {
@@ -32809,7 +32822,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.form-control[data-v-552d3ce6] {\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n}\n.shortcuts[data-v-552d3ce6] {\n    position: relative;\n    font-size: .85em;\n}\n.card[data-v-552d3ce6] {\n    border-top: 0;\n    border-top-left-radius: 0;\n    border-top-right-radius: 0;\n}\n.card-body[data-v-552d3ce6] {\n    padding: 1em 1em 0 1em;\n}\n.shortcuts a[data-v-552d3ce6] {\n    display: inline-block;\n    margin-right: .75em;\n    padding: 0 .5em;\n    text-decoration: none;\n    transition: all .25s;\n}\n.shortcuts a[data-v-552d3ce6]:hover {\n    color: #fff;\n    background-color: #333;\n}\n.shortcuts .active[data-v-552d3ce6] {\n    background-color: #333;\n    color: white;\n}\n.shortcuts .pullup[data-v-552d3ce6] {\n    position: absolute;\n    top: .25em;\n    right: .25em;\n}\n.shortcuts .pullup a[data-v-552d3ce6] {\n    font-size: 0.85em;\n    margin: 0;\n}\n.shortcuts .pullup a[data-v-552d3ce6]:hover {\n    color: inherit;\n    background-color: inherit;\n    text-decoration: underline;\n}\n.shortcuts .well[data-v-552d3ce6] {\n    margin-bottom: 0;\n}\n", ""]);
+exports.push([module.i, "\n.form-control[data-v-552d3ce6] {\n    border-bottom-left-radius: 0;\n    border-bottom-right-radius: 0;\n}\n.shortcuts[data-v-552d3ce6] {\n    position: relative;\n    font-size: .85em;\n    padding-top: .5em;\n}\n.shortcuts a[data-v-552d3ce6] {\n    display: inline-block;\n    margin-right: .75em;\n    padding: 0 .25em;\n    text-decoration: none;\n    transition: all .25s;\n}\n.shortcuts a[data-v-552d3ce6]:hover {\n    color: #fff;\n    background-color: #333;\n}\n.shortcuts .active[data-v-552d3ce6] {\n    background-color: #333;\n    color: white;\n}\n", ""]);
 
 // exports
 
@@ -55008,27 +55021,83 @@ var render = function() {
   return _c(
     "div",
     [
-      _c("input", {
-        directives: [
-          {
-            name: "model",
-            rawName: "v-model",
-            value: _vm.value,
-            expression: "value"
-          }
-        ],
-        class: { "form-control": 1, "is-invalid": _vm.error },
-        attrs: { type: "text", name: _vm.name },
-        domProps: { value: _vm.value },
-        on: {
-          input: function($event) {
-            if ($event.target.composing) {
-              return
+      _vm.inputType === "checkbox"
+        ? _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.value,
+                expression: "value"
+              }
+            ],
+            class: { "form-control": 1, "is-invalid": _vm.error },
+            attrs: { name: _vm.name, type: "checkbox" },
+            domProps: {
+              checked: Array.isArray(_vm.value)
+                ? _vm._i(_vm.value, null) > -1
+                : _vm.value
+            },
+            on: {
+              change: function($event) {
+                var $$a = _vm.value,
+                  $$el = $event.target,
+                  $$c = $$el.checked ? true : false
+                if (Array.isArray($$a)) {
+                  var $$v = null,
+                    $$i = _vm._i($$a, $$v)
+                  if ($$el.checked) {
+                    $$i < 0 && (_vm.value = $$a.concat([$$v]))
+                  } else {
+                    $$i > -1 &&
+                      (_vm.value = $$a.slice(0, $$i).concat($$a.slice($$i + 1)))
+                  }
+                } else {
+                  _vm.value = $$c
+                }
+              }
             }
-            _vm.value = $event.target.value
-          }
-        }
-      }),
+          })
+        : _vm.inputType === "radio"
+        ? _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.value,
+                expression: "value"
+              }
+            ],
+            class: { "form-control": 1, "is-invalid": _vm.error },
+            attrs: { name: _vm.name, type: "radio" },
+            domProps: { checked: _vm._q(_vm.value, null) },
+            on: {
+              change: function($event) {
+                _vm.value = null
+              }
+            }
+          })
+        : _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.value,
+                expression: "value"
+              }
+            ],
+            class: { "form-control": 1, "is-invalid": _vm.error },
+            attrs: { name: _vm.name, type: _vm.inputType },
+            domProps: { value: _vm.value },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.value = $event.target.value
+              }
+            }
+          }),
       _vm._v(" "),
       _vm.error
         ? _c(
@@ -55044,340 +55113,481 @@ var render = function() {
       }),
       _vm._v(" "),
       _c("div", { staticClass: "shortcuts" }, [
-        _c("div", { staticClass: "card bg-light" }, [
-          _c("div", { staticClass: "card-body" }, [
-            _vm.pickableGroups.includes("relday")
-              ? _c("p", [
-                  _c(
+        _vm.pickableGroups.includes("reltime")
+          ? _c("p", [
+              _c(
+                "a",
+                {
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.relativeTime(0)
+                    }
+                  }
+                },
+                [_vm._v("Now")]
+              ),
+              _vm._v(" "),
+              _c(
+                "a",
+                {
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.relativeTime(-1)
+                    }
+                  }
+                },
+                [_vm._v("-1 hour")]
+              ),
+              _vm._v(" "),
+              _c(
+                "a",
+                {
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.relativeTime(1)
+                    }
+                  }
+                },
+                [_vm._v("+1 hour")]
+              )
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.pickableGroups.includes("relday")
+          ? _c("p", [
+              _c(
+                "a",
+                {
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.relativeDay(0)
+                    }
+                  }
+                },
+                [_vm._v("Today")]
+              ),
+              _vm._v(" "),
+              _c(
+                "a",
+                {
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.relativeDay(-1)
+                    }
+                  }
+                },
+                [_vm._v("-1 day")]
+              ),
+              _vm._v(" "),
+              _c(
+                "a",
+                {
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.relativeDay(1)
+                    }
+                  }
+                },
+                [_vm._v("+1 day")]
+              ),
+              _vm._v(" "),
+              _vm.inputType == "text"
+                ? _c(
                     "a",
                     {
-                      class: { active: _vm.daysAgo == 0 },
                       attrs: { href: "#" },
                       on: {
                         click: function($event) {
                           $event.preventDefault()
-                          return _vm.relativeDay(0)
+                          return _vm.useDateInput()
                         }
                       }
                     },
-                    [_vm._v("Today")]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "a",
-                    {
-                      class: { active: _vm.daysAgo == 1 },
-                      attrs: { href: "#" },
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          return _vm.relativeDay(-1)
-                        }
-                      }
-                    },
-                    [_vm._v("yesterday")]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "a",
-                    {
-                      attrs: { href: "#" },
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          return _vm.relativeWeekStart(0)
-                        }
-                      }
-                    },
-                    [_vm._v("start of this week")]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "a",
-                    {
-                      attrs: { href: "#" },
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          return _vm.relativeWeekStart(-1)
-                        }
-                      }
-                    },
-                    [_vm._v("start of last week")]
+                    [_vm._v("date picker")]
                   )
-                ])
-              : _vm._e(),
-            _vm._v(" "),
-            _vm.pickableGroups.includes("relmonth")
-              ? _c("p", [
-                  _c(
+                : _vm._e()
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.pickableGroups.includes("relmonth-start")
+          ? _c("p", [
+              _c(
+                "a",
+                {
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.relativeDay(0)
+                    }
+                  }
+                },
+                [_vm._v("Today")]
+              ),
+              _vm._v(" "),
+              _c(
+                "a",
+                {
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.relativeMonthStart(0)
+                    }
+                  }
+                },
+                [_vm._v("start of month")]
+              ),
+              _vm._v(" "),
+              _c(
+                "a",
+                {
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.relativeMonthStart(-1)
+                    }
+                  }
+                },
+                [_vm._v("start of last month")]
+              ),
+              _vm._v(" "),
+              _c(
+                "a",
+                {
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.relativeWeekStart(0)
+                    }
+                  }
+                },
+                [_vm._v("start of week")]
+              ),
+              _vm._v(" "),
+              _c(
+                "a",
+                {
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.relativeWeekStart(-1)
+                    }
+                  }
+                },
+                [_vm._v("start of last week")]
+              ),
+              _vm._v(" "),
+              _vm.inputType == "text"
+                ? _c(
                     "a",
                     {
                       attrs: { href: "#" },
                       on: {
                         click: function($event) {
                           $event.preventDefault()
-                          return _vm.relativeMonthStart(0)
+                          return _vm.useDateInput()
                         }
                       }
                     },
-                    [_vm._v("start of this month")]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "a",
-                    {
-                      attrs: { href: "#" },
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          return _vm.relativeMonthEnd(0)
-                        }
-                      }
-                    },
-                    [_vm._v("end of this month")]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "a",
-                    {
-                      attrs: { href: "#" },
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          return _vm.relativeMonthStart(-1)
-                        }
-                      }
-                    },
-                    [_vm._v("start of last month")]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "a",
-                    {
-                      attrs: { href: "#" },
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          return _vm.relativeMonthEnd(-1)
-                        }
-                      }
-                    },
-                    [_vm._v("end of last month")]
+                    [_vm._v("date picker")]
                   )
-                ])
-              : _vm._e(),
-            _vm._v(" "),
-            _vm.pickableGroups.includes("month")
-              ? _c(
-                  "p",
-                  _vm._l(12, function(m) {
-                    return _c(
-                      "a",
-                      {
-                        class: { active: m == _vm.pickedDate.month() + 1 },
-                        attrs: { href: "#" },
-                        on: {
-                          click: function($event) {
-                            $event.preventDefault()
-                            return _vm.month(m)
-                          }
-                        }
-                      },
-                      [_vm._v(_vm._s(_vm._f("monthName")(m)))]
-                    )
-                  }),
-                  0
+                : _vm._e()
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.pickableGroups.includes("relmonth-end")
+          ? _c("p", [
+              _c(
+                "a",
+                {
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.relativeDay(0)
+                    }
+                  }
+                },
+                [_vm._v("Today")]
+              ),
+              _vm._v(" "),
+              _c(
+                "a",
+                {
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.relativeMonthEnd(0)
+                    }
+                  }
+                },
+                [_vm._v("end of month")]
+              ),
+              _vm._v(" "),
+              _c(
+                "a",
+                {
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.relativeMonthEnd(-1)
+                    }
+                  }
+                },
+                [_vm._v("end of last month")]
+              ),
+              _vm._v(" "),
+              _c(
+                "a",
+                {
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.relativeWeekEnd(0)
+                    }
+                  }
+                },
+                [_vm._v("end of week")]
+              ),
+              _vm._v(" "),
+              _c(
+                "a",
+                {
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.relativeWeekEnd(-1)
+                    }
+                  }
+                },
+                [_vm._v("end of last week")]
+              ),
+              _vm._v(" "),
+              _c(
+                "a",
+                {
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.useDateInput()
+                    }
+                  }
+                },
+                [_vm._v("date picker")]
+              )
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.pickableGroups.includes("month")
+          ? _c(
+              "p",
+              _vm._l(12, function(m) {
+                return _c(
+                  "a",
+                  {
+                    attrs: { href: "#" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        return _vm.month(m)
+                      }
+                    }
+                  },
+                  [_vm._v(_vm._s(_vm._f("monthName")(m)))]
                 )
-              : _vm._e(),
-            _vm._v(" "),
-            _vm.pickableGroups.includes("day")
-              ? _c(
-                  "p",
-                  _vm._l(31, function(d) {
-                    return _c(
-                      "a",
-                      {
-                        class: { active: d == _vm.pickedDate.date() },
-                        attrs: { href: "#" },
-                        on: {
-                          click: function($event) {
-                            $event.preventDefault()
-                            return _vm.day(d)
-                          }
-                        }
-                      },
-                      [_vm._v(_vm._s(d))]
-                    )
-                  }),
-                  0
+              }),
+              0
+            )
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.pickableGroups.includes("day")
+          ? _c(
+              "p",
+              _vm._l(31, function(d) {
+                return _c(
+                  "a",
+                  {
+                    attrs: { href: "#" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        return _vm.day(d)
+                      }
+                    }
+                  },
+                  [_vm._v(_vm._s(d))]
                 )
-              : _vm._e(),
-            _vm._v(" "),
-            _vm.pickableGroups.includes("year")
-              ? _c("p", [
-                  _c(
-                    "a",
-                    {
-                      class: {
-                        active: _vm.pickedDate.year() == _vm.lastYear.year()
-                      },
-                      attrs: { href: "#" },
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          _vm.year(_vm.lastYear.year())
-                        }
+              }),
+              0
+            )
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.pickableGroups.includes("year")
+          ? _c("p", [
+              _c(
+                "a",
+                {
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      _vm.year(_vm.lastYear.year())
+                    }
+                  }
+                },
+                [_vm._v(_vm._s(_vm.lastYear.year()))]
+              ),
+              _vm._v(" "),
+              _c(
+                "a",
+                {
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      _vm.year(_vm.now.year())
+                    }
+                  }
+                },
+                [_vm._v(_vm._s(_vm.now.year()))]
+              ),
+              _vm._v(" "),
+              _c(
+                "a",
+                {
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      _vm.year(_vm.nextYear.year())
+                    }
+                  }
+                },
+                [_vm._v(_vm._s(_vm.nextYear.year()))]
+              )
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.pickableGroups.includes("time")
+          ? _c(
+              "p",
+              _vm._l(12, function(h) {
+                return _c(
+                  "a",
+                  {
+                    attrs: { href: "#" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        return _vm.hour(h)
                       }
-                    },
-                    [_vm._v(_vm._s(_vm.lastYear.year()))]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "a",
-                    {
-                      class: {
-                        active: _vm.pickedDate.year() == _vm.now.year()
-                      },
-                      attrs: { href: "#" },
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          _vm.year(_vm.now.year())
-                        }
+                    }
+                  },
+                  [_vm._v(_vm._s(h))]
+                )
+              }),
+              0
+            )
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.pickableGroups.includes("time")
+          ? _c(
+              "p",
+              [
+                _c(
+                  "a",
+                  {
+                    attrs: { href: "#" },
+                    on: {
+                      click: function($event) {
+                        $event.preventDefault()
+                        return _vm.minute(0)
                       }
-                    },
-                    [_vm._v(_vm._s(_vm.now.year()))]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "a",
-                    {
-                      class: {
-                        active: _vm.pickedDate.year() == _vm.nextYear.year()
-                      },
-                      attrs: { href: "#" },
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          _vm.year(_vm.nextYear.year())
-                        }
-                      }
-                    },
-                    [_vm._v(_vm._s(_vm.nextYear.year()))]
-                  )
-                ])
-              : _vm._e(),
-            _vm._v(" "),
-            _vm.pickableGroups.includes("time")
-              ? _c(
-                  "p",
-                  _vm._l(12, function(h) {
-                    return _c(
-                      "a",
-                      {
-                        class: {
-                          active:
-                            _vm.pickedDate.hour() == h ||
-                            _vm.pickedDate.hour() - 12 == h
+                    }
+                  },
+                  [_vm._v("00")]
+                ),
+                _vm._v(" "),
+                _vm._l(59, function(m) {
+                  return m % 5 === 0
+                    ? _c(
+                        "a",
+                        {
+                          attrs: { href: "#" },
+                          on: {
+                            click: function($event) {
+                              $event.preventDefault()
+                              return _vm.minute(m)
+                            }
+                          }
                         },
-                        attrs: { href: "#" },
-                        on: {
-                          click: function($event) {
-                            $event.preventDefault()
-                            return _vm.hour(h)
-                          }
-                        }
-                      },
-                      [_vm._v(_vm._s(h))]
-                    )
-                  }),
-                  0
-                )
-              : _vm._e(),
-            _vm._v(" "),
-            _vm.pickableGroups.includes("time")
-              ? _c(
-                  "p",
-                  [
-                    _c(
-                      "a",
-                      {
-                        attrs: { href: "#" },
-                        on: {
-                          click: function($event) {
-                            $event.preventDefault()
-                            return _vm.minute(0)
-                          }
-                        }
-                      },
-                      [_vm._v("00")]
-                    ),
-                    _vm._v(" "),
-                    _vm._l(59, function(m) {
-                      return m % 5 === 0
-                        ? _c(
-                            "a",
-                            {
-                              class: { active: _vm.pickedDate.minute() == m },
-                              attrs: { href: "#" },
-                              on: {
-                                click: function($event) {
-                                  $event.preventDefault()
-                                  return _vm.minute(m)
-                                }
-                              }
-                            },
-                            [
-                              _vm._v(
-                                "\n                        " +
-                                  _vm._s(m < 10 ? "0" + m : m) +
-                                  "\n                    "
-                              )
-                            ]
+                        [
+                          _vm._v(
+                            "\n                " +
+                              _vm._s(m < 10 ? "0" + m : m) +
+                              "\n            "
                           )
-                        : _vm._e()
-                    })
-                  ],
-                  2
-                )
-              : _vm._e(),
-            _vm._v(" "),
-            _vm.pickableGroups.includes("time")
-              ? _c("p", [
-                  _c(
-                    "a",
-                    {
-                      class: { active: _vm.pickedDate.hour() < 12 },
-                      attrs: { href: "#" },
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          return _vm.meridiem("AM")
-                        }
-                      }
-                    },
-                    [_vm._v("AM")]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "a",
-                    {
-                      class: { active: _vm.pickedDate.hour() > 11 },
-                      attrs: { href: "#" },
-                      on: {
-                        click: function($event) {
-                          $event.preventDefault()
-                          return _vm.meridiem("PM")
-                        }
-                      }
-                    },
-                    [_vm._v("PM")]
-                  )
-                ])
-              : _vm._e()
-          ])
-        ])
+                        ]
+                      )
+                    : _vm._e()
+                })
+              ],
+              2
+            )
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.pickableGroups.includes("time")
+          ? _c("p", [
+              _c(
+                "a",
+                {
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.meridiem("AM")
+                    }
+                  }
+                },
+                [_vm._v("AM")]
+              ),
+              _vm._v(" "),
+              _c(
+                "a",
+                {
+                  attrs: { href: "#" },
+                  on: {
+                    click: function($event) {
+                      $event.preventDefault()
+                      return _vm.meridiem("PM")
+                    }
+                  }
+                },
+                [_vm._v("PM")]
+              )
+            ])
+          : _vm._e()
       ])
     ],
     1

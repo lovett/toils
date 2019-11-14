@@ -27,9 +27,9 @@
 
                     @include('partials.formgroup-menu', ['name' => 'project_id', 'label' => 'Project', 'items' => $projects, 'selectedItem' => $model->project_id, 'vchange' => 'fetch'])
 
-                    @include('partials.formgroup-date', ['name' => 'start', 'label' => 'Start', 'autofill' => true, 'pickable' => ['relday', 'month', 'day', 'year']])
+                    @include('partials.formgroup-date', ['name' => 'start', 'label' => 'Start', 'autofill' => true, 'pickable' => ['relmonth-start']])
 
-                    @include('partials.formgroup-date', ['name' => 'end', 'label' => 'End', 'autofill' => true, 'pickable' => ['relday', 'month', 'day', 'year']])
+                    @include('partials.formgroup-date', ['name' => 'end', 'label' => 'End', 'autofill' => true, 'pickable' => ['relmonth-end']])
 
                     @include('partials.formgroup-standard', ['name' => 'name', 'label' => 'Name', 'autofill' => true])
 
@@ -99,13 +99,13 @@
                         </div>
                     </div>
 
-                    @include('partials.formgroup-date', ['name' => 'sent', 'label' => 'Sent', 'pickable' => ['relday', 'month', 'day', 'year']])
+                    @include('partials.formgroup-date', ['name' => 'sent', 'label' => 'Sent', 'pickable' => ['relday']])
 
-                    @include('partials.formgroup-date', ['name' => 'due', 'label' => 'Due', 'autofill' => true, 'pickable' => ['month', 'day', 'year']])
+                    @include('partials.formgroup-date', ['name' => 'due', 'label' => 'Due', 'autofill' => true, 'pickable' => ['relmonth-end']])
 
-                    @include('partials.formgroup-date', ['name' => 'paid', 'label' => 'Paid', 'pickable' => ['relday', 'month', 'day', 'year']])
+                    @include('partials.formgroup-date', ['name' => 'paid', 'label' => 'Paid', 'pickable' => ['relday']])
 
-                    @include('partials.formgroup-date', ['name' => 'abandonned', 'label' => 'Abandonned', 'pickable' => ['relday', 'month', 'day', 'year']])
+                    @include('partials.formgroup-date', ['name' => 'abandonned', 'label' => 'Abandonned', 'pickable' => ['relday']])
 
                     @include('partials.save-button')
 
