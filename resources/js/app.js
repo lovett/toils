@@ -1,11 +1,9 @@
 import Vue from 'vue'
-import BootstrapVue from 'bootstrap-vue'
+import {BAlert, BFormFile} from 'bootstrap-vue'
 import FacetSearch from './components/FacetSearch.vue';
 import Autofill from './components/Autofill.vue';
 import AutofillHint from './components/AutofillHint.vue';
 import Pickable from './components/Pickable.vue';
-import bAlert from 'bootstrap-vue/es/components/alert/alert';
-import bFormFile from 'bootstrap-vue/es/components/form-file/form-file';
 
 /**
  * The axios HTTP library automatically handles sending the Laravel
@@ -28,8 +26,8 @@ Vue.component('facet-search', FacetSearch);
 Vue.component('autofill', Autofill);
 Vue.component('autofill-hint', AutofillHint);
 Vue.component('pickable', Pickable);
-Vue.component('b-alert', bAlert);
-Vue.component('b-form-file', bFormFile);
+Vue.component('b-alert', BAlert);
+Vue.component('b-form-file', BFormFile);
 
 const app = new Vue({
     el: '#app'
