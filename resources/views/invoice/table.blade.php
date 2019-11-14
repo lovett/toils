@@ -14,7 +14,7 @@
         <tbody>
             @foreach ($collection as $invoice)
                 @php($overdueClass = ($invoice->daysUntilDue < 0)? 'table-danger' : '')
-                @php($upcomingClass = ($invoice->daysUntilDue > 0)? 'table-warning' : '')
+                @php($upcomingClass = ($invoice->daysUntilDue >= 0 && $invoice->isPaid === false)? 'table-warning' : '')
                 @php($abandonnedClass = ($invoice->abandonned)? 'table-dark' : '')
                 <tr class="{{ $overdueClass }} {{ $upcomingClass }} {{ $abandonnedClass }}">
                     <td>
@@ -58,10 +58,11 @@
                             <p class="small">
                                 on {{ TimeHelper::date($invoice->paid) }}
                             </p>
-                        @elseif ($invoice->daysUntilDue > 0)
+                        @elseif ($invoice->daysUntilDue >= 0)
                             waiting
                             <svg class="icon after-text"><use xlink:href="#icon-clock"></use></svg>
                             <p class="small">
+                                due in
                                 {{ $invoice->daysUntilDue }}
                                 {{ str_plural('day', $invoice->daysUntilDue) }}
                             </p>
@@ -74,6 +75,7 @@
                             overdue
                             <svg class="icon inactive after-text"><use xlink:href="#icon-alarm"></use></svg>
                             <p class="small">
+                                by
                                 {{ abs($invoice->daysUntilDue) }}
                                 {{ str_plural('day', $invoice->daysUntilDue) }}
                             </p>
