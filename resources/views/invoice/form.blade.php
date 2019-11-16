@@ -85,11 +85,10 @@
                                     @php($fieldClass .= 'is-invalid')
                                 @endif
                                 <b-form-file
-                                    v-model="file"
                                     placeholder="Choose a file or drop it here..."
                                     drop-placeholder="Drop file here..."
                                     id="invoice-receipt"
-                                name="receipt"
+                                    name="receipt"
                                     class="{{ $fieldClass }}"
                                 ></b-form-file>
                             </div>
