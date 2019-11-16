@@ -48,8 +48,9 @@ outdated: outdated-php outdated-js
 
 # Install newly updated npm packages.
 update-js: export NO_UPDATE_NOTIFIER=1
+update-js: export DISABLE_OPENCOLLECTIVE=true
 update-js:
-	npm update
+	npm install
 
 # Install newly updated composer packages and update composer.lock
 update-php:
@@ -97,11 +98,13 @@ install:
 
 
 # Build the application in preparation for a production deployment
-build:
-	npm run production
+build: export DISABLE_OPENCOLLECTIVE=true
+build: export COMPOSER_NO_INTERACTION=1
+build: dummy
+	rm -f toils.tar.gz
 	rsync -a --cvs-exclude \
 	--delete \
-	--delete-excluded \
+	--exclude=.ac-php-conf.json \
 	--exclude=.ackrc \
 	--exclude=.env \
 	--exclude=.env.example \
@@ -111,99 +114,20 @@ build:
 	--exclude=node_modules \
 	--exclude=vendor \
 	--exclude=bootstrap/cache/* \
+	--exclude=build \
 	--exclude=storage \
 	--exclude=tests \
-	--exclude=package.json \
-	--exclude=package-lock.json \
 	--exclude=phpcs.xml \
 	--exclude=phpmd.xml \
 	--exclude=phpunit.xml \
 	--exclude=Makefile \
-	--exclude=mkimage.sh \
 	--exclude=server.php \
 	--exclude=*.sqlite \
-	--exclude=webpack.mix.js \
-	--exclude=*.qcow2 \
+	--exclude=.tar \
 	./ build
-	mkdir -p build/storage/framework/views
-	touch build/storage/$(SQLITE_DB_NAME)
-	cd build && composer install \
-		--no-dev \
-		--no-suggest \
-		--quiet \
-		--no-interaction \
-		--optimize-autoloader \
-		--classmap-authoritative
-	echo 'APP_KEY=' > build/.env
-	cd build && php artisan key:generate
-	cat $(HOME)/Documents/secrets/toils >> build/.env
-	cd build && php artisan config:cache
-	sed -i 's|$(PWD)/build|/mnt/toils-app|' build/bootstrap/cache/config.php
-	rm -rf build/storage
-	cd build && ln -sf /mnt/toils-storage storage
-	git checkout public/css/app.css public/js/app.js
-
-
-# Build a QEMU virtual machine to run the application in production mode
-image: toils-app.img toils-storage.qcow2 toils-os.qcow2
-
-# Build a QEMU image for the OS.
-toils-os.qcow2:
-	virt-builder debian-10 \
-		--format qcow2 \
-		-o toils-os.qcow2 \
-		--size 6G \
-		--hostname toils.local \
-		--root-password password:toils \
-		--append-line /etc/fstab:'LABEL=toils-app /mnt/toils-app ext4 defaults,noatime,noexec 0 0' \
-		--append-line /etc/fstab:'LABEL=toils-storage /mnt/toils-storage ext4 defaults,noatime,noexec 0 0' \
-		--run-command 'mkdir -p /etc/nginx/sites-enabled' \
-		--run-command 'mkdir -p /etc/php/7.3/fpm/pool.d' \
-		--run-command 'mkdir /mnt/toils-app' \
-		--run-command 'mkdir /mnt/toils-storage' \
-		--copy-in resources/qemu/toils-vhost.conf:/etc/nginx/sites-enabled \
-		--copy-in resources/qemu/toils-pool.conf:/etc/php/7.3/fpm/pool.d \
-		--copy-in resources/qemu/toils-setup.sh:/usr/local/sbin \
-		--copy-in resources/qemu/toils-setup.service:/etc/systemd/system \
-		--uninstall man-db \
-		--run-command 'apt autoremove -y' \
-		--firstboot resources/qemu/toils-firstboot.sh
-
-# Build a QEMU image separate from the OS image for the application files.
-# Without the extra 10M, the image runs out of space.
-toils-app.img: build
-	virt-make-fs --format=raw --size=+10M --type=ext4 --label=toils-app build toils-app.img
-
-# Build a QEMU image separate from the OS image to store volatile data.
-toils-storage.qcow2:
-	qemu-img create -f qcow2 toils-storage.qcow2 50G
-	guestfish add toils-storage.qcow2 : \
-		run : \
-		mkfs ext4 /dev/sda : \
-		set-label /dev/sda toils-storage : \
-		mount /dev/sda / : \
-		mkdir-p /app/public : \
-		mkdir-p /framework/views : \
-		mkdir /fonts : \
-		mkdir /logs : \
-		touch /$(SQLITE_DB_NAME)
-
-# Run the QEMU virtual machine locally
-testrun:
-	qemu-system-x86_64 -m 256M \
-		-accel kvm \
-		-nic user,hostfwd=tcp::$(LOCAL_PORT)-:80 \
-		-nographic \
-		-drive file=toils-os.qcow2,index=0,media=disk,format=qcow2 \
-		-drive file=toils-app.img,index=1,media=disk,format=raw \
-		-drive file=toils-storage.qcow2,index=2,media=disk,format=qcow2
-
-shrink:
-	qemu-img convert -O qcow2 toils-storage.qcow2 toils-storage-shrunk.qcow2
-	mv toils-storage-shrunk.qcow2 toils-storage.qcow2
-
-clean:
-	rm -f toils-os.qcow2
-	rm -f toils-app.img
-	rm -f toils-storage.qcow2
-	rm -rf build
+	cd build && mkdir -p storage/framework/views
+	cd build && touch storage/$(SQLITE_DB_NAME)
+	cd build && npm ci && npm run production
+	cd build && composer install --no-dev --no-suggest --quiet --classmap-authoritative
+	cd build && rm composer.lock composer.json package.json package-lock.json webpack.mix.js
+	tar --create --gzip --file=toils.tar.gz --exclude=node_modules --exclude=storage --transform s/build/toils/ build

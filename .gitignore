@@ -16,5 +16,6 @@
 *.sqlite
 *.bak
 *.log
-*.qcow2
-*.img
+/public/js/*.js
+/public/css/*.css
+*.tar.gz

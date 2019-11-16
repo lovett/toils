@@ -2,59 +2,134 @@
 - hosts: toils
   vars:
     application_name: toils
-    image_dir: /srv/qemu
+    application_root: /srv
+    application_user: www-data
+    application_group: www-data
+    application_hostname: "{{ application_name }}.{{ host_domain }}"
+    nginx_vhost_path: "/etc/nginx/sites-available/{{ application_name }}"
+
   tasks:
-    - name: Create directory to store VM images
+    - name: Build application
+      local_action:
+        module: make
+        chdir: "{{ playbook_dir }}/../"
+        target: build
+
+    - name: Install system packages
+      become: true
+      apt:
+        name:
+          - php-bcmath
+          - php-fpm
+          - php-json
+          - php-mbstring
+          - php-sqlite3
+          - php-tokenizer
+          - php-xml
+          - sqlite3
+        state: latest
+        force_apt_get: yes
+
+    - name: Install PHP-FPM pool
+      become: true
+      template:
+        src: "templates/toils-pool.j2"
+        dest: "/etc/php/7.3/fpm/pool.d/toils.conf"
+      notify: Restart PHP-FPM
+
+    - name: Install Nginx Vhost
+      become: true
+      template:
+        src: "templates/toils-vhost.j2"
+        dest: "{{ nginx_vhost_path }}"
+      notify: Restart Nginx
+
+    - name: Enable Nginx Vhost
+      become: true
+      file:
+        src: "{{ nginx_vhost_path }}"
+        dest: "/etc/nginx/sites-enabled/{{ application_name }}"
+        state: link
+
+    - name: Create non-local application storage
+      become: true
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ application_user }}"
+        group: "{{ application_group }}"
+      loop:
+        - "/var/{{ application_name}}/app"
+        - "/var/{{ application_name}}/fonts"
+        - "/var/{{ application_name}}/framework/views"
+        - "/var/{{ application_name}}/logs"
+
+    - name: Create application database
+      become: true
+      file:
+        path: "/var/{{ application_name }}/{{application_name }}.sqlite"
+        state: touch
+        owner: "{{ application_user }}"
+        group: "{{ application_group }}"
+
+    - name: Delete previous installation
       become: yes
       file:
-        path: "{{ image_dir }}"
-        state: directory
-        mode: "0700"
+        path: "{{ application_root }}/{{ application_name }}"
+        state: absent
 
-    - name: OS and Storage images
+    - name: Transfer and extract application
       become: yes
-      copy:
-        src: "{{ item }}"
-        dest: "{{ image_dir }}/"
-        mode: "0700"
-        force: no
-        setype: virt_image_t
-      with_items:
-        - "../toils-os.qcow2"
-        - "../toils-storage.qcow2"
+      unarchive:
+        src: "../{{ application_name }}.tar.gz"
+        dest: "{{ application_root }}"
+        owner: "{{ application_user }}"
+        group: "{{ application_group }}"
 
-    - name: App image
-      become: yes
-      copy:
-        src: "../toils-app.img"
-        dest: "{{ image_dir }}"
-        mode: "0700"
-        backup: yes
-        setype: virt_image_t
+    - name: Symlink non-local storage
+      become: true
+      file:
+        src: "/var/{{ application_name }}"
+        dest: "{{ application_root }}/{{ application_name }}/storage"
+        state: link
+        owner: "{{ application_user }}"
+        group: "{{ application_group }}"
 
-    - name: Systemd service
+    - name: Run database migrations
+      command: "php artisan migrate --force"
       become: yes
-      template:
-        src: "templates/systemd-service.j2"
-        dest: "/etc/systemd/system/toils.service"
+      args:
+        chdir: "{{ application_root }}/{{ application_name }}"
 
-    - name: Start systemd service
+    - name: Optimize application
+      command: "{{ item }}"
       become: yes
+      args:
+        chdir: "{{ application_root }}/{{ application_name }}"
+      loop:
+        - "php artisan config:clear"
+        - "php artisan config:cache"
+        - "php artisan route:clear"
+        - "php artisan route:cache"
+        - "php artisan view:clear"
+        - "php artisan view:cache"
+      environment:
+        APP_KEY: "{{ toils_app_key }}"
+        MAIL_HOST: "{{ toils_mail_host }}"
+        MAIL_USERNAME: "{{ toils_mail_username }}"
+        MAIL_PASSWORD: "{{ toils_mail_password }}"
+        MAIL_FROM_NAME: "{{ application_name }}"
+        MAIL_FROM_ADDRESS: "{{ toils_mail_from_address }}"
+        APP_URL: "{{ toils_app_url }}"
+
+  handlers:
+    - name: Restart PHP-FPM
+      become: true
       systemd:
-        daemon_reload: yes
-        enabled: yes
-        masked: no
-        name: "{{ application_name }}"
-        state: started
-
-    # - name: Build production container image
-    #   local_action:
-    #     module: make
-    #     chdir: "{{ playbook_dir }}/../"
-    #     target: image
-
-    # - name: Stop service
-    #   systemd:
-    #     scope: user
-    #     name: "{{ application_name }}"
-    #     state: stopped
+        name: php7.3-fpm.service
+        state: restarted
+    - name: Restart Nginx
+      become: true
+      systemd:
+        name: nginx.service
+        state: restarted
