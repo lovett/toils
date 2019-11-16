@@ -5,10 +5,10 @@ listen = /run/php/toils.sock
 listen.owner = www-data
 listen.group = www-data
 pm = dynamic
-pm.max_children = 5
-pm.start_servers = 2
-pm.min_spare_servers = 1
-pm.max_spare_servers = 3
+pm.max_children = 10
+pm.start_servers = 3
+pm.min_spare_servers = 3
+pm.max_spare_servers = 6
 php_admin_value[upload_max_filesize] = 50M
 php_admin_value[post_max_size] = 60M
 
