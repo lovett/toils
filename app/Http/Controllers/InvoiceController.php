@@ -198,7 +198,7 @@ class InvoiceController extends Controller
         $invoice = $request->user()->invoice($id);
 
         $viewVars = [
-            'projects' => $request->user()->projectsForMenu(),
+            'projects' => $request->user()->projectsForMenu(null, $invoice->project_id),
             'model' => $invoice,
             'pageTitle' => "Edit Invoice {$invoice->number}",
             'submission_method' => 'PUT',
