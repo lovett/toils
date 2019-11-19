@@ -18,7 +18,7 @@ return [
       |
     */
 
-    'driver' => env('MAIL_DRIVER', 'smtp'),
+    'driver' => env('MAIL_DRIVER', 'sendmail'),
 
     /*
       |--------------------------------------------------------------------------
@@ -59,7 +59,7 @@ return [
 
     'from' => [
         'address' => env('MAIL_FROM_ADDRESS'),
-        'name' => env('MAIL_FROM_NAME', env('APP_NAME')),
+        'name' => env('MAIL_FROM_NAME', 'Toils'),
     ],
 
     /*

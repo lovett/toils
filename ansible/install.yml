@@ -115,10 +115,6 @@
         - "php artisan view:cache"
       environment:
         APP_KEY: "{{ toils_app_key }}"
-        MAIL_HOST: "{{ toils_mail_host }}"
-        MAIL_USERNAME: "{{ toils_mail_username }}"
-        MAIL_PASSWORD: "{{ toils_mail_password }}"
-        MAIL_FROM_NAME: "{{ application_name }}"
         MAIL_FROM_ADDRESS: "{{ toils_mail_from_address }}"
         APP_URL: "{{ toils_app_url }}"
 
