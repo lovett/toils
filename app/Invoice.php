@@ -194,7 +194,7 @@ class Invoice extends Model
         );
 
         if (in_array('projects', $joinedTables) === false) {
-            $builder = $builder->join('projects', 'times.project_id', '=', 'projects.id');
+            $builder = $builder->join('projects', 'invoices.project_id', '=', 'projects.id');
         }
 
         $builder = $builder->leftJoin(
