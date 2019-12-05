@@ -1,3 +1,4 @@
+--ignore-dir=build
 --ignore-dir=storage
 --ignore-dir=vendor
 --ignore-dir=cache
