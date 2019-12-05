@@ -1,0 +1,12 @@
+[Unit]
+Description=Toils Maintenance
+
+[Service]
+Type=exec
+ExecStart=/usr/bin/find /var/{{ application_name}}/logs . -maxdepth 1 -mtime +7 -type f -exec /bin/rm {} \;
+StandardOutput=null
+Restart=no
+
+# Local Variables:
+# mode: conf
+# End:

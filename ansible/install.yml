@@ -118,14 +118,39 @@
         MAIL_FROM_ADDRESS: "{{ toils_mail_from_address }}"
         APP_URL: "{{ toils_app_url }}"
 
+    - name: Install maintenance service
+      become: yes
+      template:
+        src: "templates/toils-maintenance-service.j2"
+        dest: "/etc/systemd/system/toils-maintenance.service"
+      notify: Reload Systemd
+
+    - name: Install maintenance timer
+      become: yes
+      template:
+        src: "templates/toils-maintenance-timer.j2"
+        dest: "/etc/systemd/system/toils-maintenance.timer"
+      notify: Reload Systemd
+
+    - name: Enable maintenance timer
+      become: yes
+      systemd:
+        name: "toils-maintenance.timer"
+        state: started
+        enabled: yes
+
   handlers:
     - name: Restart PHP-FPM
-      become: true
+      become: yes
       systemd:
         name: php7.3-fpm.service
         state: restarted
     - name: Restart Nginx
-      become: true
+      become: yes
       systemd:
         name: nginx.service
         state: restarted
+    - name: Reload Systemd
+      become: yes
+      systemd:
+        daemon_reload: yes

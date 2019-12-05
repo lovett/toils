@@ -1,0 +1,15 @@
+[Unit]
+Description=Toils Maintenance Timer
+
+[Timer]
+# Nightly at 3:01 AM
+OnCalendar=03:01:00
+
+Persistent=false
+
+[Install]
+WantedBy=timers.target
+
+# Local Variables:
+# mode: conf
+# End:
