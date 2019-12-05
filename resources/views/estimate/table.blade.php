@@ -17,7 +17,7 @@
         @foreach ($collection as $estimate)
             <tr>
                 <td>
-                    <a href="{{ route('estimate.edit', ['record' => $estimate]) }}">
+                    <a href="{{ route('estimate.edit', $estimate) }}">
                         {{ $estimate->name }}
                     </a>
                     <a href="{{ route('estimate.show', $estimate) }}" target="_blank">
@@ -33,7 +33,7 @@
                 @unless(Route::is('client.show'))
                 <td>
                     @if ($estimate->clientId)
-                        <a href="{{ route('client.show', ['record' => $estimate->clientId]) }}">
+                        <a href="{{ route('client.show', $estimate->clientId) }}">
                             {{ $estimate->clientName }}
                         </a>
                     @else
