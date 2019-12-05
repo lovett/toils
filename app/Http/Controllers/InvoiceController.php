@@ -155,7 +155,7 @@ class InvoiceController extends Controller
 
         MessagingHelper::flashCreated("invoice #{$invoice->number}");
 
-        return redirect()->route('invoice.index', [$invoice->id]);
+        return redirect()->intended();
     }
 
     /**
@@ -236,7 +236,7 @@ class InvoiceController extends Controller
 
         MessagingHelper::flashUpdated("invoice #{$invoice->number}");
 
-        return redirect()->route('invoice.index', [$invoice->id]);
+        return redirect()->intended();
     }
 
     /**
@@ -257,7 +257,7 @@ class InvoiceController extends Controller
 
         MessagingHelper::flashDeleted("invoice #{$invoice->number}");
 
-        return redirect()->route('invoice.index');
+        return redirect()->intended();
     }
 
     /**

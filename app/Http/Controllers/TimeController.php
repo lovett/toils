@@ -146,9 +146,7 @@ class TimeController extends Controller
 
         MessagingHelper::flashCreated('the time entry');
 
-        return redirect()->route(
-            'time.index'
-        );
+        return redirect()->intended();
     }
 
     /**
@@ -199,9 +197,7 @@ class TimeController extends Controller
 
         MessagingHelper::flashUpdated('the time entry');
 
-        return redirect()->route(
-            'time.index'
-        );
+        return redirect()->intended();
     }
 
     /**
@@ -218,7 +214,7 @@ class TimeController extends Controller
 
         MessagingHelper::flashDeleted('the time entry');
 
-        return redirect()->route('time.index');
+        return redirect()->intended();
     }
 
     /**
