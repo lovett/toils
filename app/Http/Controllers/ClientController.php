@@ -226,7 +226,7 @@ class ClientController extends Controller
      */
     public function update(ClientRequest $request, int $id)
     {
-        $client = $request->user()->client($id);
+        $client = $request->user()->client($id)->firstOrFail();
 
         $client->update($request->all());
 
@@ -246,9 +246,9 @@ class ClientController extends Controller
      *
      * @return RedirectResponse
      */
-    public function destroy(ClientRequest $request, int $id)
+    public function destroy(Request $request, int $id)
     {
-        $client = $request->user()->client($id);
+        $client = $request->user()->client($id)->firstOrFail();
 
         $client->delete();
 
