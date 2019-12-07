@@ -40,10 +40,6 @@ class AppServiceProvider extends ServiceProvider
         Project::observe(ProjectObserver::class);
         Time::observe(TimeObserver::class);
         User::observe(UserObserver::class);
-
-        Blade::if('notempty', function ($value) {
-            return empty($value) === false;
-        });
     }
 
     /**
