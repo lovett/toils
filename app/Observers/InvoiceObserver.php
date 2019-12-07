@@ -35,16 +35,7 @@ class InvoiceObserver
      */
     public function deleted(Invoice $invoice)
     {
-        $affectedRows = Time::forInvoice($invoice)->update(['invoice_id' => null]);
-
-        $message = sprintf(
-            'Released %d time entries from deleted invoice %s',
-            $affectedRows,
-            $invoice->id
-        );
-
-        Log::debug($message);
-
+        $invoice->time()->update(['invoice_id' => null]);
         $invoice->trashReceipt();
     }
 

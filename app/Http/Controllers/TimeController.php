@@ -210,7 +210,11 @@ class TimeController extends Controller
      */
     public function destroy(Request $request, int $id)
     {
-        $request->user()->time()->where('id', $id)->delete();
+        $time = $request->user()->time()->where('id', $id)->firstOrFail();
+
+        $time->tags()->detach();
+
+        $time->delete();
 
         MessagingHelper::flashDeleted('the time entry');
 

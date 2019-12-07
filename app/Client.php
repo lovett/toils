@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
+use App\Traits\Prune;
 use App\Traits\Search;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
@@ -19,7 +20,7 @@ use Carbon\CarbonInterface;
  */
 class Client extends Model
 {
-    use SoftDeletes, Search;
+    use SoftDeletes, Search, Prune;
 
     /**
      * Default values for newly-created instances.

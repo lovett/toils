@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Carbon\Carbon;
+use App\Traits\Prune;
 use App\Traits\Search;
 use App\Invoice;
 use stdClass;
@@ -22,7 +23,7 @@ use InvalidArgumentException;
  */
 class Time extends Model
 {
-    use SoftDeletes, Search;
+    use SoftDeletes, Search, Prune;
 
     /**
      * Default values for newly-created instances.

@@ -206,7 +206,7 @@ class EstimateController extends Controller
      */
     public function destroy(Request $request, int $id)
     {
-        $estimate = $request->user()->estimate($id);
+        $estimate = $request->user()->estimate($id)->firstOrFail();
 
         $estimate->delete();
 

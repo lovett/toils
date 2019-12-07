@@ -2,8 +2,10 @@
 Description=Toils Maintenance
 
 [Service]
-Type=exec
-ExecStart=/usr/bin/find /var/{{ application_name}}/logs . -maxdepth 1 -mtime +7 -type f -exec /bin/rm {} \;
+Type=oneshot
+WorkingDirectory={{ application_root}/{{ application_name }}
+ExecStart=/usr/bin/find storage/logs . -maxdepth 1 -mtime +7 -type f -exec /bin/rm {} \;
+ExecStart=/usr/bin/php artisan maintenance:prune
 StandardOutput=null
 Restart=no
 

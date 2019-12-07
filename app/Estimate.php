@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Traits\Prune;
 use App\Traits\Search;
 
 /**
@@ -17,7 +18,7 @@ use App\Traits\Search;
  */
 class Estimate extends Model
 {
-    use SoftDeletes, Search;
+    use SoftDeletes, Search, Prune;
 
     /**
      * Default values for newly-created instances.

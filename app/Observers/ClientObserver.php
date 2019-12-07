@@ -32,4 +32,29 @@ class ClientObserver
             $client->projects()->update(['active' => false]);
         }
     }
+
+    /**
+     * Delete child records so that the database can be pruned.
+     *
+     * This is roughly equivalent to having "ON DELETE CASCADE" in the
+     * database schema, but handled at the application layer instead
+     * for flexibility and to consolidate logic in one place.
+     *
+     * Deletion order is significant. Time and invoice relations depend
+     * on a working project relation.
+     *
+     * @param Client $client A client instance.
+     */
+    public function deleted(Client $client)
+    {
+        $client->time()->delete();
+        $client->invoices()->delete();
+
+        $client->projects()->delete();
+
+        // Deletes from client_user table.
+        $client->users()->detach();
+
+        $client->estimates()->update(['client_id' => null]);
+    }
 }

@@ -8,14 +8,17 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\AsMenu;
+use App\Traits\Prune;
+use App\Traits\Search;
 
 /**
  * Eloquent model for the user table.
  */
 class User extends Authenticatable
 {
-    use Notifiable, AsMenu;
+    use Notifiable, AsMenu, SoftDeletes, Prune;
 
     /**
      * Default values for newly-created instances.
@@ -59,6 +62,7 @@ class User extends Authenticatable
      */
     protected $dates = [
         'created_at',
+        'deleted_at',
         'updated_at',
     ];
 
