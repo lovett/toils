@@ -59,18 +59,18 @@ class InvoiceObserver
     public function saved(Invoice $invoice)
     {
         DB::transaction(function () use ($invoice) {
-            $detachedRows = Time::forInvoice($invoice)->update(['invoice_id' => null]);
+            $detachedRowCount = $invoice->time()->update(['invoice_id' => null]);
 
             $times = Time::whereBetween('start', [$invoice->start, $invoice->end]);
             $times->where('project_id', $invoice->project_id);
             $times->whereNull('invoice_id');
-            $attachedRows = $times->update(['invoice_id' => $invoice->getKey()]);
+            $attachedRowCount = $times->update(['invoice_id' => $invoice->getKey()]);
             DB::commit();
 
             $message = sprintf(
                 'Detached %d time entries and attached %d to saved invoice %s',
-                $detachedRows,
-                $attachedRows,
+                $detachedRowCount,
+                $attachedRowCount,
                 $invoice->id
             );
 
