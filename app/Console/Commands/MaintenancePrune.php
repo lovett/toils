@@ -14,7 +14,7 @@ use App\User;
 /**
  * Permanently delete soft-deleted records.
  */
-class Prune extends Command
+class MaintenancePrune extends Command
 {
 
     /**
