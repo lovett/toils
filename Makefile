@@ -22,10 +22,18 @@ lint: dummy
 	php artisan code:analyse
 
 # Install NPM packages quietly.
+#
+# Warnings about fsevents are filtered because they are irrelevant.
+#
+# A warning about jquery being an unmet peer dependency of bootstrap
+# is ignored because jQuery is deliberately not being used.
+#
+# Auditing is disabled because it isn't useful for the purposes of
+# this project.
 setup-js: export NPM_CONFIG_PROGRESS=false
 setup-js: export NO_UPDATE_NOTIFIER=1
 setup-js:
-	npm install
+	npm --no-audit install 2>&1 | grep -v fsevents | grep -v "peer of jquery"
 
 # Install Composer packages quietly based on composer.lock
 setup-php:
