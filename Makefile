@@ -101,15 +101,20 @@ workspace:
 
 
 # Install the application on the production host via Ansible
-install:
+#
+# The archive is only deleted if the installation succeeds so that
+# the tar file isn't recreated unnecessarily.
+install: toils.tar.gz
 	ansible-playbook ansible/install.yml
+	rm toils.tar.gz
 
 
 # Build the application in preparation for a production deployment
-build: export DISABLE_OPENCOLLECTIVE=true
-build: export COMPOSER_NO_INTERACTION=1
-build: dummy
-	rm -f toils.tar.gz
+#
+# Normally invoked from the install target, not directly.
+toils.tar.gz: export DISABLE_OPENCOLLECTIVE=true
+toils.tar.gz: export COMPOSER_NO_INTERACTION=1
+toils.tar.gz:
 	rsync -a --cvs-exclude \
 	--delete \
 	--exclude=.ac-php-conf.json \
@@ -131,13 +136,11 @@ build: dummy
 	--exclude=Makefile \
 	--exclude=server.php \
 	--exclude=*.sqlite \
-	--exclude=.tar \
 	./ build
 	cd build && mkdir -p storage/framework/views
 	cd build && touch storage/$(SQLITE_DB_NAME)
 	cd build && npm ci && npm run production
 	cd build && composer install --no-dev --no-suggest --quiet --classmap-authoritative
-	cd build && rm composer.lock composer.json package.json package-lock.json webpack.mix.js
 	tar --create --gzip --file=toils.tar.gz --exclude=node_modules --exclude=storage --transform s/build/toils/ build
 
 # Generate a favicon with multiple sizes.

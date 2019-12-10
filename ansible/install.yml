@@ -9,12 +9,6 @@
     nginx_vhost_path: "/etc/nginx/sites-available/{{ application_name }}"
 
   tasks:
-    - name: Build application
-      local_action:
-        module: make
-        chdir: "{{ playbook_dir }}/../"
-        target: build
-
     - name: Install system packages
       become: true
       apt:
@@ -107,32 +101,26 @@
       args:
         chdir: "{{ application_root }}/{{ application_name }}"
       loop:
-        - "php artisan config:clear"
         - "php artisan config:cache"
-        - "php artisan route:clear"
         - "php artisan route:cache"
-        - "php artisan view:clear"
         - "php artisan view:cache"
       environment:
         APP_KEY: "{{ toils_app_key }}"
         MAIL_FROM_ADDRESS: "{{ toils_mail_from_address }}"
         APP_URL: "{{ toils_app_url }}"
 
-    - name: Install maintenance service
+    - name: Install systemd maintenance service
       become: yes
       template:
-        src: "templates/toils-maintenance-service.j2"
-        dest: "/etc/systemd/system/toils-maintenance.service"
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+      loop:
+        - { src: "templates/toils-maintenance-service.j2", dest: "/etc/systemd/system/toils-maintenance.service" }
+        - { src: "templates/toils-maintenance-timer.j2", dest: "/etc/systemd/system/toils-maintenance.timer" }
+
       notify: Reload Systemd
 
-    - name: Install maintenance timer
-      become: yes
-      template:
-        src: "templates/toils-maintenance-timer.j2"
-        dest: "/etc/systemd/system/toils-maintenance.timer"
-      notify: Reload Systemd
-
-    - name: Enable maintenance timer
+    - name: Enable systemd maintenance timer
       become: yes
       systemd:
         name: "toils-maintenance.timer"

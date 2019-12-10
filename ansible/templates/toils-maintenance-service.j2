@@ -3,7 +3,7 @@ Description=Toils Maintenance
 
 [Service]
 Type=oneshot
-WorkingDirectory={{ application_root}/{{ application_name }}
+WorkingDirectory={{ application_root }}/{{ application_name }}
 ExecStart=/usr/bin/php artisan maintenance:sweep
 ExecStart=/usr/bin/php artisan maintenance:prune
 StandardOutput=null
