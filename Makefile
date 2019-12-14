@@ -54,18 +54,12 @@ outdated-php:
 # Check for all out-of-date packages
 outdated: outdated-php outdated-js
 
-# Install newly updated npm packages.
-update-js: export NO_UPDATE_NOTIFIER=1
-update-js: export DISABLE_OPENCOLLECTIVE=true
-update-js:
-	npm install
-
 # Install newly updated composer packages and update composer.lock
 update-php:
 	composer update
 
 # Update all packages quietly
-update: update-php update-js
+update: update-php setup-js
 
 # Create a package upgrade commit.
 #
