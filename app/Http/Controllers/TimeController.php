@@ -212,8 +212,6 @@ class TimeController extends Controller
     {
         $time = $request->user()->time()->where('id', $id)->firstOrFail();
 
-        $time->tags()->detach();
-
         $time->delete();
 
         MessagingHelper::flashDeleted('the time entry');
