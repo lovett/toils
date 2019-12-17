@@ -29,13 +29,13 @@
                             </h5>
                             <p>{{ TimeHelper::hoursAndMinutes($project->unbilledTime) }}</p>
 
-                            <div>
-                                <a href="{{ route('time.create', ['project' => $project->id]) }}">
-                                    time
-                                </a>
-                                <a href="{{ route('invoice.create', ['project' => $project->id]) }}">
-                                    invoice
-                                </a>
+                            <div class="d-flex">
+                                <a class="btn btn-secondary btn-sm"
+                                   href="{{ route('time.create', ['project' => $project->id]) }}"
+                                >time</a>
+                                <a class="btn btn-secondary btn-sm mx-2"
+                                   href="{{ route('invoice.create', ['project' => $project->id]) }}"
+                                >invoice</a>
                             </div>
                         </div>
 
