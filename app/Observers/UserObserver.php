@@ -23,7 +23,5 @@ class UserObserver
     public function deleted(User $user)
     {
         $user->time()->delete();
-        $user->clients()->detach();
-        $user->estimates()->detach();
     }
 }

@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Traits\Prune;
 use App\Traits\Search;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
@@ -19,7 +18,7 @@ use Carbon\CarbonInterface;
  */
 class Project extends Model
 {
-    use SoftDeletes, Search, Prune;
+    use SoftDeletes, Search;
 
     /**
      * Default values for newly-created instances.

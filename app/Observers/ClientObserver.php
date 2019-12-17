@@ -52,9 +52,6 @@ class ClientObserver
 
         $client->projects()->delete();
 
-        // Deletes from client_user table.
-        $client->users()->detach();
-
         $client->estimates()->update(['client_id' => null]);
     }
 }

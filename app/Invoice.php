@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
-use App\Traits\Prune;
 use App\Traits\Search;
 use App\Time;
 use App\Client;
@@ -27,7 +26,7 @@ use Illuminate\Support\Facades\Storage;
  */
 class Invoice extends Model
 {
-    use SoftDeletes, Search, Prune;
+    use SoftDeletes, Search;
 
     /**
      * Default values for newly-created instances.

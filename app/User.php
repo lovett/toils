@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\AsMenu;
-use App\Traits\Prune;
 use App\Traits\Search;
 
 /**
@@ -18,7 +17,7 @@ use App\Traits\Search;
  */
 class User extends Authenticatable
 {
-    use Notifiable, AsMenu, SoftDeletes, Prune;
+    use Notifiable, AsMenu, SoftDeletes;
 
     /**
      * Default values for newly-created instances.

@@ -50,19 +50,4 @@ class TimeObserver
             $time->invoice_id = $invoice->id;
         }
     }
-
-    /**
-     * Delete child records so that the database can be pruned.
-     *
-     * This is equivalent to having "ON DELETE CASCADE" in the
-     * database schema, but handled at the application layer instead
-     * for flexibility and to consolidate logic in one place.
-     *
-     * @param Time $time A time instance.
-     */
-    public function deleted(Time $time)
-    {
-        // Deletes from taggables table.
-        $time->tags()->delete();
-    }
 }
