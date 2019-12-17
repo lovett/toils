@@ -47,7 +47,7 @@ class TimeRequest extends FormRequest
             'start' => 'required|date_format:Y-m-d',
             'startTime' => 'required|date_format:g:i A',
             'endTime' => 'nullable|date_format:g:i A',
-            'summary' => 'required',
+            'summary' => 'nullable',
             'tags' => 'nullable|string',
         ];
     }

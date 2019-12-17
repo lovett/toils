@@ -58,7 +58,11 @@
                 @endunless
 
                 <td>
-                    {{ str_limit($time->summary, 75) }}
+                    @if ($time->summary)
+                        {{ str_limit($time->summary, 75) }}
+                    @else
+                        <em>No summary.</em>
+                    @endif
 
                     @if (count($time->tags) > 0)
                         <p>
