@@ -31,9 +31,10 @@ lint: dummy
 # Auditing is disabled because it isn't useful for the purposes of
 # this project.
 setup-js: export NPM_CONFIG_PROGRESS=false
-setup-js: export NO_UPDATE_NOTIFIER=1
 setup-js:
-	npm --no-audit install 2>&1 | grep -v fsevents | grep -v "peer of jquery"
+	npm --no-update-notifier --no-audit --no-fund install 2>&1 \
+	| grep -v fsevents \
+	| grep -v "peer of jquery"
 
 # Install Composer packages quietly based on composer.lock
 setup-php:
@@ -43,9 +44,8 @@ setup-php:
 setup: setup-php setup-js .env
 
 # Check for out-of-date npm packages
-outdated-js: export NO_UPDATE_NOTIFIER=1
 outdated-js:
-	npm outdated || true
+	npm --no-update-notifier outdated || true
 
 # Check for out-of-date composer packages
 outdated-php:
