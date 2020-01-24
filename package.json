@@ -10,13 +10,13 @@
         "production": "NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
     },
     "devDependencies": {
-        "axios": "0.19.1",
+        "axios": "0.19.2",
         "bootstrap-vue": "2.2.2",
         "laravel-mix": "5.0.1",
         "moment": "2.24.0",
-        "popper.js": "1.16.0",
+        "@popperjs/core": "2.0.0",
         "resolve-url-loader": "3.1.1",
-        "sass": "1.24.5",
+        "sass": "1.25.0",
         "sass-loader": "8.0.2",
         "vue": "2.6.11",
         "vue-template-compiler": "2.6.11"
