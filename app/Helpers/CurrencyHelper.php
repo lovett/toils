@@ -1,6 +1,9 @@
 <?php
 namespace App\Helpers;
 
+use Locale;
+use NumberFormatter;
+
 /**
  * Helper functions for displaying currency values.
  */
@@ -21,7 +24,12 @@ class CurrencyHelper
             return '';
         }
 
-        return money_format('%.2n', $value);
+        $fmt = new NumberFormatter(
+            Locale::getDefault(),
+            NumberFormatter::CURRENCY
+        );
+
+        return $fmt->formatCurrency($value, 'USD');
     }
 
     /**
@@ -37,6 +45,12 @@ class CurrencyHelper
             return '';
         }
 
-        return money_format('%.0n', $value);
+        $fmt = new NumberFormatter(
+            Locale::getDefault(),
+            NumberFormatter::CURRENCY
+        );
+
+        $fmt->setAttribute(NumberFormatter::FRACTION_DIGITS, 0);
+        return $fmt->formatCurrency($value, 'USD');
     }
 }

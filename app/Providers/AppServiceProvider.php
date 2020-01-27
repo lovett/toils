@@ -32,8 +32,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        setlocale(LC_MONETARY, 'en_US.UTF-8');
-
         Invoice::observe(InvoiceObserver::class);
         Client::observe(ClientObserver::class);
         Estimate::observe(EstimateObserver::class);

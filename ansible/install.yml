@@ -15,6 +15,7 @@
         name:
           - php-bcmath
           - php-fpm
+          - php-intl
           - php-json
           - php-mbstring
           - php-sqlite3
