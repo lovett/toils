@@ -71,11 +71,11 @@ puc: dummy
 
 workspace:
 # 0: Editor
-	tmux new-session -d -s "$(PROJECT_NAME)" bash
+	tmux new-session -d -s "$(PROJECT_NAME)" "$$SHELL"
 	tmux send-keys -t "$(PROJECT_NAME)" "$(EDITOR) ." C-m
 
 # 1: Shell
-	tmux new-window -a -t "$(PROJECT_NAME)" bash
+	tmux new-window -a -t "$(PROJECT_NAME)" "$$SHELL"
 
 # 2: Webpack
 	tmux new-window -a -t "$(PROJECT_NAME)" -n "webpack" "npm run watch"
