@@ -11,7 +11,7 @@
     },
     "devDependencies": {
         "axios": "0.19.2",
-        "bootstrap-vue": "2.4.1",
+        "bootstrap-vue": "2.5.0",
         "laravel-mix": "5.0.1",
         "moment": "2.24.0",
         "@popperjs/core": "2.0.6",
