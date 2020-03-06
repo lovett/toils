@@ -22,19 +22,8 @@ lint: dummy
 	php artisan code:analyse
 
 # Install NPM packages quietly.
-#
-# Warnings about fsevents are filtered because they are irrelevant.
-#
-# A warning about jquery being an unmet peer dependency of bootstrap
-# is ignored because jQuery is deliberately not being used.
-#
-# Auditing is disabled because it isn't useful for the purposes of
-# this project.
-setup-js: export NPM_CONFIG_PROGRESS=false
 setup-js:
-	npm --no-update-notifier --no-audit --no-fund install 2>&1 \
-	| grep -v fsevents \
-	| grep -v "peer of jquery"
+	DISABLE_OPENCOLLECTIVE=1 npm install
 
 # Install Composer packages quietly based on composer.lock
 setup-php:
@@ -45,7 +34,7 @@ setup: setup-php setup-js .env
 
 # Check for out-of-date npm packages
 outdated-js:
-	npm --no-update-notifier outdated || true
+	-npm outdated
 
 # Check for out-of-date composer packages
 outdated-php:
@@ -106,7 +95,7 @@ install: toils.tar.gz
 # Build the application in preparation for a production deployment
 #
 # Normally invoked from the install target, not directly.
-toils.tar.gz: export DISABLE_OPENCOLLECTIVE=true
+toils.tar.gz: export DISABLE_OPENCOLLECTIVE=1
 toils.tar.gz: export COMPOSER_NO_INTERACTION=1
 toils.tar.gz:
 	rsync -a --cvs-exclude \
