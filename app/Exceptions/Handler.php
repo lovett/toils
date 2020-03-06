@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Throwable;
 
 /**
  * Standard Laravel exception handler.
@@ -33,11 +34,11 @@ class Handler extends ExceptionHandler
     /**
      * Report or log an exception.
      *
-     * @param Exception $exception An exception instance
+     * @param Throwable $exception An exception instance
      *
      * @return void
      */
-    public function report(Exception $exception)
+    public function report(Throwable $exception)
     {
         parent::report($exception);
     }
@@ -46,11 +47,11 @@ class Handler extends ExceptionHandler
      * Render an exception into an HTTP response.
      *
      * @param Request   $request   The incoming request
-     * @param Exception $exception An exception instance
+     * @param Throwable $exception An exception instance
      *
      * @return Response
      */
-    public function render($request, Exception $exception)
+    public function render($request, Throwable $exception)
     {
         return parent::render($request, $exception);
     }

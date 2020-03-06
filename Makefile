@@ -38,7 +38,7 @@ setup-js:
 
 # Install Composer packages quietly based on composer.lock
 setup-php:
-	composer --no-interaction --no-ansi --no-suggest install
+	composer --no-interaction --no-ansi --no-suggest --no-progress install
 
 # Install all packages quietly.
 setup: setup-php setup-js .env
@@ -56,7 +56,7 @@ outdated: outdated-php outdated-js
 
 # Install newly updated composer packages and update composer.lock
 update-php:
-	composer update
+	composer --no-progress update
 
 # Update all packages quietly
 update: update-php setup-js
@@ -134,7 +134,7 @@ toils.tar.gz:
 	cd build && mkdir -p storage/framework/views
 	cd build && touch storage/$(SQLITE_DB_NAME)
 	cd build && npm ci && npm run production
-	cd build && composer install --no-dev --no-suggest --quiet --classmap-authoritative
+	cd build && composer install --no-dev --no-suggest --quiet --classmap-authoritative --no-progress
 	tar --create --gzip --file=toils.tar.gz --exclude=node_modules --exclude=storage --transform s/build/toils/ build
 
 # Generate a favicon with multiple sizes.
