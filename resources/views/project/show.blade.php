@@ -11,9 +11,13 @@
                 <li class="list-group-item">
                     @include('partials.billable', ['value' => $project->billable])
                 </li>
+
+                @if ($project->billable)
                 <li class="list-group-item">
                     @include('partials.taxable', ['value' => $project->taxable])
                 </li>
+                @endif
+
                 <li class="list-group-item">
                     @include('partials.edit', ['value' => 'edit', 'route' => 'project.edit', 'parameters' => ['project' => $project->id]])
                 </li>
@@ -44,8 +48,10 @@
 		                    <dt>Client</dt>
 		                    <dd>{!! link_to_route('client.show', $project->client->name, ['client' => $project->client]) !!}</dd>
 
+                            @if ($project->billable)
 		                    <dt>Billable Time</dt>
 		                    <dd>{{ TimeHelper::hoursAndMinutes($stats['billable_minutes']) }}</dd>
+                            @endif
 
 		                    <dt>Unbillable Time</dt>
 		                    <dd>{{ TimeHelper::hoursAndMinutes($stats['unbillable_minutes']) }}</dd>
