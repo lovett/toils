@@ -43,12 +43,13 @@ class TimeRequest extends FormRequest
     {
         return [
             'estimatedDuration' => 'nullable|integer',
-            'project_id' => 'required|exists:projects,id',
+            'project_id' => 'required|integer|exists:projects,id',
             'start' => 'required|date_format:Y-m-d',
             'startTime' => 'required|date_format:g:i A',
             'endTime' => 'nullable|date_format:g:i A',
             'summary' => 'nullable',
             'tags' => 'nullable|string',
+            'billable' => 'boolean'
         ];
     }
 
@@ -102,7 +103,11 @@ class TimeRequest extends FormRequest
                 $validator->errors()->add('endTime', 'This is a duration of over 12 hours.');
             }
 
+            $fields['billable'] = (bool) $this->input('billable');
+
             $fields['project_id'] = (int) $this->input('project_id');
+
+            $fields['estimatedDuration'] = (int) $this->input('estimatedDuration');
 
             $this->merge($fields);
         });

@@ -136,8 +136,9 @@ class TimeController extends Controller
     {
         $time = new Time();
 
-        $time->project_id        = (int) $request->project_id;
-        $time->estimatedDuration = (int) $request->estimatedDuration;
+        $time->project_id        = $request->project_id;
+        $time->billable          = $request->billable;
+        $time->estimatedDuration = $request->estimatedDuration;
         $time->start             = $request->start;
         $time->end               = $request->end;
         $time->summary           = $request->summary;
