@@ -12,7 +12,7 @@
         @isset($pickable)
         <pickable
             name="{{ $name }}"
-            groups="{{ implode($pickable, ',') }}"
+            groups="{{ implode(',', $pickable) }}"
             initial-value="{{ old($name, TimeHelper::date($model->$name)) }}"
             @isset($autofill)
             v-bind:suggested-value="suggested{{ ucfirst($name) }}"

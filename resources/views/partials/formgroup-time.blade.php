@@ -20,7 +20,7 @@
         <pickable
             name="{{ $fieldName }}"
             format="h:mm A"
-            groups="{{ implode($pickable, ',') }}"
+            groups="{{ implode(',', $pickable) }}"
             initial-value="{{ old($fieldName, TimeHelper::time($model->$name)) }}"
             @isset($autofill)
             v-bind:suggested-value="suggested{{ ucfirst($fieldName) }}"
