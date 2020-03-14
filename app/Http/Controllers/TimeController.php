@@ -118,6 +118,7 @@ class TimeController extends Controller
             'submission_route' => 'time.store',
             'submission_method' => 'POST',
             'projects' => $projects,
+            'projectIsReadOnly' => $projectId !== null,
             'client' => $client,
         ];
 
@@ -171,6 +172,7 @@ class TimeController extends Controller
                 $time->id,
             ],
             'submission_method' => 'PUT',
+            'projectIsReadOnly' => false,
         ];
 
         return view('time.form', $viewVars);
