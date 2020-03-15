@@ -456,6 +456,14 @@ class Time extends Model
 
         $suggestion = new stdClass();
 
+        $suggestion->hideables = '';
+        $suggestion->settables = ['billable' => true];
+
+        if ($this->project->billable === false) {
+            $suggestion->hideables .= 'billable';
+            $suggestion->settables['billable'] = false;
+        }
+
         $suggestion->previous = [
             'estimatedDuration' => $this->estimatedDuration,
             'start' => TimeHelper::date($this->start),

@@ -24,8 +24,8 @@
             // returned by the endpoint. For each name, two data keys will be
             // created: previous and suggested.
             fields: {
-                type: String,
-                default: ''
+                type: Object,
+                default: {}
             },
 
             // The endpoint that will provide autofill values.
@@ -36,6 +36,8 @@
         },
 
         data: function () {
+            let data = {};
+
             // Convert the fields prop into a blank object.
             //
             // Each field name becomes a pair of camel-cased keys: the previous
@@ -44,15 +46,16 @@
             // Ensuring they exist gives child Pickable and AutofillHint components
             // something to bind to, so that the values can pass down to them once
             // a fetch has happened.
-            const data = this.fields.split(/\s+/).reduce(function (acc, field) {
+            for (let [key, value] of Object.entries(this.fields)) {
                 // Get the field name ready for camel casing.
-                const capitalizedName = field[0].toUpperCase() + field.substring(1);
+                const capitalizedName = key[0].toUpperCase() + key.substring(1);
 
-                acc['suggested' + capitalizedName] = null;
-                acc['previous' + capitalizedName] = null;
+                data[key] = value;
+                data['suggested' + capitalizedName] = null;
+                data['previous' + capitalizedName] = null;
+            };
 
-                return acc;
-            }, {});
+            data['hideables'] = '';
 
             return data;
         },
@@ -75,6 +78,7 @@
                 return;
             }
 
+
             this.$refs.autofillTrigger.dispatchEvent(new Event('change'));
         },
 
@@ -96,6 +100,17 @@
                             self[dataKey] = jsonGroup[jsonKey];
                         });
                     });
+
+                    if (jsonResponse.hasOwnProperty('settables')) {
+                        Object.keys(jsonResponse.settables).forEach(function (jsonKey) {
+                            self[jsonKey] = jsonResponse.settables[jsonKey];
+                        });
+                    }
+
+                    if (jsonResponse.hasOwnProperty('hideables')) {
+                        self.hideables = jsonResponse['hideables'];
+                    }
+
                 }).catch(function () {
                     // Fail silently. Autofilling is a convenience rather than a necessity.
                 });
