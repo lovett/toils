@@ -112,6 +112,11 @@ class TimeController extends Controller
         $time = new Time();
         $time->project_id = $projectId;
 
+        if ($time->project_id !== null) {
+            $project = $request->user()->project($time->project_id)->firstOrFail();
+            $time->billable = $project->billable;
+        }
+
         $viewVars = [
             'pageTitle' => 'New Time Entry',
             'model' => $time,
