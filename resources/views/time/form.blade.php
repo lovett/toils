@@ -30,7 +30,7 @@
                     @include('partials.formgroup-menu', ['name' => 'project_id', 'label' => 'Project', 'items' => $projects, 'selectedItem' => $model->project_id, 'vchange' => 'fetch', 'readonly' => $projectIsReadOnly])
 
                     @include('partials.formgroup-standard', ['name' => 'estimatedDuration', 'label' => 'Time Estimate', 'inlineSuffix' => 'minutes', 'size' => 2, 'autofill' => true])
-                    @include('partials.formgroup-checkbox', ['name' => 'billable', 'label' => 'This entry is billable', 'checked' => $model->billable, 'hideable' => true, 'settable' => true])
+                    @include('partials.formgroup-checkbox', ['name' => 'billable', 'label' => 'Billable', 'field_label' => 'This entry is billable', 'checked' => $model->billable, 'hideable' => true, 'settable' => true])
 
                     @include('partials.formgroup-date', ['name' => 'start', 'label' => 'Date', 'autofill' => true, 'pickable' => ['relday']])
 

@@ -31,7 +31,7 @@
 
                 @include('partials.formgroup-standard', ['name' => 'phone', 'label' => 'Phone'])
 
-                @include('partials.formgroup-checkbox', ['name' => 'active', 'label' => 'This client is active', 'checked' => $model->active])
+                @include('partials.formgroup-checkbox', ['name' => 'active', 'label' => 'Status', 'field_label' => 'This client is active', 'checked' => $model->active])
 
                 @include('partials.save-button')
 

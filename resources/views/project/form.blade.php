@@ -39,19 +39,22 @@
 
                 @include('partials.formgroup-checkbox', [
                     'name' => 'active',
-                    'label' => 'This project is active',
+                    'label' => 'Status',
+                    'field_label' => 'This project is active',
                     'checked' => $model->active
                 ])
 
                 @include('partials.formgroup-checkbox', [
                     'name' => 'billable',
-                    'label' => 'This project is billable',
+                    'label' => null,
+                    'field_label' => 'This project is billable',
                     'checked' => $model->billable
                 ])
 
                 @include('partials.formgroup-checkbox', [
                     'name' => 'taxDeducted',
-                    'label' => 'Tax will be deducted',
+                    'label' => null,
+                    'field_label' => 'Tax will be deducted',
                     'checked' => $model->taxDeducted
                 ])
 

@@ -8,6 +8,7 @@
                 <li class="list-group-item">
                     @include('partials.active', ['value' => $project->active])
                 </li>
+
                 <li class="list-group-item">
                     @include('partials.billable', ['value' => $project->billable])
                 </li>
