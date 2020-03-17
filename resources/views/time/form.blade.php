@@ -15,8 +15,7 @@
                 <autofill
                     inline-template
                     url="{{ route('time.suggestByProject') }}"
-                    v-bind:fields="{estimatedDuration: '', start: '', billable: {{ old('billable', $model->billable) }} }"
-                    v-bind:billable="{{ old('billable', $model->billable) }}"
+                    v-bind:fields="{estimatedDuration: '', start: '', billable: {{ (int) old('billable', $model->billable) }} }"
                     v-bind:autofetch="{{ ($model->project_id > 0)? 'true' : 'false' }}"
                     v-bind:enabled="{{ Route::is('time.edit') ? 'false' : 'true' }}"
                 >
