@@ -83,9 +83,25 @@
         },
 
         methods: {
+            reset: function () {
+                const self = this;
+                Object.keys(self).forEach(function (key) {
+                    if (key.startsWith('previous') || key.startsWith('suggested')) {
+                        self[key] = null;
+                    }
+
+                    self.hideables = '';
+                });
+            },
+
             // Make a request to the endpoint.
             fetch: function (e) {
                 const self = this;
+
+                if (e.target.value === '') {
+                    return this.reset();
+                    return;
+                }
 
                 const fetchUrl = self.url + '/' + e.target.value;
 
