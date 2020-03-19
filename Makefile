@@ -26,7 +26,7 @@ setup-js:
 	DISABLE_OPENCOLLECTIVE=1 npm install
 
 # Install Composer packages quietly based on composer.lock
-setup-php:
+setup-php: storage/toils.sqlite
 	composer --no-interaction --no-ansi --no-suggest --no-progress install
 
 # Install all packages quietly.
@@ -82,6 +82,9 @@ workspace:
 	cp .env.example .env
 	php artisan key:generate
 
+
+storage/toils.sqlite:
+	touch storage/toils.sqlite
 
 # Install the application on the production host via Ansible
 #
