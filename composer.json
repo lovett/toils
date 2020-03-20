@@ -20,9 +20,9 @@
         "fideloper/proxy": "4.3.0",
         "fruitcake/laravel-cors": "1.0.5",
         "guzzlehttp/guzzle": "6.5.2",
-        "laravel/framework": "7.1.2",
+        "laravel/framework": "7.2.1",
         "laravel/helpers": "1.2.0",
-        "laravel/tinker": "2.2.0",
+        "laravel/tinker": "2.3.0",
         "laravel/ui": "2.0.1",
         "laravelcollective/html": "6.1.0"
     },
