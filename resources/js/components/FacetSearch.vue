@@ -7,7 +7,7 @@
             </span>
         </div>
         <ul class="list-inline facets">
-            <li class="list-inline-item">Facets:</li>
+            <li class="list-inline-item">Filters:</li>
             <li class="list-inline-item" v-for="facet in facetList">
                 <a v-on:click="apply(facet)" href="#">{{ facet }}</a>
             </li>

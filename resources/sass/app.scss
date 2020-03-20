@@ -149,6 +149,10 @@ ul.columnwise {
     }
 }
 
+.plain-search {
+    padding-bottom: 2em;
+}
+
 @include media-breakpoint-down(lg) {
     .nav-tabs {
         border-bottom: 0;
