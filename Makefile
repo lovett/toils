@@ -32,32 +32,6 @@ setup-php: storage/toils.sqlite
 # Install all packages quietly.
 setup: setup-php setup-js .env
 
-# Check for out-of-date npm packages
-outdated-js:
-	-npm outdated
-
-# Check for out-of-date composer packages
-outdated-php:
-	composer show --outdated --direct
-
-# Check for all out-of-date packages
-outdated: outdated-php outdated-js
-
-# Install newly updated composer packages and update composer.lock
-update-php:
-	composer --no-progress update
-
-# Update all packages quietly
-update: update-php setup-js
-
-# Create a package upgrade commit.
-#
-# "puc" stands for Package Upgrade Commit
-puc: dummy
-	git checkout master
-	git add package.json package-lock.json composer.json composer.lock
-	git commit -m "Upgrade npm and composer packages"
-
 workspace:
 # 0: Editor
 	tmux new-session -d -s "$(PROJECT_NAME)" "$$SHELL"
