@@ -24,14 +24,14 @@
         "fideloper/proxy": "4.3.0",
         "fruitcake/laravel-cors": "v1.0.5",
         "guzzlehttp/guzzle": "6.5.2",
-        "laravel/framework": "v7.5.2",
+        "laravel/framework": "v7.6.2",
         "laravel/helpers": "v1.2.0",
         "laravel/tinker": "v2.4.0",
         "laravel/ui": "v2.0.1",
         "laravelcollective/html": "v6.1.0"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "v3.2.9",
+        "barryvdh/laravel-debugbar": "v3.3.1",
         "beyondcode/laravel-dump-server": "1.4.0",
         "filp/whoops": "2.7.1",
         "fzaninotto/faker": "v1.9.1",
@@ -40,7 +40,7 @@
         "nunomaduro/larastan": "v0.5.5",
         "phpmd/phpmd": "2.8.2",
         "phpunit/phpunit": "9.1.1",
-        "squizlabs/php_codesniffer": "3.5.4"
+        "squizlabs/php_codesniffer": "3.5.5"
     },
     "autoload": {
         "classmap": [
