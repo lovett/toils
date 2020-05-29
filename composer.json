@@ -23,7 +23,7 @@
         "erusev/parsedown": "1.7.4",
         "fideloper/proxy": "4.3.0",
         "fruitcake/laravel-cors": "v2.0.0",
-        "guzzlehttp/guzzle": "6.5.3",
+        "guzzlehttp/guzzle": "6.5.4",
         "laravel/framework": "v7.9.2",
         "laravel/helpers": "v1.2.0",
         "laravel/tinker": "v2.4.0",
@@ -39,7 +39,7 @@
         "nunomaduro/collision": "v4.2.0",
         "nunomaduro/larastan": "v0.5.8",
         "phpmd/phpmd": "2.8.2",
-        "phpunit/phpunit": "9.1.4",
+        "phpunit/phpunit": "9.1.5",
         "squizlabs/php_codesniffer": "3.5.5"
     },
     "autoload": {
