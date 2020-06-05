@@ -22,7 +22,7 @@
         "barryvdh/laravel-dompdf": "v0.8.6",
         "erusev/parsedown": "1.7.4",
         "fideloper/proxy": "4.3.0",
-        "fruitcake/laravel-cors": "v2.0.0",
+        "fruitcake/laravel-cors": "v2.0.1",
         "guzzlehttp/guzzle": "6.5.4",
         "laravel/framework": "v7.9.2",
         "laravel/helpers": "v1.2.0",
