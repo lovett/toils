@@ -14,6 +14,7 @@
             name="{{ $name }}"
             groups="{{ implode(',', $pickable) }}"
             initial-value="{{ old($name, TimeHelper::date($model->$name)) }}"
+            input-type="date"
             @isset($autofill)
             v-bind:suggested-value="suggested{{ ucfirst($name) }}"
             v-bind:previous-value="previous{{ ucfirst($name) }}"

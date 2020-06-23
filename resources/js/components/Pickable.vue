@@ -21,7 +21,6 @@
                 <a @click.prevent="relativeDay(0)" href="#">Today</a>
                 <a @click.prevent="relativeDay(-1)" href="#">-1 day</a>
                 <a @click.prevent="relativeDay(1)" href="#">+1 day</a>
-                <a v-if="inputType == 'text'" @click.prevent="useDateInput()" href="#">date picker</a>
             </p>
 
             <p v-if="pickableGroups.includes('relmonth-start')">
@@ -30,7 +29,6 @@
                 <a @click.prevent="relativeMonthStart(-1)" href="#">start of last month</a>
                 <a @click.prevent="relativeWeekStart(0)" href="#">start of week</a>
                 <a @click.prevent="relativeWeekStart(-1)" href="#">start of last week</a>
-                <a v-if="inputType == 'text'" @click.prevent="useDateInput()" href="#" >date picker</a>
             </p>
 
             <p v-if="pickableGroups.includes('relmonth-end')">
@@ -39,7 +37,6 @@
                 <a @click.prevent="relativeMonthEnd(-1)" href="#">end of last month</a>
                 <a @click.prevent="relativeWeekEnd(0)" href="#">end of week</a>
                 <a @click.prevent="relativeWeekEnd(-1)" href="#">end of last week</a>
-                <a @click.prevent="useDateInput()" href="#">date picker</a>
             </p>
 
 
@@ -122,6 +119,10 @@
                 type: String,
                 default: ''
             },
+            inputType: {
+                type: String,
+                default: 'text'
+            },
             previousValue: {
                 type: String,
                 default: '',
@@ -161,8 +162,7 @@
                 pickableGroups: groupList,
                 pickedDate: initial,
                 daysAgo: moment().diff(initial, 'days'),
-                value: value,
-                inputType: 'text'
+                value: value
             };
         },
 
