@@ -23,11 +23,11 @@
         "erusev/parsedown": "1.7.4",
         "fideloper/proxy": "4.4.0",
         "fruitcake/laravel-cors": "v2.0.1",
-        "guzzlehttp/guzzle": "6.5.5",
+        "guzzlehttp/guzzle": "7.0.1",
         "laravel/framework": "v7.9.2",
         "laravel/helpers": "v1.2.0",
         "laravel/tinker": "v2.4.0",
-        "laravel/ui": "v2.0.3",
+        "laravel/ui": "v2.1.0",
         "laravelcollective/html": "v6.1.2"
     },
     "require-dev": {
