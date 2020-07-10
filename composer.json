@@ -26,7 +26,7 @@
         "guzzlehttp/guzzle": "7.0.1",
         "laravel/framework": "v7.9.2",
         "laravel/helpers": "v1.2.0",
-        "laravel/tinker": "v2.4.0",
+        "laravel/tinker": "v2.4.1",
         "laravel/ui": "v2.1.0",
         "laravelcollective/html": "v6.1.2"
     },
@@ -35,7 +35,7 @@
         "beyondcode/laravel-dump-server": "1.4.0",
         "filp/whoops": "2.7.3",
         "fzaninotto/faker": "v1.9.1",
-        "mockery/mockery": "1.4.0",
+        "mockery/mockery": "1.4.1",
         "nunomaduro/collision": "v4.2.0",
         "nunomaduro/larastan": "v0.6.1",
         "phpmd/phpmd": "2.8.2",
