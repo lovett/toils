@@ -305,11 +305,13 @@ class Invoice extends Model
      * Returns an object whose values can be used to auto-populate
      * form fields during create or update.
      *
+     * @param string $timezone The timezone to use with date values.
+     *
      * @return object An object with suggested and previously-used values.
      */
-    public function getSuggestionAttribute()
+    public function asSuggestion(string $timezone)
     {
-        $now = Carbon::now();
+        $now = Carbon::now()->setTimezone($timezone);
 
         $suggestion = new stdClass();
 
@@ -317,17 +319,17 @@ class Invoice extends Model
             'amount' => $this->amount,
             'name' => $this->name,
             'summary' => $this->summary,
-            'start' => TimeHelper::date($this->start),
-            'end' => TimeHelper::date($this->end),
+            'start' => TimeHelper::date($timezone, $this->start),
+            'end' => TimeHelper::date($timezone, $this->end),
         ];
 
         $suggestion->suggested = [
             'amount' => $this->amount,
             'name' => $this->name,
             'summary' => $this->summary,
-            'end' => TimeHelper::date($now),
+            'end' => TimeHelper::date($timezone, $now),
             // Suggested start is the next day after the previous end.
-            'start' => TimeHelper::date($this->end->addDay()),
+            'start' => TimeHelper::date($timezone, $this->end->addDay()),
         ];
 
         return $suggestion;

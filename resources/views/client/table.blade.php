@@ -22,10 +22,10 @@
                     {{ TimeHelper::hoursAndMinutes($client->totalTime) }}
                 </td>
                 <td>
-                    {{ TimeHelper::readableShortDate($client->latestTime, 'never')}}
+                    {{ TimeHelper::readableShortDate($timezone, $client->latestTime, 'never')}}
                 </td>
                 <td>
-                    {{ TimeHelper::readableShortDate($client->created_at) }}
+                    {{ TimeHelper::readableShortDate($timezone, $client->created_at) }}
                 </td>
                 <td class="text-right">
                     @include('partials.active', ['value' => $client->active])

@@ -65,84 +65,71 @@ class TimeHelper
     }
 
     /**
-     * Format a date textually: such as Jan 1 2018
+     * Format a date textually: Jan 1 2018
      *
-     * @param Carbon|null $value The value to format
+     * @param string      $timezone The timezone that the value should be converted to.
+     * @param Carbon|null $value    The value to format
      *
      * @return string
      */
-    public static function readableShortDate(?Carbon $value = null)
+    public static function readableShortDate(string $timezone, ?Carbon $value = null)
     {
         if ($value === null) {
             return '';
         }
 
-        return self::shiftTimezone($value)->format('M j Y');
+        return $value->setTimezone($timezone)->format('M j Y');
     }
 
     /**
      * Format a date numerically: 2018-01-01
      *
-     * @param Carbon|null $value The value to format
+     * @param string      $timezone The timezone that the value should be converted to.
+     * @param Carbon|null $value    The value to format
      *
      * @return string
      */
-    public static function date(Carbon $value = null)
+    public static function date(string $timezone, Carbon $value = null)
     {
         if ($value === null) {
             return '';
         }
 
-        return self::shiftTimezone($value)->format(self::$dateFormat);
-    }
-
-    /**
-     * Convert a Carbon instance to another timezone
-     *
-     * @param Carbon      $value    The initial Carbon instance, most likely in UTC
-     * @param string|null $timezone The timezone to shift to, typically not specified.
-     *
-     * @return Carbon
-     */
-    public static function shiftTimezone(Carbon $value, string $timezone = null)
-    {
-        if ($timezone === null) {
-            $timezone = Cookie::get('TIMEZONE', 'UTC');
-        }
-
-        return $value->setTimezone($timezone);
+        return $value->setTimezone($timezone)->format(self::$dateFormat);
     }
 
     /**
      * Format a date in long form: January 1st, 2018
      *
-     * @param Carbon|null $value The value to format
+     * @param string      $timezone The timezone that the value should be converted to.
+     * @param Carbon|null $value    The value to format
      *
      * @return string
      */
-    public static function longDate(?Carbon $value = null)
+    public static function longDate(string $timezone, ?Carbon $value = null)
     {
         if ($value === null) {
             return '';
         }
 
-        return self::shiftTimezone($value)->format('F j, Y');
+        return $value->setTimezone($timezone)->format('F j, Y');
     }
 
     /**
      * Format a time in 12-hour format: 1:00 AM
      *
+     * @param string      $timezone The timezone that the value should be converted to.
      * @param Carbon|null $value The value to format
      *
      * @return string
      */
-    public static function time(?Carbon $value = null)
+    public static function time(string $timezone, ?Carbon $value = null)
     {
         if ($value === null) {
             return '';
         }
 
-        return self::shiftTimezone($value)->format('g:i A');
+        return $value->setTimezone($timezone)->format('g:i A');
     }
 
     /**
@@ -177,16 +164,17 @@ class TimeHelper
     /**
      * Format a date as a number of days relative to the present.
      *
-     * @param Carbon|null $value The value to format.
+     * @param string      $timezone The timezone that the value should be converted to.
+     * @param Carbon|null $value    The value to format.
      *
      * @return string
      */
-    public static function daysAgo(?Carbon $value = null)
+    public static function daysAgo(string $timezone, ?Carbon $value = null)
     {
         if ($value === null) {
             return '';
         }
 
-        return self::shiftTimezone($value)->diffForHumans();
+        return $value->setTimezone($timezone)->diffForHumans();
     }
 }

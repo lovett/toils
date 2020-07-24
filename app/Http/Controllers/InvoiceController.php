@@ -82,7 +82,7 @@ class InvoiceController extends Controller
 
         $invoice = $project->invoices()->newest(1)->firstOrFail();
 
-        return response()->json($invoice->suggestion);
+        return response()->json($invoice->asSuggestion($request->user()->timezone));
     }
 
     /**

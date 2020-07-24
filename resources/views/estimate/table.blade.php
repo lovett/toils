@@ -25,7 +25,7 @@
                     </a>
                 </td>
                 <td>
-                    {{ TimeHelper::date($estimate->submitted) ?? '—' }}
+                    {{ TimeHelper::date($timezone, $estimate->submitted) ?? '—' }}
                 </td>
                 <td>
                     {{ $estimate->recipient ?? '—' }}

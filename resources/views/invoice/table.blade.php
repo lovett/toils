@@ -32,8 +32,8 @@
                         </td>
                     @endunless
                     <td>
-                        {{ TimeHelper::readableShortDate($invoice->start) }} →
-                        {{ TimeHelper::readableShortDate($invoice->end) }}
+                        {{ TimeHelper::readableShortDate($timezone, $invoice->start) }} →
+                        {{ TimeHelper::readableShortDate($timezone, $invoice->end) }}
                         <p class="small">
                             @if ($invoice->totalMinutes > 0)
                                 <a href="{{ route('time.index', ['q' => "invoice:{$invoice->number}"]) }}">{{ TimeHelper::hoursAndMinutes($invoice->totalMinutes) }}</a>
@@ -56,7 +56,7 @@
                             @endif
                             <svg class="icon active after-text"><use xlink:href="#icon-coin-dollar"></use></svg>
                             <p class="small">
-                                on {{ TimeHelper::date($invoice->paid) }}
+                                on {{ TimeHelper::date($timezone, $invoice->paid) }}
                             </p>
                         @elseif ($invoice->daysUntilDue >= 0)
                             waiting
@@ -69,7 +69,7 @@
                         @elseif ($invoice->abandonned)
                             abandonned
                             <p class="small">
-                                {{ TimeHelper::date($invoice->abandonned) }}
+                                {{ TimeHelper::date($timezone, $invoice->abandonned) }}
                             </p>
                         @else
                             overdue

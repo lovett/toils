@@ -120,7 +120,7 @@
                 statement of work
             </h2>
 
-            <p class="date">{{ TimeHelper::longDate($date) }}</p>
+            <p class="date">{{ TimeHelper::longDate($timezone, $date) }}</p>
         </div>
 
         <div class="main">

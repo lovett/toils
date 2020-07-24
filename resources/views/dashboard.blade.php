@@ -40,7 +40,7 @@
                         </div>
 
                         <div class="card-footer text-muted">
-                            active {{ TimeHelper::daysAgo($project->updated_at) }}
+                            active {{ TimeHelper::daysAgo($timezone, $project->updated_at) }}
                         </div>
                     </div>
                 </div>

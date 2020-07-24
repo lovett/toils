@@ -77,7 +77,7 @@ class TimeController extends Controller
     public function suggestByProject(Request $request, int $id)
     {
         $time = $request->user()->timeByProject($id)->orderBy('start', 'desc')->firstOrFail();
-        return response()->json($time->suggestion);
+        return response()->json($time->asSuggestion($request->user()->timezone));
     }
 
     /**

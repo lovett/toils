@@ -25,10 +25,10 @@
             <tr class="{{ $unfinishedClass }} {{ $billableClass }}">
                 <td>
                     <a href="{{ route('time.edit', $time) }}">
-                        {{ TimeHelper::time($time->start) }}
+                        {{ TimeHelper::time($timezone, $time->start) }}
                         →
                         @if ($time->end)
-                            {{ TimeHelper::time($time->end) }}
+                            {{ TimeHelper::time($timezone, $time->end) }}
                         @else
                             ?
                         @endif
@@ -44,7 +44,7 @@
                     @endunless
                 </td>
                 <td>
-                        {{ TimeHelper::date($time->start) }}
+                        {{ TimeHelper::date($timezone, $time->start) }}
                     </a>
                 </td>
 

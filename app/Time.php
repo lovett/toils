@@ -448,9 +448,11 @@ class Time extends Model
      * Returns an object whose values can be used to auto-populate
      * form fields during create or update.
      *
+     * @param string $timezone The timezone to use with date values.
+     *
      * @return object An object with suggested and previously-used values.
      */
-    public function getSuggestionAttribute()
+    public function asSuggestion(string $timezone)
     {
         $now = Carbon::now();
 
@@ -466,13 +468,13 @@ class Time extends Model
 
         $suggestion->previous = [
             'estimatedDuration' => $this->estimatedDuration,
-            'start' => TimeHelper::date($this->start),
+            'start' => TimeHelper::date($timezone, $this->start),
             'summary' => $this->summary,
         ];
 
         $suggestion->suggested = [
             'estimatedDuration' => $this->estimatedDuration,
-            'start' => TimeHelper::date($now),
+            'start' => TimeHelper::date($timezone, $now),
             'summary' => $this->summary,
         ];
 

@@ -15,7 +15,7 @@
                     @include('partials.project-and-client', ['projectId' => $project->id, 'projectName' => $project->name, 'clientId' => $project->client->id, 'clientName' => $project->client->name])
                 </td>
                 <td>
-                    {{ TimeHelper::date($project->lastActive) }}
+                    {{ TimeHelper::date($timezone, $project->lastActive) }}
                 </td>
                 <td>
                     @if($project->billable)

@@ -28,13 +28,13 @@
                                 @if ($stats['end'])
                                     for {{ $stats['duration'] }}
                                     <p class="small">
-                                        <span class="text-nowrap">{{ TimeHelper::longDate($stats['start']) }}</span> to
-                                        <span class="text-nowrap">{{ TimeHelper::longDate($stats['end']) }}</span>
+                                        <span class="text-nowrap">{{ TimeHelper::longDate($timezone, $stats['start']) }}</span> to
+                                        <span class="text-nowrap">{{ TimeHelper::longDate($timezone, $stats['end']) }}</span>
                                     </p>
                                 @else
                                     for {{ $stats['age'] }}
                                     <p class="small">
-                                        since <span class="text-nowrap">{{ TimeHelper::longDate($stats['start']) }}</span>
+                                        since <span class="text-nowrap">{{ TimeHelper::longDate($timezone, $stats['start']) }}</span>
                                     </p>
                                 @endif
                             </dd>

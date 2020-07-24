@@ -130,7 +130,7 @@
                 </td>
                 <td>
                     <div class="meta">
-                        <p>Submitted: {{ TimeHelper::longDate($invoice->sent) }}</p>
+                        <p>Submitted: {{ TimeHelper::longDate($timezone, $invoice->sent) }}</p>
                         <hr/>
                         <p>Invoice number: {{ $invoice->number }}</p>
                     </div>
@@ -142,7 +142,7 @@
                     <div class="due">
                         <p>AMOUNT DUE: {{ CurrencyHelper::money($invoice->amount) }}</p>
 
-                        <p>DUE BY: {{ TimeHelper::longDate($invoice->due) }}</p>
+                        <p>DUE BY: {{ TimeHelper::longDate($timezone, $invoice->due) }}</p>
                     </div>
             </tr>
         </table>
