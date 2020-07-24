@@ -107,7 +107,7 @@
       environment:
         APP_KEY: "{{ toils_app_key }}"
         MAIL_FROM_ADDRESS: "{{ toils_mail_from_address }}"
-        APP_URL: "{{ toils_app_url }}"
+        APP_URL: "https://{{ toils_hostname }}"
 
     - name: Install systemd maintenance service
       become: yes
