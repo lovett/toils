@@ -11,8 +11,8 @@ server {
     listen 443 ssl http2;
     listen [::]:443 ssl http2;
     server_name {{ toils_hostname }};
-    ssl_certificate {{ letsencrypt_certificate }};
-    ssl_certificate_key {{ letsencrypt_key }};
+    ssl_certificate {{ toils_ssl_certificate }};
+    ssl_certificate_key {{ toils_ssl_key }};
 
     root {{ application_root }}/{{ application_name }}/public;
 
