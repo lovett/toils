@@ -27,7 +27,6 @@ Vue.component('autofill', Autofill);
 Vue.component('autofill-hint', AutofillHint);
 Vue.component('pickable', Pickable);
 Vue.component('b-alert', BAlert);
-Vue.component('b-form-file', BFormFile);
 
 const app = new Vue({
     el: '#app'

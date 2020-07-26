@@ -84,13 +84,7 @@
                                 @if ($errors->has('receipt'))
                                     @php($fieldClass .= 'is-invalid')
                                 @endif
-                                <b-form-file
-                                    placeholder="Choose a file or drop it here..."
-                                    drop-placeholder="Drop file here..."
-                                    id="invoice-receipt"
-                                    name="receipt"
-                                    class="{{ $fieldClass }}"
-                                ></b-form-file>
+                                <input type="file" name="receipt" class="{{ $fieldClass }}" />
                             </div>
 
                             @include('partials.form-field-error', ['name' => 'receipt'])
