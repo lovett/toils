@@ -53,7 +53,7 @@ class InvoiceRequest extends FormRequest
             'due' => 'nullable|date_format:Y-m-d',
             'paid' => 'nullable|date_format:Y-m-d',
             'abandonned' => 'nullable|date_format:Y-m-d',
-            'receipt' => 'nullable|file|min:1|mimes:txt,pdf,jpeg,png',
+            'receipt' => 'nullable|file|mimes:txt,pdf,jpeg,png',
         ];
     }
 
