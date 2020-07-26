@@ -102,13 +102,3 @@ toils.tar.gz:
 	cd build && npm ci && npm run production
 	cd build && composer install --no-dev --no-suggest --quiet --classmap-authoritative --no-progress
 	tar --create --gzip --file=toils.tar.gz --exclude=node_modules --exclude=storage --transform s/build/toils/ build
-
-# Generate a favicon with multiple sizes.
-favicon: dummy
-	convert -density 900 -background none -geometry 180x180 public/toils.svg public/toils.png
-	convert -density 900 -background none -geometry 48x48 public/toils.svg temp-48.png
-	convert -density 900 -background none -geometry 32x32 public/toils.svg temp-32.png
-	convert -density 900 -background none -geometry 16x16 public/toils.svg temp-16.png
-	convert temp-16.png temp-32.png temp-48.png public/favicon.ico
-	rm temp-48.png temp-32.png temp-16.png
-	optipng -quiet -o 3 public/*.png
