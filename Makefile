@@ -102,3 +102,7 @@ toils.tar.gz:
 	cd build && npm ci && npm run production
 	cd build && composer install --no-dev --no-suggest --quiet --classmap-authoritative --no-progress
 	tar --create --gzip --file=toils.tar.gz --exclude=node_modules --exclude=storage --transform s/build/toils/ build
+
+# Push the repository to GitHub.
+mirror:
+	git push --force git@github.com:lovett/toils.git master:master
