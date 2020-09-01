@@ -155,7 +155,10 @@ class InvoiceController extends Controller
 
         MessagingHelper::flashCreated("invoice #{$invoice->number}");
 
-        return redirect()->intended();
+        return redirect()->route(
+            'project.show',
+            [$projectId]
+        );
     }
 
     /**
