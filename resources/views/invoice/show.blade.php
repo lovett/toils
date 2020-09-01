@@ -88,11 +88,13 @@
 
             .due {
                 text-transform: uppercase;
-                font-size: 1.75em;
+                font-size: 1.25em;
                 font-weight: bolder;
+                padding-top: 1em;
             }
 
             .meta {
+                margin-top: -1.5em;
                 border-color: #FD5A00;
                 border-style: solid;
                 border-width: 2pt 0;
@@ -140,9 +142,8 @@
                     </div>
 
                     <div class="due">
-                        <p>AMOUNT DUE: {{ CurrencyHelper::money($invoice->amount) }}</p>
-
-                        <p>DUE BY: {{ TimeHelper::longDate($timezone, $invoice->due) }}</p>
+                        AMOUNT DUE: {{ CurrencyHelper::money($invoice->amount) }}<br/>
+                        DUE BY: {{ TimeHelper::longDate($timezone, $invoice->due) }}
                     </div>
             </tr>
         </table>
