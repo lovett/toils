@@ -32,7 +32,7 @@ class IntendedUrl
         $whitelist = ['index', 'show'];
         $blacklist = ['invoice.show'];
 
-        if (in_array($route->getAction(), $blacklist) === false) {
+        if (in_array($route->getAction('as'), $blacklist) === false) {
             if (in_array($route->getActionMethod(), $whitelist) === true) {
                 $request->session()->put(
                     'url.intended',
