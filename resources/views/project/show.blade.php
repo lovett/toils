@@ -1,5 +1,30 @@
 @extends('layouts.app')
 
+@section('subnav')
+    <div class="container mb-4">
+        <ul class="nav nav-tabs flex-column flex-lg-row">
+            <li class="nav-item">
+                <a class="nav-link disabled" href="#">Overview</a>
+            </li>
+
+	        <li class="nav-item">
+                @unless ($time->isEmpty())
+                    <a class="nav-link" href="#time">Time</a>
+                @endunless
+            </li>
+
+	        <li class="nav-item">
+                @unless ($invoices->isEmpty())
+                    <a class="nav-link" href="#invoices">Invoices</a>
+                @endunless
+            </li>
+	        <li class="nav-item">
+                {!! link_to_route('invoice.create', 'New Invoice', ['project' => $project->id], ['class' => 'nav-link']) !!}
+            </li>
+        </ul>
+    </div>
+@endsection
+
 @section('page_main')
     <div class="container">
         <div class="mb-4">
@@ -115,9 +140,14 @@
 
         @unless ($time->isEmpty())
             <div class="mb-5">
-                <h2>Time</h2>
+                <h2 id="time">Time</h2>
 
-                <p>{!! link_to_route('time.index', 'View all', ['q' => 'project:' . $project->name]) !!}</p>
+                <ul class="nav">
+                    <li class="nav-item">
+                        {!! link_to_route('time.create', 'New', ['project' => $project->id], ['class' => 'nav-link active']) !!}</li>
+                    <li class="nav-item">
+                        {!! link_to_route('time.index', 'View all', ['q' => 'project:' . $project->name], ['class' => 'nav-link active']) !!}</li>
+                </ul>
 
                 <div class="card">
                     @include('time.table', ['collection' => $time, 'project' => $project])
@@ -127,9 +157,17 @@
 
         @unless ($invoices->isEmpty())
             <div class="mb-5">
-                <h2>Invoices</h2>
+                <h2 id="invoices">Invoices</h2>
 
-                <p>{!! link_to_route('invoice.index', 'View all', ['q' => 'project:' . $project->name]) !!}</p>
+                <ul class="nav">
+                    <li class="nav-item">
+                        {!! link_to_route('invoice.create', 'New', ['project' => $project->id], ['class' => 'nav-link']) !!}</li>
+                    <li class="nav-item">
+                        {!! link_to_route('invoice.index', 'View all', ['q' => 'project:' . $project->name], ['class' => 'nav-link']) !!}
+                    </li>
+                </ul>
+
+
 
                 <div class="card mb-5">
                     @include('invoice.table', ['collection' => $invoices])
@@ -137,13 +175,4 @@
             </div>
         @endunless
     </div>
-@endsection
-
-@section('subnav_supplemental')
-	<li class="nav-item">
-        {!! link_to_route('time.create', 'New time entry', ['project' => $project->id], ['class' => 'nav-link']) !!}
-    </li>
-    <li class="nav-item">
-        {!! link_to_route('invoice.create', 'New Invoice', ['project' => $project->id], ['class' => 'nav-link']) !!}
-    </li>
 @endsection

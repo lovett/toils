@@ -119,16 +119,7 @@
             </div>
         @endif
 
-        @if (LinkHelper::showSubnav())
-        <div class="container mb-4">
-            <ul class="nav nav-tabs flex-column flex-lg-row">
-                @foreach (LinkHelper::getSubnav() as $link)
-                    {!! $link !!}
-                @endforeach
-                @yield('subnav_supplemental')
-            </ul>
-        </div>
-        @endif
+        @yield('subnav')
 
         @yield('page_main')
 

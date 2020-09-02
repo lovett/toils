@@ -1,3 +1,14 @@
+@section('subnav')
+    <div class="container mb-4">
+        <ul class="nav nav-tabs flex-column flex-lg-row">
+            <li class="nav-item">
+                {!! link_to_route('invoice.create', 'New Invoice', [], ['class' => 'nav-link']) !!}
+            </li>
+        </ul>
+    </div>
+@endsection
+
+
 @if ($collection->isNotEmpty())
     <table class="table mb-0">
         <thead>

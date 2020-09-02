@@ -36,3 +36,50 @@ if (document.cookie.indexOf('TIMEZONE=') === -1) {
     const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
     document.cookie = `TIMEZONE=${tz};`;
 }
+
+/**
+ * Compensate for the fixed-position main nav when scrolling to
+ * anchors.
+ */
+function scrollToTarget(e) {
+    let destination, offset, target;
+
+    if (e && e.target.nodeName !== 'A') {
+        return;
+    }
+
+    if (e && e.target.href.indexOf('#') === -1) {
+        return;
+    }
+
+    if (e) {
+        destination = document.getElementById(e.target.href.split('#')[1]);
+    } else {
+        destination = document.getElementById(window.location.hash.replace('#', ''));
+    }
+
+    if (!destination) {
+        return;
+    }
+
+    if (e) {
+        e.preventDefault();
+    }
+
+    offset = document.getElementById('main-nav').getBoundingClientRect().height + 20;
+
+    window.setTimeout(() => {
+        window.scrollTo({
+            top: destination.offsetTop - offset,
+            behavior: "smooth"
+        });
+    }, 250);
+}
+
+window.addEventListener('DOMContentLoaded',  function () {
+    document.addEventListener('click', scrollToTarget);
+
+    if (window.location.hash.length > 1) {
+        scrollToTarget();
+    }
+});

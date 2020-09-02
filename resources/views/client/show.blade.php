@@ -1,5 +1,37 @@
 @extends('layouts.app')
 
+@section('subnav')
+    <div class="container mb-4">
+        <ul class="nav nav-tabs flex-column flex-lg-row">
+            <li class="nav-item">
+                <a class="nav-link disabled" href="#">Overview</a>
+            </li>
+
+            @unless ($model->projects->isEmpty())
+	            <li class="nav-item">
+                    <a class="nav-link" href="#projects">Projects</a>
+                </li>
+            @endunless
+
+            @unless ($invoices->isEmpty())
+	            <li class="nav-item">
+                    <a class="nav-link" href="#time">Time</a>
+                </li>
+            @endunless
+
+            @unless ($estimates->isEmpty())
+	            <li class="nav-item">
+                    <a class="nav-link" href="#estimates">Estimates</a>
+                </li>
+            @endunless
+
+	        <li class="nav-item">
+                {!! link_to_route('invoice.create', 'New Invoice', ['client' => $model->id], ['class' => 'nav-link']) !!}
+            </li>
+        </ul>
+    </div>
+@endsection
+
 @section('page_main')
     <div class="container">
         <div class="mb-4">
@@ -88,16 +120,14 @@
 	            </div>
 	        </div>
         </div>
+
+        @unless ($model->projects->isEmpty())
         <div class="mb-5">
-            <h2>Projects</h2>
+            <h2 id="projects">Projects</h2>
 
             <div class="card">
                 <div class="card-body">
                     <ul class="list-unstyled mb-0 columnwise">
-                        @if ($model->projects->isEmpty())
-                            <li>None</li>
-                        @endif
-
                         @foreach ($model->projects->where('active', true) as $project)
                             <li class="indent-for-hanging-icon">
                                 <svg class="icon active"><use xlink:href="#icon-checkmark"></use></svg>
@@ -115,12 +145,19 @@
                 </div>
             </div>
         </div>
+        @endunless
 
         @unless ($time->isEmpty())
             <div class="mb-5">
-                <h2>Time</h2>
+                <h2 id="time">Time</h2>
 
-                <p>{!! link_to_route('time.index', 'View all', ['q' => 'client:' . $model->name]) !!}</p>
+                <ul class="nav">
+                    <li class="nav-item">
+                        {!! link_to_route('time.create', 'New', ['client' => $model->id], ['class' => 'nav-link']) !!}</li>
+                    <li class="nav-item">
+                        {!! link_to_route('time.index', 'View all', ['q' => 'client:' . $model->name], ['class' => 'nav-link']) !!}
+                    </li>
+                </ul>
 
                 <div class="card mb-5">
                     @include('time.table', ['collection' => $time])
@@ -130,9 +167,15 @@
 
         @unless ($invoices->isEmpty())
             <div class="mb-5">
-                <h2>Invoices</h2>
+                <h2 id="invoices">Invoices</h2>
 
-                <p>{!! link_to_route('invoice.index', 'View all', ['q' => 'client:' . $model->name]) !!}</p>
+                <ul class="nav">
+                    <li class="nav-item">
+                        {!! link_to_route('invoice.create', 'New', ['project' => $model->id], ['class' => 'nav-link']) !!}</li>
+                    <li class="nav-item">
+                        {!! link_to_route('invoice.index', 'View all', ['q' => 'client:' . $model->name], ['class' => 'nav-link']) !!}
+                    </li>
+                </ul>
 
                 <div class="card pb-0">
                     @include('invoice.table', ['collection' => $invoices])
@@ -142,9 +185,15 @@
 
         @unless ($estimates->isEmpty())
             <div class="mb-5">
-                <h2>Estimates</h2>
+                <h2 id="estimates">Estimates</h2>
 
-                <p>{!! link_to_route('estimate.index', 'View all', ['q' => 'client:' . $model->name]) !!}</p>
+                <ul class="nav">
+                    <li class="nav-item">
+                        {!! link_to_route('estimate.create', 'New', ['project' => $model->id], ['class' => 'nav-link']) !!}</li>
+                    <li class="nav-item">
+                        {!! link_to_route('estimate.index', 'View all', ['q' => 'client:' . $model->name], ['class' => 'nav-link']) !!}
+                    </li>
+                </ul>
 
                 <div class="card mb-5">
                     @include('estimate.table', ['collection' => $estimates])
@@ -152,10 +201,4 @@
             </div>
         @endunless
     </div>
-@endsection
-
-@section('subnav_supplemental')
-    <li class="nav-item">{!! link_to_route('project.create', 'New project', ['client' => $model->id], ['class' => 'nav-link']) !!}</li>
-    <li class="nav-item">{!! link_to_route('time.create', 'New time entry', ['client' => $model->id], ['class' => 'nav-link']) !!}</li>
-    <li class="nav-item">{!! link_to_route('invoice.create', 'New invoice', ['client' => $model->id], ['class' => 'nav-link']) !!}</li>
 @endsection
