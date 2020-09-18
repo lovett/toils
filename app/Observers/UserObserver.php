@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\User;
+use App\Models\User;
 
 /**
  * Handle Eloquent events related to Users.

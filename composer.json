@@ -18,37 +18,35 @@
         }
     ],
     "require": {
-        "php": ">=7.2.5",
-        "barryvdh/laravel-dompdf": "v0.8.6",
+        "php": "^7.3",
+        "barryvdh/laravel-dompdf": "v0.8.7",
         "erusev/parsedown": "1.7.4",
         "fideloper/proxy": "4.4.0",
-        "fruitcake/laravel-cors": "v2.0.1",
+        "fruitcake/laravel-cors": "v2.0.2",
         "guzzlehttp/guzzle": "7.0.1",
-        "laravel/framework": "v7.27.0",
+        "laravel/framework": "v8.4.0",
         "laravel/helpers": "v1.3.0",
         "laravel/tinker": "v2.4.2",
-        "laravel/ui": "v2.2.0",
-        "laravelcollective/html": "v6.1.2"
+        "laravel/ui": "v3.0.0",
+        "laravelcollective/html": "v6.2.0"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "v3.4.2",
-        "beyondcode/laravel-dump-server": "1.4.0",
+        "barryvdh/laravel-debugbar": "v3.5.1",
+        "beyondcode/laravel-dump-server": "1.5.0",
         "filp/whoops": "2.7.3",
         "fzaninotto/faker": "v1.9.1",
         "mockery/mockery": "1.4.2",
         "nunomaduro/collision": "v5.0.2",
         "nunomaduro/larastan": "v0.6.4",
         "phpmd/phpmd": "2.9.0",
-        "phpunit/phpunit": "9.3.8",
+        "phpunit/phpunit": "9.3.10",
         "squizlabs/php_codesniffer": "3.5.6"
     },
     "autoload": {
-        "classmap": [
-            "database/seeds",
-            "database/factories"
-        ],
         "psr-4": {
-            "App\\": "app/"
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
         }
     },
     "autoload-dev": {
@@ -62,15 +60,15 @@
         }
     },
     "scripts": {
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover --ansi"
+        ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
-        ],
-        "post-autoload-dump": [
-            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
         ]
     },
     "config": {

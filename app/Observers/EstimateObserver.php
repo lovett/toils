@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Estimate;
+use App\Models\Estimate;
 
 /**
  * Handle Eloquent events related to Estimates.

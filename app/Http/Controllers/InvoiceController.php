@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Client;
+use App\Models\Client;
 use App\Helpers\MessagingHelper;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\InvoiceRequest;
-use App\Invoice;
+use App\Models\Invoice;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\RedirectResponse;

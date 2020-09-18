@@ -1,18 +1,40 @@
 <?php
 
-use Faker\Generator as Faker;
+// phpcs:disable Squiz.Commenting
 
-$factory->define(App\Client::class, function (Faker $faker) {
-    return [
-        'active' => $faker->boolean(50),
-        'name' => $faker->company(),
-        'contactName' => $faker->name(),
-        'contactEmail' => $faker->safeEmail(),
-        'address1' => $faker->streetAddress(),
-        'address2' => $faker->secondaryAddress(),
-        'city' => $faker->city(),
-        'locality' => $faker->stateAbbr(),
-        'postalCode' => $faker->postcode(),
-        'phone' => $faker->phoneNumber(),
-    ];
-});
+namespace Database\Factories;
+
+use App\Models\Client;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
+
+class ClientFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Client::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'active' => $this->faker->boolean(50),
+            'name' => $this->faker->company(),
+            'contactName' => $this->faker->name(),
+            'contactEmail' => $this->faker->safeEmail(),
+            'address1' => $this->faker->streetAddress(),
+            'address2' => $this->faker->secondaryAddress(),
+            'city' => $this->faker->city(),
+            'locality' => $this->faker->stateAbbr(),
+            'postalCode' => $this->faker->postcode(),
+            'phone' => $this->faker->phoneNumber(),
+        ];
+    }
+}

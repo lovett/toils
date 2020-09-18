@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Carbon\Carbon;
-use App\Time;
+use App\Models\Time;
 use App\Traits\StandardValidationMessages;
 
 /**

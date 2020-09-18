@@ -11,12 +11,12 @@ use App\Observers\ProjectObserver;
 use App\Observers\TimeObserver;
 use App\Observers\UserObserver;
 use App\Observers\Observer;
-use App\Invoice;
-use App\Client;
-use App\Estimate;
-use App\Project;
-use App\Time;
-use App\User;
+use App\Models\Invoice;
+use App\Models\Client;
+use App\Models\Estimate;
+use App\Models\Project;
+use App\Models\Time;
+use App\Models\User;
 
 /**
  * Standard Laravel provider class for application setup.

@@ -2,7 +2,7 @@
 
 namespace App\Observers;
 
-use App\Project;
+use App\Models\Project;
 
 /**
  * Handle Eloquent events related to Projects.

@@ -2,8 +2,8 @@
 
 namespace App\Observers;
 
-use App\Client;
-use App\Project;
+use App\Models\Client;
+use App\Models\Project;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 

@@ -2,8 +2,8 @@
 
 namespace App\Observers;
 
-use App\Invoice;
-use App\Time;
+use App\Models\Invoice;
+use App\Models\Time;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;

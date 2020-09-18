@@ -1,12 +1,16 @@
 <?php
 
+// phpcs:disable Squiz.Commenting.ClassComment.Missing
+
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
-use App\Client;
-use App\Project;
-use App\Time;
-use App\User;
-use App\Invoice;
+use App\Models\Client;
+use App\Models\Project;
+use App\Models\Time;
+use App\Models\User;
+use App\Models\Invoice;
 use Illuminate\Support\Collection;
 
 /**

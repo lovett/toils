@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -13,8 +13,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
 use App\Traits\Search;
-use App\Time;
-use App\Client;
+use App\Models\Time;
+use App\Models\Client;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Helpers\TimeHelper;
@@ -252,7 +252,7 @@ class Invoice extends Model
      */
     public function time()
     {
-        return $this->hasMany('App\Time');
+        return $this->hasMany('App\Models\Time');
     }
 
     /**
@@ -262,7 +262,7 @@ class Invoice extends Model
      */
     public function project()
     {
-        return $this->belongsTo('App\Project');
+        return $this->belongsTo('App\Models\Project');
     }
 
     /**

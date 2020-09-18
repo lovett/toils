@@ -3,8 +3,8 @@
 namespace App\Helpers;
 
 use Exception;
-use App\User;
-use App\Client;
+use App\Models\User;
+use App\Models\Client;
 
 /**
  * Helper functions for displaying addresses.

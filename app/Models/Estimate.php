@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
@@ -124,7 +124,7 @@ class Estimate extends Model
      */
     public function users()
     {
-        return $this->belongsToMany('App\User');
+        return $this->belongsToMany('App\Models\User');
     }
 
     /**
@@ -134,7 +134,7 @@ class Estimate extends Model
      */
     public function project()
     {
-        return $this->hasOne('App\Project');
+        return $this->hasOne('App\Models\Project');
     }
 
     /**
@@ -144,7 +144,7 @@ class Estimate extends Model
      */
     public function client()
     {
-        return $this->hasOne('App\Client');
+        return $this->hasOne('App\Models\Client');
     }
 
     /**

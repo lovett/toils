@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Estimate;
+use App\Models\Estimate;
 use App\Helpers\MessagingHelper;
 use App\Http\Requests\EstimateRequest;
 use Illuminate\Http\Request;

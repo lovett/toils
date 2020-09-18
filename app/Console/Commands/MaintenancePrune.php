@@ -5,13 +5,13 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
-use App\Client;
-use App\Estimate;
-use App\Invoice;
-use App\Project;
-use App\Tag;
-use App\Time;
-use App\User;
+use App\Models\Client;
+use App\Models\Estimate;
+use App\Models\Invoice;
+use App\Models\Project;
+use App\Models\Tag;
+use App\Models\Time;
+use App\Models\User;
 
 /**
  * Permanently delete soft-deleted records.

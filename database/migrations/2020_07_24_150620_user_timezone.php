@@ -17,9 +17,6 @@ class UserTimezone extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('timezone', 50)->nullable();
-        });
     }
 
     /**

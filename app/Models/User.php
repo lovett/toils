@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -83,7 +83,7 @@ class User extends Authenticatable
      */
     public function clients()
     {
-        return $this->belongsToMany('App\Client');
+        return $this->belongsToMany('App\Models\Client');
     }
 
     /**
@@ -93,7 +93,7 @@ class User extends Authenticatable
      */
     public function estimates()
     {
-        return $this->belongsToMany('App\Estimate');
+        return $this->belongsToMany('App\Models\Estimate');
     }
 
     /**
@@ -195,7 +195,7 @@ class User extends Authenticatable
      */
     public function time()
     {
-        return $this->hasMany('App\Time');
+        return $this->hasMany('App\Models\Time');
     }
 
     /**

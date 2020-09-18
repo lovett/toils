@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -46,7 +46,7 @@ class Tag extends Model
      */
     public function time()
     {
-        return $this->morphedByMany('App\Time', 'taggable');
+        return $this->morphedByMany('App\Models\Time', 'taggable');
     }
 
     /**

@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
-use App\Client;
+use App\Models\Client;
 use Illuminate\Contracts\Validation\Validator;
 use App\Traits\StandardValidationMessages;
 

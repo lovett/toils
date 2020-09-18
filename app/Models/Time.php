@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
@@ -11,10 +11,10 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Carbon\Carbon;
 use App\Traits\Search;
-use App\Invoice;
+use App\Models\Invoice;
 use stdClass;
 use App\Helpers\TimeHelper;
-use App\Tag;
+use App\Models\Tag;
 use InvalidArgumentException;
 
 /**
@@ -132,7 +132,7 @@ class Time extends Model
         $builder = $builder->join('clients', 'projects.client_id', '=', 'clients.id');
         $builder = $builder->leftJoin('taggables', function ($join) {
             $join = $join->on('times.id', '=', 'taggables.taggable_id');
-            $join = $join->where('taggables.taggable_type', '=', 'App\Time');
+            $join = $join->where('taggables.taggable_type', '=', 'App\Models\Time');
             return $join;
         });
 
@@ -244,7 +244,7 @@ class Time extends Model
      */
     public function user()
     {
-        return $this->belongsTo('App\User');
+        return $this->belongsTo('App\Models\User');
     }
 
     /**
@@ -254,7 +254,7 @@ class Time extends Model
      */
     public function project()
     {
-        return $this->belongsTo('App\Project');
+        return $this->belongsTo('App\Models\Project');
     }
 
     /**
@@ -264,7 +264,7 @@ class Time extends Model
      */
     public function invoice()
     {
-        return $this->belongsTo('App\Invoice');
+        return $this->belongsTo('App\Models\Invoice');
     }
 
     /**
@@ -272,7 +272,7 @@ class Time extends Model
      */
     public function tags()
     {
-        return $this->morphToMany('App\Tag', 'taggable');
+        return $this->morphToMany('App\Models\Tag', 'taggable');
     }
 
     /**

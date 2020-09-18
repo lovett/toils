@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -184,7 +184,7 @@ class Client extends Model
      */
     public function users()
     {
-        return $this->belongsToMany('App\User');
+        return $this->belongsToMany('App\Models\User');
     }
 
     /**
@@ -194,7 +194,7 @@ class Client extends Model
      */
     public function projects()
     {
-        return $this->hasMany('App\Project');
+        return $this->hasMany('App\Models\Project');
     }
 
     /**
@@ -204,7 +204,7 @@ class Client extends Model
      */
     public function invoices()
     {
-        return $this->hasManyThrough('App\Invoice', 'App\Project');
+        return $this->hasManyThrough('App\Models\Invoice', 'App\Models\Project');
     }
 
     /**
@@ -214,7 +214,7 @@ class Client extends Model
      */
     public function time()
     {
-        return $this->hasManyThrough('App\Time', 'App\Project');
+        return $this->hasManyThrough('App\Models\Time', 'App\Models\Project');
     }
 
     /**
@@ -224,7 +224,7 @@ class Client extends Model
      */
     public function estimates()
     {
-        return $this->hasMany('App\Estimate');
+        return $this->hasMany('App\Models\Estimate');
     }
 
     /**

@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TimeRequest;
-use App\Time;
-use App\Tag;
+use App\Models\Time;
+use App\Models\Tag;
 use App\Helpers\MessagingHelper;
 use Carbon\Carbon;
 use Illuminate\Http\Request;

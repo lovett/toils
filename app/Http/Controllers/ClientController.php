@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Client;
-use App\Invoice;
-use App\Time;
-use App\Estimate;
+use App\Models\Client;
+use App\Models\Invoice;
+use App\Models\Time;
+use App\Models\Estimate;
 use App\Helpers\MessagingHelper;
 use App\Http\Requests\ClientRequest;
 use Illuminate\Http\RedirectResponse;

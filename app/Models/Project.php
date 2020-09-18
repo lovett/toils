@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -307,7 +307,7 @@ class Project extends Model
      */
     public function users()
     {
-        return $this->belongsToMany('App\User');
+        return $this->belongsToMany('App\Models\User');
     }
 
     /**
@@ -317,7 +317,7 @@ class Project extends Model
      */
     public function client()
     {
-        return $this->belongsTo('App\Client');
+        return $this->belongsTo('App\Models\Client');
     }
 
     /**
@@ -327,7 +327,7 @@ class Project extends Model
      */
     public function time()
     {
-        return $this->hasMany('App\Time');
+        return $this->hasMany('App\Models\Time');
     }
 
     /**
@@ -337,7 +337,7 @@ class Project extends Model
      */
     public function invoices()
     {
-        return $this->hasMany('App\Invoice');
+        return $this->hasMany('App\Models\Invoice');
     }
 
     /**

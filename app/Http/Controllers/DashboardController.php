@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Project;
-use App\Time;
+use App\Models\Project;
+use App\Models\Time;
 use Illuminate\View\View;
 
 /**

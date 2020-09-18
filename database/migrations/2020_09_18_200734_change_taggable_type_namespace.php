@@ -4,10 +4,12 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
-class CreateCacheTable extends Migration
+class ChangeTaggableTypeNamespace extends Migration
 {
+
+
     /**
      * Run the migrations.
      *
@@ -15,11 +17,7 @@ class CreateCacheTable extends Migration
      */
     public function up()
     {
-        Schema::create('cache', function (Blueprint $table) {
-            $table->string('key')->unique();
-            $table->mediumText('value');
-            $table->integer('expiration');
-        });
+        DB::statement("UPDATE taggables SET taggable_type='App\Models\Time' WHERE taggable_type='App\Time'");
     }
 
     /**
@@ -29,6 +27,6 @@ class CreateCacheTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cache');
+        DB::statement("UPDATE taggables SET taggable_type='App\Time' WHERE taggable_type='App\Models\Time'");
     }
 }
