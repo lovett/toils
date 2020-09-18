@@ -119,7 +119,7 @@ class TimeHelper
      * Format a time in 12-hour format: 1:00 AM
      *
      * @param string      $timezone The timezone that the value should be converted to.
-     * @param Carbon|null $value The value to format
+     * @param Carbon|null $value    The value to format
      *
      * @return string
      */

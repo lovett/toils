@@ -378,14 +378,12 @@ class Time extends Model
         string $timeInterval = 'month',
         int $intervalCount = 6
     ) {
-        $diffMethod = 'diffInWeeks';
         $sqlDateModifier = 'weekday 6';
         $sqlInterval = 'day';
         $sqlDateSelector = '-7 day';
         $intervalMultiplier = 7;
 
         if ($timeInterval === 'month') {
-            $diffMethod = 'diffInMonths';
             $sqlDateModifier = 'start of month';
             $sqlInterval = 'month';
             $sqlDateSelector = '-1 month';
@@ -393,7 +391,6 @@ class Time extends Model
         }
 
         if ($timeInterval === 'year') {
-            $diffMethod = 'diffInYears';
             $sqlDateModifier = 'start of year';
             $sqlInterval = 'year';
             $sqlDateSelector = '-1 year';

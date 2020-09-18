@@ -19,7 +19,7 @@ seed-full: dummy
 lint: dummy
 	phpmd app text phpmd.xml
 	phpcs -s app
-	php artisan code:analyse
+	phpstan analyze
 
 # Install NPM packages quietly.
 setup-js:

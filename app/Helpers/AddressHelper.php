@@ -126,6 +126,7 @@ class AddressHelper
 
         $plainValue = preg_replace('/[^0-9x\#*]/', '', $value);
 
+        $matches = [];
         $matchResult = preg_match(
             '/(1)?(\d{3})?(\d{3})(\d{4})(.*)?/',
             $plainValue,
