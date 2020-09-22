@@ -239,6 +239,8 @@ class TimeController extends Controller
 
         $time->finish();
 
-        return redirect()->route('time.index');
+        MessagingHelper::flashUpdated('the time entry');
+
+        return redirect()->intended();
     }
 }
