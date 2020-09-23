@@ -11,7 +11,7 @@
 
     <title>{{ config('app.name') }} :: {{ $pageTitle }}</title>
     <link rel="shortcut icon" href="{{ asset('toils.png') }}" />
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}" />
+    <link rel="stylesheet" href="{{ mix('css/app.css') }}" />
     <link rel="mask-icon" href="{{ asset('toils.svg') }}" color="black" />
 </head>
 <body>
@@ -126,7 +126,7 @@
     </main>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ mix('js/app.js') }}"></script>
 
     @yield('page_scripts')
 
