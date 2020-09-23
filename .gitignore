@@ -16,6 +16,7 @@
 *.sqlite
 *.bak
 *.log
-/public/js/*.js
-/public/css/*.css
+/public/js
+/public/css
+/public/mix-manifest.json
 *.tar.gz
