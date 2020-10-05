@@ -105,11 +105,11 @@ class MaintenancePrune extends Command
         $userIds = $this->deletionIds($userQuery);
 
         DB::table('client_user')
-            ->whereInd('user_id', $userIds)
+            ->whereIn('user_id', $userIds)
             ->delete();
 
         DB::table('estimate_user')
-            ->whereId('user_id', $userIds)
+            ->whereIn('user_id', $userIds)
             ->delete();
 
         $userQuery->forceDelete();
@@ -126,6 +126,6 @@ class MaintenancePrune extends Command
     {
         return $query->select('id')->get()->map(function ($record) {
             return $record->id;
-        });
+        })->toArray();
     }
 }

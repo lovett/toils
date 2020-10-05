@@ -322,17 +322,17 @@ class Time extends Model
      *
      * @param Carbon $value An end date.
      *
-     * @return int|null;
+     * @return void;
      */
     public function setEndAttribute(Carbon $value = null)
     {
         if (empty($this->start)) {
-            return null;
+            return;
         }
 
         if ($value === null) {
             $this->attributes['minutes'] = 0;
-            return null;
+            return;
         }
 
         $this->attributes['minutes'] = $value->diffInMinutes($this->start);

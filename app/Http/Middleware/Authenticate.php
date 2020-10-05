@@ -17,7 +17,7 @@ class Authenticate extends Middleware
      *
      * @param Request $request The incoming request
 
-     * @return string
+     * @return string|void
      */
     protected function redirectTo($request)  // phpcs:disable Squiz.Commenting.FunctionComment.TypeHintMissing
     {

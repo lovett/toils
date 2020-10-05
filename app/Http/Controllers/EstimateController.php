@@ -77,8 +77,6 @@ class EstimateController extends Controller
     {
         $estimate = new Estimate();
 
-        $estimate->active = true;
-
         $clients = $request->user()->clientsForMenu();
 
         $viewVars = [

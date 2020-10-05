@@ -293,7 +293,7 @@ class Project extends Model
         $stats['total_minutes'] = $stats['billable_minutes'] + $stats['unbillable_minutes'];
 
         $stats['hourly_rate'] = null;
-        if ($stats['total_minutes'] > 1) {
+        if ((int) $stats['total_minutes'] > 1) {
             $stats['hourly_rate'] = round($stats['income'] / $stats['total_minutes'] * 60);
         }
 

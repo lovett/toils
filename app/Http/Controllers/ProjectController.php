@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\MessagingHelper;
+use App\Http\Requests\ProjectRequest;
 use App\Models\Client;
 use App\Models\Invoice;
-use App\Models\Helpers\MessagingHelper;
-use App\Models\Http\Requests\ProjectRequest;
 use App\Models\Project;
 use App\Models\Time;
-use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 /**

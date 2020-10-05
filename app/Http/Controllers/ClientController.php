@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Client;
-use App\Models\Invoice;
-use App\Models\Time;
-use App\Models\Estimate;
 use App\Helpers\MessagingHelper;
 use App\Http\Requests\ClientRequest;
+use App\Models\Client;
+use App\Models\Estimate;
+use App\Models\Invoice;
+use App\Models\Time;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -100,7 +100,7 @@ class ClientController extends Controller
     {
         $client = new Client();
 
-        $client->active       = (int) $request->active;
+        $client->active       = (bool) $request->active;
         $client->name         = $request->name;
         $client->contactName  = $request->contactName;
         $client->contactEmail = $request->contactEmail;
