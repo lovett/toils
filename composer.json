@@ -21,10 +21,10 @@
         "php": "^7.3",
         "barryvdh/laravel-dompdf": "v0.8.7",
         "erusev/parsedown": "1.7.4",
-        "fideloper/proxy": "4.4.0",
-        "fruitcake/laravel-cors": "v2.0.2",
+        "fideloper/proxy": "4.4.1",
+        "fruitcake/laravel-cors": "v2.0.3",
         "guzzlehttp/guzzle": "7.2.0",
-        "laravel/framework": "v8.10.0",
+        "laravel/framework": "v8.11.2",
         "laravel/helpers": "v1.3.0",
         "laravel/tinker": "v2.4.2",
         "laravel/ui": "v3.0.0",
@@ -32,15 +32,15 @@
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "v3.5.1",
-        "beyondcode/laravel-dump-server": "1.5.0",
-        "filp/whoops": "2.7.3",
+        "beyondcode/laravel-dump-server": "1.6.0",
+        "filp/whoops": "2.9.0",
         "fzaninotto/faker": "v1.9.1",
         "mockery/mockery": "1.4.2",
         "nunomaduro/collision": "v5.0.2",
-        "nunomaduro/larastan": "v0.6.5",
+        "nunomaduro/larastan": "v0.6.8",
         "phpmd/phpmd": "2.9.1",
-        "phpunit/phpunit": "9.4.1",
-        "squizlabs/php_codesniffer": "3.5.6"
+        "phpunit/phpunit": "9.4.2",
+        "squizlabs/php_codesniffer": "3.5.8"
     },
     "autoload": {
         "psr-4": {
