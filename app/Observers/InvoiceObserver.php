@@ -23,8 +23,12 @@ class InvoiceObserver
      */
     public function creating(Invoice $invoice)
     {
-        $currentMax = (int) Invoice::withTrashed()->max('number');
-        $invoice->number = $currentMax + 1;
+        $invoiceCount = (int) $invoice->project->invoices()->withTrashed()->count();
+        $invoice->number = sprintf(
+            '%d%03d',
+            $invoice->project_id,
+            $invoiceCount + 1
+        );
     }
 
 
