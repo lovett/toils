@@ -529,7 +529,7 @@ class Time extends Model
      */
     public function getTagListAttribute()
     {
-        return $this->tags->implode('name', ', ');
+        return $this->getAttribute('tags')->implode('name', ', ');
     }
 
     /**
