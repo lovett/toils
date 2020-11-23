@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Query\Builder as QueryBuilder;
 use App\Traits\Search;
 use App\Models\Time;
 use App\Models\Client;
@@ -144,7 +143,7 @@ class Invoice extends Model
      *
      * @param Builder $query An existing query.
      *
-     * @return QueryBuilder;
+     * @return Builder;
      */
     public function scopePaid(Builder $query)
     {
@@ -174,7 +173,7 @@ class Invoice extends Model
      *
      * @param Builder $builder The query to start with.
      *
-     * @return QueryBuilder;
+     * @return Builder;
      */
     public static function listing(Builder $builder)
     {

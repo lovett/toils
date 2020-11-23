@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Query\Builder as QueryBuilder;
 use App\Traits\Search;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
@@ -100,7 +99,7 @@ class Client extends Model
      *
      * @param Builder $builder The query to start with
      *
-     * @return QueryBuilder
+     * @return Builder
      */
     public static function listing(Builder $builder)
     {
