@@ -49,7 +49,7 @@ class LoginController extends Controller
     protected function authenticated(Request $request, User $user)
     {
         if ($request->cookie('TIMEZONE')) {
-            $user->timezone = $request->cookie('TIMEZONE');
+            $user->setAttribute('timezone', $request->cookie('TIMEZONE'));
             $user->save();
         }
     }
