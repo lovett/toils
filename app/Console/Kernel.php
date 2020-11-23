@@ -23,11 +23,12 @@ class Kernel extends ConsoleKernel
      *
      * @param Schedule $schedule A schedule instance.
      *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
+     *
      * @return void
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command(null);
     }
 
     /**
