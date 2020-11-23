@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use App\Models\Client;
 use App\Models\Estimate;
@@ -124,8 +125,8 @@ class MaintenancePrune extends Command
      */
     private function deletionIds(Builder $query)
     {
-        return $query->select('id')->get()->map(function ($record) {
-            return $record->id;
+        return $query->select('id')->get()->map(function (Model $record) {
+            return $record->getAttribute('id');
         })->toArray();
     }
 }
