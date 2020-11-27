@@ -38,7 +38,7 @@ class InvoiceController extends Controller
      *
      * @return View
      */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $query = $request->get('q');
 
@@ -76,7 +76,7 @@ class InvoiceController extends Controller
      *
      * @return JsonResponse
      */
-    public function suggestByProject(Request $request, int $id = 0)
+    public function suggestByProject(Request $request, int $id = 0): JsonResponse
     {
         $project = $request->user()->project($id)->firstOrFail();
 
@@ -92,7 +92,7 @@ class InvoiceController extends Controller
      *
      * @return View
      */
-    public function create(Request $request)
+    public function create(Request $request): View
     {
         $clientId = $request->input('client', null);
         $projectId = $request->input('project', null);
@@ -135,7 +135,7 @@ class InvoiceController extends Controller
      *
      * @return RedirectResponse
      */
-    public function store(InvoiceRequest $request)
+    public function store(InvoiceRequest $request): RedirectResponse
     {
         $invoice = new Invoice();
 
@@ -169,7 +169,7 @@ class InvoiceController extends Controller
      *
      * @return Response
      */
-    public function show(Request $request, int $id)
+    public function show(Request $request, int $id): Response
     {
         $invoice = $request->user()->invoice($id);
 
@@ -196,7 +196,7 @@ class InvoiceController extends Controller
      *
      * @return View
      */
-    public function edit(Request $request, int $id)
+    public function edit(Request $request, int $id): View
     {
         $invoice = $request->user()->invoice($id);
 
@@ -222,7 +222,7 @@ class InvoiceController extends Controller
      *
      * @return RedirectResponse
      */
-    public function update(InvoiceRequest $request, int $id)
+    public function update(InvoiceRequest $request, int $id): RedirectResponse
     {
         $invoice = $request->user()->invoice($id);
 
@@ -252,7 +252,7 @@ class InvoiceController extends Controller
      *
      * @return RedirectResponse
      */
-    public function destroy(Request $request, int $id)
+    public function destroy(Request $request, int $id): RedirectResponse
     {
         $invoice = $request->user()->invoice($id);
 
@@ -268,7 +268,7 @@ class InvoiceController extends Controller
      *
      * @param InvoiceRequest $request The incoming request
      */
-    protected function storeReceipt(InvoiceRequest $request)
+    protected function storeReceipt(InvoiceRequest $request): ?string
     {
         if ($request->hasFile('receipt') === false) {
             return null;
@@ -287,7 +287,7 @@ class InvoiceController extends Controller
      *
      * @return BinaryFileResponse
      */
-    public function receipt(Request $request, int $id)
+    public function receipt(Request $request, int $id): BinaryFileResponse
     {
         $invoice = $request->user()->invoice($id);
 

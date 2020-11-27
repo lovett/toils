@@ -35,7 +35,7 @@ class TimeController extends Controller
      *
      * @return View
      */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $query = $request->get('q');
 
@@ -74,7 +74,7 @@ class TimeController extends Controller
      *
      * @return JsonResponse
      */
-    public function suggestByProject(Request $request, int $id)
+    public function suggestByProject(Request $request, int $id): JsonResponse
     {
         $time = $request->user()->timeByProject($id)->orderBy('start', 'desc')->firstOrFail();
         return response()->json($time->asSuggestion($request->user()->timezone));
@@ -87,7 +87,7 @@ class TimeController extends Controller
      *
      * @return View
      */
-    public function create(Request $request)
+    public function create(Request $request): View
     {
         $client = null;
         $projects = null;
@@ -136,7 +136,7 @@ class TimeController extends Controller
      *
      * @return RedirectResponse
      */
-    public function store(TimeRequest $request)
+    public function store(TimeRequest $request): RedirectResponse
     {
         $time = new Time();
 
@@ -163,7 +163,7 @@ class TimeController extends Controller
      *
      * @return View
      */
-    public function edit(Request $request, int $id)
+    public function edit(Request $request, int $id): View
     {
         $time = $request->user()->time()->with('tags')->findOrFail($id);
         $projects = $request->user()->projectsForMenu(null, $time->project_id);
@@ -190,7 +190,7 @@ class TimeController extends Controller
      *
      * @return RedirectResponse
      */
-    public function update(TimeRequest $request, int $id)
+    public function update(TimeRequest $request, int $id): RedirectResponse
     {
         $time = $request->user()->time()->findOrFail($id);
 
@@ -213,8 +213,10 @@ class TimeController extends Controller
      *
      * @param Request $request The incoming request
      * @param int     $id      A primary key
+     *
+     * @return RedirectResponse
      */
-    public function destroy(Request $request, int $id)
+    public function destroy(Request $request, int $id): RedirectResponse
     {
         $time = $request->user()->time()->where('id', $id)->firstOrFail();
 
@@ -229,8 +231,10 @@ class TimeController extends Controller
      * Close an open time entry.
      *
      * @param Request $request The incoming request
+     *
+     * @return RedirectResponse
      */
-    public function finish(Request $request)
+    public function finish(Request $request): RedirectResponse
     {
         $id = $request->input('id', null);
         $time = $request->user()->time()->findOrFail($id);

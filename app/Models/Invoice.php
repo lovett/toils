@@ -279,16 +279,20 @@ class Invoice extends Model
 
     /**
      * Custom attribute for treating payment date field as a boolean
+     *
+     * @return bool
      */
-    public function getIsPaidAttribute()
+    public function getIsPaidAttribute(): bool
     {
         return $this->paid !== null;
     }
 
     /**
      * Custom attribute for calculating days remaining until due
+     *
+     * @return int
      */
-    public function getDaysUntilDueAttribute()
+    public function getDaysUntilDueAttribute(): int
     {
         if ($this->isPaid) {
             return 0;
@@ -308,7 +312,7 @@ class Invoice extends Model
      *
      * @return object An object with suggested and previously-used values.
      */
-    public function asSuggestion(string $timezone)
+    public function asSuggestion(string $timezone): object
     {
         $now = Carbon::now()->setTimezone($timezone);
 
@@ -339,7 +343,7 @@ class Invoice extends Model
      *
      * @param string $value The receipt
      */
-    public function setReceiptAttribute(?string $value = null)
+    public function setReceiptAttribute(?string $value = null): void
     {
         $this->attributes['receipt'] = $value;
         $this->attributes['paid'] = ($value === null) ? null : new Carbon();
@@ -347,10 +351,8 @@ class Invoice extends Model
 
     /**
      * Move a previously-uploaded receipt to the trash
-     *
-     * @return void
      */
-    public function trashReceipt()
+    public function trashReceipt(): void
     {
         $path = $this->receipt;
 

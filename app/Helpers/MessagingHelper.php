@@ -20,7 +20,7 @@ class MessagingHelper
      *
      * @param string $label The name of the newly-created record type.
      */
-    public static function flashCreated(string $label = '')
+    public static function flashCreated(string $label = ''): void
     {
         $label = ucfirst($label);
         Session::flash('userMessage', "{$label} has been created.");
@@ -33,7 +33,7 @@ class MessagingHelper
      *
      * @param string $label The name of the newly-updated record type.
      */
-    public static function flashUpdated(string $label = '')
+    public static function flashUpdated(string $label = ''): void
     {
         $label = ucfirst($label);
         Session::flash('userMessage', "{$label} has been updated.");
@@ -46,7 +46,7 @@ class MessagingHelper
      *
      * @param string $label The name of the newly-updated record type.
      */
-    public static function flashDeleted(string $label = '')
+    public static function flashDeleted(string $label = ''): void
     {
         $label = ucfirst($label);
         Session::flash('userMessage', "{$label} has been deleted.");

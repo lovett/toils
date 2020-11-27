@@ -21,7 +21,7 @@ class TimeRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         $id = $this->route('time');
 
@@ -39,7 +39,7 @@ class TimeRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'estimatedDuration' => 'nullable|integer',
@@ -60,10 +60,8 @@ class TimeRequest extends FormRequest
      * validation logic.
      *
      * @param Validator $validator Laravel validator instance.
-     *
-     * @return void
      */
-    public function withValidator(Validator $validator)
+    public function withValidator(Validator $validator): void
     {
         $validator->after(function ($validator) {
             // Bail if errors have already been found.

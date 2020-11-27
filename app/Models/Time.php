@@ -7,8 +7,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Carbon\Carbon;
 use App\Traits\Search;
 use App\Models\Invoice;
@@ -170,8 +171,10 @@ class Time extends Model
      *
      * @param Builder  $query An existing query.
      * @param int|null $limit Maximum number of records to return.
+     *
+     * @return Builder
      */
-    public function scopeUnfinished(Builder $query, int $limit = null)
+    public function scopeUnfinished(Builder $query, int $limit = null): Builder
     {
         $query->where('minutes', 0);
         $query->orderBy('start', 'desc');
@@ -187,8 +190,10 @@ class Time extends Model
      * Query scope to restrict to billable entries.
      *
      * @param Builder $query An existing query.
+     *
+     * @return Builder
      */
-    public function scopeBillable(Builder $query)
+    public function scopeBillable(Builder $query): Builder
     {
         $query->where('billable', true);
         return $query;
@@ -198,8 +203,10 @@ class Time extends Model
      * Query scope to restrict to unbillable entries.
      *
      * @param Builder $query An existing query.
+     *
+     * @return Builder
      */
-    public function scopeUnbillable(Builder $query)
+    public function scopeUnbillable(Builder $query): Builder
     {
         $query->where('billable', false);
         return $query;
@@ -212,7 +219,7 @@ class Time extends Model
      *
      * @return Builder
      */
-    public function scopeThisWeek(Builder $query)
+    public function scopeThisWeek(Builder $query): Builder
     {
         $now = new Carbon();
         $query->where('start', '>=', $now->startOfWeek());
@@ -227,7 +234,7 @@ class Time extends Model
      *
      * @return Builder
      */
-    public function scopeNewest(Builder $query, int $limit = 0)
+    public function scopeNewest(Builder $query, int $limit = 0): Builder
     {
         $query->orderBy('start', 'desc');
 
@@ -242,7 +249,7 @@ class Time extends Model
      *
      * @return BelongsTo
      */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo('App\Models\User');
     }
@@ -252,7 +259,7 @@ class Time extends Model
      *
      * @return BelongsTo
      */
-    public function project()
+    public function project(): BelongsTo
     {
         return $this->belongsTo('App\Models\Project');
     }
@@ -262,7 +269,7 @@ class Time extends Model
      *
      * @return BelongsTo
      */
-    public function invoice()
+    public function invoice(): BelongsTo
     {
         return $this->belongsTo('App\Models\Invoice');
     }
@@ -270,7 +277,7 @@ class Time extends Model
     /**
      * Tags associated with the time entry
      */
-    public function tags()
+    public function tags(): MorphToMany
     {
         return $this->morphToMany('App\Models\Tag', 'taggable');
     }
@@ -483,10 +490,10 @@ class Time extends Model
      *
      * @param string|null $value The amount to be rounded.
      */
-    public function setStartAttribute($value = null)
+    public function setStartAttribute($value = null): void
     {
         if (empty($value)) {
-            return null;
+            return;
         }
 
         $carbonInstance = new Carbon($value);
@@ -498,8 +505,10 @@ class Time extends Model
      * Default start time to nearest 5-minute interval
      *
      * @param string $value A Carbon-compatible datetime string
+     *
+     * @return Carbon|null
      */
-    public function getStartAttribute(string $value = null)
+    public function getStartAttribute(string $value = null): ?Carbon
     {
         if (empty($value)) {
             return null;
@@ -514,7 +523,7 @@ class Time extends Model
      *
      * @param int|null $value The amount to be rounded.
      */
-    public function setMinutesAttribute(int $value = null)
+    public function setMinutesAttribute(int $value = null): void
     {
         if ($value === null) {
             $this->attributes['minutes'] = 0;
@@ -526,8 +535,10 @@ class Time extends Model
     /**
      * Computed accessor for converting a collection of tags to a
      * comma-delimited list.
+     *
+     * @return string
      */
-    public function getTagListAttribute()
+    public function getTagListAttribute(): string
     {
         return $this->getAttribute('tags')->implode('name', ', ');
     }
@@ -535,7 +546,7 @@ class Time extends Model
     /**
      * Mark a time entry as finished using the current time as the end point.
      */
-    public function finish()
+    public function finish(): void
     {
         $this->end = new Carbon();
         $this->save();

@@ -37,7 +37,7 @@ class EstimateController extends Controller
      *
      * @return View
      */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $query = $request->get('q');
 
@@ -73,7 +73,7 @@ class EstimateController extends Controller
      *
      * @return View
      */
-    public function create(Request $request)
+    public function create(Request $request): View
     {
         $estimate = new Estimate();
 
@@ -98,7 +98,7 @@ class EstimateController extends Controller
      *
      * @return RedirectResponse
      */
-    public function store(EstimateRequest $request)
+    public function store(EstimateRequest $request): RedirectResponse
     {
         $estimate = new Estimate();
 
@@ -120,7 +120,7 @@ class EstimateController extends Controller
      *
      * @return Response
      */
-    public function show(Request $request, int $id)
+    public function show(Request $request, int $id): Response
     {
         $estimate = $request->user()->estimate($id);
 
@@ -154,7 +154,7 @@ class EstimateController extends Controller
      *
      * @return View
      */
-    public function edit(Request $request, int $id)
+    public function edit(Request $request, int $id): View
     {
         $estimate = $request->user()->estimate($id);
 
@@ -183,7 +183,7 @@ class EstimateController extends Controller
      *
      * @return RedirectResponse
      */
-    public function update(EstimateRequest $request, int $id)
+    public function update(EstimateRequest $request, int $id): RedirectResponse
     {
         $estimate = $request->user()->estimate($id);
 
@@ -202,7 +202,7 @@ class EstimateController extends Controller
      *
      * @return RedirectResponse
      */
-    public function destroy(Request $request, int $id)
+    public function destroy(Request $request, int $id): RedirectResponse
     {
         $estimate = $request->user()->estimate($id)->firstOrFail();
 

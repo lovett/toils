@@ -20,7 +20,7 @@ class UserObserver
      *
      * @param User $user A user instance.
      */
-    public function deleted(User $user)
+    public function deleted(User $user): void
     {
         $user->time()->delete();
     }

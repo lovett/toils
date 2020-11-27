@@ -122,8 +122,10 @@ class Project extends Model
      *
      * Although the database stores minutes, sometimes it is more
      * convenient to use hours.
+     *
+     * @return float|null
      */
-    public function getAllottedTotalHoursAttribute()
+    public function getAllottedTotalHoursAttribute(): ?float
     {
         if ($this->allottedTotalMinutes === null) {
             return null;
@@ -140,7 +142,7 @@ class Project extends Model
      *
      * @param float $value The number of hours to be converted to minutes
      */
-    public function setAllottedTotalHoursAttribute(float $value = null)
+    public function setAllottedTotalHoursAttribute(float $value = null): void
     {
         if ($value !== null) {
             $value = round($value * 60);
@@ -157,7 +159,7 @@ class Project extends Model
      *
      * @return float|null Total minutes expressed as hours to 2 decimal places.
      */
-    public function getAllottedWeeklyHoursAttribute()
+    public function getAllottedWeeklyHoursAttribute(): ?float
     {
         if ($this->allottedWeeklyMinutes === null) {
             return null;
@@ -174,7 +176,7 @@ class Project extends Model
      *
      * @param float $value The number of hours to be converted to minutes
      */
-    public function setAllottedWeeklyHoursAttribute(float $value = null)
+    public function setAllottedWeeklyHoursAttribute(float $value = null): void
     {
         if ($value !== null) {
             $value = round($value * 60);
@@ -188,7 +190,7 @@ class Project extends Model
      *
      * @return int|null A number in minutes, or null if no budget has been set.
      */
-    public function getTotalTimeRemainingAttribute()
+    public function getTotalTimeRemainingAttribute(): ?int
     {
         if ($this->allottedTotalMinutes === null) {
             return null;
@@ -259,8 +261,10 @@ class Project extends Model
 
     /**
      * At-a-glance numbers that summarize a project in various ways.
+     *
+     * @return array
      */
-    public function stats()
+    public function stats(): array
     {
         $stats = [];
         $stats['paid'] = $this->invoices()->paid()->sum('amount');

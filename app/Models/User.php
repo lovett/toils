@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\AsMenu;
 use App\Traits\Search;
@@ -81,7 +82,7 @@ class User extends Authenticatable
      *
      * @return BelongsToMany
      */
-    public function clients()
+    public function clients(): BelongsToMany
     {
         return $this->belongsToMany('App\Models\Client');
     }
@@ -91,7 +92,7 @@ class User extends Authenticatable
      *
      * @return BelongsToMany
      */
-    public function estimates()
+    public function estimates(): BelongsToMany
     {
         return $this->belongsToMany('App\Models\Estimate');
     }
@@ -100,8 +101,10 @@ class User extends Authenticatable
      * Single client associated with user
      *
      * @param integer $id A user primary key
+     *
+     * @return BelongsToMany
      */
-    public function client(int $id)
+    public function client(int $id): BelongsToMany
     {
         return $this->clients()->where('id', $id);
     }
@@ -116,7 +119,7 @@ class User extends Authenticatable
      *
      * @return Builder
      */
-    public function projects()
+    public function projects(): Builder
     {
         $query = Project::leftJoin(
             'client_user',
@@ -134,8 +137,10 @@ class User extends Authenticatable
      * Single project associated with the user
      *
      * @param int $id A user primary key
+     *
+     * @return Builder
      */
-    public function project(int $id)
+    public function project(int $id): Builder
     {
         return $this->projects()->where('id', $id);
     }
@@ -144,8 +149,10 @@ class User extends Authenticatable
      * Single estimate associated with the user
      *
      * @param int $id A user primary key
+     *
+     * @return Estimate
      */
-    public function estimate(int $id)
+    public function estimate(int $id): Estimate
     {
         return $this->estimates()->where('estimates.id', $id)->firstOrFail();
     }
@@ -155,7 +162,7 @@ class User extends Authenticatable
      *
      * @return Builder
      */
-    public function invoices()
+    public function invoices(): Builder
     {
         $query = Invoice::select('invoices.*');
 
@@ -182,8 +189,10 @@ class User extends Authenticatable
      * Single invoice associated with the user
      *
      * @param integer $id An invoice primary key
+     *
+     * @return Model
      */
-    public function invoice(int $id)
+    public function invoice(int $id): Model
     {
         return $this->invoices()->where('invoices.id', $id)->with('project.client')->firstOrFail();
     }
@@ -193,7 +202,7 @@ class User extends Authenticatable
      *
      * @return HasMany
      */
-    public function time()
+    public function time(): HasMany
     {
         return $this->hasMany('App\Models\Time');
     }
@@ -202,8 +211,10 @@ class User extends Authenticatable
      * Time entries associated with a project visible to the current user.
      *
      * @param integer $id A project primary key
+     *
+     * @return HasMany
      */
-    public function timeByProject(int $id)
+    public function timeByProject(int $id): HasMany
     {
         return $this->time()->where('project_id', $id);
     }
@@ -213,7 +224,7 @@ class User extends Authenticatable
      *
      * @return array
      */
-    public function clientsForMenu()
+    public function clientsForMenu(): array
     {
         $query = $this->clients()->active()->orderBy('name')->getQuery();
 
@@ -228,7 +239,7 @@ class User extends Authenticatable
      *
      * @return array
      */
-    public function projectsForMenu(int $clientId = null, $projectId = null)
+    public function projectsForMenu(int $clientId = null, $projectId = null): array
     {
         $query = $this->projects()->active()->orWhere('id', $projectId)->with('client')->orderBy('name');
 

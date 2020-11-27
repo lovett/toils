@@ -144,8 +144,10 @@ class Client extends Model
 
     /**
      * At-a-glance numbers that summarize a client in various ways.
+     *
+     * @return array
      */
-    public function stats()
+    public function stats(): array
     {
         $stats = [];
         $stats['paid'] = $this->invoices()->paid()->sum('amount');
@@ -181,7 +183,7 @@ class Client extends Model
      *
      * @return BelongsToMany
      */
-    public function users()
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany('App\Models\User');
     }
@@ -191,7 +193,7 @@ class Client extends Model
      *
      * @return HasMany
      */
-    public function projects()
+    public function projects(): HasMany
     {
         return $this->hasMany('App\Models\Project');
     }
@@ -201,7 +203,7 @@ class Client extends Model
      *
      * @return HasManyThrough
      */
-    public function invoices()
+    public function invoices(): HasManyThrough
     {
         return $this->hasManyThrough('App\Models\Invoice', 'App\Models\Project');
     }
@@ -211,7 +213,7 @@ class Client extends Model
      *
      * @return HasManyThrough
      */
-    public function time()
+    public function time(): HasManyThrough
     {
         return $this->hasManyThrough('App\Models\Time', 'App\Models\Project');
     }
@@ -221,7 +223,7 @@ class Client extends Model
      *
      * @return HasMany
      */
-    public function estimates()
+    public function estimates(): HasMany
     {
         return $this->hasMany('App\Models\Estimate');
     }
@@ -233,7 +235,7 @@ class Client extends Model
      *
      * @return Builder
      */
-    public function scopeActive(Builder $query)
+    public function scopeActive(Builder $query): Builder
     {
         return $query->where('clients.active', true);
     }

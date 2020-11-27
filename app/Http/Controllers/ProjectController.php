@@ -36,7 +36,7 @@ class ProjectController extends Controller
      *
      * @return View
      */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $query = $request->get('q');
 
@@ -74,7 +74,7 @@ class ProjectController extends Controller
      *
      * @return View
      */
-    public function create(Request $request)
+    public function create(Request $request): View
     {
         $clients = $request->user()->clientsForMenu();
 
@@ -108,8 +108,10 @@ class ProjectController extends Controller
      * Save a new project to the database
      *
      * @param ProjectRequest $request The incoming request
+     *
+     * @return RedirectResponse
      */
-    public function store(ProjectRequest $request)
+    public function store(ProjectRequest $request): RedirectResponse
     {
         $project = new Project();
 
@@ -141,7 +143,7 @@ class ProjectController extends Controller
      *
      * @return View
      */
-    public function show(Request $request, int $id)
+    public function show(Request $request, int $id): View
     {
         $fetchLimit = 5;
 
@@ -208,7 +210,7 @@ class ProjectController extends Controller
      *
      * @return View
      */
-    public function edit(Request $request, int $id)
+    public function edit(Request $request, int $id): View
     {
         $project = Project::find($id);
 
@@ -236,7 +238,7 @@ class ProjectController extends Controller
      *
      * @return RedirectResponse
      */
-    public function update(ProjectRequest $request, int $id)
+    public function update(ProjectRequest $request, int $id): RedirectResponse
     {
         $project = $request->user()->project($id)->firstOrFail();
 
@@ -260,7 +262,7 @@ class ProjectController extends Controller
      *
      * @return RedirectResponse
      */
-    public function destroy(Request $request, int $id)
+    public function destroy(Request $request, int $id): RedirectResponse
     {
         $project = $request->user()->project($id)->firstOrFail();
 

@@ -20,7 +20,7 @@ class InvoiceRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         // Users can only modify invoices associated with projects they belong to.
         $id = $this->route('invoice');
@@ -40,7 +40,7 @@ class InvoiceRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'project_id' => 'required|exists:projects,id',
@@ -62,7 +62,7 @@ class InvoiceRequest extends FormRequest
      *
      * @param Validator $validator Laravel validator instance.
      */
-    public function withValidator(Validator $validator)
+    public function withValidator(Validator $validator): void
     {
         $validator->after(function ($validator) {
             // Bail if errors have already been found.
@@ -129,7 +129,7 @@ class InvoiceRequest extends FormRequest
      *
      * @return array
      */
-    public function messages()
+    public function messages(): array
     {
         $messages = parent::messages();
         $messages['amount.min'] = 'The amount due is missing.';

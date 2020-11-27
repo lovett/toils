@@ -22,7 +22,7 @@ class ClientObserver
      *
      * @param Client $client A client instance.
      */
-    public function saved(Client $client)
+    public function saved(Client $client): void
     {
         // Laravel doesn't cast the original value like it does the current one.
         $previouslyActive = (bool) $client->getOriginal('active');
@@ -45,7 +45,7 @@ class ClientObserver
      *
      * @param Client $client A client instance.
      */
-    public function deleted(Client $client)
+    public function deleted(Client $client): void
     {
         $client->time()->delete();
         $client->invoices()->delete();

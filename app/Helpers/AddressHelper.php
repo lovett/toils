@@ -17,8 +17,10 @@ class AddressHelper
      * Display the mailing address for a user.
      *
      * @param User $user A user instance.
+     *
+     * @return string
      */
-    public static function userMailingAddress(User $user)
+    public static function userMailingAddress(User $user): string
     {
         return static::mailingAddress($user, [
             'displayName',
@@ -40,8 +42,10 @@ class AddressHelper
      * Display the mailing address for a client.
      *
      * @param Client $client A client instance.
+     *
+     * @return string
      */
-    public static function clientMailingAddress(Client $client)
+    public static function clientMailingAddress(Client $client): string
     {
         return static::mailingAddress($client, [
             'name',
@@ -62,8 +66,10 @@ class AddressHelper
      * Display the contact address for a client.
      *
      * @param Client $client A client instance.
+     *
+     * @return string
      */
-    public static function clientContact(Client $client)
+    public static function clientContact(Client $client): string
     {
         return static::mailingAddress($client, [
             'contactName',
@@ -84,7 +90,7 @@ class AddressHelper
      *
      * @return string
      */
-    private static function mailingAddress($record, array $fields = [])
+    private static function mailingAddress($record, array $fields = []): string
     {
         $address = array_reduce($fields, function ($acc, $field) use ($record) {
             $prefix = '';
@@ -118,7 +124,7 @@ class AddressHelper
      *
      * @return string
      */
-    public static function phoneUrl(string $value)
+    public static function phoneUrl(string $value): string
     {
         if (empty($value)) {
             return '';

@@ -19,7 +19,7 @@ class ProjectObserver
      *
      * @param Project $project A project instance.
      */
-    public function deleted(Project $project)
+    public function deleted(Project $project): void
     {
         $project->time()->delete();
         $project->invoices()->delete();

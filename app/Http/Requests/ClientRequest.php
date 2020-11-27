@@ -23,7 +23,7 @@ class ClientRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return Auth::check();
     }
@@ -33,7 +33,7 @@ class ClientRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         $clientId = (int) $this->route('client');
         return ['name' => 'required|max:255|unique:clients,id,' . $clientId];
@@ -46,7 +46,7 @@ class ClientRequest extends FormRequest
      *
      * @param Validator $validator Laravel validator instance.
      */
-    protected function withValidator(Validator $validator)
+    protected function withValidator(Validator $validator): void
     {
         $validator->after(function ($validator) {
             if ($validator->errors()->any()) {

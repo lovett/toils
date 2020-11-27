@@ -19,7 +19,7 @@ class EstimateRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return Auth::check();
     }
@@ -29,7 +29,7 @@ class EstimateRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'name' => 'required',
@@ -49,7 +49,7 @@ class EstimateRequest extends FormRequest
      *
      * @return Validator
      */
-    protected function getValidatorInstance()
+    protected function getValidatorInstance(): Validator
     {
         // Set default values.
         collect(

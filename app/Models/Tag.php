@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 /**
  * Eloquent model for the tags table.
@@ -43,8 +44,10 @@ class Tag extends Model
 
     /**
      * Time entries associated with a tag.
+     *
+     * @return MorphToMany
      */
-    public function time()
+    public function time(): MorphToMany
     {
         return $this->morphedByMany('App\Models\Time', 'taggable');
     }

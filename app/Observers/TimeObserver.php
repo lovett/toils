@@ -23,7 +23,7 @@ class TimeObserver
      *
      * @param Time $time A time instance.
      */
-    public function saving(Time $time)
+    public function saving(Time $time): void
     {
         if ($time->billable === false) {
             $time->invoice_id = null;

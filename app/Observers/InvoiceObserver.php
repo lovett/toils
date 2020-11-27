@@ -21,7 +21,7 @@ class InvoiceObserver
      *
      * @param Invoice $invoice An invoice instance.
      */
-    public function creating(Invoice $invoice)
+    public function creating(Invoice $invoice): void
     {
         $invoiceCount = (int) $invoice->project->invoices()->withTrashed()->count();
         $invoice->number = sprintf(
@@ -37,7 +37,7 @@ class InvoiceObserver
      *
      * @param Invoice $invoice An invoice instance.
      */
-    public function deleted(Invoice $invoice)
+    public function deleted(Invoice $invoice): void
     {
         $invoice->time()->update(['invoice_id' => null]);
         $invoice->trashReceipt();
@@ -48,7 +48,7 @@ class InvoiceObserver
      *
      * @param Invoice $invoice An invoice instance.
      */
-    public function saving(Invoice $invoice)
+    public function saving(Invoice $invoice): void
     {
         if ($invoice->receipt && empty($invoice->paid)) {
             $invoice->paid = new Carbon();
@@ -60,7 +60,7 @@ class InvoiceObserver
      *
      * @param Invoice $invoice An invoice instance.
      */
-    public function saved(Invoice $invoice)
+    public function saved(Invoice $invoice): void
     {
         DB::transaction(function () use ($invoice) {
             $detachedRowCount = $invoice->time()->update(['invoice_id' => null]);

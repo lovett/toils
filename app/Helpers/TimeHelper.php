@@ -138,7 +138,7 @@ class TimeHelper
      * @param Carbon $value    The value to format
      * @param int    $multiple The nearest value to round to.
      *
-     * @return string
+     * @return Carbon|null
      */
     public static function roundToNearestMinuteMultiple(?Carbon $value, int $multiple)
     {

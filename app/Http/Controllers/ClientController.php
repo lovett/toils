@@ -37,7 +37,7 @@ class ClientController extends Controller
      *
      * @return View
      */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $query = $request->get('q');
 
@@ -73,7 +73,7 @@ class ClientController extends Controller
      *
      * @return View
      */
-    public function create()
+    public function create(): View
     {
         $client = new Client();
 
@@ -96,7 +96,7 @@ class ClientController extends Controller
      *
      * @return RedirectResponse
      */
-    public function store(ClientRequest $request)
+    public function store(ClientRequest $request): RedirectResponse
     {
         $client = new Client();
 
@@ -133,7 +133,7 @@ class ClientController extends Controller
      *
      * @return View
      */
-    public function show(Request $request, int $id)
+    public function show(Request $request, int $id): View
     {
         $fetchLimit = 5;
 
@@ -198,7 +198,7 @@ class ClientController extends Controller
      *
      * @return View
      */
-    public function edit(Request $request, int $id)
+    public function edit(Request $request, int $id): View
     {
         $client = $request->user()->clients()->findOrFail($id);
 
@@ -224,7 +224,7 @@ class ClientController extends Controller
      *
      * @return RedirectResponse
      */
-    public function update(ClientRequest $request, int $id)
+    public function update(ClientRequest $request, int $id): RedirectResponse
     {
         $client = $request->user()->client($id)->firstOrFail();
 
@@ -246,7 +246,7 @@ class ClientController extends Controller
      *
      * @return RedirectResponse
      */
-    public function destroy(Request $request, int $id)
+    public function destroy(Request $request, int $id): RedirectResponse
     {
         $client = $request->user()->client($id)->firstOrFail();
 

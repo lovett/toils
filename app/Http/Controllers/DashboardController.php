@@ -33,7 +33,7 @@ class DashboardController extends Controller
      *
      * @return View
      */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $baseQuery = $request->user()->projects();
 

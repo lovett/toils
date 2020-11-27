@@ -20,7 +20,7 @@ class EstimateObserver
      *
      * @param Estimate $estimate A estimate instance.
      */
-    public function deleted(Estimate $estimate)
+    public function deleted(Estimate $estimate): void
     {
         // Deletes from estimate_user table.
         $estimate->users()->detach();

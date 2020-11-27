@@ -23,7 +23,7 @@ class Controller extends BaseController
      *
      * @return array
      */
-    protected function parseSearchQuery($query = null, array $searchables = [], array $aliases = [])
+    protected function parseSearchQuery($query = null, array $searchables = [], array $aliases = []): array
     {
         if (empty($query)) {
             return [];

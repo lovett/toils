@@ -20,7 +20,7 @@ class ProjectRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         $id = $this->route('project');
 
@@ -38,7 +38,7 @@ class ProjectRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'name' => 'required|max:255',
@@ -58,7 +58,7 @@ class ProjectRequest extends FormRequest
      *
      * @param Validator $validator Laravel validator instance.
      */
-    protected function withValidator(Validator $validator)
+    protected function withValidator(Validator $validator): void
     {
         $validator->after(function ($validator) {
             // Bail if errors have already been found.
