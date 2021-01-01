@@ -19,7 +19,7 @@
     ],
     "require": {
         "php": "^7.3",
-        "barryvdh/laravel-dompdf": "v0.8.7",
+        "barryvdh/laravel-dompdf": "v0.9.0",
         "erusev/parsedown": "1.7.4",
         "fideloper/proxy": "4.4.1",
         "fruitcake/laravel-cors": "v2.0.3",
