@@ -24,10 +24,10 @@
         "fideloper/proxy": "4.4.1",
         "fruitcake/laravel-cors": "v2.0.4",
         "guzzlehttp/guzzle": "7.3.0",
-        "laravel/framework": "v8.42.1",
+        "laravel/framework": "v8.44.0",
         "laravel/helpers": "v1.4.1",
         "laravel/tinker": "v2.6.1",
-        "laravel/ui": "v3.2.1",
+        "laravel/ui": "v3.3.0",
         "laravelcollective/html": "v6.2.1"
     },
     "require-dev": {
