@@ -24,7 +24,7 @@
         "fideloper/proxy": "4.4.1",
         "fruitcake/laravel-cors": "v2.0.4",
         "guzzlehttp/guzzle": "7.3.0",
-        "laravel/framework": "v8.49.2",
+        "laravel/framework": "v8.50.0",
         "laravel/helpers": "v1.4.1",
         "laravel/tinker": "v2.6.1",
         "laravel/ui": "v3.3.0",
@@ -33,7 +33,7 @@
     "require-dev": {
         "barryvdh/laravel-debugbar": "v3.6.2",
         "beyondcode/laravel-dump-server": "1.7.0",
-        "filp/whoops": "2.13.0",
+        "filp/whoops": "2.14.0",
         "fakerphp/faker": "v1.15.0",
         "mockery/mockery": "1.4.3",
         "nunomaduro/collision": "v5.5.0",
