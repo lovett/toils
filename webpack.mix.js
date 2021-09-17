@@ -5,7 +5,7 @@ mix.disableNotifications();
 mix.js('resources/js/app.js', 'public/js').vue({ extractStyles: true }).version();
 mix.sass('resources/sass/app.scss', 'public/css').version();
 
-// Prevent a warning from vue-loader about prettier dependency.
+// Prevent a warning from vue-loader about dependency on prettier.
 //
 // The default configuration of vue-loader uses prettier in
 // development mode. If that package is not installed, webpack will
