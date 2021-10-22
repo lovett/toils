@@ -23,15 +23,15 @@
         "erusev/parsedown": "1.7.4",
         "fideloper/proxy": "4.4.1",
         "fruitcake/laravel-cors": "v2.0.4",
-        "guzzlehttp/guzzle": "7.3.0",
-        "laravel/framework": "v8.64.0",
+        "guzzlehttp/guzzle": "7.4.0",
+        "laravel/framework": "v8.67.0",
         "laravel/helpers": "v1.4.1",
         "laravel/tinker": "v2.6.2",
         "laravel/ui": "v3.3.0",
         "laravelcollective/html": "v6.2.1"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "v3.6.2",
+        "barryvdh/laravel-debugbar": "v3.6.4",
         "beyondcode/laravel-dump-server": "1.7.0",
         "filp/whoops": "2.14.4",
         "fakerphp/faker": "v1.16.0",
