@@ -45,8 +45,8 @@ class TimeRequest extends FormRequest
             'estimatedDuration' => 'nullable|integer',
             'project_id' => 'required|integer|exists:projects,id',
             'start' => 'required|date_format:Y-m-d',
-            'startTime' => 'required|date_format:g:i A',
-            'endTime' => 'nullable|date_format:g:i A',
+            'startTime' => 'required|date_format:G:i',
+            'endTime' => 'nullable|date_format:G:i',
             'summary' => 'nullable',
             'tags' => 'nullable|string',
             'billable' => 'boolean'
@@ -72,7 +72,7 @@ class TimeRequest extends FormRequest
             $fields = [];
 
             $fields['start'] = Carbon::createFromFormat(
-                'Y-m-d g:i A',
+                'Y-m-d G:i',
                 sprintf('%s %s', $this->input('start'), $this->input('startTime')),
                 $this->cookie('TIMEZONE', 'UTC')
             )->setTimezone('UTC');
@@ -84,7 +84,7 @@ class TimeRequest extends FormRequest
             $fields['end'] = null;
             if (empty($this->input('endTime')) === false) {
                 $fields['end'] = Carbon::createFromFormat(
-                    'Y-m-d g:i A',
+                    'Y-m-d G:i',
                     sprintf('%s %s', $this->input('start'), $this->input('endTime')),
                     $this->cookie('TIMEZONE', 'UTC')
                 )->setTimezone('UTC');

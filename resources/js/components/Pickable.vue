@@ -38,36 +38,6 @@
                 <a @click.prevent="relativeWeekEnd(0)" href="#">end of week</a>
                 <a @click.prevent="relativeWeekEnd(-1)" href="#">end of last week</a>
             </p>
-
-
-            <p v-if="pickableGroups.includes('month')">
-                <a v-for="m in 12" @click.prevent="month(m)" href="#">{{ m | monthName }}</a>
-            </p>
-
-            <p v-if="pickableGroups.includes('day')">
-                <a v-for="d in 31" @click.prevent="day(d)" href="#">{{ d }}</a>
-            </p>
-
-            <p v-if="pickableGroups.includes('year')">
-                <a @click.prevent="year(lastYear.year())" href="#">{{ lastYear.year() }}</a>
-                <a @click.prevent="year(now.year())" href="#">{{ now.year() }}</a>
-                <a @click.prevent="year(nextYear.year())" href="#">{{ nextYear.year() }}</a>
-            </p>
-
-            <p v-if="pickableGroups.includes('time')">
-                <a v-for="h in 12" @click.prevent="hour(h)" href="#">{{ h }}</a>
-            </p>
-
-            <p v-if="pickableGroups.includes('time')">
-                <a @click.prevent="minute(0)" href="#">00</a>
-                <a v-for="m in 59" v-if="m % 5 === 0" @click.prevent="minute(m)" href="#">
-                    {{ (m < 10) ? '0' + m : m }}
-                </a>
-            </p>
-            <p v-if="pickableGroups.includes('time')">
-                <a @click.prevent="meridiem('AM')" href="#">AM</a>
-                <a @click.prevent="meridiem('PM')" href="#">PM</a>
-            </p>
         </div>
     </div>
 </template>
@@ -189,41 +159,6 @@
                 this.pickedDate = moment();
             },
 
-            day: function (val) {
-                this.pickedDate = moment(this.pickedDate).date(val);
-            },
-
-            month: function (val) {
-                this.pickedDate = moment(this.pickedDate).month(val - 1);
-            },
-
-            year: function (val) {
-                this.pickedDate = moment(this.pickedDate).year(val);
-            },
-
-            hour: function (val) {
-                if (this.pickedDate.hour() > 12) {
-                    val += 12;
-                }
-                this.pickedDate = moment(this.pickedDate).hour(val);
-            },
-
-            minute: function (val) {
-                this.pickedDate = moment(this.pickedDate).minute(val);
-            },
-
-            meridiem: function (val) {
-                const lcVal = val.toLowerCase();
-                const pickedHour = this.pickedDate.hour()
-                if (lcVal === 'pm' && pickedHour < 12) {
-                    this.pickedDate = moment(this.pickedDate).hour(pickedHour + 12);
-                }
-
-                if (lcVal === 'am' && pickedHour > 12) {
-                    this.pickedDate = moment(this.pickedDate).hour(pickedHour - 12);
-                }
-            },
-
             relativeTime: function (val) {
                 let base = moment();
                 if (val !== 0) {
@@ -267,12 +202,7 @@
             relativeWeekEnd: function (val) {
                 this.pickedDate = moment().endOf('week').add(val, 'weeks');
                 this.pristine = false;
-            },
-
-            useDateInput: function() {
-                this.inputType = 'date';
             }
-
         },
 
         filters: {

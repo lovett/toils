@@ -133,6 +133,23 @@ class TimeHelper
     }
 
     /**
+     * Format a time in 24-hour format: 13:00
+     *
+     * @param string      $timezone The timezone that the value should be converted to.
+     * @param Carbon|null $value    The value to format
+     *
+     * @return string
+     */
+    public static function time24(string $timezone, ?Carbon $value = null)
+    {
+        if ($value === null) {
+            return '';
+        }
+
+        return $value->setTimezone($timezone)->format('G:i');
+    }
+
+    /**
      * Round the minutes of a time value to a given multiple.
      *
      * @param Carbon $value    The value to format

@@ -19,9 +19,10 @@
         @isset($pickable)
         <pickable
             name="{{ $fieldName }}"
-            format="h:mm A"
+            format="hh:mm"
             groups="{{ implode(',', $pickable) }}"
-            initial-value="{{ old($fieldName, TimeHelper::time($timezone, $model->$name)) }}"
+            initial-value="{{ old($fieldName, TimeHelper::time24($timezone, $model->$name)) }}"
+            input-type="time"
             @isset($autofill)
             v-bind:suggested-value="suggested{{ ucfirst($fieldName) }}"
             v-bind:previous-value="previous{{ ucfirst($fieldName) }}"
@@ -29,7 +30,7 @@
             error="{{ $pickableError }}"
         />
         @else
-        {!! Form::text($fieldName, old($fieldName, TimeHelper::time($timezone, $model->$name)), ['class' => $fieldClasses]) !!}
+        {!! Form::text($fieldName, old($fieldName, TimeHelper::time24($timezone, $model->$name)), ['type' => 'time', 'class' => $fieldClasses]) !!}
 
         @isset($autofill)
         <autofill-hint

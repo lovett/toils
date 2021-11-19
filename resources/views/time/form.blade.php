@@ -34,9 +34,9 @@
 
                     @include('partials.formgroup-date', ['name' => 'start', 'label' => 'Date', 'autofill' => true, 'pickable' => ['relday']])
 
-                    @include('partials.formgroup-time', ['name' => 'start', 'fieldName' => 'startTime', 'label' => 'Start', 'pickable' => ['reltime', 'time']])
+                    @include('partials.formgroup-time', ['name' => 'start', 'fieldName' => 'startTime', 'label' => 'Start', 'pickable' => ['reltime']])
 
-                    @include('partials.formgroup-time', ['name' => 'end', 'fieldName' => 'endTime', 'label' => 'End', 'pickable' => ['reltime', 'time']])
+                    @include('partials.formgroup-time', ['name' => 'end', 'fieldName' => 'endTime', 'label' => 'End', 'pickable' => ['reltime']])
 
                     @include('partials.formgroup-textarea', ['name' => 'summary', 'label' => 'Summary'])
 
