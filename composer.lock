@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "93e2dd64241411a2f21c20b2204c7e61",
+    "content-hash": "3d36cd716dbe5978b203591802a996dc",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -367,23 +367,23 @@
         },
         {
             "name": "dompdf/dompdf",
-            "version": "v1.1.1",
+            "version": "v1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/dompdf/dompdf.git",
-                "reference": "de4aad040737a89fae2129cdeb0f79c45513128d"
+                "reference": "60b704331479a69e9bcdb3496da2315b5c4f94fd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dompdf/dompdf/zipball/de4aad040737a89fae2129cdeb0f79c45513128d",
-                "reference": "de4aad040737a89fae2129cdeb0f79c45513128d",
+                "url": "https://api.github.com/repos/dompdf/dompdf/zipball/60b704331479a69e9bcdb3496da2315b5c4f94fd",
+                "reference": "60b704331479a69e9bcdb3496da2315b5c4f94fd",
                 "shasum": ""
             },
             "require": {
                 "ext-dom": "*",
                 "ext-mbstring": "*",
-                "phenx/php-font-lib": "^0.5.2",
-                "phenx/php-svg-lib": "^0.3.3",
+                "phenx/php-font-lib": "^0.5.4",
+                "phenx/php-svg-lib": "^0.3.3 || ^0.4.0",
                 "php": "^7.1 || ^8.0"
             },
             "require-dev": {
@@ -428,9 +428,9 @@
             "homepage": "https://github.com/dompdf/dompdf",
             "support": {
                 "issues": "https://github.com/dompdf/dompdf/issues",
-                "source": "https://github.com/dompdf/dompdf/tree/v1.1.1"
+                "source": "https://github.com/dompdf/dompdf/tree/v1.2.0"
             },
-            "time": "2021-11-24T00:45:04+00:00"
+            "time": "2022-02-07T13:02:10+00:00"
         },
         {
             "name": "dragonmantank/cron-expression",
@@ -1493,22 +1493,22 @@
         },
         {
             "name": "laravel/ui",
-            "version": "v3.4.2",
+            "version": "v3.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/ui.git",
-                "reference": "e01198123f7f4369d13c1f83a897c3f5e97fc9f4"
+                "reference": "64a0f43492c00780b2261c56cd7007a4f370d95b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/ui/zipball/e01198123f7f4369d13c1f83a897c3f5e97fc9f4",
-                "reference": "e01198123f7f4369d13c1f83a897c3f5e97fc9f4",
+                "url": "https://api.github.com/repos/laravel/ui/zipball/64a0f43492c00780b2261c56cd7007a4f370d95b",
+                "reference": "64a0f43492c00780b2261c56cd7007a4f370d95b",
                 "shasum": ""
             },
             "require": {
                 "illuminate/console": "^8.42|^9.0",
                 "illuminate/filesystem": "^8.42|^9.0",
-                "illuminate/support": "^8.42|^9.0",
+                "illuminate/support": "^8.82|^9.0",
                 "illuminate/validation": "^8.42|^9.0",
                 "php": "^7.3|^8.0"
             },
@@ -1548,36 +1548,36 @@
                 "ui"
             ],
             "support": {
-                "source": "https://github.com/laravel/ui/tree/v3.4.2"
+                "source": "https://github.com/laravel/ui/tree/v3.4.3"
             },
-            "time": "2022-01-25T20:15:56+00:00"
+            "time": "2022-02-08T14:19:32+00:00"
         },
         {
             "name": "laravelcollective/html",
-            "version": "v6.2.1",
+            "version": "v6.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/LaravelCollective/html.git",
-                "reference": "ae15b9c4bf918ec3a78f092b8555551dd693fde3"
+                "reference": "78c3cb516ac9e6d3d76cad9191f81d217302dea6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/LaravelCollective/html/zipball/ae15b9c4bf918ec3a78f092b8555551dd693fde3",
-                "reference": "ae15b9c4bf918ec3a78f092b8555551dd693fde3",
+                "url": "https://api.github.com/repos/LaravelCollective/html/zipball/78c3cb516ac9e6d3d76cad9191f81d217302dea6",
+                "reference": "78c3cb516ac9e6d3d76cad9191f81d217302dea6",
                 "shasum": ""
             },
             "require": {
-                "illuminate/http": "^6.0|^7.0|^8.0",
-                "illuminate/routing": "^6.0|^7.0|^8.0",
-                "illuminate/session": "^6.0|^7.0|^8.0",
-                "illuminate/support": "^6.0|^7.0|^8.0",
-                "illuminate/view": "^6.0|^7.0|^8.0",
+                "illuminate/http": "^6.0|^7.0|^8.0|^9.0",
+                "illuminate/routing": "^6.0|^7.0|^8.0|^9.0",
+                "illuminate/session": "^6.0|^7.0|^8.0|^9.0",
+                "illuminate/support": "^6.0|^7.0|^8.0|^9.0",
+                "illuminate/view": "^6.0|^7.0|^8.0|^9.0",
                 "php": ">=7.2.5"
             },
             "require-dev": {
-                "illuminate/database": "^6.0|^7.0|^8.0",
+                "illuminate/database": "^6.0|^7.0|^8.0|^9.0",
                 "mockery/mockery": "~1.0",
-                "phpunit/phpunit": "~8.5"
+                "phpunit/phpunit": "~8.5|^9.5.10"
             },
             "type": "library",
             "extra": {
@@ -1595,12 +1595,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Collective\\Html\\": "src/"
-                },
                 "files": [
                     "src/helpers.php"
-                ]
+                ],
+                "psr-4": {
+                    "Collective\\Html\\": "src/"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -1622,7 +1622,7 @@
                 "issues": "https://github.com/LaravelCollective/html/issues",
                 "source": "https://github.com/LaravelCollective/html"
             },
-            "time": "2020-12-15T20:20:05+00:00"
+            "time": "2022-02-08T21:02:54+00:00"
         },
         {
             "name": "league/commonmark",
@@ -4040,12 +4040,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Iconv\\": ""
-                },
                 "files": [
                     "bootstrap.php"
-                ]
+                ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Iconv\\": ""
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -4120,12 +4120,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Intl\\Grapheme\\": ""
-                },
                 "files": [
                     "bootstrap.php"
-                ]
+                ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Intl\\Grapheme\\": ""
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -4203,12 +4203,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Intl\\Idn\\": ""
-                },
                 "files": [
                     "bootstrap.php"
-                ]
+                ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Intl\\Idn\\": ""
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -4288,12 +4288,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Intl\\Normalizer\\": ""
-                },
                 "files": [
                     "bootstrap.php"
                 ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Intl\\Normalizer\\": ""
+                },
                 "classmap": [
                     "Resources/stubs"
                 ]
@@ -4452,12 +4452,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Php72\\": ""
-                },
                 "files": [
                     "bootstrap.php"
-                ]
+                ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Php72\\": ""
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -4528,12 +4528,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Php73\\": ""
-                },
                 "files": [
                     "bootstrap.php"
                 ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Php73\\": ""
+                },
                 "classmap": [
                     "Resources/stubs"
                 ]
@@ -4607,12 +4607,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Php80\\": ""
-                },
                 "files": [
                     "bootstrap.php"
                 ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Php80\\": ""
+                },
                 "classmap": [
                     "Resources/stubs"
                 ]
@@ -4690,12 +4690,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Symfony\\Polyfill\\Php81\\": ""
-                },
                 "files": [
                     "bootstrap.php"
                 ],
+                "psr-4": {
+                    "Symfony\\Polyfill\\Php81\\": ""
+                },
                 "classmap": [
                     "Resources/stubs"
                 ]
@@ -5595,16 +5595,16 @@
     "packages-dev": [
         {
             "name": "barryvdh/laravel-debugbar",
-            "version": "v3.6.6",
+            "version": "v3.6.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/barryvdh/laravel-debugbar.git",
-                "reference": "f92fe967b40b36ad1ee8ed2fd59c05ae67a1ebba"
+                "reference": "b96f9820aaf1ff9afe945207883149e1c7afb298"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/barryvdh/laravel-debugbar/zipball/f92fe967b40b36ad1ee8ed2fd59c05ae67a1ebba",
-                "reference": "f92fe967b40b36ad1ee8ed2fd59c05ae67a1ebba",
+                "url": "https://api.github.com/repos/barryvdh/laravel-debugbar/zipball/b96f9820aaf1ff9afe945207883149e1c7afb298",
+                "reference": "b96f9820aaf1ff9afe945207883149e1c7afb298",
                 "shasum": ""
             },
             "require": {
@@ -5618,7 +5618,7 @@
             },
             "require-dev": {
                 "mockery/mockery": "^1.3.3",
-                "orchestra/testbench-dusk": "^4|^5|^6",
+                "orchestra/testbench-dusk": "^4|^5|^6|^7",
                 "phpunit/phpunit": "^8.5|^9.0",
                 "squizlabs/php_codesniffer": "^3.5"
             },
@@ -5637,12 +5637,12 @@
                 }
             },
             "autoload": {
-                "psr-4": {
-                    "Barryvdh\\Debugbar\\": "src/"
-                },
                 "files": [
                     "src/helpers.php"
-                ]
+                ],
+                "psr-4": {
+                    "Barryvdh\\Debugbar\\": "src/"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -5664,7 +5664,7 @@
             ],
             "support": {
                 "issues": "https://github.com/barryvdh/laravel-debugbar/issues",
-                "source": "https://github.com/barryvdh/laravel-debugbar/tree/v3.6.6"
+                "source": "https://github.com/barryvdh/laravel-debugbar/tree/v3.6.7"
             },
             "funding": [
                 {
@@ -5676,7 +5676,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-12-21T18:20:10+00:00"
+            "time": "2022-02-09T07:52:32+00:00"
         },
         {
             "name": "beyondcode/laravel-dump-server",
@@ -7165,16 +7165,16 @@
         },
         {
             "name": "phar-io/version",
-            "version": "3.1.0",
+            "version": "3.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phar-io/version.git",
-                "reference": "bae7c545bef187884426f042434e561ab1ddb182"
+                "reference": "15a90844ad40f127afd244c0cad228de2a80052a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phar-io/version/zipball/bae7c545bef187884426f042434e561ab1ddb182",
-                "reference": "bae7c545bef187884426f042434e561ab1ddb182",
+                "url": "https://api.github.com/repos/phar-io/version/zipball/15a90844ad40f127afd244c0cad228de2a80052a",
+                "reference": "15a90844ad40f127afd244c0cad228de2a80052a",
                 "shasum": ""
             },
             "require": {
@@ -7210,9 +7210,9 @@
             "description": "Library for handling version information and constraints",
             "support": {
                 "issues": "https://github.com/phar-io/version/issues",
-                "source": "https://github.com/phar-io/version/tree/3.1.0"
+                "source": "https://github.com/phar-io/version/tree/3.1.1"
             },
-            "time": "2021-02-23T14:00:09+00:00"
+            "time": "2022-02-07T21:56:48+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -7526,16 +7526,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.4.5",
+            "version": "1.4.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "150d1fbd82fb71ff76b3bd7f6ea6006d89c5f0c3"
+                "reference": "8a7761f1c520e0dad6e04d862fdc697445457cfe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/150d1fbd82fb71ff76b3bd7f6ea6006d89c5f0c3",
-                "reference": "150d1fbd82fb71ff76b3bd7f6ea6006d89c5f0c3",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/8a7761f1c520e0dad6e04d862fdc697445457cfe",
+                "reference": "8a7761f1c520e0dad6e04d862fdc697445457cfe",
                 "shasum": ""
             },
             "require": {
@@ -7566,7 +7566,7 @@
             "description": "PHPStan - PHP Static Analysis Tool",
             "support": {
                 "issues": "https://github.com/phpstan/phpstan/issues",
-                "source": "https://github.com/phpstan/phpstan/tree/1.4.5"
+                "source": "https://github.com/phpstan/phpstan/tree/1.4.6"
             },
             "funding": [
                 {
@@ -7586,7 +7586,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-02-02T19:35:10+00:00"
+            "time": "2022-02-06T12:56:13+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -7968,11 +7968,11 @@
                 }
             },
             "autoload": {
-                "classmap": [
-                    "src/"
-                ],
                 "files": [
                     "src/Framework/Assert/Functions.php"
+                ],
+                "classmap": [
+                    "src/"
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -8011,23 +8011,23 @@
         },
         {
             "name": "react/promise",
-            "version": "v2.8.0",
+            "version": "v2.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/reactphp/promise.git",
-                "reference": "f3cff96a19736714524ca0dd1d4130de73dbbbc4"
+                "reference": "234f8fd1023c9158e2314fa9d7d0e6a83db42910"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/reactphp/promise/zipball/f3cff96a19736714524ca0dd1d4130de73dbbbc4",
-                "reference": "f3cff96a19736714524ca0dd1d4130de73dbbbc4",
+                "url": "https://api.github.com/repos/reactphp/promise/zipball/234f8fd1023c9158e2314fa9d7d0e6a83db42910",
+                "reference": "234f8fd1023c9158e2314fa9d7d0e6a83db42910",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.4.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^7.0 || ^6.5 || ^5.7 || ^4.8.36"
+                "phpunit/phpunit": "^9.3 || ^5.7 || ^4.8.36"
             },
             "type": "library",
             "autoload": {
@@ -8045,7 +8045,23 @@
             "authors": [
                 {
                     "name": "Jan Sorgalla",
-                    "email": "jsorgalla@gmail.com"
+                    "email": "jsorgalla@gmail.com",
+                    "homepage": "https://sorgalla.com/"
+                },
+                {
+                    "name": "Christian Lück",
+                    "email": "christian@clue.engineering",
+                    "homepage": "https://clue.engineering/"
+                },
+                {
+                    "name": "Cees-Jan Kiewiet",
+                    "email": "reactphp@ceesjankiewiet.nl",
+                    "homepage": "https://wyrihaximus.net/"
+                },
+                {
+                    "name": "Chris Boden",
+                    "email": "cboden@gmail.com",
+                    "homepage": "https://cboden.dev/"
                 }
             ],
             "description": "A lightweight implementation of CommonJS Promises/A for PHP",
@@ -8055,9 +8071,19 @@
             ],
             "support": {
                 "issues": "https://github.com/reactphp/promise/issues",
-                "source": "https://github.com/reactphp/promise/tree/v2.8.0"
+                "source": "https://github.com/reactphp/promise/tree/v2.9.0"
             },
-            "time": "2020-05-12T15:16:56+00:00"
+            "funding": [
+                {
+                    "url": "https://github.com/WyriHaximus",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/clue",
+                    "type": "github"
+                }
+            ],
+            "time": "2022-02-11T10:27:51+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -8565,16 +8591,16 @@
         },
         {
             "name": "sebastian/global-state",
-            "version": "5.0.3",
+            "version": "5.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/global-state.git",
-                "reference": "23bd5951f7ff26f12d4e3242864df3e08dec4e49"
+                "reference": "19c519631c5a511b7ed0ad64a6713fdb3fd25fe4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/global-state/zipball/23bd5951f7ff26f12d4e3242864df3e08dec4e49",
-                "reference": "23bd5951f7ff26f12d4e3242864df3e08dec4e49",
+                "url": "https://api.github.com/repos/sebastianbergmann/global-state/zipball/19c519631c5a511b7ed0ad64a6713fdb3fd25fe4",
+                "reference": "19c519631c5a511b7ed0ad64a6713fdb3fd25fe4",
                 "shasum": ""
             },
             "require": {
@@ -8617,7 +8643,7 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/global-state/issues",
-                "source": "https://github.com/sebastianbergmann/global-state/tree/5.0.3"
+                "source": "https://github.com/sebastianbergmann/global-state/tree/5.0.4"
             },
             "funding": [
                 {
@@ -8625,7 +8651,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-06-11T13:31:12+00:00"
+            "time": "2022-02-10T07:01:19+00:00"
         },
         {
             "name": "sebastian/lines-of-code",
