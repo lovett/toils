@@ -8,14 +8,14 @@
     "production": "mix --production"
   },
   "devDependencies": {
-    "axios": "0.25.0",
+    "axios": "0.26.0",
     "bootstrap-vue": "2.21.2",
-    "laravel-mix": "6.0.41",
+    "laravel-mix": "6.0.43",
     "moment": "2.29.1",
     "resolve-url-loader": "5.0.0",
     "sass": "~1.32",
-    "sass-loader": "12.4.0",
-    "vue": "3.2.30",
+    "sass-loader": "12.6.0",
+    "vue": "3.2.31",
     "vue-loader": "17.0.0",
     "vue-template-compiler": "2.6.14"
   }
