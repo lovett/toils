@@ -101,18 +101,7 @@ toils.tar.gz:
 	cd build && mkdir -p storage/framework/views
 	cd build && touch storage/$(SQLITE_DB_NAME)
 	cd build && npm ci && npm run production
-ifeq "$(shell php -r 'echo PHP_MAJOR_VERSION;')" "7"
 	cd build && $(COMPOSER_COMMAND)
-else
-	podman run \
-	--rm \
-	--interactive \
-	--tty \
-	--env COMPOSER_ALLOW_SUPERUSER=1 \
-	-v $(PWD):/usr/src/toils:Z,rw \
-	-w /usr/src/toils \
-	php74-composer $(COMPOSER_COMMAND)
-endif
 	tar --create --gzip --file=toils.tar.gz --exclude=node_modules --exclude=storage --transform s/build/toils/ build
 
 # Push the repository to GitHub.
