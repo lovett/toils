@@ -1,35 +1,32 @@
-# -*- mode: nginx -*-
+<VirtualHost *:80>
+    ServerName {{ toils_hostname }}
+    RewriteEngine On
+    RewriteCond %{HTTPS} off
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</VirtualHost>
 
-server {
-    listen 80;
-    listen [::]:80;
-    server_name {{ toils_hostname }};
-    return 301 https://$host$request_uri;
-}
+<VirtualHost *:443>
+    DocumentRoot {{ application_root }}/{{ application_name }}/public
+    ServerName {{ toils_hostname }}
 
-server {
-    listen 443 ssl http2;
-    listen [::]:443 ssl http2;
-    server_name {{ toils_hostname }};
-    ssl_certificate {{ toils_ssl_certificate }};
-    ssl_certificate_key {{ toils_ssl_key }};
+    SSLEngine on
+    SSLCertificateFile {{ toils_ssl_certificate }}
+    SSLCertificateKeyFile {{ toils_ssl_key }}
 
-    root {{ application_root }}/{{ application_name }}/public;
+    DirectoryIndex index.php
+    ErrorLog "/var/log/httpd/{{ application_name }}-error.log"
+    CustomLog "/var/log/httpd/{{ application_name }}-access.log" combined
 
-    index index.html index.php;
+    <FilesMatch \.php$>
+        SetHandler proxy:unix:/run/php-fpm/www.sock|fcgi://dummy
+    </FilesMatch>
 
-    client_max_body_size 60M;
+    <Directory {{ application_root }}/{{ application_name }}/public>
+        Options +FollowSymlinks
+        AllowOverride All
+    </Directory>
+</VirtualHost>
 
-    location ~* \.(js|css|png|jpg|ico)$ {
-        sendfile on;
-    }
-
-    location / {
-        try_files $uri $uri/ /index.php?$query_string;
-    }
-
-    location ~ \.php$ {
-        include snippets/fastcgi-php.conf;
-        fastcgi_pass unix:/run/php/{{ application_name }}.sock;
-    }
-}
+# Local Variables:
+# mode: apache
+# End:

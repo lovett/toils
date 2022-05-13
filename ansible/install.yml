@@ -2,48 +2,37 @@
 - hosts: toils
   vars:
     application_name: toils
-    application_root: /srv
-    application_user: www-data
-    application_group: www-data
-    nginx_vhost_path: "/etc/nginx/sites-available/{{ application_name }}"
+    application_root: /var/www
+    application_user: apache
+    application_group: apache
+    apache_vhost_path: "/etc/httpd/conf.d/{{ application_name }}.conf"
 
   tasks:
     - name: Install system packages
       become: true
-      apt:
+      dnf:
         name:
           - php-bcmath
           - php-fpm
           - php-intl
-          - php-json
           - php-mbstring
-          - php-sqlite3
-          - php-tokenizer
           - php-xml
-          - sqlite3
+          - sqlite
         state: latest
-        force_apt_get: yes
 
     - name: Install PHP-FPM pool
       become: true
       template:
         src: "templates/toils-pool.j2"
-        dest: "/etc/php/7.3/fpm/pool.d/toils.conf"
+        dest: "/etc/php-fpm.d/{{ application_name }}.conf"
       notify: Restart PHP-FPM
 
-    - name: Install Nginx Vhost
+    - name: Install Apache Vhost
       become: true
       template:
         src: "templates/toils-vhost.j2"
-        dest: "{{ nginx_vhost_path }}"
-      notify: Restart Nginx
-
-    - name: Enable Nginx Vhost
-      become: true
-      file:
-        src: "{{ nginx_vhost_path }}"
-        dest: "/etc/nginx/sites-enabled/{{ application_name }}"
-        state: link
+        dest: "{{ apache_vhost_path }}"
+      notify: Restart Apache
 
     - name: Create non-local application storage
       become: true
@@ -133,10 +122,10 @@
       systemd:
         name: php7.3-fpm.service
         state: restarted
-    - name: Restart Nginx
+    - name: Restart Apache
       become: yes
       systemd:
-        name: nginx.service
+        name: httpd.service
         state: restarted
     - name: Reload Systemd
       become: yes
