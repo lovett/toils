@@ -20,13 +20,6 @@
           - sqlite
         state: latest
 
-    - name: Install PHP-FPM pool
-      become: true
-      template:
-        src: "templates/toils-pool.j2"
-        dest: "/etc/php-fpm.d/{{ application_name }}.conf"
-      notify: Restart PHP-FPM
-
     - name: Install Apache Vhost
       become: true
       template:
@@ -117,11 +110,6 @@
         enabled: yes
 
   handlers:
-    - name: Restart PHP-FPM
-      become: yes
-      systemd:
-        name: php7.3-fpm.service
-        state: restarted
     - name: Restart Apache
       become: yes
       systemd:
