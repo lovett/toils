@@ -10,7 +10,7 @@
   "devDependencies": {
     "axios": "0.27.2",
     "bootstrap-vue": "2.22.0",
-    "laravel-mix": "6.0.43",
+    "laravel-mix": "6.0.47",
     "moment": "2.29.3",
     "resolve-url-loader": "5.0.0",
     "sass": "~1.32",
