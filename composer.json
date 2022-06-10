@@ -23,7 +23,7 @@
         "erusev/parsedown": "1.7.4",
         "fideloper/proxy": "4.4.1",
         "fruitcake/laravel-cors": "v3.0.0",
-        "guzzlehttp/guzzle": "7.4.3",
+        "guzzlehttp/guzzle": "7.4.4",
         "laravel/framework": "~8.82.0",
         "laravel/helpers": "v1.5.0",
         "laravel/tinker": "v2.7.2",
