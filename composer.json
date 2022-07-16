@@ -19,7 +19,7 @@
     ],
     "require": {
         "php": "^8.0",
-        "barryvdh/laravel-dompdf": "v1.0.2",
+        "barryvdh/laravel-dompdf": "v2.0.0",
         "erusev/parsedown": "1.7.4",
         "fideloper/proxy": "4.4.1",
         "fruitcake/laravel-cors": "v3.0.0",
@@ -31,7 +31,7 @@
         "laravelcollective/html": "v6.3.0"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "v3.6.8",
+        "barryvdh/laravel-debugbar": "v3.7.0",
         "beyondcode/laravel-dump-server": "1.8.0",
         "filp/whoops": "2.14.5",
         "fakerphp/faker": "v1.19.0",
