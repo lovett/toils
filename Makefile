@@ -75,7 +75,7 @@ install: toils.tar.gz
 # Normally invoked from the install target, not directly.
 toils.tar.gz: export DISABLE_OPENCOLLECTIVE=1
 toils.tar.gz: export COMPOSER_NO_INTERACTION=1
-toils.tar.gz:
+toils.tar.gz: dummy
 	rsync -a --cvs-exclude \
 	--delete \
 	--exclude=.ac-php-conf.json \
