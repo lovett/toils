@@ -9,10 +9,6 @@
     DocumentRoot {{ application_root }}/{{ application_name }}/public
     ServerName {{ toils_hostname }}
 
-    SSLEngine on
-    SSLCertificateFile {{ toils_ssl_certificate }}
-    SSLCertificateKeyFile {{ toils_ssl_key }}
-
     DirectoryIndex index.php
     ErrorLog "/var/log/httpd/{{ application_name }}-error.log"
     CustomLog "/var/log/httpd/{{ application_name }}-access.log" combined
