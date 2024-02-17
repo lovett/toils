@@ -3,9 +3,6 @@
   vars:
     application_name: toils
     application_root: /var/www
-    application_user: apache
-    application_group: apache
-    apache_vhost_path: "/etc/httpd/conf.d/{{ application_name }}.conf"
 
   tasks:
     - name: Install system packages
@@ -19,13 +16,6 @@
           - php-xml
           - sqlite
         state: latest
-
-    - name: Install Apache Vhost
-      become: true
-      template:
-        src: "templates/toils-vhost.j2"
-        dest: "{{ apache_vhost_path }}"
-      notify: Restart Apache
 
     - name: Create non-local application storage
       become: true
@@ -110,11 +100,6 @@
         enabled: yes
 
   handlers:
-    - name: Restart Apache
-      become: yes
-      systemd:
-        name: httpd.service
-        state: restarted
     - name: Reload Systemd
       become: yes
       systemd:
